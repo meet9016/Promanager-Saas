@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Sitemap: https://promanager.in/sitemap.xml
+Host: https://promanager.in
+
+# Crawl-delay can be added if needed for server load management
+# Crawl-delay: 10
