@@ -254,7 +254,6 @@ const CreateShift = () => {
             }
 
             const formData = new FormData();
-            formData.append('user_id', user.user_id);
 
             const response = await api.post('shift_list', formData);
 
@@ -563,7 +562,6 @@ const CreateShift = () => {
             setSubmitting(true);
 
             const formData = new FormData();
-            formData.append('user_id', user.user_id);
             formData.append('shift_name', shiftName.trim());
             formData.append('remark', remark.trim());
 

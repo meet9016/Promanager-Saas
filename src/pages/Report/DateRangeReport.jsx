@@ -76,7 +76,6 @@ const DateRangeReport = () => {
             showToast('Fetching attendance data...', 'info');
 
             const formData = new FormData();
-            formData.append('user_id', user.user_id);
             formData.append('start_date', formatDateForAPI(startDate));
             formData.append('end_date', formatDateForAPI(endDate));
 

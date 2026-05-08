@@ -138,7 +138,6 @@ const LoanAdvance = () => {
             }
 
             const formData = new FormData();
-            formData.append('user_id', user.user_id);
 
             const response = await api.post('loan_list', formData);
 
@@ -259,7 +258,6 @@ const LoanAdvance = () => {
                 setCurrentAdvanceId(loan.loan_id);
 
                 const formData = new FormData();
-                formData.append('user_id', user.user_id);
                 formData.append('loan_id', loan.loan_id);
 
                 const response = await api.post('single_advance_list', formData);
@@ -278,7 +276,6 @@ const LoanAdvance = () => {
                 setLoanDetails([]);
 
                 const formData = new FormData();
-                formData.append('user_id', user.user_id);
                 formData.append('loan_id', loan.loan_id);
 
                 const response = await api.post('single_loan_list', formData);
@@ -325,7 +322,6 @@ const LoanAdvance = () => {
             }
 
             const formData = new FormData();
-            formData.append('user_id', user.user_id);
             formData.append('advance_id', currentAdvanceId);
             formData.append('amount', amount);
 
@@ -336,7 +332,6 @@ const LoanAdvance = () => {
 
                 // Refresh advance details
                 const detailsFormData = new FormData();
-                detailsFormData.append('user_id', user.user_id);
                 detailsFormData.append('loan_id', currentAdvanceId);
 
                 const detailsResponse = await api.post('single_advance_list', detailsFormData);
@@ -371,7 +366,6 @@ const LoanAdvance = () => {
             }
 
             const formData = new FormData();
-            formData.append('user_id', user.user_id);
             formData.append('loan_items_id', loanItemsId);
 
             const response = await api.post('add_loan_payment', formData);
@@ -383,7 +377,6 @@ const LoanAdvance = () => {
 
                 if (currentLoanId) {
                     const detailsFormData = new FormData();
-                    detailsFormData.append('user_id', user.user_id);
                     detailsFormData.append('loan_id', currentLoanId);
 
                     const detailsResponse = await api.post('single_loan_list', detailsFormData);
@@ -433,7 +426,6 @@ const LoanAdvance = () => {
             setDeleteLoading(true);
 
             const formData = new FormData();
-            formData.append('user_id', user.user_id);
             formData.append('loan_id', loanToDelete.loan_id);
 
             const response = await api.post('loan_delete', formData);

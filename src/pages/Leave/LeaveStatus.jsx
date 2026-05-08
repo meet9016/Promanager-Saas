@@ -172,7 +172,6 @@ const LeaveManagement = () => {
             setError(null);
 
             const formData = new FormData();
-            formData.append('user_id', user.user_id);
             formData.append('status', status);
 
             const response = await api.post('/leave_list', formData);
@@ -282,7 +281,6 @@ const LeaveManagement = () => {
 
         try {
             const formData = new FormData();
-            formData.append('user_id', user.user_id);
             formData.append('status', '2');
             formData.append('leave_id', leaveId);
             formData.append('reject_reason', '');
@@ -322,7 +320,6 @@ const LeaveManagement = () => {
 
         try {
             const formData = new FormData();
-            formData.append('user_id', user.user_id);
             formData.append('status', '3');
             formData.append('leave_id', rejectionModal.leaveData.leave_id);
             formData.append('reject_reason', rejectionModal.reason);
@@ -639,11 +636,11 @@ const LeaveManagement = () => {
 
                 {/* Updated View Modal Section - Replace the existing viewModal section */}
                 {viewModal.isOpen && viewModal.leaveData && (
-                    <div className="fixed inset-0 bg-[var(--color-modal-overlay)] flex items-center justify-center p-4 z-50 backdrop-blur-sm">
-                        <div className="bg-[var(--color-modal-bg)] rounded-3xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden ">
+                    <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 backdrop-blur-sm">
+                        <div className="bg-[var(--color-bg-secondary)] rounded-3xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden ">
 
                             {/* Header */}
-                            <div className="bg-[var(--color-modal-header-bg)] px-6 py-5 relative overflow-hidden">
+                            <div className="bg-[var(--color-bg-secondary)] px-6 py-5 relative overflow-hidden">
                                 <div className="absolute inset-0 bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] transform "></div>
                                 <div className="relative flex items-center justify-between">
                                     <div className="flex items-center space-x-4">
@@ -665,7 +662,7 @@ const LeaveManagement = () => {
                             </div>
 
                             {/* Content */}
-                            <div className="p-8 overflow-y-auto flex-1 custom-scrollbar bg-[var(--color-modal-content-bg)]">
+                            <div className="p-8 overflow-y-auto flex-1 custom-scrollbar bg-[var(--color-bg-primary)]">
 
                                 {/* Employee Info */}
                                 <div className="bg-[var(--color-card-info-bg)] border border-[var(--color-card-info-border)] rounded-2xl p-5 mb-6 shadow-sm">
@@ -793,7 +790,7 @@ const LeaveManagement = () => {
                             </div>
 
                             {/* Footer */}
-                            <div className="bg-[var(--color-modal-footer-bg)] px-6 py-5 border-t border-[var(--color-border-primary)] flex justify-between items-center">
+                            <div className="bg-[var(--color-bg-secondary)] px-6 py-5 border-t border-[var(--color-border-primary)] flex justify-between items-center">
                                 <div className="flex space-x-3">
                                     {viewModal.leaveData.status === '1' && (
                                         <>

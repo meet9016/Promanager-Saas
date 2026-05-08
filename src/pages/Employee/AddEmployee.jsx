@@ -114,7 +114,6 @@ const AddEmployee = () => {
                 setIsLoadingDropdowns(true);
 
                 const formData = new FormData();
-                formData.append('user_id', user.user_id);
 
                 const response = await api.post('/employee_drop_down_list', formData, {
                     headers: { 'Content-Type': 'multipart/form-data' }
@@ -185,7 +184,6 @@ const AddEmployee = () => {
 
             try {
                 const formDataToSend = new FormData();
-                formDataToSend.append('user_id', user.user_id);
                 formDataToSend.append('employee_id', editEmployeeId);
 
                 const response = await api.post('/employee_edit_data_fetch', formDataToSend, {
@@ -610,7 +608,6 @@ const AddEmployee = () => {
 
         try {
             const formDataToSend = new FormData();
-            formDataToSend.append('user_id', user.user_id);
             formDataToSend.append('employee_id', editEmployeeId);
             formDataToSend.append('employee_document_id', doc.id);
 
@@ -853,7 +850,6 @@ const AddEmployee = () => {
 
             const formDataToSend = new FormData();
 
-            formDataToSend.append('user_id', user.user_id);
 
             if (isEditMode && editEmployeeId) {
                 formDataToSend.append('employee_id', editEmployeeId);

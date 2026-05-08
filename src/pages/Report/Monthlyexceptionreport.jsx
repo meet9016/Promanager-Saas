@@ -303,7 +303,6 @@ const MonthlyExceptionReport = () => {
             setDropdownLoading(true);
             if (!user?.user_id) throw new Error('User ID is required');
             const formData = new FormData();
-            formData.append('user_id', user.user_id);
             const resp = await api.post('employee_drop_down_list', formData);
             if (resp.data?.success && resp.data.data) {
                 const d = resp.data.data;
@@ -324,7 +323,6 @@ const MonthlyExceptionReport = () => {
         try {
             if (!user?.user_id) return;
             const formData = new FormData();
-            formData.append('user_id', user.user_id);
             if (filters.branch_id) formData.append('branch_id', filters.branch_id);
             if (filters.department_id) formData.append('department_id', filters.department_id);
             if (filters.designation_id) formData.append('designation_id', filters.designation_id);
@@ -350,7 +348,6 @@ const MonthlyExceptionReport = () => {
             setError(null);
 
             const formData = new FormData();
-            formData.append('user_id', user.user_id);
             formData.append('month_year', monthYear);
             if (filters.branch_id) formData.append('branch_id', filters.branch_id);
             if (filters.department_id) formData.append('department_id', filters.department_id);

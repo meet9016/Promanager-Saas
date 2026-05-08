@@ -92,7 +92,6 @@ const AddRole = () => {
             // Create FormData correctly
             const formData = new FormData();
             formData.append('user_roles_id', String(roleId));
-            formData.append('user_id', String(user.user_id));
 
             const response = await api.post('permission_list', formData, {
                 headers: {
@@ -135,7 +134,6 @@ const AddRole = () => {
         try {
             // Fetch from API
             const formData = new FormData();
-            formData.append('user_id', String(user.user_id));
 
             const response = await api.post('user_roles_list', formData, {
                 headers: {
@@ -405,7 +403,6 @@ const AddRole = () => {
 
             const formData = new FormData();
             formData.append('name', name.trim());
-            formData.append('user_id', String(user.user_id));
 
             // Add permission IDs
             permissionItemsIds.forEach((id, index) => {

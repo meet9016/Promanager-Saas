@@ -123,7 +123,6 @@ const EmployeeDetail = () => {
         try {
             const formData = new FormData();
             formData.append('employee_id', employee_id);
-            formData.append('user_id', userId);
 
             // Format date for API (YYYY-MM-DD)
             const formattedDate = lastWorkingDay.toISOString().split('T')[0];

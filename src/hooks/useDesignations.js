@@ -16,7 +16,6 @@ const useDesignations = () => {
 
         try {
             const formData = new FormData();
-            formData.append('user_id', user_id);
 
             const res = await api.post("/designation_list", formData, {
                 headers: {
@@ -47,7 +46,6 @@ const useDesignations = () => {
         try {
             const formData = new FormData();
             formData.append('name', name.trim());
-            formData.append('user_id', user_id);
 
             const res = await api.post("/designation_create", formData, {
                 headers: {
@@ -100,7 +98,6 @@ const useDesignations = () => {
         try {
             const formData = new FormData();
             formData.append('id', id);
-            formData.append('user_id', user_id);
             formData.append('designation_id', id);
 
             const res = await api.post("/designation_delete", formData, {

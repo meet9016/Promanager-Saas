@@ -58,7 +58,6 @@ const Role = () => {
             setError(null);
 
             const formData = new FormData();
-            formData.append('user_id', String(user.user_id));
             formData.append('page', page.toString());
 
             const res = await api.post('/user_roles_list', formData);
@@ -145,7 +144,6 @@ const Role = () => {
 
         try {
             const formData = new FormData();
-            formData.append('user_id', String(user.user_id));
             formData.append('user_roles_id', String(role.user_roles_id));
 
             const res = await api.post('/user_roles_delete', formData);

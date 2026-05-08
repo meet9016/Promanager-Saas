@@ -105,13 +105,11 @@ const Login = () => {
             setSubLoading(false);
             return;
         }
-        localStorage.clear()
 
         const CACHE_KEY = `subscription_cache_${userId}`;
 
         try {
             const formData = new FormData();
-            formData.append('user_id', userId);
             const response = await API.post('/subscription_popup_status', formData, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
@@ -242,11 +240,14 @@ const Login = () => {
             const res = await api.post("login", formData, {
                 headers: { "Content-Type": "multipart/form-data" },
             });
-            const { success, user_data, message } = res.data;
-
+            const { success, user_data, message, token } = res.data;
             // ← validate user_id explicitly before doing anything
             const user_id = user_data?.user_id;
             setUserId(user_id)
+
+            if (token) {
+                localStorage.setItem('token', token);
+            }
 
             if (!success || !user_data || !user_id) {
                 setSubLoading(false);
@@ -270,7 +271,6 @@ const Login = () => {
             login(userData, remember);
             CheckSubscription(user_id)
             const permFormData = new FormData();
-            permFormData.append("user_id", user_id);
             permFormData.append("user_roles_id", user_data.user_role_id);
             const permRes = await api.post("user_permissions", permFormData, {
                 headers: { "Content-Type": "multipart/form-data" },

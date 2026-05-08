@@ -77,7 +77,6 @@ const LeaveApplication = () => {
             }
 
             const formDataToSend = new FormData();
-            formDataToSend.append('user_id', formData.user_id);
 
             const response = await api.post('/assign_shift_list_drop_down', formDataToSend);
 
@@ -178,7 +177,6 @@ const LeaveApplication = () => {
 
         try {
             const submitData = new FormData();
-            submitData.append('user_id', formData.user_id);
             submitData.append('employee_id', formData.employee_id);
             submitData.append('leave_type', formData.leave_type);
             submitData.append('start_date', formatDateForAPI(formData.start_date));

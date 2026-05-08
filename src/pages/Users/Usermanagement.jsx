@@ -64,7 +64,6 @@ const UserManagement = () => {
             setError(null);
 
             const formData = new FormData();
-            formData.append('user_id', String(user.user_id));
             formData.append('page', page.toString());
 
             const res = await api.post('/user_list', formData);
@@ -165,7 +164,6 @@ const UserManagement = () => {
 
         try {
             const formData = new FormData();
-            formData.append('user_id', String(user.user_id));
             formData.append('edit_user_id', String(userData.edit_user_id));
 
             const res = await api.post('/user_delete', formData);

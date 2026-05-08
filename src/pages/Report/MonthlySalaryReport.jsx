@@ -207,7 +207,6 @@ const MonthlySalaryReport = () => {
             setError('');
             if (!user?.user_id) throw new Error('User ID is required');
             const form = new FormData();
-            form.append('user_id', user.user_id);
             const res = await api.post('employee_drop_down_list', form);
             if (res.data?.success && res.data.data) {
                 const data = res.data.data;
@@ -230,7 +229,6 @@ const MonthlySalaryReport = () => {
             setError('');
             if (!user?.user_id) throw new Error('User ID is required');
             const form = new FormData();
-            form.append('user_id', user.user_id);
             if (filters.branch_id) form.append('branch_id', filters.branch_id);
             if (filters.department_id) form.append('department_id', filters.department_id);
             if (filters.designation_id) form.append('designation_id', filters.designation_id);
@@ -269,7 +267,6 @@ const MonthlySalaryReport = () => {
             }
 
             const formData = new FormData();
-            formData.append('user_id', user.user_id);
             formData.append('month_year', filters.month_year);
             if (filters.branch_id) formData.append('branch_id', filters.branch_id);
             if (filters.department_id) formData.append('department_id', filters.department_id);

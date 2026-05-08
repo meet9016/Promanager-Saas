@@ -122,10 +122,11 @@ const getDaysInMonth = (yyyyMm) => {
 const CODE_LABELS = {
     P: 'Present',
     A: 'Absent',
-    L: 'Late',
     WO: 'Week Off',
     '½P': 'Half Present',
-    H: 'Holiday'
+    H: 'Holiday',
+    INC: 'Incomplete',
+    OT: 'Overtime',
 };
 
 const CELL_DISPLAY_CODES = {
@@ -134,11 +135,13 @@ const CELL_DISPLAY_CODES = {
     L: 'L',
     WO: 'WO',
     '½P': '½P',
-    H: 'H'
+    H: 'H',
+    INC: 'INC',
+    OT: 'OT'
 };
 
 /* Legend order must stay fixed */
-const TOTALS_ORDER = ['P', 'A', 'L', 'WO', '½P', 'H'];
+const TOTALS_ORDER = ['P', 'A', 'WO', '½P', 'H', 'INC', 'OT'];
 
 /* Enhanced status colors matching the design */
 const CODE_COLORS = {
@@ -148,6 +151,8 @@ const CODE_COLORS = {
     "½P": 'bg-[var(--color-code-halfp-bg)] text-[var(--color-code-halfp-text)] border border-[var(--color-code-halfp-border)]',
     WO: 'bg-[var(--color-code-wo-bg)] text-[var(--color-code-wo-text)] border border-[var(--color-code-wo-border)]',
     H: 'bg-[var(--color-code-h-bg)] text-[var(--color-code-h-text)] border border-[var(--color-code-h-border)]',
+    INC: 'bg-[var(--color-code-l-bg)] text-[var(--color-code-l-text)] border border-[var(--color-code-l-border)]',
+    OT: 'bg-purple-100 text-purple-700 border border-purple-200',
 };
 
 const CELL_STATUS_COLORS = {
@@ -157,6 +162,8 @@ const CELL_STATUS_COLORS = {
     "½P": 'bg-[var(--color-cell-halfp-bg)] text-[var(--color-cell-halfp-text)] border-l-4 border-l-[var(--color-cell-halfp-border)]',
     WO: 'bg-[var(--color-cell-wo-bg)] text-[var(--color-cell-wo-text)] border-l-4 border-l-[var(--color-cell-wo-border)]',
     H: 'bg-[var(--color-cell-h-bg)] text-[var(--color-cell-h-text)] border-l-4 border-l-[var(--color-cell-h-border)]',
+    INC: 'bg-[var(--color-cell-l-bg)] text-[var(--color-cell-l-text)] border-l-4 border-l-[var(--color-cell-l-border)]',
+    OT: 'bg-purple-50 text-purple-700 border-l-4 border-l-purple-400',
 };
 
 
@@ -166,11 +173,12 @@ const CELL_H = 40;  // Consistent height
 
 const normalizeCode = (rawShort, rawStatus) => {
     let s = (rawShort || '').toString().trim().toUpperCase();
-    if (s === '1/2P' || s === '1/2' || s === 'HALF' || s === 'HALF PRESENT') s = '½P';
-    if (s === 'HP ') s = 'HP';
-    if (TOTALS_ORDER.includes(s)) return s;
+    if (s === '1/2P' || s === '1/2' || s === 'HALF' || s === 'HALF PRESENT' || s === 'HP') s = '½P';
+    if (s === 'INC' || s === 'INCOMPLETE') s = 'INC';
+    if (TOTALS_ORDER.includes(s) || s === 'L') return s;
 
     const status = (rawStatus || '').toLowerCase();
+    if (status.includes('incomplete')) return 'INC';
     if (status.includes('week') && status.includes('off')) return 'WO';
     if (status.includes('half') && status.includes('present')) return '½P';
     if (status.includes('present')) return 'P';
@@ -272,7 +280,6 @@ const MonthlyMusterPreview = () => {
             setError('');
             if (!user?.user_id) throw new Error('User ID is required');
             const form = new FormData();
-            form.append('user_id', user.user_id);
             const res = await api.post('employee_drop_down_list', form);
             if (res.data?.success && res.data.data) {
                 const data = res.data.data;
@@ -295,7 +302,6 @@ const MonthlyMusterPreview = () => {
             setError('');
             if (!user?.user_id) throw new Error('User ID is required');
             const form = new FormData();
-            form.append('user_id', user.user_id);
             if (filters.branch_id) form.append('branch_id', filters.branch_id);
             if (filters.department_id) form.append('department_id', filters.department_id);
             if (filters.designation_id) form.append('designation_id', filters.designation_id);
@@ -324,7 +330,6 @@ const MonthlyMusterPreview = () => {
         if (!filters.month_year) throw new Error('Please select Month & Year');
 
         const form = new FormData();
-        form.append('user_id', user.user_id);
         form.append('month_year', filters.month_year);
         if (filters.branch_id) form.append('branch_id', filters.branch_id);
         if (filters.department_id) form.append('department_id', filters.department_id);
@@ -788,20 +793,20 @@ const MonthlyMusterPreview = () => {
                             {/* Header row - only show when data is generated */}
                             {hasGenerated && (
                                 <div
-                                    className="sticky top-0 z-20 bg-[var(--color-bg-surface)] border-b border-[var(--color-border-primary)]"
+                                    className="sticky top-0 z-20 bg-[var(--color-bg-primary)] border-b border-[var(--color-border-primary)]"
                                     style={{ display: 'grid', gridTemplateColumns: gridTemplate }}
                                 >
-                                    <div className="px-3 py-3 text-sm font-semibold text-[var(--color-text-primary)] border-r border-[var(--color-border-primary)] sticky left-0 z-30 bg-[var(--color-bg-surface)]">
+                                    <div className="px-3 py-3 text-sm font-semibold text-[var(--color-text-primary)] border-r border-[var(--color-border-primary)] sticky left-0 z-30 bg-[var(--color-bg-primary)]">
                                         Employee Code
                                     </div>
-                                    <div className="px-3 py-3 text-sm font-semibold text-[var(--color-text-primary)] border-r border-[var(--color-border-primary)] sticky left-[120px] z-30 bg-[var(--color-bg-surface)]">
+                                    <div className="px-3 py-3 text-sm font-semibold text-[var(--color-text-primary)] border-r border-[var(--color-border-primary)] sticky left-[120px] z-30 bg-[var(--color-bg-primary)]">
                                         Employee Name
                                     </div>
 
                                     {dayMeta.map(({ day }) => (
                                         <div
                                             key={day}
-                                            className="text-xs font-semibold text-center border-r border-[var(--color-border-primary)] flex items-center justify-center text-[var(--color-text-primary)]"
+                                            className="text-xs font-semibold text-center border-r border-[var(--color-border-primary)] flex items-center justify-center text-[var(--color-text-primary)] bg-[var(--color-bg-primary)] relative z-0"
                                             style={{ height: `${CELL_H}px` }}
                                         >
                                             {day}
@@ -866,7 +871,7 @@ const MonthlyMusterPreview = () => {
                                         {r.dayCodes.map((c, dayIndex) => (
                                             <div
                                                 key={dayIndex}
-                                                className="flex items-center justify-center text-xs font-medium py-1 mr-1 ml-1 "
+                                                className="flex items-center justify-center text-xs font-medium py-1 mr-1 ml-1 relative z-0"
                                             >
                                                 {c && (
                                                     <div className={`w-full h-full rounded-md flex items-center justify-center text-xs font-bold ${CELL_STATUS_COLORS[c] || 'bg-gray-100 text-gray-600 border-l-4 border-l-gray-300'}`}>

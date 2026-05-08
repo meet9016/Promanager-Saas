@@ -77,7 +77,6 @@ const AddLoanAdvance = ({
             }
 
             const formData = new FormData();
-            formData.append('user_id', user.user_id);
 
             const response = await api.post('assign_shift_list_drop_down', formData);
 
@@ -100,7 +99,6 @@ const AddLoanAdvance = ({
             }
 
             const formDataObj = new FormData();
-            formDataObj.append('user_id', user.user_id);
 
             const response = await api.post('loan_drop_down_list', formDataObj);
 
@@ -359,7 +357,6 @@ const AddLoanAdvance = ({
         try {
             // Prepare FormData for API
             const apiFormData = new FormData();
-            apiFormData.append('user_id', user.user_id);
             apiFormData.append('employee_id', formData.employeeId);
             apiFormData.append('loan_type_id', formData.loanTypeId);
             apiFormData.append('loan_priority_id', formData.priorityId);

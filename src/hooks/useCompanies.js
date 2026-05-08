@@ -16,7 +16,6 @@ const useCompanies = () => {
 
         try {
             const formData = new FormData();
-            formData.append('user_id', user_id);
 
             const res = await api.post("/company_list", formData, {
                 headers: {
@@ -48,7 +47,6 @@ const useCompanies = () => {
 
         try {
             const formData = new FormData();
-            formData.append('user_id', user_id);
             formData.append('company_id', companyData.company_id || '');
             formData.append('company_name', companyData.company_name.trim());
             formData.append('company_number', companyData.company_number || '');
@@ -120,7 +118,6 @@ const useCompanies = () => {
         try {
             const formData = new FormData();
             formData.append('company_id', id);
-            formData.append('user_id', user_id);
 
             const res = await api.post("/company_delete", formData, {
                 headers: {

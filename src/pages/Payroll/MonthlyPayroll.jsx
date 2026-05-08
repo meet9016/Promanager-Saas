@@ -772,7 +772,6 @@ const MonthlyPayroll = () => {
       setDropdownLoading(true);
       if (!user?.user_id) return;
       const formData = new FormData();
-      formData.append('user_id', user.user_id);
       const response = await api.post('employee_drop_down_list', formData);
       if (response.data?.success && response.data.data) {
         const data = response.data.data;
@@ -795,7 +794,6 @@ const MonthlyPayroll = () => {
     try {
       setEmployeesLoading(true);
       const formData = new FormData();
-      formData.append('user_id', user.user_id);
       formData.append('month_year', `${selectedYear}-${selectedMonth}`);
       formData.append('branch_id', selectedBranch);
       formData.append('department_id', selectedDepartment);
@@ -834,7 +832,6 @@ const MonthlyPayroll = () => {
       setExpandedEmployees({});
 
       const formData = new FormData();
-      formData.append('user_id', user.user_id);
       formData.append('month_year', `${selectedYear}-${selectedMonth}`);
       formData.append('branch_id', selectedBranch);
       formData.append('department_id', selectedDepartment);
@@ -893,7 +890,6 @@ const MonthlyPayroll = () => {
       setConfirmModal({ isOpen: false });
 
       const formData = new FormData();
-      formData.append('user_id', user.user_id);
       formData.append('month_year', `${selectedYear}-${selectedMonth}`);
 
       const employeesData = allPayrollData.map(emp => {

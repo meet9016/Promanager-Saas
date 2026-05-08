@@ -66,7 +66,6 @@ const AssignShift = () => {
             if (!user?.user_id) return;
 
             const formData = new FormData();
-            formData.append('user_id', user.user_id);
 
             // Add filter parameters to the API call
             const filterData = appliedFilters || filters;
@@ -203,7 +202,6 @@ const AssignShift = () => {
 
             // Create FormData with employee ID array
             const formData = new FormData();
-            formData.append('user_id', user.user_id);
             formData.append('shift_id', selectedShift);
 
             selectedEmployees.forEach(employeeId => {

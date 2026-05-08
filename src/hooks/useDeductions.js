@@ -17,7 +17,6 @@ const useDeductions = () => {
         try {
             const formData = new FormData();
             formData.append('page', page);
-            formData.append('user_id', user_id);
 
             const res = await api.post("/deduction_list", formData, {
                 headers: {
@@ -48,7 +47,6 @@ const useDeductions = () => {
         try {
             const formData = new FormData();
             formData.append('name', name.trim());
-            formData.append('user_id', user_id);
 
             const res = await api.post("/deduction_create", formData, {
                 headers: {
@@ -101,7 +99,6 @@ const useDeductions = () => {
         try {
             const formData = new FormData();
             formData.append('deduction_id', id);
-            formData.append('user_id', user_id);
 
             const res = await api.post("/deduction_delete", formData, {
                 headers: {

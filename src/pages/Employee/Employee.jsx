@@ -121,7 +121,6 @@ export default function Employee() {
             }
 
             const formData = new FormData();
-            formData.append('user_id', user.user_id);
 
             const response = await api.post('employee_drop_down_list', formData);
 
@@ -166,7 +165,6 @@ export default function Employee() {
             }
 
             const formData = new FormData();
-            formData.append('user_id', user.user_id);
             formData.append('page', page.toString());
 
             // Add search parameter if search query exists

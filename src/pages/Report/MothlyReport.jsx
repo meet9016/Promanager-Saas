@@ -254,7 +254,6 @@ const MonthlyReport = () => {
             if (!user?.user_id) throw new Error('User ID is required');
 
             const formData = new FormData();
-            formData.append('user_id', user.user_id);
 
             const response = await api.post('employee_drop_down_list', formData);
             if (response.data?.success && response.data.data) {
@@ -279,7 +278,6 @@ const MonthlyReport = () => {
             if (!user?.user_id) throw new Error('User ID is required');
 
             const formData = new FormData();
-            formData.append('user_id', user.user_id);
             if (filters.branch_id) formData.append('branch_id', filters.branch_id);
             if (filters.department_id) formData.append('department_id', filters.department_id);
             if (filters.designation_id) formData.append('designation_id', filters.designation_id);
@@ -315,7 +313,6 @@ const MonthlyReport = () => {
         if (!filters.month_year) throw new Error('Please select a month and year');
 
         const formData = new FormData();
-        formData.append('user_id', user.user_id);
         formData.append('month_year', filters.month_year);
 
         if (filters.branch_id) formData.append('branch_id', filters.branch_id);

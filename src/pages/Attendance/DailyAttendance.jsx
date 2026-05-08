@@ -441,7 +441,6 @@ const EditAttendanceModal = ({ employee, onClose, onSave }) => {
     setIsLoading(true);
     try {
       const formData = new FormData();
-      formData.append("user_id", user?.user_id || "1");
       formData.append("attendance_date", employee?.attendance_date || "");
       formData.append("shift_assign_id", employee?.shift_assign_id || "");
       formData.append("shift_day_date_id", employee?.shift_day_date_id || "");
@@ -749,7 +748,6 @@ const DailyAttendance = () => {
       setError(null);
       try {
         const formData = new FormData();
-        formData.append('user_id', user.user_id);
         formData.append('date', date);
 
         const res = await api.post('employee_attendance_list', formData);

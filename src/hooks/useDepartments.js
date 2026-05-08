@@ -24,7 +24,6 @@ const useDepartments = () => {
         setError(null);
         try {
             const formData = new FormData();
-            formData.append("user_id", user_id);
             const res = await api.post("/department_list", formData, {
                 headers: { "Content-Type": "multipart/form-data" },
             });
@@ -46,7 +45,6 @@ const useDepartments = () => {
     // ── Shared helper ─────────────────────────────────────────────────────────
     const buildFormData = (payload, departmentId = null) => {
         const formData = new FormData();
-        formData.append("user_id", user_id);
         // Only pass department_id when editing an existing department
         if (departmentId) {
             formData.append("department_id", departmentId);
@@ -68,7 +66,6 @@ const useDepartments = () => {
                 ? buildFormData(payload)
                 : (() => {
                     const fd = new FormData();
-                    fd.append("user_id", user_id);
                     fd.append("name", name.trim());
                     fd.append("ot_formula", "1");
                     fd.append("overtime", "0");
@@ -162,7 +159,6 @@ const useDepartments = () => {
             // buildFormData WITH departmentId — sends department_id in request
             const formData = new FormData();
 
-            formData.append("user_id", user_id);
             formData.append("department_id", id);
 
             const res = await api.post("/department_delete", formData, {

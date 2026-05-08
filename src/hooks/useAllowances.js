@@ -17,7 +17,6 @@ const useAllowances = () => {
         try {
             const formData = new FormData();
             formData.append('page', page);
-            formData.append('user_id', user_id);
 
             const res = await api.post("/allowance_list", formData, {
                 headers: {
@@ -48,7 +47,6 @@ const useAllowances = () => {
         try {
             const formData = new FormData();
             formData.append('name', name.trim());
-            formData.append('user_id', user_id);
 
             const res = await api.post("/allowance_create", formData, {
                 headers: {
@@ -101,7 +99,6 @@ const useAllowances = () => {
         try {
             const formData = new FormData();
             formData.append('allowance_id', id);
-            formData.append('user_id', user_id);
 
             const res = await api.post("/allowance_delete", formData, {
                 headers: {

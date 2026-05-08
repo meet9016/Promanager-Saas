@@ -83,7 +83,6 @@ const ShiftManagement = () => {
             setEmployeeModal({ isOpen: true, employees: [], loading: true, shiftName });
 
             const formData = new FormData();
-            formData.append('user_id', user.user_id);
             formData.append('shift_id', shiftId);
 
             const response = await api.post('assign_employee_list', formData);
@@ -221,7 +220,6 @@ const ShiftManagement = () => {
     const fetchEmployeeCount = async (shiftId) => {
         try {
             const formData = new FormData();
-            formData.append('user_id', user.user_id);
             formData.append('shift_id', shiftId);
 
             const response = await api.post('assign_employee_list', formData);
@@ -264,7 +262,6 @@ const ShiftManagement = () => {
             }
 
             const formData = new FormData();
-            formData.append('user_id', user.user_id);
             formData.append('page', page.toString());
 
             // Add search parameter if search query exists
@@ -378,7 +375,6 @@ const ShiftManagement = () => {
                     setConfirmDialog({ isOpen: false });
 
                     const formData = new FormData();
-                    formData.append('user_id', user.user_id);
                     formData.append('shift_id', shiftId);
 
                     const response = await api.post('shift_delete', formData);

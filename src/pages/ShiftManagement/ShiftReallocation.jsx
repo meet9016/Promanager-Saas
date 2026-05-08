@@ -73,7 +73,6 @@ const ShiftReallocation = () => {
             }
 
             const formData = new FormData();
-            formData.append('user_id', user.user_id);
             formData.append('page', page.toString());
 
             if (search && search.trim() !== '') {
@@ -113,7 +112,6 @@ const ShiftReallocation = () => {
             }
 
             const formData = new FormData();
-            formData.append('user_id', user.user_id);
 
             const response = await api.post('shift_list', formData);
 
@@ -139,7 +137,6 @@ const ShiftReallocation = () => {
             if (!user?.user_id) throw new Error('User ID is required');
 
             const formData = new FormData();
-            formData.append('user_id', user.user_id);
 
             const response = await api.post('employee_drop_down_list', formData);
 
@@ -176,7 +173,6 @@ const ShiftReallocation = () => {
             }
 
             const formData = new FormData();
-            formData.append('user_id', user.user_id);
             formData.append('from_shift_id', shiftId);
 
             if (filters.branch_id) {
@@ -369,7 +365,6 @@ const ShiftReallocation = () => {
 
         try {
             const formData = new FormData();
-            formData.append('user_id', user.user_id);
 
             selectedEmployees.forEach((empId, index) => {
                 formData.append(`employee_ids[${index}]`, empId);

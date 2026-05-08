@@ -224,7 +224,6 @@ const MonthlyAttendance = () => {
             setDropdownLoading(true);
             if (!user?.user_id) return;
             const form = new FormData();
-            form.append('user_id', user.user_id);
             const res = await api.post('employee_drop_down_list', form);
             if (res.data?.success && res.data.data) {
                 const data = res.data.data;
@@ -244,7 +243,6 @@ const MonthlyAttendance = () => {
         if (!filters.month_year) throw new Error('Please select Month & Year');
 
         const form = new FormData();
-        form.append('user_id', user.user_id);
         form.append('month_year', filters.month_year);
         if (filters.branch_id) form.append('branch_id', filters.branch_id);
         if (filters.department_id) form.append('department_id', filters.department_id);

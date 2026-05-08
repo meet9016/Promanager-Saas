@@ -42,7 +42,6 @@ const Increment = () => {
                 setIsLoadingDropdowns(true);
 
                 const formData = new FormData();
-                formData.append('user_id', user.user_id);
 
                 const response = await api.post('/increment_employee_list', formData, {
                     headers: {
@@ -89,7 +88,6 @@ const Increment = () => {
                 setIsLoadingDropdowns(true);
 
                 const formData = new FormData();
-                formData.append('user_id', user.user_id);
                 formData.append('employee_id', employeeId);
 
                 const response = await api.post('/increment_list', formData, {
@@ -236,7 +234,6 @@ const Increment = () => {
 
 
             const formData = new FormData();
-            formData.append('user_id', user.user_id);
             formData.append('employee_id', employeeId);
 
             incrementList.forEach((increment) => {

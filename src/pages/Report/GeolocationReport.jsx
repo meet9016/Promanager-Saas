@@ -582,7 +582,6 @@ const GeolocationReport = () => {
             if (!user?.user_id) throw new Error('User ID is required');
 
             const formData = new FormData();
-            formData.append('user_id', user.user_id);
 
             const baseResp = await api.post('employee_drop_down_list', formData);
             if (baseResp.data?.success && baseResp.data.data) {
@@ -619,7 +618,6 @@ const GeolocationReport = () => {
             setError(null);
             try {
                 const formData = new FormData();
-                formData.append('user_id', user.user_id);
                 formData.append('date', date);
 
                 if (applied.attendance_status_id) formData.append('attendance_status_id', applied.attendance_status_id);

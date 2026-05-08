@@ -96,7 +96,6 @@ const AddUser = () => {
         try {
             setRolesLoading(true);
             const formData = new FormData();
-            formData.append('user_id', String(user.user_id));
 
             const res = await api.post('/user_roles_drop_down', formData);
 
@@ -123,7 +122,6 @@ const AddUser = () => {
             setUserDataLoading(true);
 
             const requestFormData = new FormData();
-            requestFormData.append('user_id', String(user.user_id));
             requestFormData.append('edit_user_id', String(userId));
 
             let res;
@@ -266,7 +264,6 @@ const AddUser = () => {
 
         try {
             const submitFormData = new FormData();
-            submitFormData.append('user_id', String(user.user_id));
             submitFormData.append('user_roles_id', String(formData.user_roles_id));
             submitFormData.append('full_name', formData.full_name.trim());
             submitFormData.append('number', formData.number.trim());

@@ -17,7 +17,6 @@ const useBranches = () => {
 
         try {
             const formData = new FormData();
-            formData.append('user_id', user_id);
 
             const res = await api.post("/branch_list", formData, {
                 headers: {
@@ -48,7 +47,6 @@ const useBranches = () => {
         try {
             const formData = new FormData();
             formData.append('name', name.trim());
-            formData.append('user_id', user_id);
             {branch_id && formData.append('branch_id', branch_id);}
 
 
@@ -107,7 +105,6 @@ const useBranches = () => {
         try {
             const formData = new FormData();
             formData.append('id', id);
-            formData.append('user_id', user_id);
             formData.append('branch_id', id);
 
             const res = await api.post("/branch_delete", formData, {

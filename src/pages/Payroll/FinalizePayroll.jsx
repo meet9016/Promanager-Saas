@@ -185,7 +185,6 @@ export default function FinalizePayroll() {
       }
 
       const formData = new FormData();
-      formData.append('user_id', user.user_id);
       formData.append('page', page.toString());
 
       // Add search parameter if search query exists
@@ -291,7 +290,6 @@ export default function FinalizePayroll() {
       setPaymentLoading(true);
 
       const formData = new FormData();
-      formData.append('user_id', user.user_id);
       formData.append('employee_salary_id', selectedRecord.employee_salary_id);
       formData.append('pay_salary', selectedRecord.total_pay_salary);
       formData.append('payment_mode', paymentData.payment_mode);
@@ -329,7 +327,6 @@ export default function FinalizePayroll() {
       setDeleteLoading(true);
 
       const formData = new FormData();
-      formData.append('user_id', user.user_id);
       formData.append('employee_salary_id', selectedRecord.employee_salary_id);
 
       const response = await api.post('employee_salary_delete', formData);

@@ -256,7 +256,6 @@ const AttendanceExceptionReport = () => {
             setDropdownLoading(true);
             if (!user?.user_id) throw new Error('User ID is required');
             const formData = new FormData();
-            formData.append('user_id', user.user_id);
             const resp = await api.post('employee_drop_down_list', formData);
             if (resp.data?.success && resp.data.data) {
                 const d = resp.data.data;
@@ -281,7 +280,6 @@ const AttendanceExceptionReport = () => {
         setError(null);
         try {
             const formData = new FormData();
-            formData.append('user_id', user.user_id);
             formData.append('date', date);
             if (applied.branch_id) formData.append('branch_id', applied.branch_id);
             if (applied.department_id) formData.append('department_id', applied.department_id);

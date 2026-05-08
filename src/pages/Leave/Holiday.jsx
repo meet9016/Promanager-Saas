@@ -63,7 +63,6 @@ export default function HolidayManagement() {
         try {
             setIsLoading(true);
             const form = new FormData();
-            form.append('user_id', user.user_id);
 
             if (filterType) form.append('holiday_type_id', filterType);
             if (searchTerm) form.append('search', searchTerm);
@@ -181,7 +180,6 @@ export default function HolidayManagement() {
         setIsSubmitting(true);
         try {
             const submitData = new FormData();
-            submitData.append('user_id', user.user_id);
             submitData.append('holiday_name', holiday_name.trim());
             submitData.append('holiday_type_id', holiday_type_id);
             submitData.append('description', formData.description.trim());
@@ -240,7 +238,6 @@ export default function HolidayManagement() {
         try {
             const form = new FormData();
             form.append('holiday_id', deleteDialog.holidayId);
-            form.append('user_id', user.user_id);
 
             const response = await api.post('/holiday_delete', form);
             if (response.data.success) {

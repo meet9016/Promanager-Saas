@@ -32,7 +32,7 @@ export const user_list = async () => {
 export const user_delete = async (user_id) => {
     try {
         const formData = new FormData();
-        formData.append('user_id', user_id); // 🔑 Exact key from API: "user_id"
+// 🔑 Exact key from API: "user_id"
 
         const response = await axios.post('/user_delete', formData);
         const result = response.data;

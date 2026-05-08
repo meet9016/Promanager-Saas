@@ -204,7 +204,6 @@ const EmployeeDirectoryReport = () => {
             if (!user?.user_id) throw new Error('User ID is required');
 
             const formData = new FormData();
-            formData.append('user_id', user.user_id);
             const response = await api.post('employee_drop_down_list', formData);
 
             if (response.data?.success && response.data.data) {
@@ -245,7 +244,6 @@ const EmployeeDirectoryReport = () => {
             if (!user?.user_id) throw new Error('User ID is required');
 
             const formData = new FormData();
-            formData.append('user_id', user.user_id);
 
             if (filters.branch_id) formData.append('branch_id', filters.branch_id);
             if (filters.department_id) formData.append('department_id', filters.department_id);

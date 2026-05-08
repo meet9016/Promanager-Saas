@@ -49,7 +49,6 @@ const SettingsPage = () => {
                     return;
                 }
                 const formData = new FormData();
-                formData.append('user_id', user.user_id);
 
                 const response = await api.post('/subscription_list', formData, {
                     headers: {

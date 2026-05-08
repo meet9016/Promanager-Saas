@@ -14,11 +14,10 @@ const BASE_URLS = {
 
 // Request interceptor
 API.interceptors.request.use((config) => {
-    const username = import.meta.env.VITE_API_USERNAME;
-    const password = import.meta.env.VITE_API_PASSWORD;
-
-    config.headers.Authorization = `Basic ${btoa(`${username}:${password}`)}`;
-
+    const token = localStorage.getItem('token');
+    if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+    }
     // 👇 dynamic baseURL switch
     const apiType = config.apiType || 'default';
     config.baseURL = BASE_URLS[apiType];

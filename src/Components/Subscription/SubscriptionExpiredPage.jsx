@@ -87,7 +87,6 @@ const SubscriptionExpiredPage = () => {
 
         try {
             const formData = new FormData();
-            formData.append('user_id', user.user_id);
             const response = await API.post('/subscription_popup_status', formData, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
