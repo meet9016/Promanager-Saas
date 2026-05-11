@@ -888,7 +888,7 @@ const DailyAttendance = () => {
 
       <div className="p-3 sm:p-8  mx-auto">
         {/* Header */}
-        <div className="bg-[var(--color-bg-secondary)] rounded-xl sm:rounded-2xl shadow-xl mb-4 sm:mb-8 overflow-hidden">
+        {/* <div className="bg-[var(--color-bg-secondary)] rounded-xl sm:rounded-2xl shadow-xl mb-4 sm:mb-8 overflow-hidden">
           <div className="bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] p-4 sm:p-8">
             <div className="flex items-center justify-between gap-2">
               <div className="flex items-center gap-2 sm:gap-4 min-w-0 flex-1">
@@ -899,11 +899,11 @@ const DailyAttendance = () => {
                   <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
                   <span className="hidden sm:inline">Back</span>
                 </button>
-               <h1 className="text-base sm:text-2xl font-bold text-[var(--color-text-white)] truncate">Daily Attendance</h1>
+                <h1 className="text-base sm:text-2xl font-bold text-[var(--color-text-white)] truncate">Daily Attendance</h1>
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
 
         {/* Summary cards — 8 columns on large screens */}
         <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2 sm:gap-4 mb-4 sm:mb-6">
@@ -931,7 +931,7 @@ const DailyAttendance = () => {
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
               <div className="flex items-center">
                 <Activity className="h-5 w-5 sm:h-6 sm:w-6 text-[var(--color-text-white)] mr-2" />
-                <h3 className="text-sm sm:text-lg font-medium text-[var(--color-text-white)]">Daily Attendance Details</h3>
+                <h3 className="text-sm sm:text-lg font-medium text-[var(--color-text-white)]">Daily Attendance Details 000</h3>
               </div>
 
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3">
@@ -1080,8 +1080,8 @@ const DailyAttendance = () => {
 
                             {/* OT Hours */}
                             <Td className={`${parseFloat(emp.overtime_hours || 0) > 0 ? 'text-[var(--color-primary-dark)] font-medium' : ''}`}>
-                              {emp.overtime_hours  ? `${emp.overtime_hours}` : '--'}
-                             
+                              {emp.overtime_hours ? `${emp.overtime_hours}` : '--'}
+
                             </Td>
 
                             {/* ---- Late Coming ---- */}
