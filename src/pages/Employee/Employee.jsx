@@ -923,20 +923,20 @@ export default function Employee() {
                                                                     <button
                                                                         onClick={() => handleEditEmployee(employee.employee_id)}
                                                                         disabled={paginationLoading || searchLoading}
-                                                                        className="p-2 rounded-lg transition-all duration-200 text-[var(--color-primary)] hover:text-[var(--color-primary-dark)] hover:bg-[var(--color-primary-lightest)] disabled:opacity-50 transform hover:scale-105"
+                                                                        className="w-9 h-9 flex items-center justify-center rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-100 hover:scale-110 hover:shadow-md transition-all duration-200 disabled:opacity-50"
                                                                         title="Edit Employee"
                                                                     >
-                                                                        <Edit className="w-4 h-4" />
+                                                                        <Edit className="w-4 h-4" strokeWidth={2.5} />
                                                                     </button>
                                                                 )}
                                                                 {permissions['employee_view'] && (
                                                                     <button
                                                                         onClick={() => handleViewDetails(employee.employee_id)}
                                                                         disabled={paginationLoading || searchLoading}
-                                                                        className="p-2 rounded-lg transition-all duration-200 text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-gray-light)] disabled:opacity-50 transform hover:scale-105"
+                                                                        className="w-9 h-9 flex items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 hover:bg-emerald-100 hover:scale-110 hover:shadow-md transition-all duration-200 disabled:opacity-50"
                                                                         title="View Details"
                                                                     >
-                                                                        <Eye className="w-4 h-4" />
+                                                                        <Eye className="w-4 h-4" strokeWidth={2.5} />
                                                                     </button>
                                                                 )}
                                                             </div>

@@ -738,24 +738,24 @@ const LoanAdvance = () => {
                                                 </td>
                                                 {(permissions?.loan_edit || permissions?.loan_view || permissions?.loan_delete) && (
                                                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                                        <div className="flex space-x-2">
+                                                        <div className="flex space-x-3">
                                                             {permissions['loan_view'] && (
                                                                 <button
                                                                     onClick={() => handleViewDetails(loan)}
-                                                                    className="p-2 rounded-md transition-colors text-[var(--color-primary-dark)] hover:text-[var(--color-primary-darkest)] hover:bg-[var(--color-primary-lightest)]"
+                                                                    className="w-9 h-9 flex items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 hover:bg-emerald-100 hover:scale-110 hover:shadow-md transition-all duration-200"
                                                                     title="View Details"
                                                                 >
-                                                                    <Eye className="w-4 h-4" />
+                                                                    <Eye className="w-4 h-4" strokeWidth={2.5} />
                                                                 </button>
                                                             )}
                                                             {permissions['loan_delete'] && (
                                                                 <button
                                                                     onClick={() => handleDeleteClick(loan)}
-                                                                    className="p-2 rounded-md transition-colors text-[var(--color-text-error)] hover:text-red-900 hover:bg-[var(--color-error-light)]"
+                                                                    className="w-9 h-9 flex items-center justify-center rounded-xl bg-red-50 text-red-500 hover:bg-red-100 hover:scale-110 hover:shadow-md transition-all duration-200 disabled:opacity-50"
                                                                     title="Delete Loan"
                                                                     disabled={deleteLoading}
                                                                 >
-                                                                    <Trash2 className="w-4 h-4" />
+                                                                    <Trash2 className="w-4 h-4" strokeWidth={2.5} />
                                                                 </button>
                                                             )}
                                                         </div>

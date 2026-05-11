@@ -42,7 +42,7 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
             id: 'employees', label: 'Employees', icon: Users, hasSubmenu: true, path: '/employee',
             submenu: [
                 permissions?.employee_view && { label: 'Employee List', path: '/employee' },
-                (permissions?.employee_create || permissions?.employee_edit) && { label: 'Add Employee', path: '/add-employee' },
+                // (permissions?.employee_create || permissions?.employee_edit) && { label: 'Add Employee', path: '/add-employee' },
                 permissions?.branch_view && { label: 'Branch', path: '/branches' },
                 permissions?.department_view && { label: 'Department', path: '/departments' },
                 permissions?.designation_view && { label: 'Designation', path: '/designation' },
@@ -56,8 +56,8 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
             id: 'shift', label: 'Shift Management', icon: Clock, hasSubmenu: true, path: '/shift-management',
             submenu: [
                 permissions?.shift_view && { label: 'Shifts', path: '/shift-management' },
-                permissions?.shift_create && { label: 'Add Shift', path: '/add-shift' },
-                permissions?.shift_assign && { label: 'Assign Shift', path: '/assign-shift' },
+                // permissions?.shift_create && { label: 'Add Shift', path: '/add-shift' },
+                // permissions?.shift_assign && { label: 'Assign Shift', path: '/assign-shift' },
                 permissions?.shift_reallocation_view && { label: 'Shift Reallocation', path: '/shift-reallocation' },
             ].filter(Boolean)
         },
@@ -65,7 +65,7 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
             id: 'leaves', label: 'Leaves & Holidays', icon: Calendar, hasSubmenu: true, path: '/leavestatusPage',
             submenu: [
                 permissions?.leave_view && { label: 'Leave Requests', path: '/leavestatusPage' },
-                permissions?.leave_create && { label: 'Leave Application', path: '/leaveapplication' },
+                // permissions?.leave_create && { label: 'Leave Application', path: '/leaveapplication' },
                 permissions?.holiday_view && { label: 'Holidays', path: '/holiday' },
             ].filter(Boolean)
         },
@@ -80,7 +80,7 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
             id: 'loans', label: 'Loans & Advances', icon: Briefcase, hasSubmenu: true, path: '/loans',
             submenu: [
                 permissions?.loan_view && { label: 'Loans & Advances', path: '/loans' },
-                permissions?.loan_create && { label: 'Add Loan/Advance', path: '/add-loan-advance' },
+                // permissions?.loan_create && { label: 'Add Loan/Advance', path: '/add-loan-advance' },
             ].filter(Boolean)
         },
         (permissions?.employee_directory || permissions?.daily_attendance || permissions?.monthly_attendance ||
@@ -170,7 +170,7 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
     }, [isCollapsed]);
 
     const activeItem = currentActiveItem || lastActiveItem;
-    
+
     const hasActualSubmenu = (item) => item.hasSubmenu && item.submenu && item.submenu.length > 0;
 
     const handleMenuClick = (item) => {
@@ -188,7 +188,7 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
             navigate(item.path);
             if (isMobile) setIsCollapsed(true);
         }
-    }; 
+    };
 
     const getSubmenuHeight = (itemId) => {
         const submenu = menuItems.find(item => item.id === itemId)?.submenu;

@@ -658,32 +658,32 @@ export default function FinalizePayroll() {
                           </td>
                           {(permissions?.add_salary_payment || permissions?.salary_delete || permissions?.salary_view) && (
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--color-text-secondary)]">
-                              <div className="flex items-center space-x-2">
+                              <div className="flex items-center space-x-3">
                                 {permissions?.add_salary_payment && record.payment_status === PAYMENT_STATUS.UNPAID && (
                                   <button
                                     onClick={() => openPaymentModal(record)}
-                                    className="inline-flex items-center space-x-1 bg-[var(--color-primary-dark)] text-[var(--color-text-white)] px-3 py-1 rounded-md text-xs font-medium hover:bg-[var(--color-primary-darker)] transition-colors"
+                                    className="w-9 h-9 flex items-center justify-center rounded-xl bg-purple-50 text-purple-600 hover:bg-purple-100 hover:scale-110 hover:shadow-md transition-all duration-200"
+                                    title="Pay"
                                   >
-                                    <CreditCard className="w-4 h-4" />
-                                    <span>Pay</span>
+                                    <CreditCard className="w-4 h-4" strokeWidth={2.5} />
                                   </button>
                                 )}
                                 {permissions?.salary_delete && (
                                   <button
                                     onClick={() => openDeleteModal(record)}
-                                    className="inline-flex items-center space-x-1 bg-[var(--color-error)] text-[var(--color-text-white)] px-3 py-1 rounded-md text-xs font-medium hover:bg-[var(--color-error-dark)] transition-colors"
+                                    className="w-9 h-9 flex items-center justify-center rounded-xl bg-red-50 text-red-500 hover:bg-red-100 hover:scale-110 hover:shadow-md transition-all duration-200"
+                                    title="Delete"
                                   >
-                                    <Trash2 className="w-4 h-4" />
-                                    <span>Delete</span>
+                                    <Trash2 className="w-4 h-4" strokeWidth={2.5} />
                                   </button>
                                 )}
                                 {permissions?.salary_view && record.payment_status === PAYMENT_STATUS.PAID && (
                                   <button
                                     onClick={() => handleViewSalarySlip(record)}
-                                    className="inline-flex items-center space-x-1 bg-[var(--color-success-medium)] text-[var(--color-text-white)] px-3 py-1 rounded-md text-xs font-medium hover:bg-[var(--color-success-dark)] transition-colors"
+                                    className="w-9 h-9 flex items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 hover:bg-emerald-100 hover:scale-110 hover:shadow-md transition-all duration-200"
+                                    title="View"
                                   >
-                                    <Eye className="w-4 h-4" />
-                                    <span>View</span>
+                                    <Eye className="w-4 h-4" strokeWidth={2.5} />
                                   </button>
                                 )}
                               </div>

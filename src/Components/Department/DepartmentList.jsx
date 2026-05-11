@@ -463,14 +463,14 @@ const DepartmentList = () => {
                                             </h4>
                                         </div>
                                         {/* } */}
-                                        <di className="flex items-center gap-2">
+                                        <div className="flex items-center gap-2">
                                             {/* Settings toggle button */}
                                             {permissions['department_edit'] && (
                                                 <button
                                                     onClick={() => handleToggleAccordion(departmentId)}
                                                     className={`ml-3 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 shrink-0 ${isOpen
                                                         ? "bg-[var(--color-primary-dark)] text-white"
-                                                        : "text-[var(--color-primary-dark)] hover:bg-primary-50 border border-[var(--color-border-secondary)]"
+                                                        : "text-[var(--color-primary-dark)] hover:bg-[var(--color-primary-lightest)] border border-[var(--color-border-secondary)]"
                                                         }`}
                                                     title={isOpen ? "Close settings" : "Open settings"}
                                                 >
@@ -484,15 +484,15 @@ const DepartmentList = () => {
                                             {permissions['department_delete'] && (
                                                 <button
                                                     onClick={() => handleDeleteClick(department)}
-                                                    className="p-2 text-[var(--color-text-error)] hover:text-[var(--color-error-dark)] hover:bg-[var(--color-error-light)] rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-1"
-                                                    title="Delete company"
+                                                    className="w-9 h-9 flex items-center justify-center rounded-xl bg-red-50 text-red-500 hover:bg-red-100 hover:scale-110 hover:shadow-md transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                                                    title="Delete department"
                                                 >
-                                                    <Trash2 className="w-4 h-4" />
+                                                    <Trash2 className="w-4 h-4" strokeWidth={2.5} />
                                                 </button>
                                             )}
 
 
-                                        </di>
+                                        </div>
 
 
 

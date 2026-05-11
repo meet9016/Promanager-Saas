@@ -1156,11 +1156,10 @@ const DailyAttendance = () => {
                                 {permissions['daily_attendance_edit'] && (
                                   <button
                                     onClick={() => handleEditEmployee(emp)}
-                                    className="inline-flex items-center gap-1 px-2 py-1 rounded-md border border-[var(--color-border-secondary)] text-sm hover:bg-[var(--color-bg-hover)] text-[var(--color-primary-dark)]"
+                                    className="w-9 h-9 flex items-center justify-center rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-100 hover:scale-110 hover:shadow-md transition-all duration-200"
                                     title="Edit attendance"
                                   >
-                                    <Edit className="h-4 w-4" />
-                                    Edit
+                                    <Edit className="w-4 h-4" strokeWidth={2.5} />
                                   </button>
                                 )}
                               </div>

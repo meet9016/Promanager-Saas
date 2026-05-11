@@ -362,10 +362,10 @@ const Increment = () => {
                                                     <button
                                                         type="button"
                                                         onClick={() => removeIncrement(index)}
-                                                        className="text-[var(--color-error)] hover:text-[var(--color-error-dark)] p-2 rounded-full hover:bg-[var(--color-error-light)] transition-colors"
+                                                        className="w-9 h-9 flex items-center justify-center rounded-xl bg-red-50 text-red-500 hover:bg-red-100 hover:scale-110 hover:shadow-md transition-all duration-200 disabled:opacity-50"
                                                         title="Remove this allowance"
                                                     >
-                                                        <Trash2 size={16} />
+                                                        <Trash2 className="w-4 h-4" strokeWidth={2.5} />
                                                     </button>
 
                                                 </div>
@@ -427,7 +427,7 @@ const Increment = () => {
                                                             showMonthDropdown
                                                             scrollableYearDropdown
                                                             scrollableMonthDropdown
-                                                            
+
                                                             onChange={(date) => {
                                                                 if (!date) return;
 

@@ -271,7 +271,7 @@ const ShiftManagement = () => {
 
             const response = await api.post('shift_list', formData);
 
-         
+
             if (response.data.success) {
                 const shiftsData = response.data.data || [];
                 setShifts(shiftsData);
@@ -281,14 +281,14 @@ const ShiftManagement = () => {
 
                 if (paginationData) {
                     // Use API pagination data
-                   
+
                     setTotalPages(paginationData.total_pages || 1);
                     setTotalShifts(paginationData.total_records || shiftsData.length);
                     setCurrentPage(paginationData.current_page || page);
                 } else {
                     // Backend is paginating but not sending metadata
                     // If we received exactly ITEMS_PER_PAGE items, there might be more pages
-               
+
 
                     // Simple approach: if we get exactly 10 items, assume there might be more
                     // Show next page button, and disable it if next page returns 0 items
@@ -619,23 +619,23 @@ const ShiftManagement = () => {
                                                     </td>
                                                     {(permissions?.shift_edit || permissions?.shift_delete) && (
                                                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                                            <div className="flex space-x-2">
+                                                            <div className="flex space-x-3">
                                                                 {permissions['shift_edit'] && (
                                                                     <button
                                                                         onClick={() => handleEditShift(shift.shift_id, shift.shift_name)}
-                                                                        className="p-2 rounded-md transition-colors text-[var(--color-primary-dark)] hover:text-[var(--color-primary-darkest)] hover:bg-[var(--color-primary-lightest)]"
+                                                                        className="w-9 h-9 flex items-center justify-center rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-100 hover:scale-110 hover:shadow-md transition-all duration-200"
                                                                         title="Edit Shift"
                                                                     >
-                                                                        <Edit className="w-4 h-4" />
+                                                                        <Edit className="w-4 h-4" strokeWidth={2.5} />
                                                                     </button>
                                                                 )}
                                                                 {permissions['shift_delete'] && (
                                                                     <button
                                                                         onClick={() => handleDeleteShift(shift.shift_id, shift.shift_name)}
-                                                                        className="p-2 rounded-md transition-colors text-[var(--color-text-error)] hover:text-red-900 hover:bg-[var(--color-error-light)]"
+                                                                        className="w-9 h-9 flex items-center justify-center rounded-xl bg-red-50 text-red-500 hover:bg-red-100 hover:scale-110 hover:shadow-md transition-all duration-200"
                                                                         title="Delete Shift"
                                                                     >
-                                                                        <Trash2 className="w-4 h-4" />
+                                                                        <Trash2 className="w-4 h-4" strokeWidth={2.5} />
                                                                     </button>
                                                                 )}
                                                             </div>

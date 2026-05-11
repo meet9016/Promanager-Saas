@@ -1029,10 +1029,10 @@ const EmployeeDirectoryReport = () => {
                                                 <button
                                                     onClick={() => handleViewDetails(employee.employee_id)}
                                                     disabled={reportGenerating}
-                                                    className="p-2 rounded-lg transition-all duration-200 text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-gray-light)] disabled:opacity-50 transform hover:scale-105"
+                                                    className="w-9 h-9 flex items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 hover:bg-emerald-100 hover:scale-110 hover:shadow-md transition-all duration-200 mx-auto disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                                                     title="View Details"
                                                 >
-                                                    <Eye className="w-4 h-4" />
+                                                    <Eye className="w-4 h-4" strokeWidth={2.5} />
                                                 </button>
                                             </td>
                                         </tr>

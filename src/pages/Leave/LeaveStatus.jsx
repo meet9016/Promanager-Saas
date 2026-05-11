@@ -545,10 +545,10 @@ const LeaveManagement = () => {
                                                         <div className="flex space-x-2">
                                                             <button
                                                                 onClick={() => handleView(leave)}
-                                                                className="p-2 rounded-lg transition-colors text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] hover:bg-[var(--color-primary-lightest)]"
+                                                                className="w-9 h-9 flex items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 hover:bg-emerald-100 hover:scale-110 hover:shadow-md transition-all duration-200"
                                                                 title="View Details"
                                                             >
-                                                                <Eye className="w-4 h-4" />
+                                                                <Eye className="w-4 h-4" strokeWidth={2.5} />
                                                             </button>
 
                                                             {leave.status === '1' && (
@@ -556,19 +556,19 @@ const LeaveManagement = () => {
                                                                     {permissions['leave_approved'] && (
                                                                         <button
                                                                             onClick={() => handleApprove(leave.leave_id)}
-                                                                            className="p-2 rounded-lg transition-colors text-[var(--color-primary)] hover:text-[var(--color-primary-dark)] hover:bg-[var(--color-primary-lightest)]"
+                                                                            className="w-9 h-9 flex items-center justify-center rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-100 hover:scale-110 hover:shadow-md transition-all duration-200"
                                                                             title="Approve Leave"
                                                                         >
-                                                                            <CheckCircle className="w-4 h-4" />
+                                                                            <CheckCircle className="w-4 h-4" strokeWidth={2.5} />
                                                                         </button>
                                                                     )}
                                                                     {permissions['leave_rejected'] && (
                                                                         <button
                                                                             onClick={() => handleReject(leave)}
-                                                                            className="p-2 rounded-lg transition-colors text-[var(--color-error)] hover:text-[var(--color-error-dark)] hover:bg-[var(--color-error-light)]"
+                                                                            className="w-9 h-9 flex items-center justify-center rounded-xl bg-red-50 text-red-500 hover:bg-red-100 hover:scale-110 hover:shadow-md transition-all duration-200"
                                                                             title="Reject Leave"
                                                                         >
-                                                                            <XCircle className="w-4 h-4" />
+                                                                            <XCircle className="w-4 h-4" strokeWidth={2.5} />
                                                                         </button>
                                                                     )}
                                                                 </>

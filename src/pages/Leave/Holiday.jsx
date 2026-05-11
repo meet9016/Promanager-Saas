@@ -10,6 +10,7 @@ import {
     ArrowLeft,
     Trash2,
     Eye,
+    Edit,
     Filter,
     CalendarDays,
     ChevronLeft,
@@ -483,32 +484,32 @@ export default function HolidayManagement() {
                                                     <div className="truncate">{h.description || "-"}</div>
                                                 </td>
                                                 <td className="px-6 py-4 align-top">
-                                                    <div className="flex items-center gap-2">
+                                                    <div className="flex items-center gap-3">
                                                         {permissions['holiday_view'] && (
                                                             <button
                                                                 onClick={() => handleView(h)}
-                                                                className="p-2 text-[var(--color-primary)] hover:bg-[var(--color-primary-lightest)] rounded-lg transition-colors"
+                                                                className="w-9 h-9 flex items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 hover:bg-emerald-100 hover:scale-110 hover:shadow-md transition-all duration-200"
                                                                 title="View Details"
                                                             >
-                                                                <Eye size={16} />
+                                                                <Eye size={16} strokeWidth={2.5} />
                                                             </button>
                                                         )}
                                                         {permissions['holiday_edit'] && (
                                                             <button
                                                                 onClick={() => handleEdit(h)}
-                                                                className="p-2 text-amber-600 hover:bg-amber-50 rounded-lg transition-colors"
+                                                                className="w-9 h-9 flex items-center justify-center rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-100 hover:scale-110 hover:shadow-md transition-all duration-200"
                                                                 title="Edit"
                                                             >
-                                                                <Edit2 size={16} />
+                                                                <Edit size={16} strokeWidth={2.5} />
                                                             </button>
                                                         )}
                                                         {permissions['holiday_delete'] && (
                                                             <button
                                                                 onClick={() => setDeleteDialog({ isOpen: true, holidayId: h.holiday_id, holidayName: h.holiday_name })}
-                                                                className="p-2 text-[var(--color-error)] hover:bg-[var(--color-error-light)] rounded-lg transition-colors"
+                                                                className="w-9 h-9 flex items-center justify-center rounded-xl bg-red-50 text-red-500 hover:bg-red-100 hover:scale-110 hover:shadow-md transition-all duration-200"
                                                                 title="Delete"
                                                             >
-                                                                <Trash2 size={16} />
+                                                                <Trash2 size={16} strokeWidth={2.5} />
                                                             </button>
                                                         )}
                                                     </div>

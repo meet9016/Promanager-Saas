@@ -157,10 +157,10 @@ const DeductionList = () => {
                                                 <button
                                                     onClick={() => handleDeleteClick(deduction)}
                                                     disabled={isDeleting}
-                                                    className="ml-4 p-2 text-[var(--color-text-error)] hover:text-[var(--color-error-dark)] hover:bg-[var(--color-error-light)] rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                                                    className="w-9 h-9 flex items-center justify-center rounded-xl bg-red-50 text-red-500 hover:bg-red-100 hover:scale-110 hover:shadow-md transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 ml-4"
                                                     title="Delete deduction"
                                                 >
-                                                    <Trash2 className="w-4 h-4" />
+                                                    <Trash2 className="w-4 h-4" strokeWidth={2.5} />
                                                 </button>
                                             )}
                                         </div>

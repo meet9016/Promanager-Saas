@@ -352,22 +352,22 @@ const UserManagement = () => {
                                                                 {permissions['user_edit'] && (
                                                                     <button
                                                                         onClick={() => handleEditUser(userData)}
-                                                                        className={`p-2 rounded-md transition-colors ${canModifyUser(userData)
-                                                                            ? 'text-[var(--color-primary-dark)] hover:text-[var(--color-primary-darkest)] hover:bg-[var(--color-primary-lightest)]'
-                                                                            : 'text-[var(--color-text-muted)] cursor-not-allowed'
+                                                                        className={`w-9 h-9 flex items-center justify-center rounded-xl transition-all duration-200 ${canModifyUser(userData)
+                                                                            ? 'bg-blue-50 text-blue-600 hover:bg-blue-100 hover:scale-110 hover:shadow-md'
+                                                                            : 'bg-gray-50 text-[var(--color-text-muted)] cursor-not-allowed'
                                                                             }`}
                                                                         title={canModifyUser(userData) ? "Edit User" : "Admin users cannot be edited"}
                                                                         disabled={deleting === userData.edit_user_id || !canModifyUser(userData) || paginationLoading}
                                                                     >
-                                                                        <Edit className="w-4 h-4" />
+                                                                        <Edit className="w-4 h-4" strokeWidth={2.5} />
                                                                     </button>
                                                                 )}
                                                                 {permissions['user_delete'] && (
                                                                     <button
                                                                         onClick={() => handleDeleteUser(userData)}
-                                                                        className={`p-2 rounded-md transition-colors ${canModifyUser(userData)
-                                                                            ? 'text-[var(--color-text-error)] hover:text-red-900 hover:bg-[var(--color-error-light)]'
-                                                                            : 'text-[var(--color-text-muted)] cursor-not-allowed'
+                                                                        className={`w-9 h-9 flex items-center justify-center rounded-xl transition-all duration-200 ${canModifyUser(userData)
+                                                                            ? 'bg-red-50 text-red-500 hover:bg-red-100 hover:scale-110 hover:shadow-md'
+                                                                            : 'bg-gray-50 text-[var(--color-text-muted)] cursor-not-allowed'
                                                                             }`}
                                                                         title={canModifyUser(userData) ? "Delete User" : "Admin users cannot be deleted"}
                                                                         disabled={deleting === userData.edit_user_id || !canModifyUser(userData) || paginationLoading}
@@ -375,7 +375,7 @@ const UserManagement = () => {
                                                                         {deleting === userData.edit_user_id ? (
                                                                             <div className="w-4 h-4 border-2 border-red-600 border-t-transparent rounded-full animate-spin"></div>
                                                                         ) : (
-                                                                            <Trash2 className="w-4 h-4" />
+                                                                            <Trash2 className="w-4 h-4" strokeWidth={2.5} />
                                                                         )}
                                                                     </button>
                                                                 )}
