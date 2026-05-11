@@ -132,94 +132,60 @@ const Login = () => {
 
 
     const validateInputs = () => {
-
-        let valid = true;
         setNumberError("");
         setPasswordError("");
 
+        const checkNumber = () => {
+            if (!number) {
+                setNumberError("Please enter your mobile number.");
+                setToast({ message: "Please enter your mobile number.", type: 'error' });
+                return false;
+            }
+            if (!/^\d{10}$/.test(number)) {
+                setNumberError("Mobile number must be 10 digits.");
+                setToast({ message: "Mobile number must be 10 digits.", type: 'error' });
+                return false;
+            }
+            return true;
+        };
+
+        const checkPassword = (isStrong = false) => {
+            if (!password) {
+                setPasswordError("Please enter your password.");
+                setToast({ message: "Please enter your password.", type: 'error' });
+                return false;
+            }
+            if (isStrong && !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(password)) {
+                setPasswordError("Password must be 8+ chars, include upper, lower, number & special char.");
+                setToast({ message: "Password must be 8+ chars, include upper, lower, number & special char.", type: 'error' });
+                return false;
+            }
+            return true;
+        };
+
+        const checkOTP = () => {
+            if (!OTP) {
+                setNumberError("Please enter OTP.");
+                setToast({ message: "Please enter OTP.", type: 'error' });
+                return false;
+            }
+            return true;
+        };
+
         switch (authStep) {
             case 0:
-                if (!number) {
-                    setNumberError("Please enter your mobile number.");
-                    valid = false;
-                    setToast({
-                        message: "Please enter your mobile number.",
-                        type: 'error'
-                    });
-                } else if (!/^\d{10}$/.test(number)) {
-                    setNumberError("Mobile number must be 10 digits.");
-                    valid = false;
-                    setToast({
-                        message: "Mobile number must be 10 digits.",
-                        type: 'error'
-                    });
-                }
-                if (!password) {
-                    setPasswordError("Please enter your password.");
-                    valid = false;
-                    setToast({
-                        message: "Please enter your password.",
-                        type: 'error'
-                    });
-                }
-                if (valid) handleLogin();
+                if (checkNumber() && checkPassword()) handleLogin();
                 break;
-
             case 1:
-                if (!number) {
-                    setNumberError("Please enter your mobile number.");
-                    valid = false;
-                    setToast({
-                        message: "Please enter your mobile number.",
-                        type: 'error'
-                    });
-                } else if (!/^\d{10}$/.test(number)) {
-                    setNumberError("Mobile number must be 10 digits.");
-                    valid = false;
-                    setToast({
-                        message: "Mobile number must be 10 digits.",
-                        type: 'error'
-                    });
-                }
-
-                if (valid) {
-                    handleOTP()
-                };
+                if (checkNumber()) handleOTP();
                 break;
-
-
             case 2:
-                if (!OTP) {
-                    setNumberError("Please enter OTP.");
-                    valid = false;
-                    setToast({
-                        message: "Please enter OTP.",
-                        type: 'error'
-                    });
-                }
-
-                if (!password) {
-                    setPasswordError("Please enter your password.");
-                    setToast({
-                        message: "Please enter your password.",
-                        type: 'error'
-                    });
-                    valid = false;
-                } else if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(password)) {
-                    setPasswordError("Password must be 8+ chars, include upper, lower, number & special char.");
-                    setToast({
-                        message: "Password must be 8+ chars, include upper, lower, number & special char.",
-                        type: 'error'
-                    });
-                    valid = false;
-                }
-                if (valid) handlePassword();
+                // Reusing numberError for OTP error to match original logic
+                if (checkOTP() && checkPassword(true)) handlePassword();
                 break;
-
             default:
                 break;
         }
-
     };
 
     const handleNumberChange = (e) => {
@@ -393,6 +359,60 @@ const Login = () => {
     };
 
 
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            validateInputs();
+        }
+    };
+
+    const renderMobileInput = () => (
+        <div>
+            <label className="block text-sm font-medium mb-2">Mobile Number</label>
+            <div className="relative">
+                <Smartphone className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5" />
+                <input
+                    type="text"
+                    value={number}
+                    onChange={handleNumberChange}
+                    onKeyDown={handleKeyDown}
+                    maxLength={10}
+                    placeholder="Enter your mobile number"
+                    className={`w-full pl-11 pr-4 py-3 border rounded-lg ${numberError ? "border-red-500" : ""}`}
+                    disabled={isLoading}
+                />
+            </div>
+        </div>
+    );
+
+    const renderPasswordInput = (label = "Password") => (
+        <div>
+            <label className="block text-sm font-medium mb-2">{label}</label>
+            <div className="relative">
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5" />
+                <input
+                    type={showPassword ? "text" : "password"}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    onKeyDown={handleKeyDown}
+                    placeholder={`Enter your ${label.toLowerCase()}`}
+                    className={`w-full pl-11 pr-10 py-3 border rounded-lg ${passwordError ? "border-red-500" : ""}`}
+                    disabled={isLoading}
+                />
+                <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2"
+                >
+                    {showPassword ? (
+                        <EyeOff className="w-5 h-5 text-gray-600" />
+                    ) : (
+                        <Eye className="w-5 h-5 text-gray-600" />
+                    )}
+                </button>
+            </div>
+        </div>
+    );
+
     return (
         <div className="min-h-screen w-full flex bg-[var(--color-bg-primary)] overflow-hidden">
             {/* Left panel unchanged */}
@@ -510,53 +530,8 @@ const Login = () => {
 
                     {authStep === 0 && <>
                         <div className="space-y-5">
-
-                            <div>
-                                <label className="block text-sm font-medium mb-2">Mobile Number</label>
-                                <div className="relative">
-                                    <Smartphone className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5" />
-                                    <input
-                                        type="text"
-                                        value={number}
-                                        onChange={handleNumberChange}
-                                        maxLength={10}
-                                        placeholder="Enter your mobile number"
-                                        className={`w-full pl-11 pr-4 py-3 border rounded-lg ${numberError ? "border-red-500" : ""
-                                            }`}
-                                        disabled={isLoading}
-                                    />
-                                </div>
-
-                            </div>
-
-                            <div>
-                                <label className="block text-sm font-medium mb-2">Password</label>
-                                <div className="relative">
-                                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5" />
-                                    <input
-                                        type={showPassword ? "text" : "password"}
-                                        value={password}
-                                        onChange={(e) => setPassword(e.target.value)}
-                                        placeholder="Enter your password"
-                                        className={`w-full pl-11 pr-10 py-3 border rounded-lg ${passwordError ? "border-red-500" : ""
-                                            }`}
-                                        disabled={isLoading}
-                                    />
-                                    <button
-                                        type="button"
-                                        onClick={() => setShowPassword(!showPassword)}
-                                        className="absolute right-3 top-1/2 -translate-y-1/2"
-                                    >
-                                        {showPassword ? (
-                                            <EyeOff className="w-5 h-5 text-gray-600" />
-                                        ) : (
-                                            <Eye className="w-5 h-5 text-gray-600" />
-                                        )}
-                                    </button>
-                                </div>
-
-                            </div>
-
+                            {renderMobileInput()}
+                            {renderPasswordInput()}
                             <div className="flex items-center justify-between">
                                 <label className="flex items-center">
                                     <input
@@ -567,55 +542,35 @@ const Login = () => {
                                     />
                                     <span className="ml-2 text-sm">Remember Me</span>
                                 </label>
-                                <span onClick={() => setAuthStep(1)} className="cursor-pointer ml-2 text-sm">Forget Password?</span>
+                                <span onClick={() => setAuthStep(1)} className="cursor-pointer ml-2 text-sm text-[var(--color-primary)] font-medium">Forget Password?</span>
                             </div>
                         </div>
 
                         <button
-                            type="submit"
+                            type="button"
                             disabled={isLoading}
                             onClick={validateInputs}
-                            className="w-full bg-[var(--color-primary)] text-white py-3 rounded-lg mt-6">
+                            className="w-full bg-[var(--color-primary)] text-white py-3 rounded-lg mt-6 hover:bg-opacity-90 transition-all">
                             {isLoading ? "Logging in..." : "Log In"}
                         </button>
-
                     </>}
 
                     {authStep === 1 && <>
                         <div className="space-y-5">
-                            <div>
-                                <label className="block text-sm font-medium mb-2">Mobile Number</label>
-                                <div className="relative">
-                                    <Smartphone className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5" />
-                                    <input
-                                        type="text"
-                                        value={number}
-                                        onChange={handleNumberChange}
-                                        maxLength={10}
-                                        placeholder="Enter your mobile number"
-                                        className={`w-full pl-11 pr-4 py-3 border rounded-lg ${numberError ? "border-red-500" : ""
-                                            }`}
-                                        disabled={isLoading}
-                                    />
-                                </div>
-
-
-                            </div>
+                            {renderMobileInput()}
                             <div className="flex items-center justify-between">
-                                <label className="flex items-center">
-                                    <span onClick={() => setAuthStep((prev) => prev - 1)} className="cursor-pointer ml-2 text-sm">&#8592; Back</span>
-                                </label>
-
+                                <span onClick={() => setAuthStep(0)} className="cursor-pointer text-sm text-[var(--color-primary)] font-medium flex items-center gap-1">
+                                    &#8592; Back to Login
+                                </span>
                             </div>
                         </div>
 
-                        < button
-                            type="submit"
+                        <button
+                            type="button"
                             disabled={isLoading}
-
-                            onClick={() => { validateInputs(); }}
-                            className="w-full bg-[var(--color-primary)] text-white py-3 rounded-lg mt-6">
-                            {isLoading ? "Submitting..." : "Submit"}
+                            onClick={validateInputs}
+                            className="w-full bg-[var(--color-primary)] text-white py-3 rounded-lg mt-6 hover:bg-opacity-90 transition-all">
+                            {isLoading ? "Submitting..." : "Send OTP"}
                         </button>
                     </>}
 
@@ -628,67 +583,32 @@ const Login = () => {
                                         type="text"
                                         value={OTP}
                                         onChange={(e) => setOTP(e.target.value)}
+                                        onKeyDown={handleKeyDown}
                                         placeholder="Enter OTP"
-                                        className={`w-full pl-11 pr-4 py-3 border rounded-lg ${numberError ? "border-red-500" : ""
-                                            }`}
+                                        className={`w-full px-4 py-3 border rounded-lg ${numberError ? "border-red-500" : ""}`}
                                         disabled={isLoading}
                                     />
                                 </div>
-
                             </div>
-
-                            <div>
-                                <label className="block text-sm font-medium mb-2">Set Password</label>
-                                <div className="relative">
-                                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5" />
-                                    <input
-                                        type={showPassword ? "text" : "password"}
-                                        value={password}
-                                        onChange={(e) => setPassword(e.target.value)}
-                                        placeholder="Enter your password"
-                                        className={`w-full pl-11 pr-10 py-3 border rounded-lg ${passwordError ? "border-red-500" : ""
-                                            }`}
-                                        disabled={isLoading}
-                                    />
-                                    <button
-                                        type="button"
-                                        onClick={() => setShowPassword(!showPassword)}
-                                        className="absolute right-3 top-1/2 -translate-y-1/2"
-                                    >
-                                        {showPassword ? (
-                                            <EyeOff className="w-5 h-5 text-gray-600" />
-                                        ) : (
-                                            <Eye className="w-5 h-5 text-gray-600" />
-                                        )}
-                                    </button>
-                                </div>
-
-                            </div>
-
-
-
-                            {/* Password */}
+                            
+                            {renderPasswordInput("New Password")}
 
                             <div className="flex items-center justify-between">
-                                <label className="flex items-center">
-                                    <span onClick={() => setAuthStep(1)} className="cursor-pointer ml-2 text-sm">&#8592; Back</span>
-                                </label>
+                                <span onClick={() => setAuthStep(1)} className="cursor-pointer text-sm text-[var(--color-primary)] font-medium flex items-center gap-1">
+                                    &#8592; Back
+                                </span>
                                 <button
-                                    className="cursor-pointer ml-2 text-sm"
-                                    onClick={() => handleOTP(1)} >Resend OTP</button>
+                                    className="cursor-pointer text-sm text-[var(--color-primary)] font-medium"
+                                    onClick={() => handleOTP(1)}>Resend OTP</button>
                             </div>
-
-
                         </div>
-                        < button
-                            type="submit"
+                        <button
+                            type="button"
                             disabled={isLoading}
-
-                            onClick={() => validateInputs()}
-                            className="w-full bg-[var(--color-primary)] text-white py-3 rounded-lg mt-6">
-                            {isLoading ? "Submitting..." : "Submit"}
+                            onClick={validateInputs}
+                            className="w-full bg-[var(--color-primary)] text-white py-3 rounded-lg mt-6 hover:bg-opacity-90 transition-all">
+                            {isLoading ? "Submitting..." : "Reset Password"}
                         </button>
-
                     </>}
 
                 </div>
