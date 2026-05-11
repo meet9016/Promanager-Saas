@@ -3,6 +3,7 @@ import { ArrowLeft, Users, Calendar, RefreshCw, X, Building, Filter, CheckCircle
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useAuth } from '../../context/AuthContext';
+import { useSelector } from 'react-redux';
 import api from '../../api/axiosInstance';
 import { useNavigate } from 'react-router-dom';
 import { Toast } from '../../Components/ui/Toast';
@@ -11,7 +12,7 @@ import Pagination from '../../Components/Pagination';
 const ShiftReallocation = () => {
     const { user } = useAuth();
     const navigate = useNavigate();
-
+    const permissions = useSelector(state => state.permissions) || {};
     // View state - 'list' or 'form'
     const [view, setView] = useState('list');
 
@@ -537,13 +538,15 @@ const ShiftReallocation = () => {
                                             </div>
                                         )}
                                     </div>
-                                    <button
-                                        onClick={handleOpenForm}
-                                        className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-md text-sm font-medium transition-colors"
-                                    >
-                                        <Plus className="h-4 w-4" />
-                                        Shift Reallocation
-                                    </button>
+                                    {permissions['shift_reallocation_create'] && (
+                                        <button
+                                            onClick={handleOpenForm}
+                                            className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-md text-sm font-medium transition-colors"
+                                        >
+                                            <Plus className="h-4 w-4" />
+                                            Shift Reallocation
+                                        </button>
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -580,7 +583,7 @@ const ShiftReallocation = () => {
                                     <p className="text-[var(--color-text-secondary)] text-sm mb-4">
                                         {searchQuery ? 'No reallocations match your search criteria.' : 'You haven\'t made any shift reallocations yet.'}
                                     </p>
-                                    {!searchQuery && (
+                                    {!searchQuery && permissions['shift_reallocation_create'] && (
                                         <button
                                             onClick={handleOpenForm}
                                             className="inline-flex items-center space-x-2 bg-[var(--color-primary-dark)] text-[var(--color-text-white)] px-4 py-2 rounded-md hover:bg-[var(--color-primary-darker)] transition-colors"
@@ -632,19 +635,21 @@ const ShiftReallocation = () => {
                                                         </span>
                                                     </td>
                                                     <td className="px-9 py-4 whitespace-nowrap text-sm text-[var(--color-text-secondary)]">
-                                                        <button
-                                                            onClick={() => setEmployeeModal({
-                                                                isOpen: true,
-                                                                employees: item.employees || [],
-                                                                shiftName: `${item.from_shift_name} → ${item.to_shift_name}`
-                                                            })}
-                                                            className="flex items-center gap-2 text-[var(--color-primary-dark)] hover:text-primary-800 transition-colors"
-                                                        >
-                                                            <span className="font-medium">
-                                                                {item.employee_count || (item.employees?.length) || 0}
-                                                            </span>
-                                                            <Users className="w-4 h-4" />
-                                                        </button>
+                                                        {permissions['shift_reallocation_view'] && (
+                                                            <button
+                                                                onClick={() => setEmployeeModal({
+                                                                    isOpen: true,
+                                                                    employees: item.employees || [],
+                                                                    shiftName: `${item.from_shift_name} → ${item.to_shift_name}`
+                                                                })}
+                                                                className="flex items-center gap-2 text-[var(--color-primary-dark)] hover:text-primary-800 transition-colors"
+                                                            >
+                                                                <span className="font-medium">
+                                                                    {item.employee_count || (item.employees?.length) || 0}
+                                                                </span>
+                                                                <Users className="w-4 h-4" />
+                                                            </button>
+                                                        )}
                                                     </td>
                                                 </tr>
                                             ))}

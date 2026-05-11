@@ -2,6 +2,7 @@
 // src/pages/Attendance/DailyAttendance.jsx
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import {
   Calendar,
   Users,
@@ -80,6 +81,7 @@ const Legend = ({ color, label }) => (
 /** ---------- Mobile Card Component ---------- **/
 const MobileAttendanceCard = ({ employee, onEdit, getTimeColor, getRowStyling }) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const permissions = useSelector(state => state.permissions) || {};
   const timeColorClass = getTimeColor(employee);
 
   return (
@@ -255,16 +257,18 @@ const MobileAttendanceCard = ({ employee, onEdit, getTimeColor, getRowStyling })
           </div>
 
           {/* Edit Button */}
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              onEdit(employee);
-            }}
-            className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition-colors text-sm"
-          >
-            <Edit className="h-4 w-4" />
-            Edit Attendance
-          </button>
+          {permissions['daily_attendance_edit'] && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onEdit(employee);
+              }}
+              className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition-colors text-sm"
+            >
+              <Edit className="h-4 w-4" />
+              Edit Attendance
+            </button>
+          )}
         </div>
       )}
     </div>
@@ -685,6 +689,7 @@ const DailyAttendance = () => {
 
   const navigate = useNavigate();
   const { user } = useAuth();
+  const permissions = useSelector(state => state.permissions) || {};
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
@@ -1148,14 +1153,16 @@ const DailyAttendance = () => {
                                     <span className="text-[var(--color-primary-darker)] text-xs">Edited</span>
                                   </div>
                                 )}
-                                <button
-                                  onClick={() => handleEditEmployee(emp)}
-                                  className="inline-flex items-center gap-1 px-2 py-1 rounded-md border border-[var(--color-border-secondary)] text-sm hover:bg-[var(--color-bg-hover)] text-[var(--color-primary-dark)]"
-                                  title="Edit attendance"
-                                >
-                                  <Edit className="h-4 w-4" />
-                                  Edit
-                                </button>
+                                {permissions['daily_attendance_edit'] && (
+                                  <button
+                                    onClick={() => handleEditEmployee(emp)}
+                                    className="inline-flex items-center gap-1 px-2 py-1 rounded-md border border-[var(--color-border-secondary)] text-sm hover:bg-[var(--color-bg-hover)] text-[var(--color-primary-dark)]"
+                                    title="Edit attendance"
+                                  >
+                                    <Edit className="h-4 w-4" />
+                                    Edit
+                                  </button>
+                                )}
                               </div>
                             </Td>
                           </tr>

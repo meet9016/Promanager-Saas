@@ -239,7 +239,7 @@ const EmployeeDetail = () => {
 
     // Handle image preview
     const handleImagePreview = (imageSrc, title) => {
- 
+
         setCurrentImage({ src: baseUrl + imageSrc, title });
         setShowImageModal(true);
     };
@@ -512,7 +512,7 @@ const EmployeeDetail = () => {
                                             Edit
                                         </button>
                                     )}
-                                    {permissions['employee_delete'] && employee?.status == "1" && (
+                                    {permissions['employee_active_inactive'] && employee?.status == "1" && (
                                         <button
                                             onClick={() => setShowDeactivateModal(true)}
                                             className="w-full flex items-center justify-center px-4 py-2 bg-[var(--color-error)] text-[var(--color-text-white)] rounded-lg hover:bg-[var(--color-error-dark)] transition-colors font-medium"

@@ -52,21 +52,21 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
                 permissions?.company_view && { label: 'Increment', path: '/increment' },
             ].filter(Boolean)
         },
-        (permissions?.shift_view || permissions?.shift_create || permissions?.shift_edit || permissions?.shift_delete || permissions?.shift_assign) && {
+        (permissions?.shift_view || permissions?.shift_create || permissions?.shift_edit || permissions?.shift_delete || permissions?.shift_assign || permissions?.shift_reallocation_view) && {
             id: 'shift', label: 'Shift Management', icon: Clock, hasSubmenu: true, path: '/shift-management',
             submenu: [
                 permissions?.shift_view && { label: 'Shifts', path: '/shift-management' },
                 permissions?.shift_create && { label: 'Add Shift', path: '/add-shift' },
                 permissions?.shift_assign && { label: 'Assign Shift', path: '/assign-shift' },
-                permissions?.shift_assign && { label: 'Shift Reallocation', path: '/shift-reallocation' },
+                permissions?.shift_reallocation_view && { label: 'Shift Reallocation', path: '/shift-reallocation' },
             ].filter(Boolean)
         },
-        (permissions?.leave_view || permissions?.leave_create || permissions?.leave_approved || permissions?.leave_rejected) && {
+        (permissions?.leave_view || permissions?.leave_create || permissions?.holiday_view || permissions?.leave_approved || permissions?.leave_rejected) && {
             id: 'leaves', label: 'Leaves & Holidays', icon: Calendar, hasSubmenu: true, path: '/leavestatusPage',
             submenu: [
                 permissions?.leave_view && { label: 'Leave Requests', path: '/leavestatusPage' },
                 permissions?.leave_create && { label: 'Leave Application', path: '/leaveapplication' },
-                permissions?.leave_create && { label: 'Holidays', path: '/holiday' },
+                permissions?.holiday_view && { label: 'Holidays', path: '/holiday' },
             ].filter(Boolean)
         },
         (permissions?.salary_view || permissions?.salary_create || permissions?.salary_edit || permissions?.salary_delete || permissions?.add_salary_payment) && {
@@ -84,22 +84,26 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
             ].filter(Boolean)
         },
         (permissions?.employee_directory || permissions?.daily_attendance || permissions?.monthly_attendance ||
-            permissions?.monthly_salary || permissions?.custom_range) && {
+            permissions?.monthly_salary || permissions?.custom_range || permissions?.salary_generation_status ||
+            permissions?.paid_salary || permissions?.monthly_muster || permissions?.monthly_exception ||
+            permissions?.attendance_exception || permissions?.geolocation_attendance || permissions?.daily_attendance_detailed) && {
             id: 'reports', label: 'Reports', icon: BarChart2, hasSubmenu: true, path: '/reports',
             submenu: [
                 (permissions?.employee_directory || permissions?.daily_attendance || permissions?.monthly_attendance ||
-                    permissions?.monthly_salary || permissions?.custom_range) && { label: 'All Reports', path: '/reports' },
+                    permissions?.monthly_salary || permissions?.custom_range || permissions?.salary_generation_status ||
+                    permissions?.paid_salary || permissions?.monthly_muster || permissions?.monthly_exception ||
+                    permissions?.attendance_exception || permissions?.geolocation_attendance || permissions?.daily_attendance_detailed) && { label: 'All Reports', path: '/reports' },
                 permissions?.employee_directory && { label: 'Employee Directory', path: '/reports/employee-directory' },
                 permissions?.daily_attendance && { label: 'Daily Report', path: '/reports/daily-attendance' },
-                permissions?.daily_attendance && { label: 'Daily Detailed Report', path: '/reports/daily-attendance-detailed' },
-                { label: 'Geolocation Report', path: '/reports/geolocation-report' },
-                { label: 'Attendance Exception Report', path: '/reports/attendance-exception' },
-                { label: 'Monthly Exception Report', path: '/reports/monthly-exception' },
+                permissions?.daily_attendance_detailed && { label: 'Daily Detailed Report', path: '/reports/daily-attendance-detailed' },
+                permissions?.geolocation_attendance && { label: 'Geolocation Report', path: '/reports/geolocation-report' },
+                permissions?.attendance_exception && { label: 'Attendance Exception Report', path: '/reports/attendance-exception' },
+                permissions?.monthly_exception && { label: 'Monthly Exception Report', path: '/reports/monthly-exception' },
                 permissions?.monthly_attendance && { label: 'Monthly Report', path: '/reports/monthly-attendance' },
-                permissions?.monthly_attendance && { label: 'Mothly Muster Report', path: '/reports/monthly-attendance-muster' },
+                permissions?.monthly_muster && { label: 'Mothly Muster Report', path: '/reports/monthly-attendance-muster' },
                 permissions?.monthly_salary && { label: 'Monthly Salary Report', path: '/reports/monthly-salary' },
-                permissions?.monthly_salary && { label: 'Paid Salary Report', path: '/reports/pay-monthly-salary' },
-                permissions?.monthly_salary && { label: 'Salary Generation Status', path: '/reports/salary-generation-status' },
+                permissions?.paid_salary && { label: 'Paid Salary Report', path: '/reports/pay-monthly-salary' },
+                permissions?.salary_generation_status && { label: 'Salary Generation Status', path: '/reports/salary-generation-status' },
                 permissions?.custom_range && { label: 'Custom Range Report', path: '/reports/daterangereport' },
             ].filter(Boolean)
         },

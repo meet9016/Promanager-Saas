@@ -628,7 +628,7 @@ const App = () => {
               <Route
                 path="/shift-reallocation"
                 element={
-                  <PermissionRoute permission="shift_assign">
+                  <PermissionRoute permission="shift_reallocation_view">
                     <ShiftReallocation />
                   </PermissionRoute>}
               />
@@ -660,9 +660,9 @@ const App = () => {
                 path="/holiday"
                 element={
 
-                  <ProtectedRoute>
+                  <PermissionRoute permission="holiday_view">
                     <Holiday />
-                  </ProtectedRoute>
+                  </PermissionRoute>
 
                 }
               />
@@ -768,25 +768,25 @@ const App = () => {
               <Route
                 path="/reports/attendance-exception"
                 element={
-                  <ProtectedRoute>
+                  <PermissionRoute permission="attendance_exception">
                     <AttendanceExceptionReport />
-                  </ProtectedRoute>
+                  </PermissionRoute>
                 }
               />
 
               <Route
                 path="/reports/monthly-exception"
                 element={
-                  <ProtectedRoute>
+                  <PermissionRoute permission="monthly_exception">
                     <MonthlyExceptionReport />
-                  </ProtectedRoute>
+                  </PermissionRoute>
                 }
               />
 
               <Route
                 path="/reports/daily-attendance-detailed"
                 element={
-                  <PermissionRoute permission="daily_attendance">
+                  <PermissionRoute permission="daily_attendance_detailed">
                     <DetailedDailyReport />
                   </PermissionRoute>
                 }
@@ -804,7 +804,7 @@ const App = () => {
               <Route
                 path="/reports/monthly-attendance-muster"
                 element={
-                  <PermissionRoute permission="monthly_attendance">
+                  <PermissionRoute permission="monthly_muster">
                     <MonthlyMusterPreview />
                   </PermissionRoute>
                 }
@@ -831,24 +831,24 @@ const App = () => {
               <Route
                 path="/reports/pay-monthly-salary"
                 element={
-                  <ProtectedRoute>
+                  <PermissionRoute permission="paid_salary">
                     <PayMonthlySalaryReport />
-                  </ProtectedRoute>
+                  </PermissionRoute>
                 }
               />
               <Route
                 path="/reports/salary-generation-status"
                 element={
-                  <ProtectedRoute>
+                  <PermissionRoute permission="salary_generation_status">
                     <SalaryGenerationStatusReport />
-                  </ProtectedRoute>
+                  </PermissionRoute>
                 }
               />
 
               <Route
                 path="/reports/geolocation-report"
                 element={
-                  <PermissionRoute permission="daily_attendance">
+                  <PermissionRoute permission="geolocation_attendance">
                     <GeolocationReport />
                   </PermissionRoute>
                 }

@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useEffect } from "react";
+import { useSelector } from "react-redux";
 import { useAuth } from '../../context/AuthContext';
 import api from '../../api/axiosInstance';
 import {
@@ -25,6 +26,7 @@ import { Toast } from "../../Components/ui/Toast";
 
 export default function HolidayManagement() {
     const { user } = useAuth();
+    const permissions = useSelector(state => state.permissions) || {};
 
     // Form state includes holiday_paid (1 = paid, 2 = unpaid)
     const [selectedDates, setSelectedDates] = useState([]);
@@ -388,15 +390,17 @@ export default function HolidayManagement() {
                                 Holiday List
                             </h3>
                             <div className="flex gap-3">
-                                <button
-                                    onClick={() => {
-                                        resetForm();
-                                        setCreateModal(true);
-                                    }}
-                                    className="flex items-center gap-2 bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white px-4 py-2 rounded-lg font-medium text-sm transition-colors shadow-sm"
-                                >
-                                    <Plus size={18} /> Add Holiday
-                                </button>
+                                {permissions['holiday_create'] && (
+                                    <button
+                                        onClick={() => {
+                                            resetForm();
+                                            setCreateModal(true);
+                                        }}
+                                        className="flex items-center gap-2 bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white px-4 py-2 rounded-lg font-medium text-sm transition-colors shadow-sm"
+                                    >
+                                        <Plus size={18} /> Add Holiday
+                                    </button>
+                                )}
                             </div>
                         </div>
                     </div>
@@ -480,27 +484,33 @@ export default function HolidayManagement() {
                                                 </td>
                                                 <td className="px-6 py-4 align-top">
                                                     <div className="flex items-center gap-2">
-                                                        <button
-                                                            onClick={() => handleView(h)}
-                                                            className="p-2 text-[var(--color-primary)] hover:bg-[var(--color-primary-lightest)] rounded-lg transition-colors"
-                                                            title="View Details"
-                                                        >
-                                                            <Eye size={16} />
-                                                        </button>
-                                                        <button
-                                                            onClick={() => handleEdit(h)}
-                                                            className="p-2 text-amber-600 hover:bg-amber-50 rounded-lg transition-colors"
-                                                            title="Edit"
-                                                        >
-                                                            <Edit2 size={16} />
-                                                        </button>
-                                                        <button
-                                                            onClick={() => setDeleteDialog({ isOpen: true, holidayId: h.holiday_id, holidayName: h.holiday_name })}
-                                                            className="p-2 text-[var(--color-error)] hover:bg-[var(--color-error-light)] rounded-lg transition-colors"
-                                                            title="Delete"
-                                                        >
-                                                            <Trash2 size={16} />
-                                                        </button>
+                                                        {permissions['holiday_view'] && (
+                                                            <button
+                                                                onClick={() => handleView(h)}
+                                                                className="p-2 text-[var(--color-primary)] hover:bg-[var(--color-primary-lightest)] rounded-lg transition-colors"
+                                                                title="View Details"
+                                                            >
+                                                                <Eye size={16} />
+                                                            </button>
+                                                        )}
+                                                        {permissions['holiday_edit'] && (
+                                                            <button
+                                                                onClick={() => handleEdit(h)}
+                                                                className="p-2 text-amber-600 hover:bg-amber-50 rounded-lg transition-colors"
+                                                                title="Edit"
+                                                            >
+                                                                <Edit2 size={16} />
+                                                            </button>
+                                                        )}
+                                                        {permissions['holiday_delete'] && (
+                                                            <button
+                                                                onClick={() => setDeleteDialog({ isOpen: true, holidayId: h.holiday_id, holidayName: h.holiday_name })}
+                                                                className="p-2 text-[var(--color-error)] hover:bg-[var(--color-error-light)] rounded-lg transition-colors"
+                                                                title="Delete"
+                                                            >
+                                                                <Trash2 size={16} />
+                                                            </button>
+                                                        )}
                                                     </div>
                                                 </td>
                                             </tr>
@@ -512,16 +522,18 @@ export default function HolidayManagement() {
                                             <Calendar className="h-12 w-12 mx-auto mb-4 text-[var(--color-text-muted)]" />
                                             <p className="font-semibold text-[var(--color-text-primary)] text-lg mb-1">No holidays found</p>
                                             <p className="text-[var(--color-text-secondary)] text-sm mb-4">Get started by adding your first holiday</p>
-                                            <button
-                                                onClick={() => {
-                                                    resetForm();
-                                                    setCreateModal(true);
-                                                }}
-                                                className="inline-flex items-center gap-2 bg-[var(--color-primary)] text-white px-5 py-2.5 rounded-lg hover:bg-[var(--color-primary-dark)] transition-colors font-medium"
-                                            >
-                                                <Plus size={18} />
-                                                Add Holiday
-                                            </button>
+                                            {permissions['holiday_create'] && (
+                                                <button
+                                                    onClick={() => {
+                                                        resetForm();
+                                                        setCreateModal(true);
+                                                    }}
+                                                    className="inline-flex items-center gap-2 bg-[var(--color-primary)] text-white px-5 py-2.5 rounded-lg hover:bg-[var(--color-primary-dark)] transition-colors font-medium"
+                                                >
+                                                    <Plus size={18} />
+                                                    Add Holiday
+                                                </button>
+                                            )}
                                         </td>
                                     </tr>
                                 )}
