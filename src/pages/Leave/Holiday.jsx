@@ -312,33 +312,7 @@ export default function HolidayManagement() {
             )}
 
             <div className="p-4 sm:p-8 lg:p-8  mx-auto">
-                <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-custom mb-8 overflow-hidden">
-                    <div className="bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] p-8">
-                        <div className="flex items-center justify-between gap-4">
-                            <div className="flex items-center gap-4">
-                                <button
-                                    onClick={() => window.history.back()}
-                                    className="flex items-center gap-2 text-[var(--color-text-white)] hover:text-[var(--color-text-white-90)] transition-colors bg-[var(--color-bg-secondary-20)] hover:bg-[var(--color-bg-secondary-30)] px-4 py-2 rounded-lg backdrop-blur-sm"
-                                >
-                                    <ArrowLeft size={18} />
-                                    Back
-                                </button>
-                                <div>
-                                    <h1 className="text-2xl font-bold text-[var(--color-text-white)]">
-                                        Holiday Management for {currentYear}
-                                    </h1>
-                                </div>
-                            </div>
-                            <button
-                                onClick={() => setShowCalendarView(!showCalendarView)}
-                                className="flex items-center gap-2 px-4 py-2 bg-[var(--color-bg-secondary-20)] hover:bg-[var(--color-bg-secondary-30)] text-white rounded-lg transition-colors font-medium shadow-sm backdrop-blur-sm"
-                            >
-                                <CalendarDays size={18} />
-                                {showCalendarView ? "List View" : "Calendar View"}
-                            </button>
-                        </div>
-                    </div>
-                </div>
+
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                     <StatCard title="Total Holidays" value={stats.totalHolidays} icon={<Calendar size={24} />} color="primary" />
@@ -347,41 +321,7 @@ export default function HolidayManagement() {
                     <StatCard title="Public Holidays" value={stats.byType["Public Holiday"] || 0} icon={<Building2 size={24} />} color="purple" />
                 </div>
 
-                {showCalendarView && (
-                    <section className="bg-[var(--color-bg-secondary)] rounded-xl shadow-sm border border-[var(--color-border-primary)] mb-6 p-8">
-                        <div className="flex items-center justify-between mb-6">
-                            <h3 className="text-lg font-semibold text-[var(--color-text-primary)] flex items-center gap-2">
-                                <Calendar size={20} className="text-[var(--color-primary)]" />
-                                Holiday Calendar
-                            </h3>
-                        </div>
 
-                        <CalendarComponent
-                            holidays={holidays}
-                            currentMonth={currentMonth}
-                            setCurrentMonth={setCurrentMonth}
-                            getHolidayForDate={getHolidayForDate}
-                        />
-
-                        <div className="mt-6 pt-6 border-t border-[var(--color-border-primary)]">
-                            <h4 className="text-sm font-semibold text-[var(--color-text-primary)] mb-3">Upcoming Holidays</h4>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                                {holidays.slice(0, 4).map((holiday) => {
-                                    const dates = Array.isArray(holiday.holiday_dates) ? holiday.holiday_dates : (holiday.holiday_dates ? holiday.holiday_dates.split(',') : []);
-                                    return (
-                                        <div key={holiday.holiday_id} className="flex items-center gap-3 p-3 bg-[var(--color-bg-primary)] rounded-lg border border-[var(--color-border-secondary)] hover:border-[var(--color-primary)] transition-colors">
-                                            <div className={`w-2 h-2 rounded-full flex-shrink-0 ${holiday.holiday_type_name === "Public Holiday" ? "bg-primary-500" : holiday.holiday_type_name === "National" ? "bg-green-500" : holiday.holiday_type_name === "Festival" ? "bg-pink-500" : "bg-amber-500"}`}></div>
-                                            <div className="flex-1 min-w-0">
-                                                <p className="text-sm font-semibold text-[var(--color-text-primary)] truncate">{holiday.holiday_name}</p>
-                                                <p className="text-xs text-[var(--color-text-secondary)]">{dates[0]}</p>
-                                            </div>
-                                        </div>
-                                    );
-                                })}
-                            </div>
-                        </div>
-                    </section>
-                )}
 
                 <section className="bg-[var(--color-bg-secondary)] rounded-xl shadow-sm border border-[var(--color-border-primary)] overflow-hidden">
                     <div className="px-6 py-4 border-b border-[var(--color-border-primary)] bg-[var(--color-primary-dark)]">
@@ -390,7 +330,7 @@ export default function HolidayManagement() {
                                 <Calendar size={20} />
                                 Holiday List
                             </h3>
-                            <div className="flex gap-3">
+                             <div className="flex gap-3">
                                 {permissions['holiday_create'] && (
                                     <button
                                         onClick={() => {
@@ -402,145 +342,183 @@ export default function HolidayManagement() {
                                         <Plus size={18} /> Add Holiday
                                     </button>
                                 )}
+                                <button
+                                    onClick={() => setShowCalendarView(!showCalendarView)}
+                                    className="flex items-center gap-2 px-4 py-2 bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white rounded-lg transition-colors font-medium text-sm shadow-sm"
+                                >
+                                    <CalendarDays size={18} />
+                                    {showCalendarView ? "List View" : "Calendar View"}
+                                </button>
                             </div>
                         </div>
                     </div>
 
-                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 px-6 py-4 bg-[var(--color-bg-primary)] border-b border-[var(--color-border-primary)]">
-                        <div className="relative w-full sm:w-80">
-                            <input
-                                type="text"
-                                placeholder="Search holidays..."
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                                className="w-full pl-10 pr-4 py-2.5 border border-[var(--color-border-secondary)] rounded-lg text-sm focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-all bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)]"
+                    {showCalendarView ? (
+                        <div className="p-8">
+                            <CalendarComponent
+                                holidays={holidays}
+                                currentMonth={currentMonth}
+                                setCurrentMonth={setCurrentMonth}
+                                getHolidayForDate={getHolidayForDate}
                             />
-                            <Search className="absolute left-3 top-3 h-4 w-4 text-[var(--color-text-muted)]" />
-                        </div>
 
-                        <div className="relative w-full sm:w-auto">
-                            <select
-                                className="pl-10 pr-8 py-2.5 border border-[var(--color-border-secondary)] rounded-lg text-sm focus:ring-2 focus:ring-[var(--color-primary)] bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)] appearance-none cursor-pointer min-w-[180px]"
-                                value={filterType}
-                                onChange={(e) => setFilterType(e.target.value)}
-                            >
-                                <option value="">All Types</option>
-                                {holidayTypes.map((type) => (
-                                    <option key={type.holiday_type_id} value={type.holiday_type_id}>
-                                        {type.holiday_type_name}
-                                    </option>
-                                ))}
-                            </select>
-                            <Filter className="absolute left-3 top-3 h-4 w-4 text-[var(--color-text-muted)] pointer-events-none" />
-                        </div>
-                    </div>
-
-                    <div className="overflow-x-auto">
-                        <table className="min-w-full divide-y divide-[var(--color-border-divider)]">
-                            <thead className="bg-[var(--color-bg-primary)]">
-                                <tr>
-                                    {["Holiday Name", "Type", "Paid?", "Dates", "Description", "Actions"].map((head) => (
-                                        <th key={head} className="px-6 py-3 text-left text-xs font-semibold text-[var(--color-text-secondary)] uppercase tracking-wider">
-                                            {head}
-                                        </th>
-                                    ))}
-                                </tr>
-                            </thead>
-                            <tbody className="bg-[var(--color-bg-secondary)] divide-y divide-[var(--color-border-divider)]">
-                                {holidays.length ? (
-                                    holidays.map((h) => {
-                                        const dates = Array.isArray(h.holiday_dates) ? h.holiday_dates : (h.holiday_dates ? h.holiday_dates.split(',') : []);
+                            <div className="mt-6 pt-6 border-t border-[var(--color-border-primary)]">
+                                <h4 className="text-sm font-semibold text-[var(--color-text-primary)] mb-3">Upcoming Holidays</h4>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                                    {holidays.slice(0, 4).map((holiday) => {
+                                        const dates = Array.isArray(holiday.holiday_dates) ? holiday.holiday_dates : (holiday.holiday_dates ? holiday.holiday_dates.split(',') : []);
                                         return (
-                                            <tr key={h.holiday_id} className="hover:bg-[var(--color-bg-hover)] transition-colors align-top">
-                                                <td className="px-6 py-4 align-top">
-                                                    <div className="font-semibold text-[var(--color-text-primary)]">{h.holiday_name}</div>
-                                                </td>
-                                                <td className="px-6 py-4 align-top">
-                                                    <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border ${getTypeColor(h.holiday_type_name)}`}>
-                                                        {getTypeIcon(h.holiday_type_name)}
-                                                        {h.holiday_type_name}
-                                                    </span>
-                                                </td>
+                                            <div key={holiday.holiday_id} className="flex items-center gap-3 p-3 bg-[var(--color-bg-primary)] rounded-lg border border-[var(--color-border-secondary)] hover:border-[var(--color-primary)] transition-colors">
+                                                <div className={`w-2 h-2 rounded-full flex-shrink-0 ${holiday.holiday_type_name === "Public Holiday" ? "bg-primary-500" : holiday.holiday_type_name === "National" ? "bg-green-500" : holiday.holiday_type_name === "Festival" ? "bg-pink-500" : "bg-amber-500"}`}></div>
+                                                <div className="flex-1 min-w-0">
+                                                    <p className="text-sm font-semibold text-[var(--color-text-primary)] truncate">{holiday.holiday_name}</p>
+                                                    <p className="text-xs text-[var(--color-text-secondary)]">{dates[0]}</p>
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+                        </div>
+                    ) : (
+                        <>
+                            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 px-6 py-4 bg-[var(--color-bg-primary)] border-b border-[var(--color-border-primary)]">
+                                <div className="relative w-full sm:w-80">
+                                    <input
+                                        type="text"
+                                        placeholder="Search holidays..."
+                                        value={searchTerm}
+                                        onChange={(e) => setSearchTerm(e.target.value)}
+                                        className="w-full pl-10 pr-4 py-2.5 border border-[var(--color-border-secondary)] rounded-lg text-sm focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-all bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)]"
+                                    />
+                                    <Search className="absolute left-3 top-3 h-4 w-4 text-[var(--color-text-muted)]" />
+                                </div>
 
-                                                <td className="px-6 py-4 align-top">
-                                                    {h.holiday_paid === "1" ? (
-                                                        <span className="px-3 py-1 text-xs bg-green-100 text-green-700 rounded-full">Paid</span>
-                                                    ) : (
-                                                        <span className="px-3 py-1 text-xs bg-red-100 text-red-700 rounded-full">Unpaid</span>
+                                <div className="relative w-full sm:w-auto">
+                                    <select
+                                        className="pl-10 pr-8 py-2.5 border border-[var(--color-border-secondary)] rounded-lg text-sm focus:ring-2 focus:ring-[var(--color-primary)] bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)] appearance-none cursor-pointer min-w-[180px]"
+                                        value={filterType}
+                                        onChange={(e) => setFilterType(e.target.value)}
+                                    >
+                                        <option value="">All Types</option>
+                                        {holidayTypes.map((type) => (
+                                            <option key={type.holiday_type_id} value={type.holiday_type_id}>
+                                                {type.holiday_type_name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                    <Filter className="absolute left-3 top-3 h-4 w-4 text-[var(--color-text-muted)] pointer-events-none" />
+                                </div>
+                            </div>
+
+                            <div className="overflow-x-auto">
+                                <table className="min-w-full divide-y divide-[var(--color-border-divider)]">
+                                    <thead className="bg-[var(--color-bg-primary)]">
+                                        <tr>
+                                            {["Holiday Name", "Type", "Paid?", "Dates", "Description", "Actions"].map((head) => (
+                                                <th key={head} className="px-6 py-3 text-left text-xs font-semibold text-[var(--color-text-secondary)] uppercase tracking-wider">
+                                                    {head}
+                                                </th>
+                                            ))}
+                                        </tr>
+                                    </thead>
+                                    <tbody className="bg-[var(--color-bg-secondary)] divide-y divide-[var(--color-border-divider)]">
+                                        {holidays.length ? (
+                                            holidays.map((h) => {
+                                                const dates = Array.isArray(h.holiday_dates) ? h.holiday_dates : (h.holiday_dates ? h.holiday_dates.split(',') : []);
+                                                return (
+                                                    <tr key={h.holiday_id} className="hover:bg-[var(--color-bg-hover)] transition-colors align-top">
+                                                        <td className="px-6 py-4 align-top">
+                                                            <div className="font-semibold text-[var(--color-text-primary)]">{h.holiday_name}</div>
+                                                        </td>
+                                                        <td className="px-6 py-4 align-top">
+                                                            <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border ${getTypeColor(h.holiday_type_name)}`}>
+                                                                {getTypeIcon(h.holiday_type_name)}
+                                                                {h.holiday_type_name}
+                                                            </span>
+                                                        </td>
+
+                                                        <td className="px-6 py-4 align-top">
+                                                            {h.holiday_paid === "1" ? (
+                                                                <span className="px-3 py-1 text-xs bg-green-100 text-green-700 rounded-full">Paid</span>
+                                                            ) : (
+                                                                <span className="px-3 py-1 text-xs bg-red-100 text-red-700 rounded-full">Unpaid</span>
+                                                            )}
+                                                        </td>
+
+                                                        <td className="px-6 py-4 align-top max-w-[280px]">
+                                                            <div className="flex flex-wrap gap-1 text-xs max-h-20 overflow-y-auto pr-2">
+                                                                {dates.map((d, idx) => (
+                                                                    <span key={idx} className="px-2 py-0.5 bg-primary-50 text-primary-700 rounded border border-primary-200">
+                                                                        {d}
+                                                                    </span>
+                                                                ))}
+                                                            </div>
+                                                        </td>
+
+                                                        <td className="px-6 py-4 text-sm text-[var(--color-text-secondary)] max-w-xs align-top">
+                                                            <div className="truncate">{h.description || "-"}</div>
+                                                        </td>
+                                                        <td className="px-6 py-4 align-top">
+                                                            <div className="flex items-center gap-3">
+                                                                {permissions['holiday_view'] && (
+                                                                    <button
+                                                                        onClick={() => handleView(h)}
+                                                                        className="w-9 h-9 flex items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 hover:bg-emerald-100 hover:scale-110 hover:shadow-md transition-all duration-200"
+                                                                        title="View Details"
+                                                                    >
+                                                                        <Eye size={16} strokeWidth={2.5} />
+                                                                    </button>
+                                                                )}
+                                                                {permissions['holiday_edit'] && (
+                                                                    <button
+                                                                        onClick={() => handleEdit(h)}
+                                                                        className="w-9 h-9 flex items-center justify-center rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-100 hover:scale-110 hover:shadow-md transition-all duration-200"
+                                                                        title="Edit"
+                                                                    >
+                                                                        <Edit size={16} strokeWidth={2.5} />
+                                                                    </button>
+                                                                )}
+                                                                {permissions['holiday_delete'] && (
+                                                                    <button
+                                                                        onClick={() => setDeleteDialog({ isOpen: true, holidayId: h.holiday_id, holidayName: h.holiday_name })}
+                                                                        className="w-9 h-9 flex items-center justify-center rounded-xl bg-red-50 text-red-500 hover:bg-red-100 hover:scale-110 hover:shadow-md transition-all duration-200"
+                                                                        title="Delete"
+                                                                    >
+                                                                        <Trash2 size={16} strokeWidth={2.5} />
+                                                                    </button>
+                                                                )}
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                );
+                                            })
+                                        ) : (
+                                            <tr>
+                                                <td colSpan="6" className="py-16 text-center">
+                                                    <Calendar className="h-12 w-12 mx-auto mb-4 text-[var(--color-text-muted)]" />
+                                                    <p className="font-semibold text-[var(--color-text-primary)] text-lg mb-1">No holidays found</p>
+                                                    <p className="text-[var(--color-text-secondary)] text-sm mb-4">Get started by adding your first holiday</p>
+                                                    {permissions['holiday_create'] && (
+                                                        <button
+                                                            onClick={() => {
+                                                                resetForm();
+                                                                setCreateModal(true);
+                                                            }}
+                                                            className="inline-flex items-center gap-2 bg-[var(--color-primary)] text-white px-5 py-2.5 rounded-lg hover:bg-[var(--color-primary-dark)] transition-colors font-medium"
+                                                        >
+                                                            <Plus size={18} />
+                                                            Add Holiday
+                                                        </button>
                                                     )}
                                                 </td>
-
-                                                <td className="px-6 py-4 align-top max-w-[280px]">
-                                                    <div className="flex flex-wrap gap-1 text-xs max-h-20 overflow-y-auto pr-2">
-                                                        {dates.map((d, idx) => (
-                                                            <span key={idx} className="px-2 py-0.5 bg-primary-50 text-primary-700 rounded border border-primary-200">
-                                                                {d}
-                                                            </span>
-                                                        ))}
-                                                    </div>
-                                                </td>
-
-                                                <td className="px-6 py-4 text-sm text-[var(--color-text-secondary)] max-w-xs align-top">
-                                                    <div className="truncate">{h.description || "-"}</div>
-                                                </td>
-                                                <td className="px-6 py-4 align-top">
-                                                    <div className="flex items-center gap-3">
-                                                        {permissions['holiday_view'] && (
-                                                            <button
-                                                                onClick={() => handleView(h)}
-                                                                className="w-9 h-9 flex items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 hover:bg-emerald-100 hover:scale-110 hover:shadow-md transition-all duration-200"
-                                                                title="View Details"
-                                                            >
-                                                                <Eye size={16} strokeWidth={2.5} />
-                                                            </button>
-                                                        )}
-                                                        {permissions['holiday_edit'] && (
-                                                            <button
-                                                                onClick={() => handleEdit(h)}
-                                                                className="w-9 h-9 flex items-center justify-center rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-100 hover:scale-110 hover:shadow-md transition-all duration-200"
-                                                                title="Edit"
-                                                            >
-                                                                <Edit size={16} strokeWidth={2.5} />
-                                                            </button>
-                                                        )}
-                                                        {permissions['holiday_delete'] && (
-                                                            <button
-                                                                onClick={() => setDeleteDialog({ isOpen: true, holidayId: h.holiday_id, holidayName: h.holiday_name })}
-                                                                className="w-9 h-9 flex items-center justify-center rounded-xl bg-red-50 text-red-500 hover:bg-red-100 hover:scale-110 hover:shadow-md transition-all duration-200"
-                                                                title="Delete"
-                                                            >
-                                                                <Trash2 size={16} strokeWidth={2.5} />
-                                                            </button>
-                                                        )}
-                                                    </div>
-                                                </td>
                                             </tr>
-                                        );
-                                    })
-                                ) : (
-                                    <tr>
-                                        <td colSpan="6" className="py-16 text-center">
-                                            <Calendar className="h-12 w-12 mx-auto mb-4 text-[var(--color-text-muted)]" />
-                                            <p className="font-semibold text-[var(--color-text-primary)] text-lg mb-1">No holidays found</p>
-                                            <p className="text-[var(--color-text-secondary)] text-sm mb-4">Get started by adding your first holiday</p>
-                                            {permissions['holiday_create'] && (
-                                                <button
-                                                    onClick={() => {
-                                                        resetForm();
-                                                        setCreateModal(true);
-                                                    }}
-                                                    className="inline-flex items-center gap-2 bg-[var(--color-primary)] text-white px-5 py-2.5 rounded-lg hover:bg-[var(--color-primary-dark)] transition-colors font-medium"
-                                                >
-                                                    <Plus size={18} />
-                                                    Add Holiday
-                                                </button>
-                                            )}
-                                        </td>
-                                    </tr>
-                                )}
-                            </tbody>
-                        </table>
-                    </div>
+                                        )}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </>
+                    )}
                 </section>
 
                 {/* Create/Edit Modal */}

@@ -462,7 +462,7 @@ export default function FinalizePayroll() {
     <div className="min-h-screen bg-[var(--color-bg-primary)]">
       <div className="p-8  mx-auto">
         {/* Header Section */}
-        <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-xl mb-8 overflow-hidden">
+        {/* <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-xl mb-8 overflow-hidden">
           <div className="bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] p-8">
             <div className="flex items-center gap-4">
               <button
@@ -486,7 +486,7 @@ export default function FinalizePayroll() {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
 
         {/* Main Content */}
         <div className="bg-[var(--color-bg-secondary)] rounded-lg border border-[var(--color-primary-dark)] overflow-hidden shadow-sm">

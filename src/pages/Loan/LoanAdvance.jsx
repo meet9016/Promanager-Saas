@@ -551,7 +551,7 @@ const LoanAdvance = () => {
                     type="danger"
                 />
 
-                <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-xl mb-8 overflow-hidden">
+                {/* <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-xl mb-8 overflow-hidden">
                     <div className="bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] p-8">
                         <div className="flex items-center gap-4">
                             <button
@@ -570,7 +570,7 @@ const LoanAdvance = () => {
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> */}
 
                 <div className="bg-[var(--color-bg-secondary)] rounded-lg border border-[var(--color-primary-dark)] overflow-hidden shadow-sm">
                     <div className="px-6 py-3 border-b border-[var(--color-primary-light)] bg-[var(--color-primary-dark)]">

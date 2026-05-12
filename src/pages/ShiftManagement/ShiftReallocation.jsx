@@ -488,7 +488,7 @@ const ShiftReallocation = () => {
         <div className="min-h-screen bg-[var(--color-bg-primary)]">
             <div className=" mx-auto p-8">
                 {/* Header */}
-                <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-xl mb-8 overflow-hidden">
+                {/* <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-xl mb-8 overflow-hidden">
                     <div className="bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] p-8">
                         <div className="flex items-center gap-4">
                             <button
@@ -503,7 +503,7 @@ const ShiftReallocation = () => {
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> */}
 
                 {/* List View */}
                 {view === 'list' && (

@@ -357,7 +357,7 @@ const LeaveManagement = () => {
     return (
         <div className="min-h-screen bg-[var(--color-bg-primary)]">
             <div className="p-8  mx-auto">
-                <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-custom mb-8 overflow-hidden">
+                {/* <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-custom mb-8 overflow-hidden">
                     <div className="bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] p-8">
                         <div className="flex items-center gap-4">
                             <button
@@ -376,7 +376,7 @@ const LeaveManagement = () => {
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> */}
 
                 <div className="bg-[var(--color-bg-secondary)] rounded-xl border border-[var(--color-border-primary)] overflow-hidden shadow-custom">
                     {/* Header section with tabs */}

@@ -190,7 +190,7 @@ const Role = () => {
         <>
             <div className="min-h-screen bg-[var(--color-bg-primary)]">
                 <div className="p-8  mx-auto">
-                    <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-xl mb-8 overflow-hidden">
+                    {/* <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-xl mb-8 overflow-hidden">
                         <div className="bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] p-8">
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-4">
@@ -222,12 +222,24 @@ const Role = () => {
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> */}
 
                     <div className="bg-[var(--color-bg-secondary)] rounded-lg border border-[var(--color-primary-dark)] overflow-hidden shadow-sm">
                         <div className="px-6 py-4 border-b border-[var(--color-primary-light)] bg-[var(--color-primary-dark)]">
                             <div className="flex items-center justify-between">
                                 <h3 className="text-lg font-medium text-[var(--color-text-white)]">All Roles</h3>
+
+                                <div className="flex items-center gap-3">
+                                    {permissions['user_roles_create'] && (
+                                        <button
+                                            onClick={handleCreateRole}
+                                            className="flex items-center space-x-2 text-[var(--color-text-white)] hover:text-[var(--color-text-white)] transition-colors bg-[var(--color-bg-secondary-20)] hover:bg-[var(--color-bg-secondary-30)] px-4 py-2 rounded-md "
+                                        >
+                                            <Plus className="w-4 h-4" />
+                                            <span>Create Role</span>
+                                        </button>
+                                    )}
+                                </div>
                             </div>
                         </div>
 

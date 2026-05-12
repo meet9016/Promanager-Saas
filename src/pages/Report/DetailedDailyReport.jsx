@@ -804,70 +804,7 @@ const DetailedDailyReport = () => {
             {toast && <Toast message={toast.message} type={toast.type} onClose={closeToast} />}
 
             <div className="p-8  mx-auto">
-                {/* Header */}
-                <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-xl mb-8 overflow-hidden">
-                    <div className="bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] p-8">
-                        <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-4">
-                                <button
-                                    onClick={() => navigate('/reports')}
-                                    className="flex items-center gap-2 text-[var(--color-text-white)] transition-colors bg-[var(--color-bg-secondary-20)] hover:bg-[var(--color-bg-secondary-30)] px-4 py-2 rounded-lg backdrop-blur-sm"
-                                >
-                                    <ArrowLeft size={18} />
-                                    Back
-                                </button>
-                                <h1 className="text-2xl font-bold text-[var(--color-text-white)]">Detailed Daily Attendance</h1>
-                            </div>
 
-                            <div className="flex items-center gap-3">
-                                {/* Export */}
-                                <div className="relative">
-                                    <button
-                                        ref={exportBtnRef}
-                                        onClick={() => setExportDropdown((v) => !v)}
-                                        className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-lg font-medium transition-colors"
-                                    >
-                                        <Download className="h-4 w-4" />
-                                        Export
-                                        <ChevronDown className="h-4 w-4" />
-                                    </button>
-
-                                    {exportDropdown && exportPos.ready && createPortal(
-                                        <>
-                                            <div className="fixed inset-0 z-40" onClick={() => setExportDropdown(false)} />
-                                            <div
-                                                className="absolute z-50 bg-[var(--color-bg-secondary)] rounded-lg shadow-2xl border border-[var(--color-border-secondary)] py-2"
-                                                style={{
-                                                    position: 'absolute',
-                                                    top: exportPos.top,
-                                                    left: exportPos.left,
-                                                    width: Math.max(192, exportPos.width),
-                                                    minWidth: 192
-                                                }}
-                                            >
-                                                <button
-                                                    onClick={handleExportToExcel}
-                                                    className="flex items-center gap-2 w-full px-4 py-2 text-left hover:bg-[var(--color-bg-hover)] transition-colors text-[var(--color-text-primary)]"
-                                                >
-                                                    <FileSpreadsheet className="h-4 w-4 text-primary-600" />
-                                                    Export to Excel
-                                                </button>
-                                                <button
-                                                    onClick={handleExportToPDF}
-                                                    className="flex items-center gap-2 w-full px-4 py-2 text-left hover:bg-[var(--color-bg-hover)] transition-colors text-[var(--color-text-primary)]"
-                                                >
-                                                    <FileDown className="h-4 w-4 text-red-600" />
-                                                    Export to PDF
-                                                </button>
-                                            </div>
-                                        </>,
-                                        document.body
-                                    )}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
                 {/* Summary cards (API-driven) */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 mb-6">
@@ -889,6 +826,8 @@ const DetailedDailyReport = () => {
                             </div>
 
                             <div className="flex items-center gap-3">
+                                {/* Export */}
+
                                 {/* Date */}
                                 <div className="flex items-center space-x-2 z-20">
                                     <Calendar className="w-5 h-5 text-[var(--color-text-white)]" />
@@ -939,6 +878,50 @@ const DetailedDailyReport = () => {
                                     applyFilters={applyFilters}
                                     resetFilters={resetFilters}
                                 />
+
+                                <div className="relative">
+                                    <button
+                                        ref={exportBtnRef}
+                                        onClick={() => setExportDropdown((v) => !v)}
+                                        className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-lg font-medium transition-colors"
+                                    >
+                                        <Download className="h-4 w-4" />
+                                        Export
+                                        <ChevronDown className="h-4 w-4" />
+                                    </button>
+
+                                    {exportDropdown && exportPos.ready && createPortal(
+                                        <>
+                                            <div className="fixed inset-0 z-40" onClick={() => setExportDropdown(false)} />
+                                            <div
+                                                className="absolute z-50 bg-[var(--color-bg-secondary)] rounded-lg shadow-2xl border border-[var(--color-border-secondary)] py-2"
+                                                style={{
+                                                    position: 'absolute',
+                                                    top: exportPos.top,
+                                                    left: exportPos.left,
+                                                    width: Math.max(192, exportPos.width),
+                                                    minWidth: 192
+                                                }}
+                                            >
+                                                <button
+                                                    onClick={handleExportToExcel}
+                                                    className="flex items-center gap-2 w-full px-4 py-2 text-left hover:bg-[var(--color-bg-hover)] transition-colors text-[var(--color-text-primary)]"
+                                                >
+                                                    <FileSpreadsheet className="h-4 w-4 text-primary-600" />
+                                                    Export to Excel
+                                                </button>
+                                                <button
+                                                    onClick={handleExportToPDF}
+                                                    className="flex items-center gap-2 w-full px-4 py-2 text-left hover:bg-[var(--color-bg-hover)] transition-colors text-[var(--color-text-primary)]"
+                                                >
+                                                    <FileDown className="h-4 w-4 text-red-600" />
+                                                    Export to PDF
+                                                </button>
+                                            </div>
+                                        </>,
+                                        document.body
+                                    )}
+                                </div>
                             </div>
                         </div>
                     </div>

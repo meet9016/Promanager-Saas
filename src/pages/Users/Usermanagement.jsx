@@ -136,7 +136,7 @@ const UserManagement = () => {
         try {
             const userData = confirmModal.data;
             navigate(`/add-user?edit=${userData.edit_user_id}`);
-          
+
             setConfirmModal({ isOpen: false, type: '', data: null });
         } catch (error) {
             showToast('Error preparing user for editing', error);
@@ -207,7 +207,7 @@ const UserManagement = () => {
         <>
             <div className="min-h-screen bg-[var(--color-bg-primary)]">
                 <div className="p-8  mx-auto">
-                    <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-xl mb-8 overflow-hidden">
+                    {/* <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-xl mb-8 overflow-hidden">
                         <div className="bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] p-8">
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-4">
@@ -239,11 +239,25 @@ const UserManagement = () => {
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> */}
 
                     <div className="bg-[var(--color-bg-secondary)] rounded-lg border border-[var(--color-primary-dark)] overflow-hidden shadow-sm">
-                        <div className="px-6 py-4 border-b border-[var(--color-primary-light)] bg-[var(--color-primary-dark)]">
-                            <h3 className="text-lg font-medium text-[var(--color-text-white)]">All Users</h3>
+                        <div className="px-6 py-4 border-b border-[var(--color-primary-light)] bg-[var(--color-primary-dark)] flex items-center justify-between">
+                            <h3 className="text-lg font-medium text-[var(--color-text-white)]">
+                                All Users
+                            </h3>
+
+                            <div className="flex items-center gap-3">
+                                {permissions['user_create'] && (
+                                    <button
+                                        onClick={() => navigate('/add-user')}
+                                        className="flex items-center gap-2 text-[var(--color-text-white)] hover:text-[var(--color-text-white)] transition-colors bg-[var(--color-bg-secondary-20)] hover:bg-[var(--color-bg-secondary-30)] px-4 py-2 rounded-lg backdrop-blur-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                                    >
+                                        <Plus className="w-4 h-4" />
+                                        <span>Create User</span>
+                                    </button>
+                                )}
+                            </div>
                         </div>
 
                         {loading ? (

@@ -427,77 +427,7 @@ const EmployeeDirectoryReport = () => {
         <div className="min-h-screen bg-[var(--color-bg-primary)]">
             <div className="p-8  mx-auto">
                 {/* Header */}
-                <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-xl mb-8 overflow-hidden">
-                    <div className="bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] p-8">
-                        <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-4">
-                                <button
-                                    onClick={() => navigate('/reports')}
-                                    className="flex items-center gap-2 text-[var(--color-text-white)] bg-[var(--color-bg-secondary-20)] hover:bg-[var(--color-bg-secondary-30)] px-4 py-2 rounded-lg backdrop-blur-sm transition-colors"
-                                >
-                                    <ArrowLeft size={18} />
-                                    Back
-                                </button>
-                                <div className="flex items-center gap-3">
-                                    <h1 className="text-2xl font-bold text-[var(--color-text-white)]">Employee Directory</h1>
-                                </div>
-                            </div>
 
-                            <div className="flex items-center gap-3">
-                                {/* Export button */}
-                                <div className="relative">
-                                    <button
-                                        ref={exportBtnRef}
-                                        onClick={() => setExportDropdown((v) => !v)}
-                                        className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-lg font-medium transition-colors"
-                                    >
-                                        <Download className="h-4 w-4" />
-                                        Export
-                                        <ChevronDown className="h-4 w-4" />
-                                    </button>
-
-                                    {/* Export dropdown (anchored, scroll/resize-safe) */}
-                                    {exportDropdown &&
-                                        exportPos.ready &&
-                                        createPortal(
-                                            <>
-                                                <div
-                                                    className="fixed inset-0 z-[40]"
-                                                    onClick={() => setExportDropdown(false)}
-                                                />
-                                                <div
-                                                    className="absolute z-[50] bg-[var(--color-bg-secondary)] rounded-lg shadow-2xl border border-[var(--color-border-secondary)] py-2"
-                                                    style={{
-                                                        position: 'absolute',
-                                                        top: exportPos.top,
-                                                        left: exportPos.left,
-                                                        width: Math.max(192, exportPos.width),
-                                                        minWidth: 192
-                                                    }}
-                                                >
-                                                    <button
-                                                        onClick={handleExportExcel}
-                                                        className="flex items-center gap-2 w-full px-4 py-2 text-left hover:bg-[var(--color-bg-hover)] transition-colors text-[var(--color-text-secondary)]"
-                                                    >
-                                                        <FileSpreadsheet className="h-4 w-4 text-[var(--color-success)]" />
-                                                        Export to Excel
-                                                    </button>
-                                                    <button
-                                                        onClick={handleExportPDF}
-                                                        className="flex items-center gap-2 w-full px-4 py-2 text-left hover:bg-[var(--color-bg-hover)] transition-colors text-[var(--color-text-secondary)]"
-                                                    >
-                                                        <FileDown className="h-4 w-4 text-[var(--color-error)]" />
-                                                        Export to PDF
-                                                    </button>
-                                                </div>
-                                            </>,
-                                            document.body
-                                        )}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
                 {/* Summary */}
                 {summaryStats && (
@@ -551,229 +481,55 @@ const EmployeeDirectoryReport = () => {
                                     <h3 className="text-lg font-medium text-[var(--color-text-white)]">Employee Directory</h3>
                                 </div>
 
-                                {/* Filters button */}
-                                <div className="relative">
-                                    <button
-                                        ref={filterBtnRef}
-                                        onClick={() => setFilterDropdown((v) => !v)}
-                                        className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-lg font-medium transition-colors"
-                                    >
-                                        <Filter className="h-4 w-4" />
-                                        Filters
-                                        {activeFiltersCount > 0 && (
-                                            <span className="bg-[var(--color-primary-dark)] text-white text-xs rounded-full px-2 py-1">
-                                                {activeFiltersCount}
-                                            </span>
-                                        )}
-                                        <ChevronDown className="h-4 w-4" />
-                                    </button>
+                                <div className="flex items-center gap-3">
 
-                                    {/* Filters: anchored dropdown on desktop, full-screen sheet on mobile */}
-                                    {filterDropdown &&
-                                        createPortal(
-                                            <>
-                                                {/* backdrop */}
-                                                <div
-                                                    className="fixed inset-0 z-[100] bg-black/40"
-                                                    onClick={() => setFilterDropdown(false)}
-                                                />
 
-                                                {/* Desktop anchored (sm and up) */}
-                                                <div
-                                                    className="hidden sm:block absolute z-[110] bg-[var(--color-bg-secondary)] rounded-lg shadow-2xl border border-[var(--color-border-secondary)] max-h-[80vh] overflow-hidden flex flex-col"
-                                                    style={{
-                                                        position: 'absolute',
-                                                        top: filterPos.ready ? filterPos.top : -9999,
-                                                        left: filterPos.ready ? Math.max(12, filterPos.left) : -9999,
-                                                        width: Math.max(420, filterPos.width),
-                                                        minWidth: 420
-                                                    }}
-                                                >
-                                                    {/* Header */}
-                                                    <div className="flex items-center justify-between p-4 border-b border-[var(--color-border-secondary)] bg-[var(--color-bg-secondary)]">
-                                                        <h3 className="text-lg font-semibold text-[var(--color-text-primary)]">Filter Employees</h3>
-                                                        <button
-                                                            onClick={() => setFilterDropdown(false)}
-                                                            className="text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] p-1 rounded-lg hover:bg-[var(--color-bg-hover)]"
-                                                        >
-                                                            <X className="h-4 w-4" />
-                                                        </button>
-                                                    </div>
+                                    {/* Filters button */}
+                                    <div className="relative">
+                                        <button
+                                            ref={filterBtnRef}
+                                            onClick={() => setFilterDropdown((v) => !v)}
+                                            className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-lg font-medium transition-colors"
+                                        >
+                                            <Filter className="h-4 w-4" />
+                                            Filters
+                                            {activeFiltersCount > 0 && (
+                                                <span className="bg-[var(--color-primary-dark)] text-white text-xs rounded-full px-2 py-1">
+                                                    {activeFiltersCount}
+                                                </span>
+                                            )}
+                                            <ChevronDown className="h-4 w-4" />
+                                        </button>
 
-                                                    {dropdownLoading && (
-                                                        <div className="flex items-center gap-2 p-4 text-[var(--color-text-secondary)] border-b border-[var(--color-border-secondary)]">
-                                                            <Loader2 className="h-4 w-4 animate-spin" />
-                                                            <span className="text-sm">Loading filter options...</span>
-                                                        </div>
-                                                    )}
+                                        {/* Filters: anchored dropdown on desktop, full-screen sheet on mobile */}
+                                        {filterDropdown &&
+                                            createPortal(
+                                                <>
+                                                    {/* backdrop */}
+                                                    <div
+                                                        className="fixed inset-0 z-[100] bg-black/40"
+                                                        onClick={() => setFilterDropdown(false)}
+                                                    />
 
-                                                    <div className="flex-1 overflow-y-auto p-4">
-                                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                                            {/* Branch */}
-                                                            <div>
-                                                                <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
-                                                                    <Building className="inline h-4 w-4 mr-1" />
-                                                                    Branch
-                                                                </label>
-                                                                <select
-                                                                    value={filters.branch_id}
-                                                                    onChange={(e) => handleFilterChange('branch_id', e.target.value)}
-                                                                    className="w-full px-3 py-2 bg-[var(--color-bg-primary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent text-[var(--color-text-primary)] text-sm"
-                                                                    disabled={dropdownLoading}
-                                                                >
-                                                                    <option value="">All Branches</option>
-                                                                    {branches.map((b) => (
-                                                                        <option key={b.id} value={b.id}>{b.name}</option>
-                                                                    ))}
-                                                                </select>
-                                                            </div>
-
-                                                            {/* Department */}
-                                                            <div>
-                                                                <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
-                                                                    <Users className="inline h-4 w-4 mr-1" />
-                                                                    Department
-                                                                </label>
-                                                                <select
-                                                                    value={filters.department_id}
-                                                                    onChange={(e) => handleFilterChange('department_id', e.target.value)}
-                                                                    className="w-full px-3 py-2 bg-[var(--color-bg-primary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent text-[var(--color-text-primary)] text-sm"
-                                                                    disabled={dropdownLoading}
-                                                                >
-                                                                    <option value="">All Departments</option>
-                                                                    {departments.map((d) => (
-                                                                        <option key={d.id} value={d.id}>{d.name}</option>
-                                                                    ))}
-                                                                </select>
-                                                            </div>
-
-                                                            {/* Designation */}
-                                                            <div>
-                                                                <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
-                                                                    <Award className="inline h-4 w-4 mr-1" />
-                                                                    Designation
-                                                                </label>
-                                                                <select
-                                                                    value={filters.designation_id}
-                                                                    onChange={(e) => handleFilterChange('designation_id', e.target.value)}
-                                                                    className="w-full px-3 py-2 bg-[var(--color-bg-primary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent text-[var(--color-text-primary)] text-sm"
-                                                                    disabled={dropdownLoading}
-                                                                >
-                                                                    <option value="">All Designations</option>
-                                                                    {designations.map((g) => (
-                                                                        <option key={g.id} value={g.id}>{g.name}</option>
-                                                                    ))}
-                                                                </select>
-                                                            </div>
-
-                                                            {/* Employee Type */}
-                                                            <div>
-                                                                <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
-                                                                    <Briefcase className="inline h-4 w-4 mr-1" />
-                                                                    Employee Type
-                                                                </label>
-                                                                <select
-                                                                    value={filters.employee_type_id}
-                                                                    onChange={(e) => handleFilterChange('employee_type_id', e.target.value)}
-                                                                    className="w-full px-3 py-2 bg-[var(--color-bg-primary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent text-[var(--color-text-primary)] text-sm"
-                                                                    disabled={dropdownLoading}
-                                                                >
-                                                                    <option value="">All Employee Types</option>
-                                                                    {employeeTypes.map((t) => (
-                                                                        <option key={t.id} value={t.id}>{t.name}</option>
-                                                                    ))}
-                                                                </select>
-                                                            </div>
-
-                                                            {/* Salary Type */}
-                                                            <div>
-                                                                <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
-                                                                    <IndianRupee className="inline h-4 w-4 mr-1" />
-                                                                    Salary Type
-                                                                </label>
-                                                                <select
-                                                                    value={filters.salary_type_id}
-                                                                    onChange={(e) => handleFilterChange('salary_type_id', e.target.value)}
-                                                                    className="w-full px-3 py-2 bg-[var(--color-bg-primary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent text-[var(--color-text-primary)] text-sm"
-                                                                    disabled={dropdownLoading}
-                                                                >
-                                                                    <option value="">All Salary Types</option>
-                                                                    {salaryTypes.map((t) => (
-                                                                        <option key={t.id} value={t.id}>{t.name}</option>
-                                                                    ))}
-                                                                </select>
-                                                            </div>
-
-                                                            {/* Gender */}
-                                                            <div>
-                                                                <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
-                                                                    <User className="inline h-4 w-4 mr-1" />
-                                                                    Gender
-                                                                </label>
-                                                                <select
-                                                                    value={filters.gender_id}
-                                                                    onChange={(e) => handleFilterChange('gender_id', e.target.value)}
-                                                                    className="w-full px-3 py-2 bg-[var(--color-bg-primary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent text-[var(--color-text-primary)] text-sm"
-                                                                    disabled={dropdownLoading}
-                                                                >
-                                                                    <option value="">All Genders</option>
-                                                                    {genders.map((g) => (
-                                                                        <option key={g.id} value={g.id}>{g.name}</option>
-                                                                    ))}
-                                                                </select>
-                                                            </div>
-
-                                                            {/* Status */}
-                                                            <div>
-                                                                <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
-                                                                    <UserCheck className="inline h-4 w-4 mr-1" />
-                                                                    Status
-                                                                </label>
-                                                                <select
-                                                                    value={filters.status_id}
-                                                                    onChange={(e) => handleFilterChange('status_id', e.target.value)}
-                                                                    className="w-full px-3 py-2 bg-[var(--color-bg-primary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent text-[var(--color-text-primary)] text-sm"
-                                                                    disabled={dropdownLoading}
-                                                                >
-                                                                    <option value="">All Status</option>
-                                                                    {status.map((s) => (
-                                                                        <option key={s.id} value={s.id}>{s.name}</option>
-                                                                    ))}
-                                                                </select>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    {/* Footer */}
-                                                    <div className="flex flex-col sm:flex-row gap-2 p-4 border-t border-[var(--color-border-secondary)] bg-[var(--color-bg-secondary)]">
-                                                        <button
-                                                            onClick={applyFilters}
-                                                            disabled={reportGenerating}
-                                                            className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-[var(--color-primary-dark)] text-[var(--color-text-white)] rounded-lg hover:bg-[var(--color-primary-darker)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
-                                                        >
-                                                            {reportGenerating ? <Loader2 className="h-4 w-4 animate-spin" /> : <Filter className="h-4 w-4" />}
-                                                            {reportGenerating ? 'Loading...' : 'Apply Filters'}
-                                                        </button>
-                                                        <button
-                                                            onClick={resetFilters}
-                                                            className="flex items-center justify-center gap-2 px-4 py-2 bg-[var(--color-bg-gray-light)] text-[var(--color-text-secondary)] rounded-lg hover:bg-[var(--color-bg-hover)] transition-colors text-sm font-medium min-w-[100px]"
-                                                        >
-                                                            <RefreshCw className="h-4 w-4" />
-                                                            Reset
-                                                        </button>
-                                                    </div>
-                                                </div>
-
-                                                {/* Mobile sheet (sm:hidden) */}
-                                                <div className="sm:hidden fixed inset-0 z-[110] flex">
-                                                    <div className="ml-auto h-full w-full bg-[var(--color-bg-secondary)] flex flex-col">
-                                                        <div className="flex items-center justify-between p-4 border-b border-[var(--color-border-secondary)]">
+                                                    {/* Desktop anchored (sm and up) */}
+                                                    <div
+                                                        className="hidden sm:block absolute z-[110] bg-[var(--color-bg-secondary)] rounded-lg shadow-2xl border border-[var(--color-border-secondary)] max-h-[80vh] overflow-hidden flex flex-col"
+                                                        style={{
+                                                            position: 'absolute',
+                                                            top: filterPos.ready ? filterPos.top : -9999,
+                                                            left: filterPos.ready ? Math.max(12, filterPos.left) : -9999,
+                                                            width: Math.max(420, filterPos.width),
+                                                            minWidth: 420
+                                                        }}
+                                                    >
+                                                        {/* Header */}
+                                                        <div className="flex items-center justify-between p-4 border-b border-[var(--color-border-secondary)] bg-[var(--color-bg-secondary)]">
                                                             <h3 className="text-lg font-semibold text-[var(--color-text-primary)]">Filter Employees</h3>
                                                             <button
                                                                 onClick={() => setFilterDropdown(false)}
                                                                 className="text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] p-1 rounded-lg hover:bg-[var(--color-bg-hover)]"
                                                             >
-                                                                <X className="h-5 w-5" />
+                                                                <X className="h-4 w-4" />
                                                             </button>
                                                         </div>
 
@@ -785,8 +541,8 @@ const EmployeeDirectoryReport = () => {
                                                         )}
 
                                                         <div className="flex-1 overflow-y-auto p-4">
-                                                            <div className="grid grid-cols-1 gap-4">
-                                                                {/* Same selects as desktop (single column) */}
+                                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                                                {/* Branch */}
                                                                 <div>
                                                                     <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
                                                                         <Building className="inline h-4 w-4 mr-1" />
@@ -805,6 +561,7 @@ const EmployeeDirectoryReport = () => {
                                                                     </select>
                                                                 </div>
 
+                                                                {/* Department */}
                                                                 <div>
                                                                     <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
                                                                         <Users className="inline h-4 w-4 mr-1" />
@@ -823,6 +580,7 @@ const EmployeeDirectoryReport = () => {
                                                                     </select>
                                                                 </div>
 
+                                                                {/* Designation */}
                                                                 <div>
                                                                     <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
                                                                         <Award className="inline h-4 w-4 mr-1" />
@@ -841,6 +599,7 @@ const EmployeeDirectoryReport = () => {
                                                                     </select>
                                                                 </div>
 
+                                                                {/* Employee Type */}
                                                                 <div>
                                                                     <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
                                                                         <Briefcase className="inline h-4 w-4 mr-1" />
@@ -859,6 +618,7 @@ const EmployeeDirectoryReport = () => {
                                                                     </select>
                                                                 </div>
 
+                                                                {/* Salary Type */}
                                                                 <div>
                                                                     <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
                                                                         <IndianRupee className="inline h-4 w-4 mr-1" />
@@ -877,6 +637,7 @@ const EmployeeDirectoryReport = () => {
                                                                     </select>
                                                                 </div>
 
+                                                                {/* Gender */}
                                                                 <div>
                                                                     <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
                                                                         <User className="inline h-4 w-4 mr-1" />
@@ -895,6 +656,7 @@ const EmployeeDirectoryReport = () => {
                                                                     </select>
                                                                 </div>
 
+                                                                {/* Status */}
                                                                 <div>
                                                                     <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
                                                                         <UserCheck className="inline h-4 w-4 mr-1" />
@@ -915,28 +677,233 @@ const EmployeeDirectoryReport = () => {
                                                             </div>
                                                         </div>
 
-                                                        <div className="p-4 border-t border-[var(--color-border-secondary)] bg-[var(--color-bg-secondary)] grid grid-cols-1 gap-2">
+                                                        {/* Footer */}
+                                                        <div className="flex flex-col sm:flex-row gap-2 p-4 border-t border-[var(--color-border-secondary)] bg-[var(--color-bg-secondary)]">
                                                             <button
                                                                 onClick={applyFilters}
                                                                 disabled={reportGenerating}
-                                                                className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-[var(--color-primary-dark)] text-[var(--color-text-white)] rounded-lg hover:bg-[var(--color-primary-darker)] transition-colors disabled:opacity-50 text-sm font-medium"
+                                                                className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-[var(--color-primary-dark)] text-[var(--color-text-white)] rounded-lg hover:bg-[var(--color-primary-darker)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
                                                             >
                                                                 {reportGenerating ? <Loader2 className="h-4 w-4 animate-spin" /> : <Filter className="h-4 w-4" />}
                                                                 {reportGenerating ? 'Loading...' : 'Apply Filters'}
                                                             </button>
                                                             <button
                                                                 onClick={resetFilters}
-                                                                className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-[var(--color-bg-gray-light)] text-[var(--color-text-secondary)] rounded-lg hover:bg-[var(--color-bg-hover)] transition-colors text-sm font-medium"
+                                                                className="flex items-center justify-center gap-2 px-4 py-2 bg-[var(--color-bg-gray-light)] text-[var(--color-text-secondary)] rounded-lg hover:bg-[var(--color-bg-hover)] transition-colors text-sm font-medium min-w-[100px]"
                                                             >
                                                                 <RefreshCw className="h-4 w-4" />
                                                                 Reset
                                                             </button>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            </>,
-                                            document.body
-                                        )}
+
+                                                    {/* Mobile sheet (sm:hidden) */}
+                                                    <div className="sm:hidden fixed inset-0 z-[110] flex">
+                                                        <div className="ml-auto h-full w-full bg-[var(--color-bg-secondary)] flex flex-col">
+                                                            <div className="flex items-center justify-between p-4 border-b border-[var(--color-border-secondary)]">
+                                                                <h3 className="text-lg font-semibold text-[var(--color-text-primary)]">Filter Employees</h3>
+                                                                <button
+                                                                    onClick={() => setFilterDropdown(false)}
+                                                                    className="text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] p-1 rounded-lg hover:bg-[var(--color-bg-hover)]"
+                                                                >
+                                                                    <X className="h-5 w-5" />
+                                                                </button>
+                                                            </div>
+
+                                                            {dropdownLoading && (
+                                                                <div className="flex items-center gap-2 p-4 text-[var(--color-text-secondary)] border-b border-[var(--color-border-secondary)]">
+                                                                    <Loader2 className="h-4 w-4 animate-spin" />
+                                                                    <span className="text-sm">Loading filter options...</span>
+                                                                </div>
+                                                            )}
+
+                                                            <div className="flex-1 overflow-y-auto p-4">
+                                                                <div className="grid grid-cols-1 gap-4">
+                                                                    {/* Branch */}
+                                                                    <div>
+                                                                        <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                                            <Building className="inline h-4 w-4 mr-1" />
+                                                                            Branch
+                                                                        </label>
+                                                                        <select
+                                                                            value={filters.branch_id}
+                                                                            onChange={(e) => handleFilterChange('branch_id', e.target.value)}
+                                                                            className="w-full px-3 py-2 bg-[var(--color-bg-primary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent text-[var(--color-text-primary)] text-sm"
+                                                                            disabled={dropdownLoading}
+                                                                        >
+                                                                            <option value="">All Branches</option>
+                                                                            {branches.map((b) => (
+                                                                                <option key={b.id} value={b.id}>{b.name}</option>
+                                                                            ))}
+                                                                        </select>
+                                                                    </div>
+
+                                                                    <div>
+                                                                        <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                                            <Users className="inline h-4 w-4 mr-1" />
+                                                                            Department
+                                                                        </label>
+                                                                        <select
+                                                                            value={filters.department_id}
+                                                                            onChange={(e) => handleFilterChange('department_id', e.target.value)}
+                                                                            className="w-full px-3 py-2 bg-[var(--color-bg-primary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent text-[var(--color-text-primary)] text-sm"
+                                                                            disabled={dropdownLoading}
+                                                                        >
+                                                                            <option value="">All Departments</option>
+                                                                            {departments.map((d) => (
+                                                                                <option key={d.id} value={d.id}>{d.name}</option>
+                                                                            ))}
+                                                                        </select>
+                                                                    </div>
+
+                                                                    <div>
+                                                                        <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                                            <Award className="inline h-4 w-4 mr-1" />
+                                                                            Designation
+                                                                        </label>
+                                                                        <select
+                                                                            value={filters.designation_id}
+                                                                            onChange={(e) => handleFilterChange('designation_id', e.target.value)}
+                                                                            className="w-full px-3 py-2 bg-[var(--color-bg-primary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent text-[var(--color-text-primary)] text-sm"
+                                                                            disabled={dropdownLoading}
+                                                                        >
+                                                                            <option value="">All Designations</option>
+                                                                            {designations.map((g) => (
+                                                                                <option key={g.id} value={g.id}>{g.name}</option>
+                                                                            ))}
+                                                                        </select>
+                                                                    </div>
+
+                                                                    <div>
+                                                                        <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                                            <Briefcase className="inline h-4 w-4 mr-1" />
+                                                                            Employee Type
+                                                                        </label>
+                                                                        <select
+                                                                            value={filters.employee_type_id}
+                                                                            onChange={(e) => handleFilterChange('employee_type_id', e.target.value)}
+                                                                            className="w-full px-3 py-2 bg-[var(--color-bg-primary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent text-[var(--color-text-primary)] text-sm"
+                                                                            disabled={dropdownLoading}
+                                                                        >
+                                                                            <option value="">All Employee Types</option>
+                                                                            {employeeTypes.map((t) => (
+                                                                                <option key={t.id} value={t.id}>{t.name}</option>
+                                                                            ))}
+                                                                        </select>
+                                                                    </div>
+
+                                                                    <div>
+                                                                        <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                                            <IndianRupee className="inline h-4 w-4 mr-1" />
+                                                                            Salary Type
+                                                                        </label>
+                                                                        <select
+                                                                            value={filters.salary_type_id}
+                                                                            onChange={(e) => handleFilterChange('salary_type_id', e.target.value)}
+                                                                            className="w-full px-3 py-2 bg-[var(--color-bg-primary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent text-[var(--color-text-primary)] text-sm"
+                                                                            disabled={dropdownLoading}
+                                                                        >
+                                                                            <option value="">All Salary Types</option>
+                                                                            {salaryTypes.map((t) => (
+                                                                                <option key={t.id} value={t.id}>{t.name}</option>
+                                                                            ))}
+                                                                        </select>
+                                                                    </div>
+
+                                                                    <div>
+                                                                        <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                                            <User className="inline h-4 w-4 mr-1" />
+                                                                            Gender
+                                                                        </label>
+                                                                        <select
+                                                                            value={filters.gender_id}
+                                                                            onChange={(e) => handleFilterChange('gender_id', e.target.value)}
+                                                                            className="w-full px-3 py-2 bg-[var(--color-bg-primary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent text-[var(--color-text-primary)] text-sm"
+                                                                            disabled={dropdownLoading}
+                                                                        >
+                                                                            <option value="">All Genders</option>
+                                                                            {genders.map((g) => (
+                                                                                <option key={g.id} value={g.id}>{g.name}</option>
+                                                                            ))}
+                                                                        </select>
+                                                                    </div>
+
+                                                                    <div>
+                                                                        <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                                            <UserCheck className="inline h-4 w-4 mr-1" />
+                                                                            Status
+                                                                        </label>
+                                                                        <select
+                                                                            value={filters.status_id}
+                                                                            onChange={(e) => handleFilterChange('status_id', e.target.value)}
+                                                                            className="w-full px-3 py-2 bg-[var(--color-bg-primary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent text-[var(--color-text-primary)] text-sm"
+                                                                            disabled={dropdownLoading}
+                                                                        >
+                                                                            <option value="">All Status</option>
+                                                                            {status.map((s) => (
+                                                                                <option key={s.id} value={s.id}>{s.name}</option>
+                                                                            ))}
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </>,
+                                                document.body
+                                            )}
+                                        </div>
+
+                                        {/* Export button */}
+                                        <div className="relative">
+                                            <button
+                                                ref={exportBtnRef}
+                                                onClick={() => setExportDropdown((v) => !v)}
+                                                className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-lg font-medium transition-colors"
+                                            >
+                                                <Download className="h-4 w-4" />
+                                                Export
+                                                <ChevronDown className="h-4 w-4" />
+                                            </button>
+
+                                            {/* Export dropdown (anchored, scroll/resize-safe) */}
+                                            {exportDropdown &&
+                                                exportPos.ready &&
+                                                createPortal(
+                                                    <>
+                                                        <div
+                                                            className="fixed inset-0 z-[40]"
+                                                            onClick={() => setExportDropdown(false)}
+                                                        />
+                                                        <div
+                                                            className="absolute z-[50] bg-[var(--color-bg-secondary)] rounded-lg shadow-2xl border border-[var(--color-border-secondary)] py-2"
+                                                            style={{
+                                                                position: 'absolute',
+                                                                top: exportPos.top,
+                                                                left: exportPos.left,
+                                                                width: Math.max(192, exportPos.width),
+                                                                minWidth: 192
+                                                            }}
+                                                        >
+                                                            <button
+                                                                onClick={handleExportExcel}
+                                                                className="flex items-center gap-2 w-full px-4 py-2 text-left hover:bg-[var(--color-bg-hover)] transition-colors text-[var(--color-text-secondary)]"
+                                                            >
+                                                                <FileSpreadsheet className="h-4 w-4 text-[var(--color-success)]" />
+                                                                Export to Excel
+                                                            </button>
+                                                            <button
+                                                                onClick={handleExportPDF}
+                                                                className="flex items-center gap-2 w-full px-4 py-2 text-left hover:bg-[var(--color-bg-hover)] transition-colors text-[var(--color-text-secondary)]"
+                                                            >
+                                                                <FileDown className="h-4 w-4 text-[var(--color-error)]" />
+                                                                Export to PDF
+                                                            </button>
+                                                        </div>
+                                                    </>,
+                                                    document.body
+                                                )}
+                                        </div>
                                 </div>
                             </div>
                         </div>
