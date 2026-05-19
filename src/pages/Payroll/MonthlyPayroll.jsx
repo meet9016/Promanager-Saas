@@ -964,7 +964,7 @@ const MonthlyPayroll = () => {
               <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-[var(--color-text-white)] px-3 py-2 rounded-lg bg-[var(--color-bg-secondary-20)] hover:bg-[var(--color-bg-secondary-30)]">
                 <ArrowLeft size={18} /> Back
               </button>
-              <h1 className="text-2xl font-bold text-[var(--color-text-white)]">Monthly Payroll</h1>
+              <h1 className="text-2xl font-bold text-[var(--color-text-white)]">Monthly Salary</h1>
             </div>
           </div>
 

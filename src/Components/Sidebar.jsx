@@ -70,16 +70,12 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
             ].filter(Boolean)
         },
         (permissions?.salary_view || permissions?.salary_create || permissions?.salary_edit || permissions?.salary_delete || permissions?.add_salary_payment) && {
-            id: 'payroll', label: 'Payroll', icon: IndianRupee, hasSubmenu: true, path: '/monthly-payroll',
-            submenu: [
-                (permissions?.salary_view || permissions?.salary_create) && { label: 'Monthly Payroll', path: '/monthly-payroll' },
-                (permissions?.salary_create || permissions?.add_salary_payment) && { label: 'Finalize Payroll', path: '/Finalize-payroll' },
-            ].filter(Boolean)
+            id: 'payroll', label: 'Salary', icon: IndianRupee, hasSubmenu: false, path: '/finalize-payroll'
         },
         (permissions?.loan_view || permissions?.loan_create || permissions?.loan_edit || permissions?.loan_delete) && {
             id: 'loans', label: 'Loans & Advances', icon: Briefcase, hasSubmenu: true, path: '/loans',
             submenu: [
-                permissions?.loan_view && { label: 'Loans & Advances', path: '/loans' },
+                // permissions?.loan_view && { label: 'Loans & Advances', path: '/loans' },
                 // permissions?.loan_create && { label: 'Add Loan/Advance', path: '/add-loan-advance' },
             ].filter(Boolean)
         },

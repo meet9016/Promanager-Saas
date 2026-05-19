@@ -250,6 +250,95 @@ const AttendanceExceptionReport = () => {
         return `${year}-${month}-${day}`;
     };
 
+    const SummaryCard = ({ label, value, icon: Icon, tone = 'text-[var(--color-text-primary)]', onClick, isActive = false }) => {
+        // Map tone classes to a rich color scheme
+        const getScheme = (t) => {
+            const tones = {
+                'text-green-600': {
+                    base: 'green', light: 'bg-green-500/10', border: 'border-green-500/20',
+                    accent: 'bg-green-500', icon: 'text-green-600'
+                },
+                'text-red-600': {
+                    base: 'red', light: 'bg-red-500/10', border: 'border-red-500/20',
+                    accent: 'bg-red-500', icon: 'text-red-600'
+                },
+                'text-purple-600': {
+                    base: 'purple', light: 'bg-purple-500/10', border: 'border-purple-500/20',
+                    accent: 'bg-purple-500', icon: 'text-purple-600'
+                },
+                'text-orange-600': {
+                    base: 'orange', light: 'bg-orange-500/10', border: 'border-orange-500/20',
+                    accent: 'bg-orange-500', icon: 'text-orange-600'
+                },
+                'text-amber-600': {
+                    base: 'amber', light: 'bg-amber-500/10', border: 'border-amber-500/20',
+                    accent: 'bg-amber-500', icon: 'text-amber-600'
+                },
+                'text-yellow-600': {
+                    base: 'amber', light: 'bg-amber-500/10', border: 'border-amber-500/20',
+                    accent: 'bg-amber-500', icon: 'text-amber-600'
+                },
+                'text-primary-600': {
+                    base: 'indigo', light: 'bg-indigo-500/10', border: 'border-indigo-500/20',
+                    accent: 'bg-indigo-500', icon: 'text-indigo-600'
+                },
+                'text-teal-600': {
+                    base: 'teal', light: 'bg-teal-500/10', border: 'border-teal-500/20',
+                    accent: 'bg-teal-500', icon: 'text-teal-600'
+                },
+            };
+            return tones[t] || {
+                base: 'blue', light: 'bg-blue-500/10', border: 'border-blue-500/20',
+                accent: 'bg-blue-500', icon: 'text-blue-600'
+            };
+        };
+
+        const scheme = getScheme(tone);
+
+        return (
+            <div
+                onClick={onClick}
+                className={`relative overflow-hidden rounded-xl p-2 sm:p-3 transition-all duration-300 select-none group
+            ${onClick ? 'cursor-pointer' : ''}
+            ${isActive
+                        ? `bg-[var(--color-bg-secondary)] shadow-md ring-1 ring-inset ${scheme.border.replace('/20', '/40')} -translate-y-0.5`
+                        : 'bg-[var(--color-bg-secondary)] border border-[var(--color-border-primary)] hover:shadow-md hover:-translate-y-0.5'
+                    }`}
+            >
+                {/* Decorative background glow */}
+                <div className={`absolute -right-6 -top-6 h-12 w-12 rounded-full opacity-0 transition-opacity duration-500 group-hover:opacity-10 ${scheme.accent} blur-xl`} />
+
+                <div className="flex items-center gap-2 sm:gap-3 relative z-10">
+                    {/* Icon container */}
+                    <div className={`flex-shrink-0 p-1.5 sm:p-2 rounded-lg ${scheme.light} ${scheme.icon} transition-all duration-500 group-hover:scale-110 shadow-sm border border-white/5`}>
+                        <Icon className="h-4 w-4 sm:h-5 sm:w-5" />
+                    </div>
+
+                    {/* Text content */}
+                    <div className="min-w-0 flex-1">
+                        <p className="text-[10px] sm:text-xs text-[var(--color-text-secondary)] leading-tight truncate opacity-80">
+                            {label}
+                        </p>
+                        <p className={`text-sm sm:text-lg font-bold ${tone} leading-tight truncate`}>
+                            {value}
+                        </p>
+                    </div>
+
+                    {/* Active Indicator */}
+                    {isActive && (
+                        <div className="flex-shrink-0">
+                            <span className={`block h-1.5 w-1.5 rounded-full ${scheme.accent} animate-pulse shadow-sm`} />
+                        </div>
+                    )}
+                </div>
+
+                {/* Interactive Progress Line */}
+                <div className={`absolute bottom-0 left-0 h-1 transition-all duration-700 ease-out 
+            ${isActive ? 'w-full opacity-100' : 'w-0 opacity-0 group-hover:w-full group-hover:opacity-60'} ${scheme.accent}`} />
+            </div>
+        );
+    };
+
     // ── Fetch dropdown options ────────────────────────────────────────────────
     const fetchDropdownData = useCallback(async () => {
         try {
@@ -701,30 +790,18 @@ const AttendanceExceptionReport = () => {
 
 
                 {/* ── Summary cards ── */}
-                <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
-                    {TABS.map((tab) => {
-                        const Icon = tab.icon;
-                        const isActive = activeTab === tab.key;
-                        return (
-                            <button
-                                key={tab.key}
-                                type="button"
-                                onClick={() => setActiveTab(tab.key)}
-                                className={`text-left bg-[var(--color-bg-secondary)] rounded-xl p-5 shadow-sm border-2 transition-all duration-200 hover:shadow-md hover:scale-[1.02] ${isActive ? `${tab.borderColor} shadow-md scale-[1.02]` : 'border-[var(--color-border-primary)]'}`}
-                            >
-                                <div className="flex items-center justify-between mb-3">
-                                    <div className={`p-2 rounded-lg ${isActive ? tab.bg : 'bg-[var(--color-bg-gray-light)]'}`}>
-                                        <Icon className={`h-5 w-5 ${isActive ? tab.color : 'text-[var(--color-text-muted)]'}`} />
-                                    </div>
-                                    <span className={`text-2xl font-bold ${isActive ? tab.color : 'text-[var(--color-text-primary)]'}`}>
-                                        {summaryCounts[tab.key]}
-                                    </span>
-                                </div>
-                                <p className={`text-sm font-semibold ${isActive ? tab.color : 'text-[var(--color-text-secondary)]'}`}>{tab.label}</p>
-                                <p className="text-xs text-[var(--color-text-muted)] mt-0.5 leading-tight">{tab.description}</p>
-                            </button>
-                        );
-                    })}
+                <div className="grid grid-cols-2 lg:grid-cols-5 gap-2 sm:gap-4 mb-4 sm:mb-6">
+                    {TABS.map((tab) => (
+                        <SummaryCard
+                            key={tab.key}
+                            icon={tab.icon}
+                            label={tab.label}
+                            value={summaryCounts[tab.key]}
+                            tone={tab.color}
+                            isActive={activeTab === tab.key}
+                            onClick={() => setActiveTab(tab.key)}
+                        />
+                    ))}
                 </div>
 
                 {/* ── Main content card ── */}

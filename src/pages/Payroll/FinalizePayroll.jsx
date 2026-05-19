@@ -545,6 +545,17 @@ export default function FinalizePayroll() {
                   <Search className="absolute left-3 top-2.5 h-4 w-4 text-[var(--color-text-muted)]" />
 
                 </div>
+
+                {/* Monthly Payroll Button */}
+                {(permissions?.salary_view || permissions?.salary_create) && (
+                  <button
+                    onClick={() => navigate('/monthly-payroll')}
+                    className="flex items-center gap-2 bg-[var(--color-bg-secondary)] hover:bg-[var(--color-primary-lightest)] text-[var(--color-primary-dark)] border border-[var(--color-border-secondary)] px-4 py-2 rounded-md text-sm font-medium transition-colors shadow-sm whitespace-nowrap"
+                  >
+                    <IndianRupee className="h-4 w-4" />
+                    Monthly Salary
+                  </button>
+                )}
               </div>
             </div>
           </div>

@@ -7,7 +7,8 @@ import {
     Search,
     ChevronDown,
     ChevronRight,
-    Edit
+    Edit,
+    Info
 } from "lucide-react";
 import { useSelector } from "react-redux";
 import { ConfirmDialog } from "../ui/ConfirmDialog";
@@ -254,6 +255,16 @@ const BranchList = () => {
                                             </div>
 
                                             <div className="flex items-center space-x-2">
+                                                <button
+                                                    // onClick={(e) => {
+                                                    //     e.stopPropagation();
+                                                    //     setEditingBranch(branch);
+                                                    // }}
+                                                    className="w-9 h-9 flex items-center justify-center rounded-xl bg-green-50 text-green-600 hover:bg-green-100 hover:scale-110 hover:shadow-md transition-all duration-200"
+                                                    title="Info"
+                                                >
+                                                    <Info className="w-4 h-4" strokeWidth={2.5} />
+                                                </button>
                                                 {permissions['branch_edit'] && (
                                                     <button
                                                         onClick={(e) => {

@@ -49,26 +49,90 @@ const Td = ({ children, small, className = '', colSpan }) => (
   </td>
 );
 
-const SummaryCard = ({ label, value, icon: Icon, tone = 'text-[var(--color-text-primary)]', onClick, isActive = false }) => (
-  <div
-    onClick={onClick}
-    style={isActive ? {
-      outline: '2px solid #3b82f6',
-      outlineOffset: '4px',
-      boxShadow: '0 0 0 4px rgba(59,130,246,0.12), 0 4px 14px rgba(59,130,246,0.22)',
-    } : {}}
-    className={`rounded-xl p-4 sm:p-8 shadow-sm border border-[var(--color-border-primary)] bg-[var(--color-bg-secondary)] transition-all duration-200 select-none
-      ${onClick ? 'cursor-pointer hover:shadow-md hover:-translate-y-0.5' : ''}`}
-  >
-    <div className="flex items-center justify-between">
-      <div>
-        <p className="text-xs sm:text-sm text-[var(--color-text-secondary)]">{label}</p>
-        <p className={`text-xl sm:text-2xl font-bold ${tone}`}>{value}</p>
+const SummaryCard = ({ label, value, icon: Icon, tone = 'text-[var(--color-text-primary)]', onClick, isActive = false }) => {
+  // Map tone classes to a rich color scheme
+  const getScheme = (t) => {
+    const tones = {
+      'text-green-600': { 
+        base: 'green', light: 'bg-green-500/10', border: 'border-green-500/20', 
+        accent: 'bg-green-500', icon: 'text-green-600'
+      },
+      'text-red-600': { 
+        base: 'red', light: 'bg-red-500/10', border: 'border-red-500/20', 
+        accent: 'bg-red-500', icon: 'text-red-600'
+      },
+      'text-purple-600': { 
+        base: 'purple', light: 'bg-purple-500/10', border: 'border-purple-500/20', 
+        accent: 'bg-purple-500', icon: 'text-purple-600'
+      },
+      'text-orange-600': { 
+        base: 'orange', light: 'bg-orange-500/10', border: 'border-orange-500/20', 
+        accent: 'bg-orange-500', icon: 'text-orange-600'
+      },
+      'text-amber-600': { 
+        base: 'amber', light: 'bg-amber-500/10', border: 'border-amber-500/20', 
+        accent: 'bg-amber-500', icon: 'text-amber-600'
+      },
+      'text-primary-600': { 
+        base: 'indigo', light: 'bg-indigo-500/10', border: 'border-indigo-500/20', 
+        accent: 'bg-indigo-500', icon: 'text-indigo-600'
+      },
+      'text-teal-600': { 
+        base: 'teal', light: 'bg-teal-500/10', border: 'border-teal-500/20', 
+        accent: 'bg-teal-500', icon: 'text-teal-600'
+      },
+    };
+    return tones[t] || { 
+      base: 'blue', light: 'bg-blue-500/10', border: 'border-blue-500/20', 
+      accent: 'bg-blue-500', icon: 'text-blue-600'
+    };
+  };
+
+  const scheme = getScheme(tone);
+
+  return (
+    <div
+      onClick={onClick}
+      className={`relative overflow-hidden rounded-xl p-2 sm:p-3 transition-all duration-300 select-none group
+        ${onClick ? 'cursor-pointer' : ''}
+        ${isActive 
+          ? `bg-[var(--color-bg-secondary)] shadow-md ring-1 ring-inset ${scheme.border.replace('/20', '/40')} -translate-y-0.5` 
+          : 'bg-[var(--color-bg-secondary)] border border-[var(--color-border-primary)] hover:shadow-md hover:-translate-y-0.5'
+        }`}
+    >
+      {/* Decorative background glow */}
+      <div className={`absolute -right-6 -top-6 h-12 w-12 rounded-full opacity-0 transition-opacity duration-500 group-hover:opacity-10 ${scheme.accent} blur-xl`} />
+      
+      <div className="flex items-center gap-2 sm:gap-3 relative z-10">
+        {/* Icon container */}
+        <div className={`flex-shrink-0 p-1.5 sm:p-2 rounded-lg ${scheme.light} ${scheme.icon} transition-all duration-500 group-hover:scale-110 shadow-sm border border-white/5`}>
+          <Icon className="h-4 w-4 sm:h-5 sm:w-5" />
+        </div>
+        
+        {/* Text content */}
+        <div className="min-w-0 flex-1">
+          <p className="text-[10px] sm:text-xs text-[var(--color-text-secondary)] leading-tight truncate opacity-80">
+            {label}
+          </p>
+          <p className={`text-sm sm:text-lg font-bold ${tone} leading-tight truncate`}>
+            {value}
+          </p>
+        </div>
+
+        {/* Active Indicator */}
+        {isActive && (
+          <div className="flex-shrink-0">
+             <span className={`block h-1.5 w-1.5 rounded-full ${scheme.accent} animate-pulse shadow-sm`} />
+          </div>
+        )}
       </div>
-      <Icon className={`h-6 w-6 sm:h-8 sm:w-8 ${tone}`} />
+      
+      {/* Interactive Progress Line */}
+      <div className={`absolute bottom-0 left-0 h-1 transition-all duration-700 ease-out 
+        ${isActive ? 'w-full opacity-100' : 'w-0 opacity-0 group-hover:w-full group-hover:opacity-60'} ${scheme.accent}`} />
     </div>
-  </div>
-);
+  );
+};
 
 const Legend = ({ color, label }) => (
   <span className="flex items-center text-xs sm:text-sm">
@@ -931,13 +995,13 @@ const DailyAttendance = () => {
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
               <div className="flex items-center">
                 <Activity className="h-5 w-5 sm:h-6 sm:w-6 text-[var(--color-text-white)] mr-2" />
-                <h3 className="text-sm sm:text-lg font-medium text-[var(--color-text-white)]">Daily Attendance Details 000</h3>
+                <h3 className="text-sm sm:text-lg font-medium text-[var(--color-text-white)]">Daily Attendance Details</h3>
               </div>
 
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3">
                 {/* Date */}
                 <div className="flex items-center space-x-2 z-[40]">
-                  <Calendar className="w-4 h-4 sm:w-5 sm:h-5 text-[var(--color-text-white)]" />
+                  {/* <Calendar className="w-4 h-4 sm:w-5 sm:h-5 text-[var(--color-text-white)]" /> */}
                   <DatePicker
                     selected={selectedDate}
                     onChange={handleDateChange}
