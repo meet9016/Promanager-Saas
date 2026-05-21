@@ -51,7 +51,7 @@ const PricingPage = () => {
     const key = name.toLowerCase();
     return PLAN_COLORS[key] || PLAN_COLORS.gold;
   };
-
+ 
   const fetchPlanData = async () => {
     if (loading) return;
 
