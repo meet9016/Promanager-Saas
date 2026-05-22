@@ -280,13 +280,19 @@ export default function Employee() {
     }, []);
 
     // Handle attendance type change
-    const handleAttendanceTypeChange = useCallback(async (employeeId, newAttendanceType) => {
+    const handleAttendanceTypeChange = useCallback(async (employeeId, newAttendanceType, attendanceTypeStatus) => {
         try {
             setAttendanceChangingIds(prev => new Set(prev.add(employeeId)));
+
 
             const formData = new FormData();
             formData.append('employee_id', employeeId.toString());
             formData.append('attendance_type', newAttendanceType.toString());
+            formData.append(
+                'attendance_type_status',
+                attendanceTypeStatus.toString()
+            );
+
 
             if (newAttendanceType === ATTENDANCE_TYPES.MOBILE) {
                 const employee = employees.find(emp => emp.employee_id === employeeId);
@@ -448,7 +454,7 @@ export default function Employee() {
                         onChange={(e) => {
                             if (!isChanging && !isInactive) {
                                 const newType = e.target.checked ? ATTENDANCE_TYPES.BIOMETRIC : ATTENDANCE_TYPES.MOBILE;
-                                handleAttendanceTypeChange(employeeId, newType);
+                                handleAttendanceTypeChange(employeeId, newType, employee.attendance_type_status);
                             }
                         }}
                         disabled={isChanging || paginationLoading || searchLoading || isInactive}
@@ -799,11 +805,11 @@ export default function Employee() {
 
                 <div className="bg-[var(--color-bg-secondary)] rounded-lg border border-[var(--color-primary-dark)] overflow-hidden shadow-sm">
                     {/* Header section */}
-                    <div className="px-6 py-4 border-b border-[var(--color-primary-light)] bg-[var(--color-primary-dark)]">
+                    <div className="px-6 py-4 border-b border-[var(--color-primary-light)] bg-[var(--color-primary-lighter)] ">
                         <div className="flex justify-between items-center">
                             <div className="flex items-center">
-                                <Users className="h-6 w-6 text-[var(--color-text-white)] mr-2" />
-                                <h3 className="text-lg font-medium text-[var(--color-text-white)]">
+                                <Users className="h-6 w-6 text-[var(--color-primary-darker)] mr-2" />
+                                <h3 className="text-lg font-medium text-[var(--color-primary-darker)]">
                                     All Employee List
                                 </h3>
                             </div>

@@ -639,24 +639,25 @@ const DailyReport = () => {
 
                 {/* Main content */}
                 <div className="bg-[var(--color-bg-secondary)] rounded-lg border border-[var(--color-primary-dark)] overflow-hidden shadow-sm">
-                    <div className="px-6 py-4 border-b border-[var(--color-primary-light)] bg-[var(--color-primary-dark)]">
+                    <div className="px-6 py-4 border-b border-[var(--color-primary-light)] bg-[var(--color-primary-lighter)] ">
                         <div className="flex justify-between items-center">
                             <div className="flex items-center">
-                                <Activity className="h-6 w-6 text-[var(--color-text-white)] mr-2" />
-                                <h3 className="text-lg font-medium text-[var(--color-text-white)]">Daily Attendance Details</h3>
+                                <Activity className="h-6 w-6 text-[var(--color-primary-darker)] mr-2" />
+                                <h3 className="text-lg font-medium text-[var(--color-primary-darker)]">Daily Attendance Details</h3>
                             </div>
 
                             <div className="flex items-center gap-3">
                                 {/* Export */}
 
-                                <div className="flex items-center space-x-2">
-                                    <Calendar className="w-5 h-5 text-[var(--color-text-white)]" />
+                                <div className="relative flex items-center z-[40] min-w-[140px] sm:min-w-[160px]">
+                                    <Calendar className="absolute left-3 w-4 h-4 text-[var(--color-primary)] pointer-events-none z-10" />
+
                                     <DatePicker
                                         selected={selectedDate}
                                         onChange={handleDateChange}
                                         dateFormat="dd-MM-yyyy"
                                         placeholderText="DD-MM-YYYY"
-                                        className="w-full bg-[var(--color-bg-secondary-20)] border border-[var(--color-bg-secondary-30)] rounded-lg px-3 py-2 text-sm text-[var(--color-text-white)] placeholder-[var(--color-text-white-90)] focus:outline-none focus:ring-2 focus:ring-[var(--color-bg-secondary-30)]"
+                                        className="w-full bg-[var(--color-bg-primary)] hover:bg-[var(--color-bg-hover)] border border-[var(--color-border-secondary)] rounded-xl pl-9 pr-3 py-1.5 sm:py-2 text-xs sm:text-sm text-[var(--color-text-primary)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent transition-all duration-200 cursor-pointer font-medium shadow-sm"
                                     />
                                 </div>
 
@@ -1056,30 +1057,30 @@ const DailyReport = () => {
                         ) : (
                             <>
                                 <table className="w-full min-w-[1200px]">
-                                    <thead className="bg-[var(--color-bg-gray-light)] border-b border-[var(--color-border-secondary)]">
+                                    <thead className="bg-[var(--color-primary-dark)] border-b border-[var(--color-border-secondary)]">
                                         <tr>
-                                            <th className="px-6 py-3 text-center text-xs font-medium text-[var(--color-text-muted)] uppercase tracking-wider">
+                                            <th className="px-6 py-3 text-center text-xs font-medium text-[var(--color-text-white)] uppercase tracking-wider">
                                                 Employee
                                             </th>
-                                            <th className="px-6 py-3 text-center text-xs font-medium text-[var(--color-text-muted)] uppercase tracking-wider">
+                                            <th className="px-6 py-3 text-center text-xs font-medium text-[var(--color-text-white)] uppercase tracking-wider">
                                                 Shift
                                             </th>
-                                            <th className="px-6 py-3 text-center text-xs font-medium text-[var(--color-text-muted)] uppercase tracking-wider">
+                                            <th className="px-6 py-3 text-center text-xs font-medium text-[var(--color-text-white)] uppercase tracking-wider">
                                                 Shift Time
                                             </th>
-                                            <th className="px-6 py-3 text-center text-xs font-medium text-[var(--color-text-muted)] uppercase tracking-wider">
+                                            <th className="px-6 py-3 text-center text-xs font-medium text-[var(--color-text-white)] uppercase tracking-wider">
                                                 Clock In
                                             </th>
-                                            <th className="px-6 py-3 text-center text-xs font-medium text-[var(--color-text-muted)] uppercase tracking-wider">
+                                            <th className="px-6 py-3 text-center text-xs font-medium text-[var(--color-text-white)] uppercase tracking-wider">
                                                 Clock Out
                                             </th>
-                                            <th className="px-6 py-3 text-center text-xs font-medium text-[var(--color-text-muted)] uppercase tracking-wider">
+                                            <th className="px-6 py-3 text-center text-xs font-medium text-[var(--color-text-white)] uppercase tracking-wider">
                                                 Working Hours
                                             </th>
-                                            <th className="px-6 py-3 text-center text-xs font-medium text-[var(--color-text-muted)] uppercase tracking-wider">
+                                            <th className="px-6 py-3 text-center text-xs font-medium text-[var(--color-text-white)] uppercase tracking-wider">
                                                 Attendance Hours
                                             </th>
-                                            <th className="px-6 py-3 text-center text-xs font-medium text-[var(--color-text-muted)] uppercase tracking-wider">
+                                            <th className="px-6 py-3 text-center text-xs font-medium text-[var(--color-text-white)] uppercase tracking-wider">
                                                 Status
                                             </th>
                                         </tr>

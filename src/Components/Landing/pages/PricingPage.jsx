@@ -1,3 +1,5 @@
+
+
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Helmet } from "@dr.pogodin/react-helmet";
@@ -10,6 +12,7 @@ const PricingPage = () => {
   const [users, setUsers] = useState(50);
   const [loading, setLoading] = useState(false);
   const [plans, setPlans] = useState([]);
+
 
   const [toast, setToast] = useState(null);
   const navigate = useNavigate();
@@ -51,7 +54,7 @@ const PricingPage = () => {
     const key = name.toLowerCase();
     return PLAN_COLORS[key] || PLAN_COLORS.gold;
   };
- 
+
   const fetchPlanData = async () => {
     if (loading) return;
 
@@ -66,11 +69,13 @@ const PricingPage = () => {
 
       if (response?.data?.success) {
         setPlans(response.data.data);
+
       } else {
         showToast(
           response?.data?.message || 'Failed to fetch pricing data',
           'error'
         );
+        console.log(response.data, "aaaaaaa")
       }
     } catch (error) {
       console.error('Error fetching pricing data:', error);
@@ -295,3 +300,4 @@ const PricingPage = () => {
 };
 
 export default PricingPage;
+

@@ -470,15 +470,15 @@ const AddLoanAdvance = ({
             <div className=" mx-auto px-4 py-8">
                 {/* Enhanced Header */}
                 <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-xl mb-8 overflow-hidden">
-                    <div className="bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] p-8">
+                    <div className="bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] p-6">
                         <div className="flex items-center gap-4">
                             <button
                                 onClick={handleBack}
-                                className="flex items-center gap-2 text-[var(--color-text-white)] hover:text-[var(--color-text-white)] transition-colors bg-[var(--color-bg-secondary-20)] hover:bg-[var(--color-bg-secondary-30)] px-4 py-2 rounded-lg backdrop-blur-sm"
+                                className="flex items-center gap-2 text-[var(--color-text-white)] hover:text-[var(--color-text-white)] transition-colors bg-[var(--color-bg-secondary-20)] hover:bg-[var(--color-bg-secondary-30)] px-2 py-2 rounded-lg backdrop-blur-sm"
                                 title="Go Back"
                             >
                                 <ArrowLeft size={18} />
-                                Back
+                              
                             </button>
                             <div className="flex items-center gap-3">
                                 <div>
@@ -493,7 +493,7 @@ const AddLoanAdvance = ({
                                     )}
                                 </div>
                             </div>
-                            <div className="ml-auto">
+                            {/* <div className="ml-auto">
                                 <button
                                     onClick={handleReset}
                                     className="flex items-center gap-2 text-[var(--color-text-white)] hover:text-[var(--color-text-white)] transition-colors bg-[var(--color-bg-secondary-20)] hover:bg-[var(--color-bg-secondary-30)] px-4 py-2 rounded-lg backdrop-blur-sm"
@@ -501,7 +501,7 @@ const AddLoanAdvance = ({
                                     <X size={16} />
                                     Reset
                                 </button>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                 </div>

@@ -225,15 +225,15 @@ const Role = () => {
                     </div> */}
 
                     <div className="bg-[var(--color-bg-secondary)] rounded-lg border border-[var(--color-primary-dark)] overflow-hidden shadow-sm">
-                        <div className="px-6 py-4 border-b border-[var(--color-primary-light)] bg-[var(--color-primary-dark)]">
+                        <div className="px-6 py-4 border-b border-[var(--color-primary-light)] bg-[var(--color-primary-lighter)] ">
                             <div className="flex items-center justify-between">
-                                <h3 className="text-lg font-medium text-[var(--color-text-white)]">All Roles</h3>
+                                <h3 className="text-lg font-medium text-[var(--color-primary-darker)]">All Roles</h3>
 
                                 <div className="flex items-center gap-3">
                                     {permissions['user_roles_create'] && (
                                         <button
                                             onClick={handleCreateRole}
-                                            className="flex items-center space-x-2 text-[var(--color-text-white)] hover:text-[var(--color-text-white)] transition-colors bg-[var(--color-bg-secondary-20)] hover:bg-[var(--color-bg-secondary-30)] px-4 py-2 rounded-md "
+                                            className="flex items-center space-x-2 text-[var(--color-primary-darker)]   bg-white px-4 py-2 rounded-md "
                                         >
                                             <Plus className="w-4 h-4" />
                                             <span>Create Role</span>
@@ -278,19 +278,19 @@ const Role = () => {
                             <>
                                 <div className="overflow-x-auto">
                                     <table className="min-w-full divide-y divide-[var(--color-border-divider)]">
-                                        <thead className="bg-[var(--color-primary-lightest)]">
+                                        <thead className="bg-[var(--color-primary-dark)]">
                                             <tr>
-                                                <th className="px-6 py-3 text-center text-xs font-medium text-[var(--color-text-secondary)] uppercase tracking-wider">
+                                                <th className="px-6 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
                                                     Role Name
                                                 </th>
-                                                <th className="px-6 py-3 text-center text-xs font-medium text-[var(--color-text-secondary)] uppercase tracking-wider">
+                                                <th className="px-6 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
                                                     Type
                                                 </th>
-                                                <th className="px-6 py-3 text-center text-xs font-medium text-[var(--color-text-secondary)] uppercase tracking-wider">
+                                                <th className="px-6 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
                                                     Created Date
                                                 </th>
                                                 {(permissions['user_roles_edit'] || permissions['user_roles_delete']) && (
-                                                    <th className="px-6 py-3 text-center text-xs font-medium text-[var(--color-text-secondary)] uppercase tracking-wider">
+                                                    <th className="px-6 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
                                                         Actions
                                                     </th>
                                                 )}

@@ -242,8 +242,8 @@ const UserManagement = () => {
                     </div> */}
 
                     <div className="bg-[var(--color-bg-secondary)] rounded-lg border border-[var(--color-primary-dark)] overflow-hidden shadow-sm">
-                        <div className="px-6 py-4 border-b border-[var(--color-primary-light)] bg-[var(--color-primary-dark)] flex items-center justify-between">
-                            <h3 className="text-lg font-medium text-[var(--color-text-white)]">
+                        <div className="px-6 py-4 border-b border-[var(--color-primary-light)] bg-[var(--color-primary-lighter)] flex items-center justify-between">
+                            <h3 className="text-lg font-medium text-[var(--color-primary-darker)]">
                                 All Users
                             </h3>
 
@@ -251,7 +251,7 @@ const UserManagement = () => {
                                 {permissions['user_create'] && (
                                     <button
                                         onClick={() => navigate('/add-user')}
-                                        className="flex items-center gap-2 text-[var(--color-text-white)] hover:text-[var(--color-text-white)] transition-colors bg-[var(--color-bg-secondary-20)] hover:bg-[var(--color-bg-secondary-30)] px-4 py-2 rounded-lg backdrop-blur-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                                        className="flex items-center gap-2 text-[var(--color-primary-darker)] bg-white px-4 py-2 rounded-lg backdrop-blur-sm disabled:opacity-50 disabled:cursor-not-allowed"
                                     >
                                         <Plus className="w-4 h-4" />
                                         <span>Create User</span>
@@ -300,22 +300,22 @@ const UserManagement = () => {
                             <>
                                 <div className="overflow-x-auto">
                                     <table className="min-w-full divide-y divide-[var(--color-border-divider)]">
-                                        <thead className="bg-[var(--color-primary-lightest)]">
+                                        <thead className="bg-[var(--color-primary-dark)]">
                                             <tr>
-                                                <th className="px-6 py-3 text-center text-xs font-medium text-[var(--color-text-secondary)] uppercase tracking-wider">
+                                                <th className="px-6 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
                                                     Full Name
                                                 </th>
-                                                <th className="px-6 py-3 text-center text-xs font-medium text-[var(--color-text-secondary)] uppercase tracking-wider">
+                                                <th className="px-6 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
                                                     Email
                                                 </th>
-                                                <th className="px-6 py-3 text-center text-xs font-medium text-[var(--color-text-secondary)] uppercase tracking-wider">
+                                                <th className="px-6 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
                                                     Phone Number
                                                 </th>
-                                                <th className="px-6 py-3 text-center text-xs font-medium text-[var(--color-text-secondary)] uppercase tracking-wider">
+                                                <th className="px-6 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
                                                     Role
                                                 </th>
                                                 {(permissions['user_edit'] || permissions['user_delete']) && (
-                                                    <th className="px-6 py-3 text-center text-xs font-medium text-[var(--color-text-secondary)] uppercase tracking-wider">
+                                                    <th className="px-6 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
                                                         Actions
                                                     </th>
                                                 )}

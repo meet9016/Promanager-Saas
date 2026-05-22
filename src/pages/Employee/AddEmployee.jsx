@@ -1021,22 +1021,22 @@ const AddEmployee = () => {
             <div className=" mx-auto px-4 py-8">
                 {/* Header */}
                 <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-xl mb-8 overflow-hidden">
-                    <div className="bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] p-8">
+                    <div className="bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] p-3 sm:p-6">
                         <div className="flex items-center gap-4">
+                            {/* Back Icon Only */}
                             <button
                                 onClick={goBack}
-                                className="flex items-center gap-2 text-[var(--color-text-white)] hover:text-[var(--color-text-white)] transition-colors bg-[var(--color-bg-secondary-20)] hover:bg-[var(--color-bg-secondary-30)] px-4 py-2 rounded-lg backdrop-blur-sm"
+                                className="flex items-center justify-center text-[var(--color-text-white)] transition-colors bg-[var(--color-bg-secondary-20)] hover:bg-[var(--color-bg-secondary-30)] p-2 rounded-lg backdrop-blur-sm"
                             >
-                                <ArrowLeft size={18} />
-                                Back
+                                <ArrowLeft size={20} />
                             </button>
+
+                            {/* Title and optional edit icon */}
                             <div className="flex items-center gap-3">
-                                {isEditMode ? <Edit size={24} className="text-[var(--color-text-white)]" /> : ""}
-                                <div>
-                                    <h1 className="text-2xl font-bold text-[var(--color-text-white)]">
-                                        {isEditMode ? 'Edit Employee' : 'Add New Employee'}
-                                    </h1>
-                                </div>
+                                {isEditMode && <Edit size={24} className="text-[var(--color-text-white)]" />}
+                                <h1 className="text-2xl font-bold text-[var(--color-text-white)]">
+                                    {isEditMode ? 'Edit Employee' : 'Add New Employee'}
+                                </h1>
                             </div>
                         </div>
                     </div>
@@ -1068,7 +1068,7 @@ const AddEmployee = () => {
                             {expandedSections[section.key] && (
                                 <div className="border-t border-[var(--color-border-primary)]">
                                     {section.key === 'basicDetails' && (
-                                        <div className="p-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div className="p-8 grid grid-cols-1 md:grid-cols-3 gap-6">
                                             <div className="space-y-2">
                                                 <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Employee Code <span className="text-[var(--color-error)]">*</span></label>
                                                 <input
@@ -1273,7 +1273,7 @@ const AddEmployee = () => {
                                                     name="address"
                                                     value={formData.address}
                                                     onChange={handleInputChange}
-                                                    rows="3"
+                                                    rows="2"
                                                     className="w-full px-4 py-3 border border-[var(--color-border-primary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition-all resize-none"
                                                     placeholder="Enter address"
                                                 />
@@ -1610,7 +1610,7 @@ const AddEmployee = () => {
                                     )}
 
                                     {section.key === 'contactInformation' && (
-                                        <div className="p-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div className="p-8 grid grid-cols-1 md:grid-cols-3 gap-6">
                                             <div className="space-y-2">
                                                 <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Emergency Contact Number</label>
                                                 <input

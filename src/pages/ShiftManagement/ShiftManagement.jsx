@@ -419,11 +419,11 @@ const ShiftManagement = () => {
                         {/* Available Shifts card and rest of your main content */}
                         <div className="bg-[var(--color-bg-secondary)] rounded-lg border border-[var(--color-primary-dark)] overflow-hidden shadow-sm">
                             {/* Header section */}
-                            <div className="px-6 py-4 border-b border-[var(--color-primary-light)] bg-[var(--color-primary-dark)]">
+                            <div className="px-6 py-4 border-b border-[var(--color-primary-light)] bg-[var(--color-primary-lighter)] ">
                                 <div className="flex justify-between items-center">
                                     <div className="flex items-center">
-                                        <Calendar className="h-6 w-6 text-[var(--color-text-white)] mr-2" />
-                                        <h3 className="text-lg font-medium text-[var(--color-text-white)]">
+                                        <Calendar className="h-6 w-6 text-[var(--color-primary-darker)] mr-2" />
+                                        <h3 className="text-lg font-medium text-[var(--color-primary-darker)]">
                                             Available Shifts
                                         </h3>
                                     </div>
@@ -533,22 +533,22 @@ const ShiftManagement = () => {
                             ) : (
                                 <div className="overflow-x-auto">
                                     <table className="min-w-full divide-y divide-[var(--color-border-divider)]">
-                                        <thead className="bg-[var(--color-primary-lightest)]">
+                                        <thead className="bg-[var(--color-primary-dark)] ">
                                             <tr>
-                                                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--color-text-secondary)] uppercase tracking-wider">
+                                                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--color-text-white)] uppercase tracking-wider">
                                                     Shift Name
                                                 </th>
-                                                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--color-text-secondary)] uppercase tracking-wider">
+                                                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--color-text-white)] uppercase tracking-wider">
                                                     Shift Days
                                                 </th>
-                                                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--color-text-secondary)] uppercase tracking-wider">
+                                                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--color-text-white)] uppercase tracking-wider">
                                                     Assigned Employees
                                                 </th>
-                                                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--color-text-secondary)] uppercase tracking-wider">
+                                                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--color-text-white)] uppercase tracking-wider">
                                                     Created On
                                                 </th>
                                                 {(permissions?.shift_edit || permissions?.shift_delete) && (
-                                                    <th className="px-6 py-3 text-left text-xs font-medium text-[var(--color-text-secondary)] uppercase tracking-wider">
+                                                    <th className="px-6 py-3 text-left text-xs font-medium text-[var(--color-text-white)] uppercase tracking-wider">
                                                         Actions
                                                     </th>
                                                 )}

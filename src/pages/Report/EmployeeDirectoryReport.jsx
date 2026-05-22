@@ -474,11 +474,11 @@ const EmployeeDirectoryReport = () => {
                 {/* Results */}
                 {reportData && (
                     <div className="bg-[var(--color-bg-secondary)] rounded-xl shadow-sm border border-[var(--color-border-secondary)] overflow-hidden">
-                        <div className="px-6 py-4 border-b border-[var(--color-primary-light)] bg-[var(--color-primary-dark)]">
+                        <div className="px-6 py-4 border-b border-[var(--color-primary-light)] bg-[var(--color-primary-lighter)] ">
                             <div className="flex justify-between items-center">
                                 <div className="flex items-center">
-                                    <Users className="h-6 w-6 text-[var(--color-text-white)] mr-2" />
-                                    <h3 className="text-lg font-medium text-[var(--color-text-white)]">Employee Directory</h3>
+                                    <Users className="h-6 w-6 text-[var(--color-primary-darker)] mr-2" />
+                                    <h3 className="text-lg font-medium text-[var(--color-primary-darker)]">Employee Directory</h3>
                                 </div>
 
                                 <div className="flex items-center gap-3">
@@ -911,16 +911,16 @@ const EmployeeDirectoryReport = () => {
                         {/* Table */}
                         <div className="overflow-x-auto">
                             <table className="w-full min-w-[1200px]">
-                                <thead className="bg-[var(--color-bg-gray-light)] border-b border-[var(--color-border-secondary)]">
+                                <thead className="bg-[var(--color-primary-dark)] border-b border-[var(--color-border-secondary)]">
                                     <tr>
-                                        <th className="px-6 py-3 text-center text-xs font-medium text-[var(--color-text-muted)] uppercase tracking-wider">Employee</th>
-                                        <th className="px-6 py-3 text-center text-xs font-medium text-[var(--color-text-muted)] uppercase tracking-wider">Code</th>
-                                        <th className="px-6 py-3 text-center text-xs font-medium text-[var(--color-text-muted)] uppercase tracking-wider">Department</th>
-                                        <th className="px-6 py-3 text-center text-xs font-medium text-[var(--color-text-muted)] uppercase tracking-wider">Designation</th>
-                                        <th className="px-6 py-3 text-center text-xs font-medium text-[var(--color-text-muted)] uppercase tracking-wider">Branch</th>
-                                        <th className="px-6 py-3 text-center text-xs font-medium text-[var(--color-text-muted)] uppercase tracking-wider">Contact</th>
-                                        <th className="px-6 py-3 text-center text-xs font-medium text-[var(--color-text-muted)] uppercase tracking-wider">Join Date</th>
-                                        <th className="px-6 py-3 text-center text-xs font-medium text-[var(--color-text-muted)] uppercase tracking-wider">Action</th>
+                                        <th className="px-6 py-3 text-center text-xs font-medium text-[var(--color-text-white)] uppercase tracking-wider">Employee</th>
+                                        <th className="px-6 py-3 text-center text-xs font-medium text-[var(--color-text-white)] uppercase tracking-wider">Code</th>
+                                        <th className="px-6 py-3 text-center text-xs font-medium text-[var(--color-text-white)] uppercase tracking-wider">Department</th>
+                                        <th className="px-6 py-3 text-center text-xs font-medium text-[var(--color-text-white)] uppercase tracking-wider">Designation</th>
+                                        <th className="px-6 py-3 text-center text-xs font-medium text-[var(--color-text-white)] uppercase tracking-wider">Branch</th>
+                                        <th className="px-6 py-3 text-center text-xs font-medium text-[var(--color-text-white)] uppercase tracking-wider">Contact</th>
+                                        <th className="px-6 py-3 text-center text-xs font-medium text-[var(--color-text-white)] uppercase tracking-wider">Join Date</th>
+                                        <th className="px-6 py-3 text-center text-xs font-medium text-[var(--color-text-white)] uppercase tracking-wider">Action</th>
                                     </tr>
                                 </thead>
 
