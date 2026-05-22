@@ -65,6 +65,7 @@ const PaymentPage = () => {
     const [couponApplied, setCouponApplied] = useState(null); // { code, discountPct }
     const [couponError, setCouponError] = useState('');
     const [enabled, setEnabled] = useState(false);
+    const [isFreePlan, setIsFreePlan] = useState(false);
 
     // ── Derived ───────────────────────────────────────────────────────────────
     const availableCycles = selectedPlan?.billing_cycle ?? [];
@@ -145,6 +146,8 @@ const PaymentPage = () => {
     // ── Plan select ───────────────────────────────────────────────────────────
 
     const handlePlanSelect = (plan) => {
+        setIsFreePlan(false);
+        setSelectedPlan(plan);
         const { min, max } = getRange(plan.user_range);
         const clampedEmployees = max === Infinity
             ? Math.max(employees, min)
@@ -446,7 +449,28 @@ const PaymentPage = () => {
                                     {[1, 2, 3].map(i => <div key={i} className="h-14 rounded-xl bg-gray-100 animate-pulse" />)}
                                 </div>
                             ) : (
-                                <div className="grid grid-cols-3 gap-2 mb-5">
+                                <div className="grid grid-cols-4 gap-2 mb-5">
+
+                                    {/* Static Free Button */}
+                                    <button
+
+                                        onClick={() => {
+                                            setIsFreePlan(true);
+                                            setSelectedPlan(null);
+                                        }}
+                                        className={`py-2.5 rounded-xl text-xs font-bold border-2 transition-all
+                                            ${isFreePlan
+                                                ? 'bg-pink-500 text-white border-pink-500 shadow-md'
+                                                : 'bg-white text-[#6b7280] border-[#e5e7eb] hover:border-pink-400'
+                                            }`}>
+
+                                        Free
+
+                                        <div className="text-[10px] font-normal mt-0.5 text-gray-400">
+                                            1 users
+                                        </div>
+
+                                    </button>
                                     {plans.map((p) => {
                                         const colors = PLAN_COLORS[p.name] ?? PLAN_COLORS.Platinum;
                                         const isActive = selectedPlan?.id === p.id;
@@ -587,149 +611,152 @@ focus:outline-none focus:border-[#6C4CF1] focus:ring-2 focus:ring-[#6C4CF1]/20" 
                     </motion.div>
 
                     {/* RIGHT — Sticky Summary */}
-                    <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.5, delay: 0.2 }}
-                        className="lg:sticky lg:top-6 space-y-4">
 
-                        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-8">
+                    {!isFreePlan && (
+                        <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}
+                            transition={{ duration: 0.5, delay: 0.2 }}
+                            className="lg:sticky lg:top-6 space-y-4">
 
-                            <h2 className="text-base font-bold text-gray-800 mb-5">Price Details</h2>
-                            {selectedPlan && (
-                                <div className={`inline-flex items-center gap-2 bg-gradient-to-r ${planColors.gradient} text-white text-xs font-bold px-3 py-1.5 rounded-full mb-5`}>
-                                    <span className="w-1.5 h-1.5 rounded-full bg-white/80 inline-block" />
-                                    {selectedPlan.name} Plan · {selectedPlan.user_range} users
-                                </div>
-                            )}
+                            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-8">
 
-                            <div className="space-y-3 text-sm">
-                                {/* Base amount row */}
-                                <div className="flex justify-between text-gray-500">
-                                    <span>{employees} users x Rs.{pricePerUser} x {months} mo</span>
-                                    <span className="font-semibold text-gray-700">Rs.{fmt(baseAmount)}</span>
-                                </div>
-
-                                {/* Coupon rows — only when applied */}
-                                {couponApplied && (<>
-                                    <div className="flex justify-between text-green-600">
-                                        <span>Coupon ({couponApplied.code} · {couponApplied.discountPct}% off)</span>
-                                        <span className="font-semibold">-Rs.{fmt(discountAmount)}</span>
+                                <h2 className="text-base font-bold text-gray-800 mb-5">Price Details</h2>
+                                {selectedPlan && (
+                                    <div className={`inline-flex items-center gap-2 bg-gradient-to-r ${planColors.gradient} text-white text-xs font-bold px-3 py-1.5 rounded-full mb-5`}>
+                                        <span className="w-1.5 h-1.5 rounded-full bg-white/80 inline-block" />
+                                        {selectedPlan.name} Plan · {selectedPlan.user_range} users
                                     </div>
+                                )}
+
+                                <div className="space-y-3 text-sm">
+                                    {/* Base amount row */}
                                     <div className="flex justify-between text-gray-500">
-                                        <span>Subtotal after discount</span>
-                                        <span className="font-semibold text-gray-700">Rs.{fmt(taxableAmount)}</span>
+                                        <span>{employees} users x Rs.{pricePerUser} x {months} mo</span>
+                                        <span className="font-semibold text-gray-700">Rs.{fmt(baseAmount)}</span>
                                     </div>
-                                </>)}
 
-                                {/* GST on taxable amount */}
-                                {enabled && <div className="flex justify-between text-gray-500">
-                                    <span>GST (18%)</span>
-                                    <span className="font-semibold text-gray-700">Rs.{fmt(gst)}</span>
-                                </div>}
+                                    {/* Coupon rows — only when applied */}
+                                    {couponApplied && (<>
+                                        <div className="flex justify-between text-green-600">
+                                            <span>Coupon ({couponApplied.code} · {couponApplied.discountPct}% off)</span>
+                                            <span className="font-semibold">-Rs.{fmt(discountAmount)}</span>
+                                        </div>
+                                        <div className="flex justify-between text-gray-500">
+                                            <span>Subtotal after discount</span>
+                                            <span className="font-semibold text-gray-700">Rs.{fmt(taxableAmount)}</span>
+                                        </div>
+                                    </>)}
 
-                                <div className="flex justify-between text-base  text-gray-900">
-                                    {/* Coupon Field */}
-                                    <Field label="Coupon Code">
-                                        {couponApplied ? (
-                                            <div className="flex items-center justify-between px-4 py-2.5 rounded-xl border border-green-200 bg-green-50">
-                                                <span className="text-sm text-green-700">
-                                                    {couponApplied.code} — {couponApplied.discountPct}% off applied
-                                                </span>
-                                                <button type="button" onClick={removeCoupon}
-                                                    className="text-xs text-red-400 hover:text-red-600 font-semibold ml-3 transition-colors">
-                                                    Remove
-                                                </button>
-                                            </div>
-                                        ) : (
-                                            <>
-                                                {/* Input row */}
-                                                <div className="flex gap-2">
-                                                    <input type="text" placeholder="coupon code" value={couponInput}
-                                                        onChange={e => { setCouponInput(e.target.value); setCouponError(''); }}
-                                                        onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), applyCoupon())}
-                                                        className="flex-1 px-4 py-2.5 rounded-xl border border-gray-200 bg-white text-sm
-                    text-gray-800 placeholder:text-gray-300 focus:outline-none focus:border-[#6C4CF1]
-                    focus:ring-2 focus:ring-[#6C4CF1]/15 transition-all uppercase tracking-widest" />
-                                                    <button type="button" onClick={applyCoupon} disabled={!couponInput.trim()}
-                                                        className="px-5 py-2.5 rounded-xl bg-[#6C4CF1] text-white text-sm font-semibold
-                    hover:bg-[#4B2EDB] transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
-                                                        Apply
+                                    {/* GST on taxable amount */}
+                                    {enabled && <div className="flex justify-between text-gray-500">
+                                        <span>GST (18%)</span>
+                                        <span className="font-semibold text-gray-700">Rs.{fmt(gst)}</span>
+                                    </div>}
+
+                                    <div className="flex justify-between text-base  text-gray-900">
+                                        {/* Coupon Field */}
+                                        <Field label="Coupon Code">
+                                            {couponApplied ? (
+                                                <div className="flex items-center justify-between px-4 py-2.5 rounded-xl border border-green-200 bg-green-50">
+                                                    <span className="text-sm text-green-700">
+                                                        {couponApplied.code} — {couponApplied.discountPct}% off applied
+                                                    </span>
+                                                    <button type="button" onClick={removeCoupon}
+                                                        className="text-xs text-red-400 hover:text-red-600 font-semibold ml-3 transition-colors">
+                                                        Remove
                                                     </button>
                                                 </div>
+                                            ) : (
+                                                <>
+                                                    {/* Input row */}
+                                                    <div className="flex gap-2">
+                                                        <input type="text" placeholder="coupon code" value={couponInput}
+                                                            onChange={e => { setCouponInput(e.target.value); setCouponError(''); }}
+                                                            onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), applyCoupon())}
+                                                            className="flex-1 px-4 py-2.5 rounded-xl border border-gray-200 bg-white text-sm
+                    text-gray-800 placeholder:text-gray-300 focus:outline-none focus:border-[#6C4CF1]
+                    focus:ring-2 focus:ring-[#6C4CF1]/15 transition-all uppercase tracking-widest" />
+                                                        <button type="button" onClick={applyCoupon} disabled={!couponInput.trim()}
+                                                            className="px-5 py-2.5 rounded-xl bg-[#6C4CF1] text-white text-sm font-semibold
+                    hover:bg-[#4B2EDB] transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
+                                                            Apply
+                                                        </button>
+                                                    </div>
 
-                                                {/* Coupon list */}
-                                                <div className="mt-3 space-y-2">
-                                                    {COUPON_LIST.map((c) => (
-                                                        <div key={c.code}
-                                                            className="flex items-start gap-3 border border-dashed border-gray-200 rounded-xl px-4 py-3 hover:border-[#6C4CF1]/40 transition-colors cursor-pointer group"
-                                                            onClick={() => { setCouponInput(c.code); setCouponError(''); }}>
-                                                            {/* Checkbox style indicator */}
-                                                            <div className={`mt-0.5 w-4 h-4 rounded flex-shrink-0 flex items-center justify-center border-2 transition-colors
+                                                    {/* Coupon list */}
+                                                    <div className="mt-3 space-y-2">
+                                                        {COUPON_LIST.map((c) => (
+                                                            <div key={c.code}
+                                                                className="flex items-start gap-3 border border-dashed border-gray-200 rounded-xl px-4 py-3 hover:border-[#6C4CF1]/40 transition-colors cursor-pointer group"
+                                                                onClick={() => { setCouponInput(c.code); setCouponError(''); }}>
+                                                                {/* Checkbox style indicator */}
+                                                                <div className={`mt-0.5 w-4 h-4 rounded flex-shrink-0 flex items-center justify-center border-2 transition-colors
                             ${couponInput === c.code ? 'bg-[#6C4CF1] border-[#6C4CF1]' : 'border-gray-300 group-hover:border-[#6C4CF1]'}`}>
-                                                                {couponInput === c.code && (
-                                                                    <svg className="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                                                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                                                                    </svg>
-                                                                )}
-                                                            </div>
-
-                                                            <div className="flex-1 min-w-0">
-                                                                {/* Coupon code pill */}
-                                                                <div className="inline-block border border-dashed border-[#6C4CF1]/60 rounded-md px-2 py-0.5 mb-1">
-                                                                    <span className="text-xs font-bold text-[#6C4CF1] tracking-widest">{c.code}</span>
+                                                                    {couponInput === c.code && (
+                                                                        <svg className="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                                                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                                                        </svg>
+                                                                    )}
                                                                 </div>
-                                                                <p className="text-xs font-semibold text-gray-800">{c.label}</p>
-                                                                <p className="text-[11px] text-gray-400">{c.desc}</p>
-                                                                <p className="text-[11px] text-gray-400 mt-0.5">
-                                                                    Expires on: <span className="font-medium text-gray-500">{c.expiry}</span>
-                                                                </p>
+
+                                                                <div className="flex-1 min-w-0">
+                                                                    {/* Coupon code pill */}
+                                                                    <div className="inline-block border border-dashed border-[#6C4CF1]/60 rounded-md px-2 py-0.5 mb-1">
+                                                                        <span className="text-xs font-bold text-[#6C4CF1] tracking-widest">{c.code}</span>
+                                                                    </div>
+                                                                    <p className="text-xs font-semibold text-gray-800">{c.label}</p>
+                                                                    <p className="text-[11px] text-gray-400">{c.desc}</p>
+                                                                    <p className="text-[11px] text-gray-400 mt-0.5">
+                                                                        Expires on: <span className="font-medium text-gray-500">{c.expiry}</span>
+                                                                    </p>
+                                                                </div>
+
+                                                                {/* Apply button on right */}
+                                                                <button type="button"
+                                                                    onClick={(e) => { e.stopPropagation(); setCouponInput(c.code); setCouponError(''); setTimeout(applyCoupon, 0); }}
+                                                                    className="self-center text-xs font-bold text-[#6C4CF1] hover:text-[#4B2EDB] whitespace-nowrap transition-colors">
+                                                                    APPLY
+                                                                </button>
                                                             </div>
+                                                        ))}
+                                                    </div>
+                                                </>
+                                            )}
+                                            {couponError && <p className="text-xs text-red-500 mt-1">{couponError}</p>}
+                                        </Field>
 
-                                                            {/* Apply button on right */}
-                                                            <button type="button"
-                                                                onClick={(e) => { e.stopPropagation(); setCouponInput(c.code); setCouponError(''); setTimeout(applyCoupon, 0); }}
-                                                                className="self-center text-xs font-bold text-[#6C4CF1] hover:text-[#4B2EDB] whitespace-nowrap transition-colors">
-                                                                APPLY
-                                                            </button>
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                            </>
-                                        )}
-                                        {couponError && <p className="text-xs text-red-500 mt-1">{couponError}</p>}
-                                    </Field>
+                                    </div>
 
+
+                                    <div className="h-px bg-gray-100 my-1" />
+
+                                    <div className="flex justify-between text-base font-extrabold text-gray-900">
+                                        <span>Total</span>
+                                        <span className="text-[#6C4CF1]">Rs.{fmt(total)}</span>
+                                    </div>
+
+
+                                    <p className="text-[11px] text-gray-400">
+                                        Billed {billingCycle} ({months} month{months > 1 ? 's' : ''} per cycle) · Inclusive of all taxes
+                                    </p>
                                 </div>
 
+                                <button onClick={() => handleSubmit()}
+                                    className="mt-6 w-full py-3 rounded-xl bg-gradient-to-r from-[#6C4CF1] to-[#4B2EDB] text-white font-bold text-sm hover:opacity-90 active:scale-95 transition-all shadow-lg shadow-[#6C4CF1]/30 flex items-center justify-center gap-2">
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                    </svg>
+                                    Pay Now · Rs.{fmt(total)}
+                                </button>
 
-                                <div className="h-px bg-gray-100 my-1" />
-
-                                <div className="flex justify-between text-base font-extrabold text-gray-900">
-                                    <span>Total</span>
-                                    <span className="text-[#6C4CF1]">Rs.{fmt(total)}</span>
+                                <div className="mt-4 flex items-center justify-center gap-1.5 text-[11px] text-gray-400">
+                                    <svg className="w-3.5 h-3.5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fillRule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                    </svg>
+                                    Secured by SSL · Razorpay
                                 </div>
-
-
-                                <p className="text-[11px] text-gray-400">
-                                    Billed {billingCycle} ({months} month{months > 1 ? 's' : ''} per cycle) · Inclusive of all taxes
-                                </p>
                             </div>
-
-                            <button onClick={() => handleSubmit()}
-                                className="mt-6 w-full py-3 rounded-xl bg-gradient-to-r from-[#6C4CF1] to-[#4B2EDB] text-white font-bold text-sm hover:opacity-90 active:scale-95 transition-all shadow-lg shadow-[#6C4CF1]/30 flex items-center justify-center gap-2">
-                                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                                </svg>
-                                Pay Now · Rs.{fmt(total)}
-                            </button>
-
-                            <div className="mt-4 flex items-center justify-center gap-1.5 text-[11px] text-gray-400">
-                                <svg className="w-3.5 h-3.5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fillRule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                                </svg>
-                                Secured by SSL · Razorpay
-                            </div>
-                        </div>
-                    </motion.div>
+                        </motion.div>
+                    )}
                 </div>
             </section>
             {toast && (

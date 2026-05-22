@@ -808,12 +808,12 @@ const AttendanceExceptionReport = () => {
                 <div className="bg-[var(--color-bg-secondary)] rounded-lg border border-[var(--color-primary-dark)] overflow-hidden shadow-sm">
 
                     {/* Table toolbar */}
-                    <div className="px-6 py-4 border-b border-[var(--color-primary-light)] bg-[var(--color-primary-dark)]">
+                    <div className="px-6 py-4 border-b border-[var(--color-primary-light)] bg-[var(--color-primary-lighter)]">
                         <div className="flex justify-between items-center flex-wrap gap-3">
                             <div className="flex items-center gap-2">
-                                {currentTab && <currentTab.icon className="h-5 w-5 text-white" />}
-                                <h3 className="text-lg font-medium text-[var(--color-text-white)]">{currentTab?.label}</h3>
-                                <span className="px-2 py-0.5 bg-white/20 rounded-full text-xs text-white font-medium">
+                                {currentTab && <currentTab.icon className="h-5 w-5 text-[var(--color-primary-dark)]" />}
+                                <h3 className="text-lg font-medium text-[var(--color-primary-dark)]">{currentTab?.label}</h3>
+                                <span className="px-2 py-0.5 bg-white rounded-full text-xs text-[var(--color-primary-dark)] font-medium">
                                     {activeData.length} record{activeData.length !== 1 ? 's' : ''}
                                 </span>
                             </div>
@@ -821,14 +821,16 @@ const AttendanceExceptionReport = () => {
                             <div className="flex items-center gap-3 flex-wrap">
 
                                 {/* Date Picker */}
-                                <div className="flex items-center space-x-2">
-                                    <Calendar className="w-5 h-5 text-white" />
+
+                                <div className="relative flex items-center z-[40] min-w-[140px] sm:min-w-[160px]">
+                                    <Calendar className="absolute left-3 w-4 h-4 text-[var(--color-primary)] pointer-events-none z-10" />
+
                                     <DatePicker
                                         selected={selectedDate}
-                                        onChange={(date) => setSelectedDate(date)}
+                                       onChange={(date) => setSelectedDate(date)}
                                         dateFormat="dd-MM-yyyy"
                                         placeholderText="DD-MM-YYYY"
-                                        className="w-full bg-[var(--color-bg-secondary-20)] border border-[var(--color-bg-secondary-30)] rounded-lg px-3 py-2 text-sm text-[var(--color-text-white)] placeholder-[var(--color-text-white-90)] focus:outline-none focus:ring-2 focus:ring-[var(--color-bg-secondary-30)]"
+                                        className="w-full bg-[var(--color-bg-primary)] hover:bg-[var(--color-bg-hover)] border border-[var(--color-border-secondary)] rounded-xl pl-9 pr-3 py-1.5 sm:py-2 text-xs sm:text-sm text-[var(--color-text-primary)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent transition-all duration-200 cursor-pointer font-medium shadow-sm"
                                     />
                                 </div>
 
@@ -1011,10 +1013,10 @@ const AttendanceExceptionReport = () => {
                         ) : (
                             <>
                                 <table className="w-full min-w-[900px]">
-                                    <thead className="bg-[var(--color-bg-gray-light)] border-b border-[var(--color-border-secondary)]">
+                                    <thead className="bg-[var(--color-primary-dark)] border-b border-[var(--color-border-secondary)]">
                                         <tr>
                                             {renderTableHead().map((col) => (
-                                                <th key={col.key} className="px-4 py-3 text-center text-xs font-medium text-[var(--color-text-muted)] uppercase tracking-wider">
+                                                <th key={col.key} className="px-4 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
                                                     {col.label}
                                                 </th>
                                             ))}

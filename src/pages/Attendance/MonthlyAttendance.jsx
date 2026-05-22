@@ -309,16 +309,16 @@ const MonthlyAttendance = () => {
 
                 {/* ── Header ── */}
                 <div className="bg-[var(--color-bg-secondary)] rounded-xl sm:rounded-2xl shadow-xl mb-4 sm:mb-6 overflow-hidden">
-                    <div className="bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] p-4 sm:p-8">
+                    <div className="bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] p-3 sm:p-6">
                         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                             <div className="flex items-center gap-3">
-                                <button
+                                {/* <button
                                     onClick={() => navigate(-1)}
                                     className="flex items-center gap-1 sm:gap-2 text-white bg-white/20 hover:bg-white/30 px-3 py-1.5 rounded-lg text-xs sm:text-sm transition-colors"
                                 >
                                     <ArrowLeft className="w-4 h-4" />
                                     <span className="hidden sm:inline">Back</span>
-                                </button>
+                                </button> */}
                                 <h1 className="text-base sm:text-2xl font-bold text-white">Monthly Attendance</h1>
                             </div>
                             <button
