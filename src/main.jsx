@@ -4,6 +4,7 @@ import App from "./App";
 import "./index.css";
 import { BrowserRouter } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
+import { SoftwareConfigProvider } from "./context/SoftwareConfigContext";
 import store from "./redux/store";
 import { Provider } from "react-redux";
 import { HelmetProvider } from "@dr.pogodin/react-helmet";
@@ -13,10 +14,11 @@ ReactDOM.createRoot(document.getElementById("root")).render(
   <HelmetProvider>
     <BrowserRouter>
       <AuthProvider>
-        <Provider store={store}>
-          <App />
-          
-        </Provider>
+        <SoftwareConfigProvider>
+          <Provider store={store}>
+            <App />
+          </Provider>
+        </SoftwareConfigProvider>
       </AuthProvider>
     </BrowserRouter>
   </HelmetProvider>,
