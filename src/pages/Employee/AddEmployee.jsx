@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronDown, ChevronUp, Plus, Trash2, ArrowLeft, User, EyeOff, CreditCard, FileText, Phone, Calendar, Users, Edit, Lock, Eye } from 'lucide-react';
+import { ChevronDown, ChevronUp, Plus, Trash2, ArrowLeft, User, CreditCard, FileText, Phone, Users, Edit, Eye } from 'lucide-react';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import api from '../../api/axiosInstance';
 import { useAuth } from '../../context/AuthContext';
 import { Toast } from '../../Components/ui/Toast';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
 import { useSelector } from 'react-redux';
 import LoadingSpinner from '../../Components/Loader/LoadingSpinner';
+import CustomSelect from '../../Components/comman/CustomSelect';
+import CustomInput from '../../Components/comman/CustomInput';
+import CustomDatePicker from '../../Components/comman/CustomDatePicker';
 
 const AddEmployee = () => {
     const { employeeId } = useParams();
@@ -25,7 +26,7 @@ const AddEmployee = () => {
     const [showPreviewModal, setShowPreviewModal] = useState(false);
     const [previewImage, setPreviewImage] = useState('');
     const [previewTitle, setPreviewTitle] = useState('');
-    const [showPassword, setShowPassword] = useState(false);
+
 
     const [formData, setFormData] = useState({
         employeeCode: '',
@@ -479,11 +480,7 @@ const AddEmployee = () => {
         }
     };
 
-    const getValidDate = (value) => {
-        if (!value) return null;
-        const date = new Date(value);
-        return isNaN(date.getTime()) ? null : date;
-    };
+
 
     const validateField = (fieldName, value) => {
         switch (fieldName) {
@@ -1021,22 +1018,22 @@ const AddEmployee = () => {
             <div className=" mx-auto px-4 py-8">
                 {/* Header */}
                 <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-xl mb-8 overflow-hidden">
-                    <div className="bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] p-8">
+                    <div className="bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] p-3 sm:p-6">
                         <div className="flex items-center gap-4">
+                            {/* Back Icon Only */}
                             <button
                                 onClick={goBack}
-                                className="flex items-center gap-2 text-[var(--color-text-white)] hover:text-[var(--color-text-white)] transition-colors bg-[var(--color-bg-secondary-20)] hover:bg-[var(--color-bg-secondary-30)] px-4 py-2 rounded-lg backdrop-blur-sm"
+                                className="flex items-center justify-center text-[var(--color-text-white)] transition-colors bg-[var(--color-bg-secondary-20)] hover:bg-[var(--color-bg-secondary-30)] p-2 rounded-lg backdrop-blur-sm"
                             >
-                                <ArrowLeft size={18} />
-                                Back
+                                <ArrowLeft size={20} />
                             </button>
+
+                            {/* Title and optional edit icon */}
                             <div className="flex items-center gap-3">
-                                {isEditMode ? <Edit size={24} className="text-[var(--color-text-white)]" /> : ""}
-                                <div>
-                                    <h1 className="text-2xl font-bold text-[var(--color-text-white)]">
-                                        {isEditMode ? 'Edit Employee' : 'Add New Employee'}
-                                    </h1>
-                                </div>
+                                {isEditMode && <Edit size={24} className="text-[var(--color-text-white)]" />}
+                                <h1 className="text-2xl font-bold text-[var(--color-text-white)]">
+                                    {isEditMode ? 'Edit Employee' : 'Add New Employee'}
+                                </h1>
                             </div>
                         </div>
                     </div>
@@ -1068,43 +1065,44 @@ const AddEmployee = () => {
                             {expandedSections[section.key] && (
                                 <div className="border-t border-[var(--color-border-primary)]">
                                     {section.key === 'basicDetails' && (
-                                        <div className="p-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div className="p-8 grid grid-cols-1 md:grid-cols-3 gap-6">
                                             <div className="space-y-2">
                                                 <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Employee Code <span className="text-[var(--color-error)]">*</span></label>
-                                                <input
+                                                <CustomInput
                                                     type="text"
                                                     name="employeeCode"
                                                     value={formData.employeeCode}
                                                     onChange={handleInputChange}
                                                     onBlur={handleFieldBlur}
-                                                    className="w-full px-4 py-3 border border-[var(--color-border-primary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition-all"
                                                     placeholder="Enter employee code"
                                                     required
+                                                    clearable={true}
                                                 />
                                             </div>
+                                            
                                             <div className="space-y-2">
                                                 <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Full Name <span className="text-[var(--color-error)]">*</span></label>
-                                                <input
+                                                <CustomInput
                                                     type="text"
                                                     name="name"
                                                     value={formData.name}
                                                     onChange={handleInputChange}
                                                     onBlur={handleFieldBlur}
-                                                    className="w-full px-4 py-3 border border-[var(--color-border-primary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition-all"
                                                     placeholder="Enter full name"
                                                     required
+                                                    clearable={true}
                                                 />
                                             </div>
                                             <div className="space-y-2">
                                                 <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Email Address</label>
-                                                <input
+                                                <CustomInput
                                                     type="email"
                                                     name="email"
                                                     value={formData.email}
                                                     onChange={handleInputChange}
                                                     onBlur={handleFieldBlur}
-                                                    className="w-full px-4 py-3 border border-[var(--color-border-primary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition-all"
                                                     placeholder="Enter email address"
+                                                    clearable={true}
                                                 />
                                             </div>
 
@@ -1114,40 +1112,29 @@ const AddEmployee = () => {
                                                 <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">
                                                     Mobile No <span className="text-[var(--color-error)]">*</span>
                                                 </label>
-                                                <input
+                                                <CustomInput
                                                     type="tel"
                                                     name="mobile"
                                                     value={formData.mobile}
                                                     onChange={handleInputChange}
                                                     onBlur={handleFieldBlur}
-                                                    className="w-full px-4 py-3 border border-[var(--color-border-primary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition-all"
                                                     placeholder="Enter mobile number"
                                                     required
+                                                    clearable={true}
                                                 />
                                             </div>
                                             <div className="space-y-2">
                                                 <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">
                                                     Password <span className="text-[var(--color-error)]">*</span>
                                                 </label>
-                                                <div className="relative">
-                                                    <input
-                                                        type={showPassword ? "text" : "password"}
-                                                        name="password"
-                                                        value={formData.password}
-                                                        onChange={handleInputChange}
-                                                        className="w-full px-4 py-3 pr-10 border border-[var(--color-border-primary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition-all"
-                                                        placeholder="Enter password"
-                                                        required
-                                                    />
-                                                    <button
-                                                        type="button"
-                                                        onClick={() => setShowPassword(!showPassword)}
-                                                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
-                                                        tabIndex={-1}
-                                                    >
-                                                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                                                    </button>
-                                                </div>
+                                                <CustomInput
+                                                    type="password"
+                                                    name="password"
+                                                    value={formData.password}
+                                                    onChange={handleInputChange}
+                                                    placeholder="Enter password"
+                                                    required
+                                                />
                                             </div>
                                             <div className="space-y-2">
                                                 <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Gender</label>
@@ -1174,18 +1161,15 @@ const AddEmployee = () => {
                                             </div>
                                             <div className="space-y-2">
                                                 <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Branch <span className="text-[var(--color-error)]">*</span></label>
-                                                <select
+                                                <CustomSelect
                                                     name="branch"
                                                     value={formData.branch}
                                                     onChange={handleInputChange}
-                                                    className="w-full px-4 py-3 border border-[var(--color-border-primary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition-all"
+                                                    options={dropdownOptions.branchOptions}
+                                                    placeholder="Select Branch"
                                                     required
-                                                >
-                                                    <option value="">Select Branch</option>
-                                                    {dropdownOptions.branchOptions.map(option => (
-                                                        <option key={option.value} value={option.value}>{option.label}</option>
-                                                    ))}
-                                                </select>
+                                                    searchable={true}
+                                                />
                                             </div>
                                             <div className="space-y-2">
                                                 <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Department <span className="text-[var(--color-error)]">*</span></label>
@@ -1213,34 +1197,25 @@ const AddEmployee = () => {
                                             </div>
                                             <div className="space-y-2">
                                                 <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Date of Birth</label>
-                                                <DatePicker
-                                                    selected={getValidDate(formData.dateOfBirth)}
-                                                    onChange={(date) => handleInputChange({ target: { name: 'dateOfBirth', value: date } })}
-                                                    className="w-full px-4 py-3 border border-[var(--color-border-primary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition-all"
-                                                    dateFormat="dd-MM-yyyy"
-                                                    placeholderText="DD-MM-YYYY"
-                                                    showYearDropdown
-                                                    showMonthDropdown
-                                                    scrollableYearDropdown
-                                                    scrollableMonthDropdown
-                                                    yearDropdownItemNumber={100}
+                                                <CustomDatePicker
+                                                    name="dateOfBirth"
+                                                    value={formData.dateOfBirth}
+                                                    onChange={handleInputChange}
+                                                    placeholder="DD-MM-YYYY"
                                                     maxDate={new Date()}
+                                                    clearable={true}
                                                 />
                                             </div>
                                             <div className="space-y-2">
                                                 <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Date of Joining <span className="text-[var(--color-error)]">*</span></label>
-                                                <DatePicker
-                                                    selected={getValidDate(formData.dateOfJoining)}
-                                                    onChange={(date) => handleInputChange({ target: { name: 'dateOfJoining', value: date } })}
-                                                    className="w-full px-4 py-3 border border-[var(--color-border-primary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition-all"
-                                                    dateFormat="dd-MM-yyyy"
-                                                    placeholderText="DD-MM-YYYY"
-                                                    showYearDropdown
-                                                    showMonthDropdown
-                                                    scrollableYearDropdown
-                                                    scrollableMonthDropdown
+                                                <CustomDatePicker
+                                                    name="dateOfJoining"
+                                                    value={formData.dateOfJoining}
+                                                    onChange={handleInputChange}
+                                                    placeholder="DD-MM-YYYY"
                                                     maxDate={new Date()}
                                                     required
+                                                    clearable={true}
                                                 />
                                             </div>
                                             <div className="space-y-2">
@@ -1307,7 +1282,7 @@ const AddEmployee = () => {
                                                     name="address"
                                                     value={formData.address}
                                                     onChange={handleInputChange}
-                                                    rows="3"
+                                                    rows="2"
                                                     className="w-full px-4 py-3 border border-[var(--color-border-primary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition-all resize-none"
                                                     placeholder="Enter address"
                                                 />
@@ -1343,13 +1318,12 @@ const AddEmployee = () => {
                                                 </div>
                                                 <div className="space-y-2">
                                                     <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Base Salary</label>
-                                                    <input
+                                                    <CustomInput
                                                         type="number"
                                                         name="salary"
                                                         value={formData.salary}
                                                         onChange={handleInputChange}
                                                         onBlur={handleFieldBlur}
-                                                        className="w-full px-4 py-3 border border-[var(--color-border-primary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition-all"
                                                         placeholder="Enter base salary amount"
                                                     />
                                                 </div>
@@ -1417,11 +1391,10 @@ const AddEmployee = () => {
                                                                     <label className="block text-sm font-medium text-[var(--color-text-secondary)]">
                                                                         {allowance.allowance_type === 1 ? 'Percentage (%)' : 'Amount (₹)'} <span className="text-[var(--color-error)]">*</span>
                                                                     </label>
-                                                                    <input
+                                                                    <CustomInput
                                                                         type="number"
                                                                         value={allowance.allowance_value}
                                                                         onChange={(e) => handleAllowanceChange(index, 'allowance_value', e.target.value)}
-                                                                        className="w-full px-3 py-2 border border-[var(--color-border-primary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition-all"
                                                                         placeholder={allowance.allowance_type === 1 ? 'Enter percentage' : 'Enter amount'}
                                                                         min="0"
                                                                         max={allowance.allowance_type === 1 ? "100" : undefined}
@@ -1499,11 +1472,10 @@ const AddEmployee = () => {
                                                                     <label className="block text-sm font-medium text-[var(--color-text-secondary)]">
                                                                         {deduction.deduction_type === 1 ? 'Percentage (%)' : 'Amount (₹)'} <span className="text-[var(--color-error)]">*</span>
                                                                     </label>
-                                                                    <input
+                                                                    <CustomInput
                                                                         type="number"
                                                                         value={deduction.deduction_value}
                                                                         onChange={(e) => handleDeductionChange(index, 'deduction_value', e.target.value)}
-                                                                        className="w-full px-3 py-2 border border-[var(--color-border-primary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition-all"
                                                                         placeholder={deduction.deduction_type === 1 ? 'Enter percentage' : 'Enter amount'}
                                                                         min="0"
                                                                         max={deduction.deduction_type === 1 ? "100" : undefined}
@@ -1525,50 +1497,50 @@ const AddEmployee = () => {
                                         <div className="p-8 grid grid-cols-1 md:grid-cols-2 gap-6">
                                             <div className="space-y-2">
                                                 <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Bank Name</label>
-                                                <input
+                                                <CustomInput
                                                     type="text"
                                                     name="bankName"
                                                     value={formData.bankName}
                                                     onChange={handleInputChange}
                                                     onBlur={handleFieldBlur}
-                                                    className="w-full px-4 py-3 border border-[var(--color-border-primary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition-all"
                                                     placeholder="Enter bank name"
+                                                    clearable={true}
                                                 />
                                             </div>
                                             <div className="space-y-2">
                                                 <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Branch Name</label>
-                                                <input
+                                                <CustomInput
                                                     type="text"
                                                     name="branchName"
                                                     value={formData.branchName}
                                                     onChange={handleInputChange}
                                                     onBlur={handleFieldBlur}
-                                                    className="w-full px-4 py-3 border border-[var(--color-border-primary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition-all"
                                                     placeholder="Enter branch name"
+                                                    clearable={true}
                                                 />
                                             </div>
                                             <div className="space-y-2">
                                                 <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Account Number</label>
-                                                <input
+                                                <CustomInput
                                                     type="text"
                                                     name="accountNo"
                                                     value={formData.accountNo}
                                                     onChange={handleInputChange}
                                                     onBlur={handleFieldBlur}
-                                                    className="w-full px-4 py-3 border border-[var(--color-border-primary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition-all"
                                                     placeholder="Enter account number"
+                                                    clearable={true}
                                                 />
                                             </div>
                                             <div className="space-y-2">
                                                 <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">IFSC Code</label>
-                                                <input
+                                                <CustomInput
                                                     type="text"
                                                     name="ifscCode"
                                                     value={formData.ifscCode}
                                                     onChange={handleInputChange}
                                                     onBlur={handleFieldBlur}
-                                                    className="w-full px-4 py-3 border border-[var(--color-border-primary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition-all"
                                                     placeholder="Enter IFSC code"
+                                                    clearable={true}
                                                 />
                                             </div>
                                         </div>
@@ -1662,27 +1634,27 @@ const AddEmployee = () => {
                                     )}
 
                                     {section.key === 'contactInformation' && (
-                                        <div className="p-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div className="p-8 grid grid-cols-1 md:grid-cols-3 gap-6">
                                             <div className="space-y-2">
                                                 <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Emergency Contact Number</label>
-                                                <input
+                                                <CustomInput
                                                     type="tel"
                                                     name="emergencyContactNo"
                                                     value={formData.emergencyContactNo}
                                                     onChange={handleInputChange}
-                                                    className="w-full px-4 py-3 border border-[var(--color-border-primary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition-all"
                                                     placeholder="Enter emergency contact number"
+                                                    clearable={true}
                                                 />
                                             </div>
                                             <div className="space-y-2">
                                                 <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Contact Person Name</label>
-                                                <input
+                                                <CustomInput
                                                     type="text"
                                                     name="contactPersonName"
                                                     value={formData.contactPersonName}
                                                     onChange={handleInputChange}
-                                                    className="w-full px-4 py-3 border border-[var(--color-border-primary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition-all"
                                                     placeholder="Enter contact person name"
+                                                    clearable={true}
                                                 />
                                             </div>
                                             <div className="space-y-2">
@@ -1742,22 +1714,22 @@ const AddEmployee = () => {
                                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                             <div className="space-y-2">
                                                                 <label className="block text-sm font-medium text-[var(--color-text-secondary)]">Name</label>
-                                                                <input
+                                                                <CustomInput
                                                                     type="text"
                                                                     value={reference.name}
                                                                     onChange={(e) => handleReferenceChange(index, 'name', e.target.value)}
-                                                                    className="w-full px-3 py-2 border border-[var(--color-border-primary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition-all"
                                                                     placeholder="Enter reference name"
+                                                                    clearable={true}
                                                                 />
                                                             </div>
                                                             <div className="space-y-2">
                                                                 <label className="block text-sm font-medium text-[var(--color-text-secondary)]">Contact Number</label>
-                                                                <input
+                                                                <CustomInput
                                                                     type="tel"
                                                                     value={reference.contactNumber}
                                                                     onChange={(e) => handleReferenceChange(index, 'contactNumber', e.target.value)}
-                                                                    className="w-full px-3 py-2 border border-[var(--color-border-primary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition-all"
                                                                     placeholder="Enter contact number"
+                                                                    clearable={true}
                                                                 />
                                                             </div>
                                                         </div>

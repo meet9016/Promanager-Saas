@@ -510,9 +510,9 @@ const ShiftReallocation = () => {
                 {/* List View */}
                 {view === 'list' && (
                     <div className="bg-[var(--color-bg-secondary)] rounded-lg shadow-sm border border-[var(--color-primary-dark)]">
-                        <div className="px-6 py-4 border-b border-[var(--color-primary-light)] bg-[var(--color-primary-dark)]">
+                        <div className="px-6 py-4 border-b border-[var(--color-primary-light)] bg-[var(--color-primary-lighter)] ">
                             <div className="flex items-center justify-between">
-                                <h2 className="text-lg font-semibold text-[var(--color-text-white)] flex items-center gap-2">
+                                <h2 className="text-lg font-semibold text-[var(--color-primary-darker)] flex items-center gap-2">
                                     <Calendar className="w-5 h-5" />
                                     Reallocation History
                                 </h2>
@@ -600,21 +600,21 @@ const ShiftReallocation = () => {
                             <>
                                 <div className="overflow-x-auto">
                                     <table className="min-w-full divide-y divide-[var(--color-border-divider)]">
-                                        <thead className="bg-[var(--color-primary-lightest)]">
+                                        <thead className="bg-[var(--color-primary-dark)]">
                                             <tr>
-                                                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--color-text-secondary)] uppercase tracking-wider">
+                                                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--color-text-white)] uppercase tracking-wider">
                                                     From Shift
                                                 </th>
-                                                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--color-text-secondary)] uppercase tracking-wider">
+                                                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--color-text-white)] uppercase tracking-wider">
                                                     To Shift
                                                 </th>
-                                                <th className="px-6 py-3 text-left  text-xs font-medium text-[var(--color-text-secondary)] uppercase tracking-wider">
+                                                <th className="px-6 py-3 text-left  text-xs font-medium text-[var(--color-text-white)] uppercase tracking-wider">
                                                     Reallocation Date
                                                 </th>
-                                                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--color-text-secondary)] uppercase tracking-wider">
+                                                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--color-text-white)] uppercase tracking-wider">
                                                     Status
                                                 </th>
-                                                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--color-text-secondary)] uppercase tracking-wider">
+                                                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--color-text-white)] uppercase tracking-wider">
                                                     Employees
                                                 </th>
                                             </tr>

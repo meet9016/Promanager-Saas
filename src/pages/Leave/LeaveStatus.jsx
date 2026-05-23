@@ -380,11 +380,11 @@ const LeaveManagement = () => {
 
                 <div className="bg-[var(--color-bg-secondary)] rounded-xl border border-[var(--color-border-primary)] overflow-hidden shadow-custom">
                     {/* Header section with tabs */}
-                    <div className="px-6 py-4 border-b border-[var(--color-border-primary)] bg-[var(--color-primary-dark)]">
-                        <div className="flex justify-between items-center mb-4">
+                    <div className="px-6 py-4 border-b border-[var(--color-border-primary)] bg-[var(--color-primary-lighter)] ">
+                        <div className="flex justify-between items-center ">
                             <div className="flex items-center">
-                                <FileText className="h-6 w-6 text-[var(--color-text-white)] mr-2" />
-                                <h3 className="text-lg font-semibold text-[var(--color-text-white)]">Leave Requests</h3>
+                                <FileText className="h-6 w-6 text-[var(--color-primary-darker)] mr-2" />
+                                <h3 className="text-lg font-semibold text-[var(--color-primary-darker)]">Leave Requests</h3>
                             </div>
 
                             <div className="flex items-center gap-3">
@@ -411,7 +411,10 @@ const LeaveManagement = () => {
                             </div>
                         </div>
 
-                        {/* Status Tabs */}
+                    </div>
+
+                    {/* Status Tabs */}
+                    <div className="px-6 py-2 border-b border-[var(--color-border-primary)] bg-white">
                         <div className="flex space-x-2">
                             {Object.entries(STATUS_CONFIG).map(([statusValue, config]) => {
                                 const IconComponent = config.icon;
@@ -419,8 +422,8 @@ const LeaveManagement = () => {
                                     <button
                                         key={statusValue}
                                         className={`flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${selectedStatus === statusValue
-                                            ? 'bg-[var(--color-bg-secondary)] text-[var(--color-text-secondary)] shadow-sm border border-[var(--color-border-primary)]'
-                                            : 'text-[var(--color-text-white)] hover:bg-[var(--color-bg-secondary)] hover:text-[var(--color-text-primary)]'
+                                            ? 'bg-[var(--color-primary-dark)] text-white shadow-sm border border-[var(--color-border-primary)]'
+                                            : 'text-[var(--color-primary-darker)] hover:bg-[var(--color-bg-secondary)] border-[var(--color-border-primary)] border'
                                             }`}
                                         onClick={() => handleTabChange(statusValue)}
                                     >
@@ -431,7 +434,6 @@ const LeaveManagement = () => {
                             })}
                         </div>
                     </div>
-
                     {/* Content section */}
                     {loading ? (
                         <div className="px-6 py-12 text-center">
@@ -467,7 +469,7 @@ const LeaveManagement = () => {
                     ) : (
                         <div className="overflow-x-auto">
                             <table className="min-w-full divide-y divide-[var(--color-border-divider)]">
-                                <thead className="bg-[var(--color-bg-gradient-start)]">
+                                <thead className="bg-[var(--color-primary-dark)] ">
                                     <tr>
                                         {[
                                             { key: COLUMN_KEYS.NAME, label: 'Employee Name' },
@@ -479,7 +481,7 @@ const LeaveManagement = () => {
                                         ].map(({ key, label }) => (
                                             <th key={`header-${key}`} className="px-6 py-3 text-left">
                                                 <button
-                                                    className="flex items-center text-xs font-semibold text-[var(--color-text-secondary)] uppercase tracking-wider hover:text-[var(--color-text-primary)] transition-colors"
+                                                    className="flex items-center text-xs font-semibold text-white uppercase tracking-wider hover:text-[var(--color-text-primary)] transition-colors"
                                                     onClick={() => requestSort(key)}
                                                 >
                                                     {label}

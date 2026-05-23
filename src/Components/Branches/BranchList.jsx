@@ -307,95 +307,90 @@ const BranchList = () => {
                                             className={`overflow-hidden transition-all duration-500 ease-in-out ${isExpanded ? "max-h-[1500px] opacity-100" : "max-h-0 opacity-0"
                                                 }`}
                                         >
-                                            <div className="px-4 pb-4 border-t border-[var(--color-border-light)]">
-                                                <div className="pt-4 space-y-4">
+                                            <div className="px-6 pb-6 border-t border-[var(--color-border-light)] bg-gradient-to-b from-transparent to-[var(--color-bg-secondary)]/10">
+                                                <div className="pt-6 space-y-6">
                                                     {/* Branch Details Grid */}
-                                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                                        <div className="space-y-2">
-                                                            <label className="block text-sm font-medium text-[var(--color-text-primary)]">
+                                                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+
+                                                        {/* Location Code Card */}
+                                                        <div className="group relative p-4 bg-[var(--color-bg-secondary)] border border-[var(--color-border-primary)] rounded-xl transition-all duration-200 hover:shadow-md hover:border-[var(--color-border-light)]">
+                                                            <label className="block text-xs font-semibold tracking-wider uppercase text-[var(--color-text-secondary)] mb-2">
                                                                 Location Code
                                                             </label>
-                                                            <div className="p-3 bg-[var(--color-bg-secondary)] border border-[var(--color-border-primary)] rounded-lg">
-                                                                <span className="text-[var(--color-text-primary)]">
-                                                                    {branch.location_code || "Not specified"}
-                                                                </span>
+                                                            <div className="text-base font-medium text-[var(--color-text-primary)]">
+                                                                {branch.location_code || (
+                                                                    <span className="text-sm italic opacity-50">Not specified</span>
+                                                                )}
                                                             </div>
                                                         </div>
 
-                                                        <div className="space-y-2">
-                                                            <label className="block text-sm font-medium text-[var(--color-text-primary)]">
-                                                                Location Description{" "}
-
-                                                            </label>
-                                                            <div className="p-3 bg-[var(--color-bg-secondary)] border border-[var(--color-border-primary)] rounded-lg">
-                                                                <span className="text-[var(--color-text-primary)]">
-                                                                    {branch.location_description || "No description provided"}
-                                                                </span>
-                                                            </div>
-                                                        </div>
-
-                                                        <div className="space-y-2">
-                                                            <label className="block text-sm font-medium text-[var(--color-text-primary)]">
-                                                                IP Address
-                                                            </label>
-                                                            <div className="p-3 bg-[var(--color-bg-secondary)] border border-[var(--color-border-primary)] rounded-lg">
-                                                                <span className="text-[var(--color-text-primary)]">
-                                                                    {branch.ip_address || "Not specified"}
-                                                                </span>
-                                                            </div>
-                                                        </div>
-
-                                                        <div className="space-y-2">
-                                                            <label className="block text-sm font-medium text-[var(--color-text-primary)]">
+                                                        {/* Device Name Card */}
+                                                        <div className="group relative p-4 bg-[var(--color-bg-secondary)] border border-[var(--color-border-primary)] rounded-xl transition-all duration-200 hover:shadow-md hover:border-[var(--color-border-light)]">
+                                                            <label className="block text-xs font-semibold tracking-wider uppercase text-[var(--color-text-secondary)] mb-2">
                                                                 Device Name
                                                             </label>
-                                                            <div className="p-3 bg-[var(--color-bg-secondary)] border border-[var(--color-border-primary)] rounded-lg">
-                                                                <span className="text-[var(--color-text-primary)]">
-                                                                    {branch.device_name || "Not specified"}
-                                                                </span>
+                                                            <div className="text-base font-medium text-[var(--color-text-primary)]">
+                                                                {(branch.devices?.[0]?.device_name) || (
+                                                                    <span className="text-sm italic opacity-50">Not specified</span>
+                                                                )}
                                                             </div>
                                                         </div>
 
-                                                        <div className="space-y-2">
-                                                            <label className="block text-sm font-medium text-[var(--color-text-primary)]">
+                                                        {/* Serial Number Card */}
+                                                        <div className="group relative p-4 bg-[var(--color-bg-secondary)] border border-[var(--color-border-primary)] rounded-xl transition-all duration-200 hover:shadow-md hover:border-[var(--color-border-light)]">
+                                                            <label className="block text-xs font-semibold tracking-wider uppercase text-[var(--color-text-secondary)] mb-2">
                                                                 Serial Number
                                                             </label>
-                                                            <div className="p-3 bg-[var(--color-bg-secondary)] border border-[var(--color-border-primary)] rounded-lg">
-                                                                <span className="text-[var(--color-text-primary)]">
-                                                                    {branch.serial_number || "Not specified"}
-                                                                </span>
+                                                            <div className="text-base font-mono font-medium text-[var(--color-text-primary)] tracking-wide">
+                                                                {(branch.devices?.[0]?.serial_number) || (
+                                                                    <span className="text-sm italic font-sans opacity-50">Not specified</span>
+                                                                )}
                                                             </div>
                                                         </div>
 
-                                                        <div className="space-y-2">
-                                                            <label className="block text-sm font-medium text-[var(--color-text-primary)]">
-                                                                Activation Code{" "}
+                                                        {/* Activation Code Card */}
+                                                        <div className="group relative p-4 bg-[var(--color-bg-secondary)] border border-[var(--color-border-primary)] rounded-xl transition-all duration-200 hover:shadow-md hover:border-[var(--color-border-light)]">
+                                                            <label className="block text-xs font-semibold tracking-wider uppercase text-[var(--color-text-secondary)] mb-2">
+                                                                Activation Code
                                                             </label>
-                                                            <div className="p-3 bg-[var(--color-bg-secondary)] border border-[var(--color-border-primary)] rounded-lg">
-                                                                <span className="text-[var(--color-text-primary)]">
-                                                                    {branch.activation_code || "Not specified"}
-                                                                </span>
+                                                            <div className="text-base font-mono font-medium text-[var(--color-text-primary)] tracking-wide">
+                                                                {(branch.devices?.[0]?.activation_code) || (
+                                                                    <span className="text-sm italic font-sans opacity-50">Not specified</span>
+                                                                )}
                                                             </div>
                                                         </div>
+
+                                                        {/* Product Type Card */}
+                                                        <div className="group relative p-4 bg-[var(--color-bg-secondary)] border border-[var(--color-border-primary)] rounded-xl transition-all duration-200 hover:shadow-md hover:border-[var(--color-border-light)]">
+                                                            <label className="block text-xs font-semibold tracking-wider uppercase text-[var(--color-text-secondary)] mb-2">
+                                                                Product Type
+                                                            </label>
+                                                            <div className="text-base font-medium text-[var(--color-text-primary)]">
+                                                                {branch.product_type_name || (
+                                                                    <span className="text-sm italic opacity-50">Not specified</span>
+                                                                )}
+                                                            </div>
+                                                        </div>
+
                                                     </div>
 
-                                                    {/* Additional Info Section */}
+                                                    {/* Additional Info Section / Footer Timeline */}
                                                     {(branch.created_at || branch.updated_at) && (
-                                                        <div className="pt-4 border-t border-[var(--color-border-light)]">
-                                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-[var(--color-text-secondary)]">
-                                                                {branch.created_at && (
-                                                                    <div>
-                                                                        <span className="font-medium">Created: </span>
-                                                                        {new Date(branch.created_at).toLocaleDateString()}
-                                                                    </div>
-                                                                )}
-                                                                {branch.updated_at && (
-                                                                    <div>
-                                                                        <span className="font-medium">Last Updated: </span>
-                                                                        {new Date(branch.updated_at).toLocaleDateString()}
-                                                                    </div>
-                                                                )}
-                                                            </div>
+                                                        <div className="pt-4 border-t border-[var(--color-border-light)] flex flex-wrap gap-x-6 gap-y-2 text-xs text-[var(--color-text-secondary)] font-medium">
+                                                            {branch.created_at && (
+                                                                <div className="flex items-center gap-1.5 bg-[var(--color-bg-secondary)] px-2.5 py-1 rounded-md border border-[var(--color-border-primary)]">
+                                                                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                                                    <span className="opacity-70">Created:</span>
+                                                                    <span className="text-[var(--color-text-primary)]">  {new Date(branch.created_at).toLocaleDateString()}</span>
+                                                                </div>
+                                                            )}
+                                                            {branch.updated_at && (
+                                                                <div className="flex items-center gap-1.5 bg-[var(--color-bg-secondary)] px-2.5 py-1 rounded-md border border-[var(--color-border-primary)]">
+                                                                    <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+                                                                    <span className="opacity-70">Last Updated:</span>
+                                                                    <span className="text-[var(--color-text-primary)]">   {new Date(branch.updated_at).toLocaleDateString()}</span>
+                                                                </div>
+                                                            )}
                                                         </div>
                                                     )}
                                                 </div>

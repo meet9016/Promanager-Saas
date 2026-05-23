@@ -922,18 +922,18 @@ const DetailedDailyReport = () => {
 
                 {/* Main content */}
                 <div className="bg-[var(--color-bg-secondary)] rounded-lg border border-[var(--color-primary-dark)] overflow-hidden shadow-sm">
-                    <div className="px-6 py-4 border-b border-[var(--color-primary-light)] bg-[var(--color-primary-dark)]">
+                    <div className="px-6 py-4 border-b border-[var(--color-primary-light)] bg-[var(--color-primary-lightest)]">
                         <div className="flex justify-between items-center">
                             <div className="flex items-center">
-                                <Activity className="h-6 w-6 text-[var(--color-text-white)] mr-2" />
-                                <h3 className="text-lg font-medium text-[var(--color-text-white)]">Daily Attendance Details</h3>
+                                <Activity className="h-6 w-6 text-[var(--color-primary-darker)] mr-2" />
+                                <h3 className="text-lg font-medium text-[var(--color-primary-darker)]">Daily Attendance Details</h3>
                             </div>
 
                             <div className="flex items-center gap-3">
                                 {/* Export */}
 
                                 {/* Date */}
-                                <div className="flex items-center space-x-2 z-20">
+                                {/* <div className="flex items-center space-x-2 z-20">
                                     <Calendar className="w-5 h-5 text-[var(--color-text-white)]" />
                                     <DatePicker
                                         selected={selectedDate}
@@ -941,6 +941,17 @@ const DetailedDailyReport = () => {
                                         dateFormat="dd-MM-yyyy"
                                         placeholderText="DD-MM-YYYY"
                                         className="w-full bg-[var(--color-bg-secondary-20)] border border-[var(--color-bg-secondary-30)] rounded-lg px-3 py-2 text-sm text-[var(--color-text-white)] placeholder-[var(--color-text-white-90)] focus:outline-none focus:ring-2 focus:ring-[var(--color-bg-secondary-30)]"
+                                    />
+                                </div> */}
+                                <div className="relative flex items-center z-[40] min-w-[140px] sm:min-w-[160px]">
+                                    <Calendar className="absolute left-3 w-4 h-4 text-[var(--color-primary)] pointer-events-none z-10" />
+
+                                    <DatePicker
+                                        selected={selectedDate}
+                                        onChange={handleDateChange}
+                                        dateFormat="dd-MM-yyyy"
+                                        placeholderText="DD-MM-YYYY"
+                                        className="w-full bg-[var(--color-bg-primary)] hover:bg-[var(--color-bg-hover)] border border-[var(--color-border-secondary)] rounded-xl pl-9 pr-3 py-1.5 sm:py-2 text-xs sm:text-sm text-[var(--color-text-primary)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent transition-all duration-200 cursor-pointer font-medium shadow-sm"
                                     />
                                 </div>
 
@@ -1044,19 +1055,19 @@ const DetailedDailyReport = () => {
                         ) : (
                             <>
                                 <table className="w-full min-w-[1200px] border-separate border-spacing-0">
-                                    <thead className="sticky top-0 z-10 bg-[var(--color-bg-gray-light)]/90 backdrop-blur supports-[backdrop-filter]:bg-[var(--color-bg-gray-light)]/60">
+                                    <thead className="sticky top-0 z-10 bg-[var(--color-primary-dark)] backdrop-blur supports-[backdrop-filter]:bg-[var(--color-bg-gray-light)]/60">
                                         <tr className="border-b border-[var(--color-border-secondary)]">
-                                            <Th>Employee</Th>
-                                            <Th>Shift</Th>
-                                            <Th>Shift Time</Th>
-                                            <Th>Clock In</Th>
-                                            <Th>Clock Out</Th>
-                                            <Th>Working Hours</Th>
-                                            <Th>Attendance Hours</Th>
-                                            <Th>Remaining Hours</Th>
-                                            <Th>OT Hours</Th>
-                                            <Th>Status</Th>
-                                            <Th>Timeline</Th>
+                                            <Th className='text-white'>Employee</Th>
+                                            <Th className='text-white'>Shift</Th>
+                                            <Th className='text-white'>Shift Time</Th>
+                                            <Th className='text-white'>Clock In</Th>
+                                            <Th className='text-white'>Clock Out</Th>
+                                            <Th className='text-white'>Working Hours</Th>
+                                            <Th className='text-white'>Attendance Hours</Th>
+                                            <Th className='text-white'>Remaining Hours</Th>
+                                            <Th className='text-white'>OT Hours</Th>
+                                            <Th className='text-white'>Status</Th>
+                                            <Th className='text-white'>Timeline</Th>
                                         </tr>
                                     </thead>
 

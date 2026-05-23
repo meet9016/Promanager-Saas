@@ -236,7 +236,7 @@ const Filters = ({
             <button
                 ref={filterBtnRef}
                 onClick={() => setFilterDropdown((v) => !v)}
-                className="flex items-center gap-2 bg-[var(--color-bg-secondary-20)] text-[var(--color-text-white)] hover:bg-[var(--color-bg-secondary-30)] px-4 py-2 rounded-lg font-medium transition-colors backdrop-blur-sm"
+                className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-secondary-30)] px-4 py-2 rounded-lg font-medium transition-colors backdrop-blur-sm"
             >
                 <Filter className="h-4 w-4" />
                 Filters
@@ -833,18 +833,18 @@ const GeolocationReport = () => {
 
                 {/* Main content */}
                 <div className="bg-[var(--color-bg-secondary)] rounded-lg border border-primary-200 overflow-hidden shadow-sm">
-                    <div className="px-6 py-4 border-b border-primary-200 bg-[var(--color-primary-dark)]">
+                    <div className="px-6 py-4 border-b border-primary-200 bg-[var(--color-primary-lighter)]">
                         <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4">
                             <div className="flex items-center">
-                                <MapPin className="h-6 w-6 text-[var(--color-text-white)] mr-2" />
-                                <h3 className="text-lg font-medium text-[var(--color-text-white)]">Location-Verified Attendance Details</h3>
+                                <MapPin className="h-6 w-6 text-[var(--color-primary-darker)] mr-2" />
+                                <h3 className="text-lg font-medium text-[var(--color-primary-darker)]">Location-Verified Attendance Details</h3>
                             </div>
 
                             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
                                 {/* Export */}
 
                                 {/* Date */}
-                                <div className="flex items-center space-x-2 z-20">
+                                {/* <div className="flex items-center space-x-2 z-20">
                                     <Calendar className="w-5 h-5 text-[var(--color-text-white)] flex-shrink-0" />
                                     <DatePicker
                                         selected={selectedDate}
@@ -852,6 +852,17 @@ const GeolocationReport = () => {
                                         dateFormat="dd-MM-yyyy"
                                         placeholderText="DD-MM-YYYY"
                                         className="w-32 bg-[var(--color-bg-secondary-20)] border border-white/30 rounded-lg px-3 py-2 text-sm text-[var(--color-text-white)] placeholder-white/90 focus:outline-none focus:ring-2 focus:ring-white/30"
+                                    />
+                                </div> */}
+                                <div className="relative flex items-center z-[40] min-w-[140px] sm:min-w-[160px]">
+                                    <Calendar className="absolute left-3 w-4 h-4 text-[var(--color-primary)] pointer-events-none z-10" />
+
+                                    <DatePicker
+                                        selected={selectedDate}
+                                        onChange={handleDateChange}
+                                        dateFormat="dd-MM-yyyy"
+                                        placeholderText="DD-MM-YYYY"
+                                        className="w-full bg-[var(--color-bg-primary)] border border-[var(--color-border-secondary)] rounded-xl pl-9 pr-3 py-1.5 sm:py-2 text-xs sm:text-sm text-[var(--color-text-primary)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent transition-all duration-200 cursor-pointer font-medium shadow-sm"
                                     />
                                 </div>
 
@@ -862,15 +873,15 @@ const GeolocationReport = () => {
                                         placeholder="Search employees..."
                                         value={searchQuery}
                                         onChange={(e) => setSearchQuery(e.target.value)}
-                                        className="w-full pl-10 pr-10 py-2 border border-white/30 bg-[var(--color-bg-secondary-20)] placeholder-white/90 text-[var(--color-text-white)] rounded-lg focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/30 text-sm"
+                                        className="w-full pl-8 sm:pl-10 pr-8 sm:pr-10 py-1.5 sm:py-2 border border-[var(--color-border-secondary)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent text-xs sm:text-sm bg-[var(--color-bg-primary)] hover:bg-[var(--color-bg-hover)] text-[var(--color-text-primary)] transition-all duration-200"
                                     />
-                                    <Search className="absolute left-3 top-2.5 h-4 w-4 text-[var(--color-text-white)]" />
+                                    <Search className="absolute left-2 sm:left-3 top-2 sm:top-2.5 h-3 w-3 sm:h-4 sm:w-4 text-[var(--color-text-muted)]" />
                                     {searchQuery && (
                                         <button
                                             onClick={() => setSearchQuery('')}
-                                            className="absolute right-3 top-2.5 h-4 w-4 text-[var(--color-text-white)] hover:text-[var(--color-text-white)]"
+                                            className="absolute right-2 sm:right-3 top-2 sm:top-2.5 h-3 w-3 sm:h-4 sm:w-4 text-[var(--color-text-muted)] hover:text-[var(--color-text-secondary)]"
                                         >
-                                            <XCircle className="h-4 w-4" />
+                                            <XCircle className="h-3 w-3 sm:h-4 sm:w-4" />
                                         </button>
                                     )}
                                 </div>
@@ -958,14 +969,14 @@ const GeolocationReport = () => {
                         ) : (
                             <>
                                 <table className="w-full min-w-[1200px] border-separate border-spacing-0">
-                                    <thead className="sticky top-0 z-10 bg-[var(--color-bg-secondary)] backdrop-blur">
+                                    <thead className="sticky top-0 z-10 bg-[var(--color-primary-dark)] backdrop-blur">
                                         <tr className="border-b border-[var(--color-border-secondary)]">
-                                            <Th className="text-left">Employee</Th>
-                                            <Th className="text-left">Shift</Th>
-                                            <Th className="text-center">Clock In/Out</Th>
-                                            <Th className="text-center">Attendance Hours</Th>
-                                            <Th className="text-center">Status</Th>
-                                            <Th className="text-center">Timeline</Th>
+                                            <Th className="text-left text-white">Employee</Th>
+                                            <Th className="text-left text-white">Shift</Th>
+                                            <Th className="text-center text-white">Clock In/Out</Th>
+                                            <Th className="text-center text-white">Attendance Hours</Th>
+                                            <Th className="text-center text-white">Status</Th>
+                                            <Th className="text-center text-white">Timeline</Th>
                                         </tr>
                                     </thead>
 

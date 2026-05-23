@@ -251,7 +251,7 @@ const LeaveApplication = () => {
 
     return (
         <div className="min-h-screen bg-[var(--color-bg-primary)] py-8 px-4">
-            <div className="p-8 max-w-3xl mx-auto">
+            <div className=" mx-auto px-4 py-8">
                 <div className="bg-[var(--color-bg-secondary)] shadow-lg rounded-lg overflow-hidden">
                     <div className="bg-[var(--color-primary-dark)] py-4 px-6">
                         <h2 className="text-xl font-bold text-[var(--color-text-white)]">Apply for Leave</h2>
@@ -266,7 +266,7 @@ const LeaveApplication = () => {
                         </div>
                     )}
 
-                    <form onSubmit={handleSubmit} className="p-8 space-y-7">
+                    <form onSubmit={handleSubmit} className="p-8 grid grid-cols-1 md:grid-cols-3 gap-6">
                         {/* Employee Selection with Search */}
                         <div className="space-y-2" ref={employeeDropdownRef}>
                             <label className="block text-sm font-medium text-[var(--color-text-secondary)]">
@@ -349,30 +349,30 @@ const LeaveApplication = () => {
                             />
                         </div>
 
-                        <div className="grid md:grid-cols-2 gap-6">
-                            <div className="space-y-2">
-                                <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Start Date *</label>
-                                <DatePicker
-                                    selected={formData.start_date}
-                                    onChange={handleStartDateChange}
-                                    minDate={today}
-                                    placeholderText="DD-MM-YYYY"
-                                    dateFormat="dd-MM-yyyy"
-                                    className="w-full px-3 py-2 border rounded-md"
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">End Date *</label>
-                                <DatePicker
-                                    selected={formData.end_date}
-                                    onChange={(date) => setFormData({ ...formData, end_date: date })}
-                                    minDate={formData.start_date || today}
-                                    placeholderText="DD-MM-YYYY"
-                                    dateFormat="dd-MM-yyyy"
-                                    className="w-full px-3 py-2 border rounded-md"
-                                />
-                            </div>
+                        {/* <div className="grid md:grid-cols-2 gap-6"> */}
+                        <div className="space-y-2">
+                            <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Start Date *</label>
+                            <DatePicker
+                                selected={formData.start_date}
+                                onChange={handleStartDateChange}
+                                minDate={today}
+                                placeholderText="DD-MM-YYYY"
+                                dateFormat="dd-MM-yyyy"
+                                className="w-full px-3 py-2 border rounded-md"
+                            />
                         </div>
+                        <div className="space-y-2">
+                            <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">End Date *</label>
+                            <DatePicker
+                                selected={formData.end_date}
+                                onChange={(date) => setFormData({ ...formData, end_date: date })}
+                                minDate={formData.start_date || today}
+                                placeholderText="DD-MM-YYYY"
+                                dateFormat="dd-MM-yyyy"
+                                className="w-full px-3 py-2 border rounded-md"
+                            />
+                        </div>
+                        {/* </div> */}
 
 
                         {/* Reason */}
@@ -409,6 +409,22 @@ const LeaveApplication = () => {
                             </button>
                         </div>
                     </form>
+                    <div className="flex items-center justify-end pt-4 space-x-4 p-10">
+                        <button
+                            type="button"
+                            onClick={resetForm}
+                            className="px-4 py-2 text-sm font-medium text-[var(--color-text-secondary)] bg-[var(--color-bg-gradient-start)] hover:bg-[var(--color-bg-gray-light)] rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            type="submit"
+                            className="px-6 py-2 text-sm font-medium text-[var(--color-text-white)] bg-[var(--color-primary-dark)] hover:bg-[var(--color-primary-darker)] rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--color-primary)] disabled:opacity-50 disabled:cursor-not-allowed"
+                            disabled={isSubmitting}
+                        >
+                            {isSubmitting ? 'Submitting...' : 'Submit Request'}
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

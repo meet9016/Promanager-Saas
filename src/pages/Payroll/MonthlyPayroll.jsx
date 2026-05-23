@@ -960,26 +960,39 @@ const MonthlyPayroll = () => {
         <div className="p-8  mx-auto">
 
           {/* Page header */}
-          <div className="bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] p-8 rounded-2xl shadow-xl mb-8">
+          <div className="bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] p-6 rounded-2xl shadow-xl mb-8">
             <div className="flex items-center gap-4">
-              <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-[var(--color-text-white)] px-3 py-2 rounded-lg bg-[var(--color-bg-secondary-20)] hover:bg-[var(--color-bg-secondary-30)]">
-                <ArrowLeft size={18} /> Back
+              <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-[var(--color-text-white)] px-2 py-2 rounded-lg bg-[var(--color-bg-secondary-20)] hover:bg-[var(--color-bg-secondary-30)]">
+                <ArrowLeft size={18} />
               </button>
               <h1 className="text-2xl font-bold text-[var(--color-text-white)]">Monthly Salary</h1>
             </div>
           </div>
 
           {/* Filters card */}
-          <div className="bg-[var(--color-bg-secondary)] rounded-xl shadow-sm border border-[var(--color-border-secondary)] p-5 md:p-8 mb-6">
+          <div className="bg-[var(--color-bg-secondary)] rounded-xl shadow-sm border border-[var(--color-border-secondary)] p-5 md:p-6 mb-6">
             <div className="flex items-center gap-3 mb-5">
               <div className="p-2 bg-[var(--color-primary-lightest)] rounded-lg">
                 <Filter className="h-5 w-5 text-[var(--color-primary-dark)]" />
               </div>
               <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">Payroll Filters</h2>
               <span className="ml-1 text-xs text-[var(--color-text-secondary)]">* Branch and Department are required</span>
+
+              {/* Spacer to push button to end */}
+              <div className="flex-1"></div>
+
+              <button
+                onClick={handleGeneratePayroll}
+                disabled={loading || !canGenerate}
+                className={`px-6 py-2.5 rounded-lg flex items-center gap-2 font-medium transition-colors ${!canGenerate || loading ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-[var(--color-primary-dark)] hover:bg-[var(--color-primary-darker)] text-white'}`}
+              >
+                <IndianRupee className="w-4 h-4" />
+                {loading ? 'Generating...' : 'Generate Payroll'}
+              </button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-5">
               {/* Month */}
               <div>
                 <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
@@ -1100,10 +1113,10 @@ const MonthlyPayroll = () => {
               </div>
 
               {/* Employee multi-select */}
-              <div className="xl:col-span-2">
+              <div className="">
                 <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
                   <User className="w-4 h-4 inline mr-1" /> Employees{' '}
-                  <span className="text-xs font-normal">(optional — leave empty for all in department)</span>
+                  {/* <span className="text-xs font-normal">(optional — leave empty for all in department)</span> */}
                   {employeesLoading && <RefreshCw className="w-3 h-3 inline ml-2 animate-spin text-[var(--color-primary-dark)]" />}
                 </label>
                 <MultiSelectDropdown
@@ -1124,7 +1137,7 @@ const MonthlyPayroll = () => {
               </div>
             </div>
 
-            <div className="mt-5 flex justify-end">
+            {/* <div className="mt-5 flex justify-end">
               <button
                 onClick={handleGeneratePayroll}
                 disabled={loading || !canGenerate}
@@ -1133,7 +1146,7 @@ const MonthlyPayroll = () => {
                 <IndianRupee className="w-4 h-4" />
                 {loading ? 'Generating...' : 'Generate Payroll'}
               </button>
-            </div>
+            </div> */}
           </div>
 
           {/* Content area */}

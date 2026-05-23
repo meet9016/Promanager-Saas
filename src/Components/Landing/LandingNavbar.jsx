@@ -1,13 +1,38 @@
+
 import { Button } from "./ui/button";
 import { Menu, X, ChevronDown } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { useState } from "react";
 import Logo from "../../assets/logo.png";
 import { motion, AnimatePresence } from "framer-motion";
+import { useAuth } from "../../context/AuthContext";
+import API from "../../api/axiosInstance";
+import { agreementSchema } from "../comman/validation";
 
 const LandingNavbar = () => {
+    const { isAuthenticated } = useAuth();
     const [isPagesOpen, setIsPagesOpen] = useState(false);
     const [isMobileOpen, setIsMobileOpen] = useState(false);
+    const [isAgreementOpen, setIsAgreementOpen] = useState(false);
+    const [toast, setToast] = useState(null);
+    const [errors, setErrors] = useState({});
+    const [agreementForm, setAgreementForm] = useState({
+        full_name: "",
+        company_name: "",
+        email: "",
+        mobile: "",
+        gst_number: "",
+        whatsapp: "",
+        address: "",
+    });
+
+    const handleAgreementChange = (field, value) => {
+        setAgreementForm(prev => ({
+            ...prev,
+            [field]: value,
+        }));
+    };
+
 
     const scrollToTop = () => {
         window.scrollTo({
@@ -15,6 +40,56 @@ const LandingNavbar = () => {
             behavior: "smooth",
         });
     };
+
+    const handleAgreementSubmit = async () => {
+        try {
+            // Clear previous errors
+            setErrors({});
+
+            // Validate the form
+            await agreementSchema.validate(agreementForm, { abortEarly: false });
+
+            const formData = new FormData();
+            Object.entries(agreementForm).forEach(([key, value]) =>
+                formData.append(key, value)
+            );
+
+            const res = await API.post("create_account_free_account", formData, {
+                headers: { "Content-Type": "multipart/form-data" },
+            });
+
+            const { success, message } = res.data;
+
+            if (success) {
+                setToast({ message: message || "Account created successfully!", type: "success" });
+                setIsAgreementOpen(false);
+                setAgreementForm({
+                    full_name: "",
+                    company_name: "",
+                    email: "",
+                    mobile: "",
+                    gst_number: "",
+                    whatsapp: "",
+                    address: "",
+                });
+            } else {
+                setToast({ message: message || "Failed to create account.", type: "error" });
+            }
+
+        } catch (err) {
+            if (err.name === "ValidationError") {
+                const fieldErrors = {};
+                err.inner.forEach(error => {
+                    fieldErrors[error.path] = error.message;
+                });
+                setErrors(fieldErrors);
+            } else {
+                console.error("Agreement submission error:", err);
+                setToast({ message: "Failed to create account. Please try again.", type: "error" });
+            }
+        }
+    };
+
 
     return (
         <>
@@ -49,11 +124,10 @@ const LandingNavbar = () => {
                                 >
                                     {({ isActive }) => (
                                         <>
-                                            <span className={`text-base font-medium transition-colors ${
-                                                isActive 
-                                                    ? "text-[var(--color-primary)]" 
-                                                    : "text-[var(--color-text-secondary)] group-hover:text-[var(--color-primary)]"
-                                            }`}>
+                                            <span className={`text-base font-medium transition-colors ${isActive
+                                                ? "text-[var(--color-primary)]"
+                                                : "text-[var(--color-text-secondary)] group-hover:text-[var(--color-primary)]"
+                                                }`}>
                                                 {item.label}
                                             </span>
                                             {/* Bottom Border Animation */}
@@ -86,9 +160,8 @@ const LandingNavbar = () => {
                                 <button className="relative group flex items-center space-x-1 px-4 py-2 text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] transition-colors">
                                     <span className="text-base font-medium">Products</span>
                                     <ChevronDown
-                                        className={`h-4 w-4 transition-transform duration-200 ${
-                                            isPagesOpen ? "rotate-180" : ""
-                                        }`}
+                                        className={`h-4 w-4 transition-transform duration-200 ${isPagesOpen ? "rotate-180" : ""
+                                            }`}
                                     />
                                     {/* Hover Border */}
                                     <motion.div
@@ -110,7 +183,7 @@ const LandingNavbar = () => {
                                         >
                                             {[
                                                 { to: "https://dcard.live/", label: "Digital Card" },
-                                             
+
                                                 { to: "https://insuraa.in/", label: "Insurance Management software" },
                                             ].map((item) => (
                                                 <a
@@ -166,7 +239,7 @@ const LandingNavbar = () => {
                         </div>
 
                         {/* Auth Buttons (Desktop) - Added more space between buttons */}
-                        <div className="hidden md:flex items-center space-x-4">
+                        {/* <div className="hidden md:flex items-center space-x-4">
                             <NavLink to="/login">
                                 <motion.button
                                     className="px-6 py-2.5 text-[var(--color-primary)] font-medium border-2 border-[var(--color-primary)] rounded-full hover:bg-[var(--color-primary)] hover:text-white transition-all"
@@ -185,6 +258,51 @@ const LandingNavbar = () => {
                                     Book Appointment
                                 </motion.button>
                             </NavLink>
+                        </div> */}
+
+                        <div className="hidden md:flex items-center space-x-4">
+                            {isAuthenticated() ? (
+                                <NavLink to="/dashboard">
+                                    <motion.button
+                                        className="px-6 py-2.5 text-[var(--color-primary)] font-medium border-2 border-[var(--color-primary)] rounded-full hover:bg-[var(--color-primary)] hover:text-white transition-all"
+                                        whileHover={{ scale: 1.05 }}
+                                        whileTap={{ scale: 0.95 }}
+                                    >
+                                        Dashboard
+                                    </motion.button>
+                                </NavLink>
+                            ) : (
+                                <NavLink to="/login">
+                                    <motion.button
+                                        className="px-6 py-2.5 text-[var(--color-primary)] font-medium border-2 border-[var(--color-primary)] rounded-full hover:bg-[var(--color-primary)] hover:text-white transition-all"
+                                        whileHover={{ scale: 1.05 }}
+                                        whileTap={{ scale: 0.95 }}
+                                    >
+                                        Log In
+                                    </motion.button>
+                                </NavLink>
+                            )}
+
+                            <NavLink to="/contact">
+                                <motion.button
+                                    className="px-6 py-2.5 bg-[var(--color-primary)] text-white font-medium rounded-full shadow-lg hover:shadow-xl transition-all"
+                                    whileHover={{ scale: 1.05, y: -2 }}
+                                    whileTap={{ scale: 0.95 }}
+                                >
+                                    Book Appointment
+                                </motion.button>
+                            </NavLink>
+
+                            <button >
+                                <motion.button
+                                    onClick={() => setIsAgreementOpen(true)}
+                                    className="px-6 py-2.5 bg-white text-[var(--color-primary)] font-medium border-2 border-[var(--color-primary)] rounded-full hover:bg-[var(--color-primary)] hover:text-white transition-all"
+                                    whileHover={{ scale: 1.05, y: -2 }}
+                                    whileTap={{ scale: 0.95 }}
+                                >
+                                    Agreement
+                                </motion.button>
+                            </button>
                         </div>
 
                         {/* Mobile Menu Button */}
@@ -199,6 +317,203 @@ const LandingNavbar = () => {
                     </div>
                 </nav>
             </header>
+
+            {/* Agreement Modal */}
+            <AnimatePresence>
+                {isAgreementOpen && (
+                    <>
+                        {/* Overlay */}
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[999]"
+                            onClick={() => setIsAgreementOpen(false)}
+                        />
+
+                        {/* Modal */}
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.9, y: 40 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.9, y: 40 }}
+                            transition={{ duration: 0.25 }}
+                            className="fixed inset-0 z-[1000] flex items-center justify-center p-4"
+                        >
+                            <div className="w-full max-w-2xl bg-white rounded-3xl shadow-2xl overflow-hidden">
+
+                                {/* Header */}
+                                <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100">
+                                    <div>
+                                        <h2 className="text-2xl font-bold text-gray-800">
+                                            Agreement Form
+                                        </h2>
+                                        <p className="text-sm text-gray-500 mt-1">
+                                            Fill all required details carefully
+                                        </p>
+                                    </div>
+
+                                    <button
+                                        onClick={() => setIsAgreementOpen(false)}
+                                        className="w-10 h-10 rounded-full hover:bg-gray-100 flex items-center justify-center transition-all"
+                                    >
+                                        <X className="w-5 h-5 text-gray-600" />
+                                    </button>
+                                </div>
+
+                                {/* Form */}
+                                <div className="p-6">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+                                        {/* Full Name */}
+                                        <div>
+                                            <label className="text-sm font-medium text-gray-700 mb-2 block">
+                                                Full Name
+                                            </label>
+                                            <input
+                                                type="text"
+                                                placeholder="Enter full name"
+                                                value={agreementForm.full_name}
+                                                onChange={(e) => handleAgreementChange("full_name", e.target.value)}
+                                                className={`w-full h-12 px-4 rounded-xl border ${errors.full_name ? "border-red-500" : "border-gray-200"
+                                                    } focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]`}
+                                            />
+                                            {errors.full_name && (
+                                                <p className="text-red-500 text-xs mt-1">{errors.full_name}</p>
+                                            )}
+                                        </div>
+
+                                        {/* Company Name */}
+                                        <div>
+                                            <label className="text-sm font-medium text-gray-700 mb-2 block">
+                                                Company Name
+                                            </label>
+                                            <input
+                                                type="text"
+                                                placeholder="Enter company name"
+                                                value={agreementForm.company_name}
+                                                onChange={(e) => handleAgreementChange("company_name", e.target.value)}
+                                                className={`w-full h-12 px-4 rounded-xl border ${errors.company_name ? "border-red-500" : "border-gray-200"
+                                                    } focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]`}
+                                            />
+                                            {errors.company_name && (
+                                                <p className="text-red-500 text-xs mt-1">{errors.company_name}</p>
+                                            )}
+                                        </div>
+
+                                        {/* Email */}
+                                        <div>
+                                            <label className="text-sm font-medium text-gray-700 mb-2 block">
+                                                Email Address
+                                            </label>
+                                            <input
+                                                type="email"
+                                                placeholder="Enter email"
+                                                value={agreementForm.email}
+                                                onChange={(e) => handleAgreementChange("email", e.target.value)}
+                                                className={`w-full h-12 px-4 rounded-xl border ${errors.email ? "border-red-500" : "border-gray-200"
+                                                    } focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]`}
+                                            />
+                                            {errors.email && (
+                                                <p className="text-red-500 text-xs mt-1">{errors.email}</p>
+                                            )}
+                                        </div>
+
+                                        {/* Mobile */}
+                                        <div>
+                                            <label className="text-sm font-medium text-gray-700 mb-2 block">
+                                                Mobile Number
+                                            </label>
+                                            <input
+                                                type="text"
+                                                placeholder="Enter mobile number"
+                                                value={agreementForm.mobile}
+                                                onChange={(e) => handleAgreementChange("mobile", e.target.value)}
+                                                className={`w-full h-12 px-4 rounded-xl border ${errors.mobile ? "border-red-500" : "border-gray-200"
+                                                    } focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]`}
+                                            />
+                                            {errors.mobile && (
+                                                <p className="text-red-500 text-xs mt-1">{errors.mobile}</p>
+                                            )}
+                                        </div>
+
+                                        {/* GST Number */}
+                                        <div>
+                                            <label className="text-sm font-medium text-gray-700 mb-2 block">
+                                                GST Number
+                                            </label>
+                                            <input
+                                                type="text"
+                                                placeholder="Enter GST number"
+                                                value={agreementForm.gst_number}
+                                                onChange={(e) => handleAgreementChange("gst_number", e.target.value)}
+                                                className={`w-full h-12 px-4 rounded-xl border ${errors.gst_number ? "border-red-500" : "border-gray-200"
+                                                    } focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]`}
+                                            />
+                                            {errors.gst_number && (
+                                                <p className="text-red-500 text-xs mt-1">{errors.gst_number}</p>
+                                            )}
+                                        </div>
+
+                                        {/* WhatsApp */}
+                                        <div>
+                                            <label className="text-sm font-medium text-gray-700 mb-2 block">
+                                                WhatsApp Number
+                                            </label>
+                                            <input
+                                                type="text"
+                                                placeholder="Enter WhatsApp number"
+                                                value={agreementForm.whatsapp}
+                                                onChange={(e) => handleAgreementChange("whatsapp", e.target.value)}
+                                                className={`w-full h-12 px-4 rounded-xl border ${errors.whatsapp ? "border-red-500" : "border-gray-200"
+                                                    } focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]`}
+                                            />
+                                            {errors.whatsapp && (
+                                                <p className="text-red-500 text-xs mt-1">{errors.whatsapp}</p>
+                                            )}
+                                        </div>
+
+                                    </div>
+
+                                    {/* Address */}
+                                    <div className="mt-5">
+                                        <label className="text-sm font-medium text-gray-700 mb-2 block">
+                                            Address
+                                        </label>
+                                        <textarea
+                                            rows={10}
+                                            placeholder="Enter full address"
+                                            value={agreementForm.address}
+                                            onChange={(e) => handleAgreementChange("address", e.target.value)}
+                                            className={`w-full h-12 px-4 rounded-xl border ${errors.address ? "border-red-500" : "border-gray-200"
+                                                } focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]`}
+                                        />
+                                        {errors.address && (
+                                            <p className="text-red-500 text-xs mt-1">{errors.address}</p>
+                                        )}
+                                    </div>
+
+                                    {/* Footer Buttons */}
+                                    <div className="flex flex-col sm:flex-row gap-3 justify-end mt-8">
+                                        <button
+                                            onClick={() => setIsAgreementOpen(false)}
+                                            className="px-6 py-3 rounded-xl border border-gray-300 text-gray-600 hover:bg-gray-100 transition-all"
+                                        >
+                                            Cancel
+                                        </button>
+
+                                        <button
+                                            onClick={handleAgreementSubmit}
+                                            className="px-6 py-3 rounded-xl bg-[var(--color-primary)] text-white font-medium hover:opacity-90 transition-all"
+                                        >
+                                            Submit Agreement
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </motion.div>
+                    </>
+                )}
+            </AnimatePresence>
 
             {/* Mobile Full Screen Menu */}
             <AnimatePresence>
@@ -264,11 +579,10 @@ const LandingNavbar = () => {
                                                 {({ isActive }) => (
                                                     <motion.div
                                                         whileHover={{ x: 5 }}
-                                                        className={`px-4 py-3 rounded-xl text-base font-medium transition-all ${
-                                                            isActive
-                                                                ? "bg-[var(--color-primary)]/10 text-[var(--color-primary)] border-l-4 border-[var(--color-primary)]"
-                                                                : "text-gray-600 hover:bg-gray-50 hover:text-[var(--color-primary)]"
-                                                        }`}
+                                                        className={`px-4 py-3 rounded-xl text-base font-medium transition-all ${isActive
+                                                            ? "bg-[var(--color-primary)]/10 text-[var(--color-primary)] border-l-4 border-[var(--color-primary)]"
+                                                            : "text-gray-600 hover:bg-gray-50 hover:text-[var(--color-primary)]"
+                                                            }`}
                                                     >
                                                         {item.label}
                                                     </motion.div>
@@ -340,6 +654,9 @@ const LandingNavbar = () => {
                     </>
                 )}
             </AnimatePresence>
+
+
+
         </>
     );
 };

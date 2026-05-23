@@ -162,11 +162,19 @@ const CustomSelect = ({
             {isOpen && (
                 <div
                     className="
+<<<<<<< HEAD
                         absolute z-[9999] w-full mt-1
                         bg-[var(--color-bg-secondary)]
                         border border-[var(--color-border-primary)]
                         rounded-xl shadow-xl
                         overflow-auto
+=======
+                        absolute z-50 w-full mt-1
+                        bg-[var(--color-bg-secondary)]
+                        border border-[var(--color-border-primary)]
+                        rounded-xl shadow-xl
+                        overflow-hidden
+>>>>>>> 695e66bacbd4485f4465f0914c91f8b0413918f4
                         animate-fadeIn
                     "
                     style={{ maxHeight: '280px' }}

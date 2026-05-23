@@ -435,7 +435,7 @@ const SubscriptionTab = ({ subscriptions = [] }) => {
 
             {/* Card */}
             <SectionCard tight titleIcon={
-                <Gift className="w-6 h-6 text-[var(--color-text-white)]" />
+                <Gift className="w-6 h-6 text-[var(--color-primary-darker)]" />
             } title="Subscription">
                 <div className="flex items-start justify-between gap-4 flex-wrap mb-6">
                     <span className={`px-4 py-2 rounded-full text-sm font-medium ${statusInfo.bgColor} ${statusInfo.textColor}`}>
@@ -486,7 +486,7 @@ const SubscriptionTab = ({ subscriptions = [] }) => {
 
             {/* Subscription List Table */}
             <SectionCard
-                titleIcon={<UsersIcon className="w-6 h-6 text-[var(--color-text-white)]" />}
+                titleIcon={<UsersIcon className="w-6 h-6 text-[var(--color-primary-darker)]" />}
                 title="Subscription History"
             >
                 {subscriptions.length === 0 ? (
@@ -639,10 +639,10 @@ const ProfileInfoTab = () => {
    =========== */
 const SectionCard = ({ title, titleIcon, children, tight = false }) => (
     <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-xl overflow-hidden">
-        <div className="bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] p-5">
+        <div className="bg-[var(--color-primary-lighter)]  p-5">
             <div className="flex items-center gap-3">
-                <div className="rounded-lg">{titleIcon}</div>
-                <h2 className="text-xl font-bold text-[var(--color-text-white)]">{title}</h2>
+                <div className="rounded-lg text-[var(--color-primary-darker)]">{titleIcon}</div>
+                <h2 className="text-xl font-bold text-[var(--color-primary-darker)]">{title}</h2>
             </div>
         </div>
         <div className={`p-8 ${tight ? 'pt-5' : ''}`}>{children}</div>
