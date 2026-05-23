@@ -1,15 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { Plus, Building2 } from "lucide-react";
+import CustomInput from "../comman/CustomInput";
 
 const BranchForm = ({ onSubmit, loading = false, showToast, initialData = null, onCancelEdit }) => {
+
     const [name, setName] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
+
 
     useEffect(() => {
         if (initialData) {
             setName(initialData.name || "");
         }
     }, [initialData]);
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -59,20 +63,19 @@ const BranchForm = ({ onSubmit, loading = false, showToast, initialData = null, 
                         <label htmlFor="branchName" className=" text-sm font-medium text-[var(--color-text-secondary)] mb-2 ">
                             Add New Branch <span className="text-[var(--color-error)]">*</span>
                         </label>
-                        <input
-                            id="branchName"
-                            type="text"
-                            placeholder="Enter branch name"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                            className="w-full px-4 py-3 border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-all duration-200 placeholder-gray-400 bg-[var(--color-bg-secondary)]"
-                            disabled={isSubmitting || loading}
-                            onKeyDown={(e) => {
-                                if (e.key === 'Enter') {
-                                    handleSubmit(e);
-                                }
-                            }}
-                        />
+
+                        <div className="w-[500px]">
+                            <CustomInput
+                                type="text"
+                                name="name"
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                                // onBlur={handleFieldBlur}
+                                placeholder="Enter branch name"
+                                required
+                                clearable={true}
+                            />
+                        </div>
                     </div>
 
                     <button

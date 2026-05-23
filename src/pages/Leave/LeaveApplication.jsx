@@ -5,6 +5,9 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 // import { format } from "date-fns";
 import LoadingSpinner from "../../Components/Loader/LoadingSpinner"
+import { ArrowLeft } from 'lucide-react';
+import CustomInput from '../../Components/comman/CustomInput';
+import CustomSelect from '../../Components/comman/CustomSelect';
 
 const LeaveApplication = () => {
     const { user } = useAuth();
@@ -161,8 +164,12 @@ const LeaveApplication = () => {
         }));
     };
 
+    console.log("*****");
     const handleSubmit = async (e) => {
+        console.log("99999999");
+
         e.preventDefault();
+
 
         if (!formData.employee_id) {
             setNotification({
@@ -266,13 +273,22 @@ const LeaveApplication = () => {
                                 Select Employee <span className="text-[var(--color-error)]">*</span>
                             </label>
                             <div className="relative">
-                                <input
+                                {/* <input
                                     type="text"
                                     value={employeeSearch}
                                     onChange={handleEmployeeSearch}
                                     onFocus={() => setShowEmployeeDropdown(true)}
                                     placeholder="Search and select employee"
                                     className="w-full px-3 py-2 border border-[var(--color-border-secondary)] rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)]"
+                                    required
+                                /> */}
+                                <CustomInput
+                                    type="text"
+                                    name="employeeSearch"
+                                    value={employeeSearch}
+                                    onChange={handleEmployeeSearch}
+                                    onFocus={() => setShowEmployeeDropdown(true)}
+                                    placeholder="Search and select employee"
                                     required
                                 />
 
@@ -301,7 +317,7 @@ const LeaveApplication = () => {
                             <label className="block text-sm font-medium text-[var(--color-text-secondary)]">
                                 Leave Type <span className="text-[var(--color-error)]">*</span>
                             </label>
-                            <select
+                            {/* <select
                                 name="leave_type"
                                 value={formData.leave_type}
                                 onChange={handleChange}
@@ -314,7 +330,23 @@ const LeaveApplication = () => {
                                         {leaveType.leave_type}
                                     </option>
                                 ))}
-                            </select>
+                            </select> */}
+                            <CustomSelect
+                                name="leave_type"
+                                value={formData.leave_type}
+                                onChange={handleChange}
+                                options={
+                                    Array.isArray(leaveTypes)
+                                        ? leaveTypes.map((leaveType) => ({
+                                            value: leaveType.leave_type_id,
+                                            label: leaveType.leave_type,
+                                        }))
+                                        : []
+                                }
+                                placeholder="Select leave type"
+                                required
+                                searchable={true}
+                            />
                         </div>
 
                         <div className="grid md:grid-cols-2 gap-6">
@@ -360,13 +392,13 @@ const LeaveApplication = () => {
                         </div>
 
                         {/* Action Buttons */}
-                        <div className="flex items-center justify-end pt-4 space-x-4">
+                        <div className="md:col-span-3 flex items-center justify-end pt-4 space-x-4">
                             <button
                                 type="button"
                                 onClick={resetForm}
                                 className="px-4 py-2 text-sm font-medium text-[var(--color-text-secondary)] bg-[var(--color-bg-gradient-start)] hover:bg-[var(--color-bg-gray-light)] rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
                             >
-                                Reset
+                                Cancel
                             </button>
                             <button
                                 type="submit"

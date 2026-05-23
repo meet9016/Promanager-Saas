@@ -24,6 +24,7 @@ import {
 import LoadingSpinner from "../../Components/Loader/LoadingSpinner";
 import { ConfirmDialog } from "../../Components/ui/ConfirmDialog";
 import { Toast } from "../../Components/ui/Toast";
+import CustomSelect from "../../Components/comman/CustomSelect";
 
 export default function HolidayManagement() {
     const { user } = useAuth();
@@ -538,7 +539,7 @@ export default function HolidayManagement() {
                                 <label className="block text-sm font-semibold text-[var(--color-text-primary)] mb-2">
                                     Holiday Type <span className="text-red-500">*</span>
                                 </label>
-                                <select
+                                {/* <select
                                     value={formData.holiday_type_id}
                                     onChange={(e) => setFormData({ ...formData, holiday_type_id: e.target.value })}
                                     className="w-full px-4 py-2.5 border border-[var(--color-border-secondary)] rounded-lg focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] outline-none transition-all bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)]"
@@ -549,7 +550,23 @@ export default function HolidayManagement() {
                                             {t.holiday_type_name}
                                         </option>
                                     ))}
-                                </select>
+                                </select> */}
+                                <CustomSelect
+                                    name="holiday_type_id"
+                                    value={formData.holiday_type_id}
+                                    onChange={(e) =>
+                                        setFormData({
+                                            ...formData,
+                                            holiday_type_id: e.target.value,
+                                        })
+                                    }
+                                    options={holidayTypes.map((t) => ({
+                                        value: t.holiday_type_id,
+                                        label: t.holiday_type_name,
+                                    }))}
+                                    placeholder="Select Type"
+                                    searchable={true}
+                                />
                             </div>
 
                             <div>

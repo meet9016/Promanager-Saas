@@ -10,6 +10,7 @@ import { useAuth } from "../../context/AuthContext";
 import api from "../../api/axiosInstance";
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import CustomSelect from "../comman/CustomSelect";
 
 const Increment = () => {
 
@@ -283,7 +284,7 @@ const Increment = () => {
                 <div className="space-y-8">
 
 
-                    <div className="bg-[var(--color-bg-secondary)] rounded-xl shadow-sm border border-[var(--color-primary-dark)] overflow-hidden">
+                    <div className="bg-[var(--color-bg-secondary)] rounded-xl shadow-sm border border-[var(--color-primary-dark)] ">
                         <div className="relative">
                             <div className="bg-[var(--color-primary-dark)] px-6 py-4">
                                 <div className="flex items-center space-x-3">
@@ -300,7 +301,7 @@ const Increment = () => {
                         <div className="p-8 bg-[var(--color-bg-secondary)] flex flex-col gap-4">
 
 
-                            <div className="bg-[var(--color-bg-secondary)] rounded-xl shadow-sm border border-[var(--color-primary-dark)] overflow-hidden">
+                            <div className="bg-[var(--color-bg-secondary)] rounded-xl shadow-sm border border-[var(--color-primary-dark)] ">
                                 <div className="p-8 bg-[var(--color-bg-secondary)]">
                                     <div className="flex w-full flex-row items-center justify-between mb-4">
                                         <div className="space-y-2" >
@@ -308,7 +309,7 @@ const Increment = () => {
                                                 Select Employee <span className="text-[var(--color-error)]">*</span>
                                             </label>
 
-                                            <select
+                                            {/* <select
                                                 name="employmentType"
 
                                                 className="w-full px-4 py-3 border border-[var(--color-border-primary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition-all"
@@ -319,7 +320,22 @@ const Increment = () => {
                                                     <option key={option.employee_id} value={option.employee_id}>{option.full_name}</option>
                                                 ))}
 
-                                            </select>
+                                            </select> */}
+
+                                            <div className="w-[500px]">
+                                                <CustomSelect
+                                                    name="employmentType"
+                                                    value={employeeId}
+                                                    onChange={(e) => setEmployeeId(e.target.value)}
+                                                    options={dropdownOptions.map(option => ({
+                                                        value: option.employee_id,
+                                                        label: option.full_name,
+                                                    }))}
+                                                    placeholder="Select Employee"
+                                                    required
+                                                    searchable={true}
+                                                />
+                                            </div>
                                         </div>
 
                                         <button
@@ -374,7 +390,7 @@ const Increment = () => {
 
                                                     <div className="space-y-2">
                                                         <label className="block text-sm font-medium text-[var(--color-text-secondary)]">Salary Type <span className="text-[var(--color-error)]">*</span></label>
-                                                        <select
+                                                        {/* <select
                                                             className="w-full px-3 py-2 border border-[var(--color-border-primary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition-all"
                                                             required
                                                             value={item?.salary_type_id || ""}
@@ -394,7 +410,30 @@ const Increment = () => {
                                                             ))}
 
 
-                                                        </select>
+                                                        </select> */}
+                                                        <CustomSelect
+                                                            name="salary_type_id"
+                                                            value={item?.salary_type_id || ""}
+                                                            onChange={(e) => {
+                                                                const value = e.target.value;
+
+                                                                setIncrementList(prev =>
+                                                                    prev.map((row, i) =>
+                                                                        i === index
+                                                                            ? { ...row, salary_type_id: value }
+                                                                            : row
+                                                                    )
+                                                                );
+                                                            }}
+                                                            options={salaryTypeList.map(option => ({
+                                                                value: option.salary_type_id,
+                                                                label: option.name,
+                                                            }))}
+                                                            placeholder="Select Salary Type"
+                                                            required
+                                                            searchable={true}
+                                                        />
+
                                                     </div>
 
                                                     <div className="space-y-2">

@@ -6,6 +6,8 @@ import api from '../../api/axiosInstance';
 import { Toast } from '../../Components/ui/Toast';
 import { useSelector } from 'react-redux';
 import LoadingSpinner from '../../Components/Loader/LoadingSpinner';
+import CustomInput from '../../Components/comman/CustomInput';
+import CustomSelect from '../../Components/comman/CustomSelect';
 
 // Enhanced Copy Dropdown Component
 const CopyDropdown = ({ dayList, onCopy, sourceDay }) => {
@@ -492,7 +494,7 @@ const CreateShift = () => {
                 </label>
                 <div className="flex gap-1">
                     {/* Hour Dropdown */}
-                    <select
+                    {/* <select
                         value={hour}
                         onChange={(e) => handleFieldChange('hour', e.target.value)}
                         className="flex-1 px-3 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-all duration-200 text-sm bg-[var(--color-bg-secondary)] shadow-sm"
@@ -505,12 +507,26 @@ const CreateShift = () => {
                                 {h.label}
                             </option>
                         ))}
-                    </select>
+                    </select> */}
+                    <CustomSelect
+                        name="hour"
+                        value={hour}
+                        onChange={(e) => handleFieldChange('hour', e.target.value)}
+                        options={hourOptions.map(h => ({
+                            value: h.value,
+                            label: h.label,
+                        }))}
+                        placeholder="Hr"
+                        required={required}
+                        searchable={true}
+                        disabled={disabled}
+                    />
+
 
                     <span className="flex items-center px-1 text-slate-500 font-medium">:</span>
 
                     {/* Minute Dropdown */}
-                    <select
+                    {/* <select
                         value={minute}
                         onChange={(e) => handleFieldChange('minute', e.target.value)}
                         className="flex-1 px-3 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-all duration-200 text-sm bg-[var(--color-bg-secondary)] shadow-sm"
@@ -523,10 +539,23 @@ const CreateShift = () => {
                                 {m.label}
                             </option>
                         ))}
-                    </select>
+                    </select> */}
+                    <CustomSelect
+                        name="minute"
+                        value={minute}
+                        onChange={(e) => handleFieldChange('minute', e.target.value)}
+                        options={minuteOptions.map(m => ({
+                            value: m.value,
+                            label: m.label,
+                        }))}
+                        placeholder="Min"
+                        required={required}
+                        searchable={true}
+                        disabled={disabled}
+                    />
 
                     {/* AM/PM Dropdown */}
-                    <select
+                    {/* <select
                         value={period}
                         onChange={(e) => handleFieldChange('period', e.target.value)}
                         className="px-3 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-all duration-200 text-sm bg-[var(--color-bg-secondary)] shadow-sm"
@@ -539,7 +568,20 @@ const CreateShift = () => {
                                 {p.label}
                             </option>
                         ))}
-                    </select>
+                    </select> */}
+                    <CustomSelect
+                        name="period"
+                        value={period}
+                        onChange={(e) => handleFieldChange('period', e.target.value)}
+                        options={periodOptions.map(p => ({
+                            value: p.value,
+                            label: p.label,
+                        }))}
+                        placeholder="--"
+                        required={required}
+                        searchable={true}
+                        disabled={disabled}
+                    />
                 </div>
             </div>
         );
@@ -669,11 +711,18 @@ const CreateShift = () => {
                                     <label className="block text-sm font-semibold text-[var(--color-text-secondary)] mb-3">
                                         Shift Name <span className="text-[var(--color-error)]">*</span>
                                     </label>
-                                    <input
+                                    {/* <input
                                         type="text"
                                         value={shiftName}
                                         onChange={(e) => setShiftName(e.target.value)}
                                         className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-all duration-200 shadow-sm bg-[var(--color-bg-secondary)]"
+                                        placeholder="Enter a descriptive shift name"
+                                        required
+                                    /> */}
+                                    <CustomInput
+                                        type="text"
+                                        value={shiftName}
+                                        onChange={(e) => setShiftName(e.target.value)}
                                         placeholder="Enter a descriptive shift name"
                                         required
                                     />
@@ -774,7 +823,7 @@ const CreateShift = () => {
                                                             Shift Type
                                                         </label>
                                                         <div className="relative">
-                                                            <select
+                                                            {/* <select
                                                                 value={day.shift_type}
                                                                 onChange={(e) => handleDayChange(day.day_id, 'shift_type', e.target.value)}
                                                                 className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-all duration-200 text-sm bg-[var(--color-bg-secondary)] shadow-sm hover:border-slate-400"
@@ -785,7 +834,22 @@ const CreateShift = () => {
                                                                         {type.shift_type_name}
                                                                     </option>
                                                                 ))}
-                                                            </select>
+                                                            </select> */}
+                                                            <CustomSelect
+                                                                name="shift_type"
+                                                                value={day.shift_type}
+                                                                onChange={(e) =>
+                                                                    handleDayChange(day.day_id, 'shift_type', e.target.value)
+                                                                }
+                                                                options={shiftTypes.map(type => ({
+                                                                    value: type.shift_type_id,
+                                                                    label: type.shift_type_name,
+                                                                }))}
+                                                                placeholder="Select Type"
+                                                                searchable={true}
+                                                            />
+
+                                                           
                                                         </div>
                                                     </div>
                                                 </div>

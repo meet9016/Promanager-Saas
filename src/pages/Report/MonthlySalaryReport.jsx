@@ -30,6 +30,7 @@ import Pagination from '../../Components/Pagination';
 import { Toast } from '../../Components/ui/Toast';
 import { handleSalaryReportPDFExport } from '../../utils/exportUtils/salary/pdfExportSalary';
 import { handlePayrollExportExcel } from '../../utils/exportUtils/salary/exportSalaryReportToExcel';
+import CustomSelect from '../../Components/comman/CustomSelect';
 
 /** ------------------- Robust anchored positioning helpers ------------------- **/
 const getScrollParents = (node) => {
@@ -376,15 +377,15 @@ const MonthlySalaryReport = () => {
             <div className="p-8  mx-auto">
                 {/* Header Section */}
                 <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-xl mb-8 overflow-hidden">
-                    <div className="bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] p-8">
+                    <div className="bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] p-6">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-4">
                                 <button
                                     onClick={() => navigate('/reports')}
-                                    className="flex items-center gap-2 text-[var(--color-text-white)] hover:text-[var(--color-text-white)] transition-colors bg-[var(--color-bg-secondary-20)] hover:bg-[var(--color-bg-secondary-30)] px-4 py-2 rounded-lg backdrop-blur-sm"
+                                    className="flex items-center gap-2 text-[var(--color-text-white)] hover:text-[var(--color-text-white)] transition-colors bg-[var(--color-bg-secondary-20)] hover:bg-[var(--color-bg-secondary-30)] px-2 py-2 rounded-lg backdrop-blur-sm"
                                 >
                                     <ArrowLeft size={18} />
-                                    Back
+
                                 </button>
                                 <div className="flex items-center gap-3">
                                     <div>
@@ -495,7 +496,7 @@ const MonthlySalaryReport = () => {
                                 <Building className="inline h-4 w-4 mr-1" />
                                 Branch
                             </label>
-                            <select
+                            {/* <select
                                 value={filters.branch_id}
                                 onChange={(e) => handleFilterChange('branch_id', e.target.value)}
                                 className="w-full px-3 py-2 bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-border-focus)] focus:border-transparent text-[var(--color-text-primary)]"
@@ -503,7 +504,19 @@ const MonthlySalaryReport = () => {
                             >
                                 <option value="">All Branches</option>
                                 {branches.map(b => <option key={b.id} value={b.id}>{b.name}</option>)}
-                            </select>
+                            </select> */}
+                            <CustomSelect
+                                name="branch_id"
+                                value={filters.branch_id}
+                                onChange={(e) => handleFilterChange('branch_id', e.target.value)}
+                                options={branches.map((b) => ({
+                                    value: b.id,
+                                    label: b.name,
+                                }))}
+                                placeholder="All Branches"
+                                searchable={true}
+                                disabled={dropdownLoading}
+                            />
                         </div>
 
                         {/* Department */}
@@ -512,7 +525,7 @@ const MonthlySalaryReport = () => {
                                 <Users className="inline h-4 w-4 mr-1" />
                                 Department
                             </label>
-                            <select
+                            {/* <select
                                 value={filters.department_id}
                                 onChange={(e) => handleFilterChange('department_id', e.target.value)}
                                 className="w-full px-3 py-2 bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-border-focus)] focus:border-transparent text-[var(--color-text-primary)]"
@@ -520,7 +533,19 @@ const MonthlySalaryReport = () => {
                             >
                                 <option value="">All Departments</option>
                                 {departments.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
-                            </select>
+                            </select> */}
+                            <CustomSelect
+                                name="department_id"
+                                value={filters.department_id}
+                                onChange={(e) => handleFilterChange('department_id', e.target.value)}
+                                options={departments.map((d) => ({
+                                    value: d.id,
+                                    label: d.name,
+                                }))}
+                                placeholder="All Departments"
+                                searchable={true}
+                                disabled={dropdownLoading}
+                            />
                         </div>
 
                         {/* Designation */}
@@ -529,7 +554,7 @@ const MonthlySalaryReport = () => {
                                 <Award className="inline h-4 w-4 mr-1" />
                                 Designation
                             </label>
-                            <select
+                            {/* <select
                                 value={filters.designation_id}
                                 onChange={(e) => handleFilterChange('designation_id', e.target.value)}
                                 className="w-full px-3 py-2 bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-border-focus)] focus:border-transparent text-[var(--color-text-primary)]"
@@ -537,7 +562,19 @@ const MonthlySalaryReport = () => {
                             >
                                 <option value="">All Designations</option>
                                 {designations.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
-                            </select>
+                            </select> */}
+                            <CustomSelect
+                                name="designation_id"
+                                value={filters.designation_id}
+                                onChange={(e) => handleFilterChange('designation_id', e.target.value)}
+                                options={designations.map((d) => ({
+                                    value: d.id,
+                                    label: d.name,
+                                }))}
+                                placeholder="All Designations"
+                                searchable={true}
+                                disabled={dropdownLoading}
+                            />
                         </div>
 
                         {/* Employee (optional) */}
@@ -546,7 +583,7 @@ const MonthlySalaryReport = () => {
                                 <User className="inline h-4 w-4 mr-1" />
                                 Employee (optional)
                             </label>
-                            <select
+                            {/* <select
                                 value={filters.employee_id}
                                 onChange={(e) => handleFilterChange('employee_id', e.target.value)}
                                 className="w-full px-3 py-2 bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-border-focus)] focus:border-transparent text-[var(--color-text-primary)]"
@@ -554,7 +591,19 @@ const MonthlySalaryReport = () => {
                             >
                                 <option value="">All Employees</option>
                                 {employees.map(emp => <option key={emp.id} value={emp.id}>{emp.name}</option>)}
-                            </select>
+                            </select> */}
+                            <CustomSelect
+                                name="employee_id"
+                                value={filters.employee_id}
+                                onChange={(e) => handleFilterChange('employee_id', e.target.value)}
+                                options={employees.map((emp) => ({
+                                    value: emp.id,
+                                    label: emp.name,
+                                }))}
+                                placeholder="All Employees"
+                                searchable={true}
+                                disabled={dropdownLoading}
+                            />
                         </div>
 
                         {/* Generate Button */}

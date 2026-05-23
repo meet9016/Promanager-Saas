@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Plus, Building2, Upload, X, Eye, Trash2 } from "lucide-react";
+import CustomInput from "../comman/CustomInput";
 
 const CompanyForm = ({ onSubmit, loading = false, showToast, editData }) => {
     const [formData, setFormData] = useState({
@@ -329,7 +330,7 @@ const CompanyForm = ({ onSubmit, loading = false, showToast, editData }) => {
                                 <label htmlFor="company_name" className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
                                     Company Name <span className="text-[var(--color-error)]">*</span>
                                 </label>
-                                <input
+                                {/* <input
                                     id="company_name"
                                     name="company_name"
                                     type="text"
@@ -339,6 +340,16 @@ const CompanyForm = ({ onSubmit, loading = false, showToast, editData }) => {
                                     className="w-full px-4 py-3 border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-all duration-200 placeholder-gray-400 bg-[var(--color-bg-secondary)]"
                                     disabled={isSubmitting || loading}
                                     required
+                                /> */}
+                                <CustomInput
+                                    type="text"
+                                    name="company_name"
+                                    value={formData.company_name}
+                                    onChange={handleInputChange}
+                                    // onBlur={handleFieldBlur}
+                                    placeholder="Enter company name"
+                                    required
+                                    clearable={true}
                                 />
                             </div>
 
@@ -347,7 +358,7 @@ const CompanyForm = ({ onSubmit, loading = false, showToast, editData }) => {
                                 <label htmlFor="company_number" className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
                                     Company Number
                                 </label>
-                                <input
+                                {/* <input
                                     id="company_number"
                                     name="company_number"
                                     type="text"
@@ -356,6 +367,16 @@ const CompanyForm = ({ onSubmit, loading = false, showToast, editData }) => {
                                     onChange={handleInputChange}
                                     className="w-full px-4 py-3 border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-all duration-200 placeholder-gray-400 bg-[var(--color-bg-secondary)]"
                                     disabled={isSubmitting || loading}
+                                /> */}
+                                <CustomInput
+                                    type="text"
+                                    name="company_number"
+                                    value={formData.company_number}
+                                    onChange={handleInputChange}
+                                    // onBlur={handleFieldBlur}
+                                    placeholder="Enter company number"
+                                    required
+                                    clearable={true}
                                 />
                             </div>
 

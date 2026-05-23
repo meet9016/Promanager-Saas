@@ -5,6 +5,8 @@ import api from '../../api/axiosInstance';
 import { useAuth } from '../../context/AuthContext';
 import { Toast } from '../../Components/ui/Toast';
 import { useRef } from 'react';
+import CustomInput from '../../Components/comman/CustomInput';
+import CustomSelect from '../../Components/comman/CustomSelect';
 
 const AddUser = () => {
     const navigate = useNavigate();
@@ -128,7 +130,7 @@ const AddUser = () => {
             try {
                 res = await api.post('/user_list', requestFormData);
             } catch (err) {
-  
+
                 throw new Error('Unable to fetch user details from any endpoint');
             }
 
@@ -245,7 +247,7 @@ const AddUser = () => {
             }
         });
 
-       
+
         setErrors(newErrors);
 
         if (Object.keys(newErrors).length === 0) {
@@ -330,15 +332,15 @@ const AddUser = () => {
                 <div className=" mx-auto px-4 py-8">
                     <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-xl mb-8 overflow-hidden">
                         <div className="bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)]">
-                            <div className="bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] p-8">
+                            <div className="bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] p-6">
                                 <div className="flex items-center gap-4">
                                     <button
                                         onClick={handleCancel}
                                         disabled={isFormDisabled}
-                                        className="flex items-center gap-2 text-[var(--color-text-white)] hover:text-[var(--color-text-white)] transition-colors bg-[var(--color-bg-secondary-20)] hover:bg-[var(--color-bg-secondary-30)] px-4 py-2 rounded-lg backdrop-blur-sm"
+                                        className="flex items-center gap-2 text-[var(--color-text-white)] hover:text-[var(--color-text-white)] transition-colors bg-[var(--color-bg-secondary-20)] hover:bg-[var(--color-bg-secondary-30)] px-2 py-2 rounded-lg backdrop-blur-sm"
                                     >
                                         <ArrowLeft size={18} />
-                                        Back
+
                                     </button>
                                     <div className="flex items-center gap-3">
                                         <div>
@@ -374,7 +376,7 @@ const AddUser = () => {
                                     Full Name <span className="text-[var(--color-error)]">*</span>
                                 </label>
                                 <div className="relative">
-                                    <input
+                                    {/* <input
                                         type="text"
                                         id="full_name"
                                         name="full_name"
@@ -385,8 +387,18 @@ const AddUser = () => {
                                         placeholder="Enter full name (letters and spaces only)"
                                         disabled={isFormDisabled}
                                         maxLength={50}
+                                    /> */}
+                                    <CustomInput
+                                        type="text"
+                                        id="full_name"
+                                        name="full_name"
+                                        value={formData.full_name}
+                                        onChange={handleInputChange}
+                                        placeholder="Enter full name (letters and spaces only)"
+                                        disabled={isFormDisabled}
+                                        maxLength={50}
                                     />
-                                    <User className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[var(--color-text-muted)]" />
+
                                 </div>
                                 {errors.full_name && (
                                     <p className="mt-2 text-sm text-[var(--color-text-error)] flex items-center gap-2">
@@ -403,7 +415,7 @@ const AddUser = () => {
                                     Phone Number <span className="text-[var(--color-error)]">*</span>
                                 </label>
                                 <div className="relative">
-                                    <input
+                                    {/* <input
                                         type="tel"
                                         id="number"
                                         name="number"
@@ -414,8 +426,18 @@ const AddUser = () => {
                                         placeholder="Enter 10-digit phone number (6-9 starting)"
                                         disabled={isFormDisabled}
                                         maxLength={10}
+                                    /> */}
+                                    <CustomInput
+                                        type="tel"
+                                        id="number"
+                                        name="number"
+                                        value={formData.number}
+                                        onChange={handleInputChange}
+                                        placeholder="Enter 10-digit phone number (6-9 starting)"
+                                        disabled={isFormDisabled}
+                                        maxLength={10}
                                     />
-                                    <Phone className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[var(--color-text-muted)]" />
+                                    {/* <Phone className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[var(--color-text-muted)]" /> */}
                                 </div>
                                 {errors.number && (
                                     <p className="mt-2 text-sm text-[var(--color-text-error)] flex items-center gap-2">
@@ -432,7 +454,7 @@ const AddUser = () => {
                                     Email Address <span className="text-[var(--color-error)]">*</span>
                                 </label>
                                 <div className="relative">
-                                    <input
+                                    {/* <input
                                         type="email"
                                         id="email"
                                         name="email"
@@ -443,8 +465,18 @@ const AddUser = () => {
                                         placeholder="Enter valid email address"
                                         disabled={isFormDisabled}
                                         maxLength={100}
+                                    /> */}
+                                    <CustomInput
+                                        type="email"
+                                        id="email"
+                                        name="email"
+                                        value={formData.email}
+                                        onChange={handleInputChange}
+                                        placeholder="Enter valid email address"
+                                        disabled={isFormDisabled}
+                                        maxLength={100}
                                     />
-                                    <Mail className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[var(--color-text-muted)]" />
+                                    {/* <Mail className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[var(--color-text-muted)]" /> */}
                                 </div>
                                 {errors.email && (
                                     <p className="mt-2 text-sm text-[var(--color-text-error)] flex items-center gap-2">
@@ -461,7 +493,7 @@ const AddUser = () => {
                                     Password {!isEditing && <span className="text-[var(--color-error)]">*</span>}
                                 </label>
                                 <div className="relative">
-                                    <input
+                                    {/* <input
                                         type={showPassword ? "text" : "password"}
                                         id="password"
                                         name="password"
@@ -472,8 +504,18 @@ const AddUser = () => {
                                         placeholder={isEditing ? "Enter new password (optional)" : "Enter strong password"}
                                         disabled={isFormDisabled}
                                         maxLength={50}
+                                    /> */}
+                                    <CustomInput
+                                        type={showPassword ? "text" : "password"}
+                                        id="password"
+                                        name="password"
+                                        value={formData.password}
+                                        onChange={handleInputChange}
+                                        placeholder={isEditing ? "Enter new password (optional)" : "Enter strong password"}
+                                        disabled={isFormDisabled}
+                                        maxLength={50}
                                     />
-                                    <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[var(--color-text-muted)]" />
+                                    {/* <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[var(--color-text-muted)]" /> */}
                                     <button
                                         type="button"
                                         onClick={togglePasswordVisibility}
@@ -490,7 +532,7 @@ const AddUser = () => {
                                     </p>
                                 )}
                                 <p className="text-xs text-[var(--color-text-muted)] mt-1">
-                                    {isEditing 
+                                    {isEditing
                                         ? "Leave empty to keep current password. If filled, must contain: uppercase letter, lowercase letter, number, and be at least 6 characters long"
                                         : "Password must contain: uppercase letter, lowercase letter, number, and be at least 6 characters long"
                                     }
@@ -504,7 +546,7 @@ const AddUser = () => {
                                     User Role <span className="text-[var(--color-error)]">*</span>
                                 </label>
                                 <div className="relative">
-                                    <select
+                                    {/* <select
                                         id="user_roles_id"
                                         name="user_roles_id"
                                         value={formData.user_roles_id}
@@ -521,8 +563,20 @@ const AddUser = () => {
                                                 {role.name}
                                             </option>
                                         ))}
-                                    </select>
-                                    <Shield className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[var(--color-text-muted)]" />
+                                    </select> */}
+                                    <CustomSelect
+                                        name="user_roles_id"
+                                        value={formData.user_roles_id}
+                                        onChange={handleInputChange}
+                                        options={roles.map((role) => ({
+                                            value: role.user_roles_id,
+                                            label: role.name,
+                                        }))}
+                                        placeholder={rolesLoading ? 'Loading roles...' : 'Select a role'}
+                                        searchable={true}
+                                        disabled={isFormDisabled}
+                                    />
+                                    {/* <Shield className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[var(--color-text-muted)]" /> */}
                                     <ChevronDown className="absolute right-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[var(--color-text-muted)]" />
                                 </div>
                                 {errors.user_roles_id && (

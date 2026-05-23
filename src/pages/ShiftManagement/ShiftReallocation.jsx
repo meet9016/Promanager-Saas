@@ -8,6 +8,8 @@ import api from '../../api/axiosInstance';
 import { useNavigate } from 'react-router-dom';
 import { Toast } from '../../Components/ui/Toast';
 import Pagination from '../../Components/Pagination';
+import CustomSelect from '../../Components/comman/CustomSelect';
+import CustomInput from '../../Components/comman/CustomInput';
 
 const ShiftReallocation = () => {
     const { user } = useAuth();
@@ -711,7 +713,7 @@ const ShiftReallocation = () => {
                                                 <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
                                                     From Shift <span className="text-[var(--color-error)]">*</span>
                                                 </label>
-                                                <select
+                                                {/* <select
                                                     value={sourceShift}
                                                     onChange={(e) => handleSourceShiftChange(e.target.value)}
                                                     className="w-full px-3 py-2 border border-[var(--color-border-secondary)] rounded-md focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)]"
@@ -722,14 +724,25 @@ const ShiftReallocation = () => {
                                                             {shift.shift_name}
                                                         </option>
                                                     ))}
-                                                </select>
+                                                </select> */}
+                                                <CustomSelect
+                                                    name="sourceShift"
+                                                    value={sourceShift}
+                                                    onChange={(e) => handleSourceShiftChange(e.target.value)}
+                                                    options={shifts.map((shift) => ({
+                                                        value: shift.shift_id,
+                                                        label: shift.shift_name,
+                                                    }))}
+                                                    placeholder="Select source shift"
+                                                    searchable={true}
+                                                />
                                             </div>
 
                                             <div>
                                                 <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
                                                     To Shift <span className="text-[var(--color-error)]">*</span>
                                                 </label>
-                                                <select
+                                                {/* <select
                                                     value={targetShift}
                                                     onChange={(e) => setTargetShift(e.target.value)}
                                                     disabled={!sourceShift}
@@ -741,7 +754,21 @@ const ShiftReallocation = () => {
                                                             {shift.shift_name}
                                                         </option>
                                                     ))}
-                                                </select>
+                                                </select> */}
+                                                <CustomSelect
+                                                    name="targetShift"
+                                                    value={targetShift}
+                                                    onChange={(e) => setTargetShift(e.target.value)}
+                                                    disabled={!sourceShift}
+                                                    options={shifts
+                                                        .filter(s => s.shift_id !== sourceShift)
+                                                        .map((shift) => ({
+                                                            value: shift.shift_id,
+                                                            label: shift.shift_name,
+                                                        }))}
+                                                    placeholder="Select target shift"
+                                                    searchable={true}
+                                                />
                                             </div>
 
                                             <div>
@@ -787,7 +814,7 @@ const ShiftReallocation = () => {
                                                         <Building className="w-4 h-4 inline mr-1" />
                                                         Branch
                                                     </label>
-                                                    <select
+                                                    {/* <select
                                                         value={filters.branch_id}
                                                         onChange={(e) => handleFilterChange('branch_id', e.target.value)}
                                                         disabled={dropdownLoading}
@@ -799,7 +826,19 @@ const ShiftReallocation = () => {
                                                                 {branch.name}
                                                             </option>
                                                         ))}
-                                                    </select>
+                                                    </select> */}
+                                                    <CustomSelect
+                                                        name="branch_id"
+                                                        value={filters.branch_id}
+                                                        onChange={(e) => handleFilterChange('branch_id', e.target.value)}
+                                                        disabled={dropdownLoading}
+                                                        options={branches.map(branch => ({
+                                                            value: branch.id,
+                                                            label: branch.name,
+                                                        }))}
+                                                        placeholder="All Branches"
+                                                        searchable={true}
+                                                    />
                                                 </div>
 
                                                 <div>
@@ -807,7 +846,7 @@ const ShiftReallocation = () => {
                                                         <Users className="w-4 h-4 inline mr-1" />
                                                         Department
                                                     </label>
-                                                    <select
+                                                    {/* <select
                                                         value={filters.department_id}
                                                         onChange={(e) => handleFilterChange('department_id', e.target.value)}
                                                         disabled={dropdownLoading}
@@ -819,19 +858,38 @@ const ShiftReallocation = () => {
                                                                 {dept.name}
                                                             </option>
                                                         ))}
-                                                    </select>
+                                                    </select> */}
+                                                    <CustomSelect
+                                                        name="department_id"
+                                                        value={filters.department_id}
+                                                        onChange={(e) => handleFilterChange('department_id', e.target.value)}
+                                                        disabled={dropdownLoading}
+                                                        options={departments.map(dept => ({
+                                                            value: dept.id,
+                                                            label: dept.name,
+                                                        }))}
+                                                        placeholder="All Departments"
+                                                        searchable={true}
+                                                    />
                                                 </div>
 
                                                 <div>
                                                     <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
                                                         Search Employee
                                                     </label>
-                                                    <input
+                                                    {/* <input
                                                         type="text"
                                                         placeholder="Name..."
                                                         value={searchTerm}
                                                         onChange={(e) => setSearchTerm(e.target.value)}
                                                         className="w-full px-3 py-2 border border-[var(--color-border-secondary)] rounded-md focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)]"
+                                                    /> */}
+                                                    <CustomInput
+                                                        type="text"
+                                                        name="search"
+                                                        placeholder="Name..."
+                                                        value={searchTerm}
+                                                        onChange={(e) => setSearchTerm(e.target.value)}
                                                     />
                                                 </div>
                                             </div>

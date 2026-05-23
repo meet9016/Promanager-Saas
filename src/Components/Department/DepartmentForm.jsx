@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Plus, Settings2, ChevronDown, ChevronUp } from "lucide-react";
+import CustomInput from "../comman/CustomInput";
 
 // ─── Defaults ──────────────────────────────────────────────────────────────────
 const defaultFormulas = () => ({
@@ -178,7 +179,7 @@ const DepartmentForm = ({ onSubmit, loading = false, showToast }) => {
                         <label htmlFor="departmentName" className="text-sm font-medium text-[var(--color-text-secondary)]">
                             Add New Department <span className="text-[var(--color-error)]">*</span>
                         </label>
-                        <input
+                        {/* <input
                             id="departmentName"
                             type="text"
                             placeholder="Enter department name"
@@ -187,7 +188,19 @@ const DepartmentForm = ({ onSubmit, loading = false, showToast }) => {
                             className="w-full px-4 py-3 border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-all duration-200 placeholder-gray-400 bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)]"
                             disabled={isSubmitting || loading}
                             onKeyDown={(e) => { if (e.key === "Enter") handleSubmit(e); }}
-                        />
+                        /> */}
+                        <div className="w-[500px]">
+                            <CustomInput
+                                type="text"
+                                name="name"
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                                // onBlur={handleFieldBlur}
+                                placeholder="Enter department name"
+                                required
+                                clearable={true}
+                            />
+                        </div>
                     </div>
                     <button
                         onClick={handleSubmit}

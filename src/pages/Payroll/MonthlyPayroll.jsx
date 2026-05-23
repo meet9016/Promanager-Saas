@@ -32,6 +32,7 @@ import { useSelector } from 'react-redux';
 import { Toast } from '../../Components/ui/Toast';
 import { ConfirmDialog } from '../../Components/ui/ConfirmDialog';
 import LoadingSpinner from '../../Components/Loader/LoadingSpinner';
+import CustomSelect from '../../Components/comman/CustomSelect';
 
 // ---------------------------------------------------------------------------
 // Multi-Select Searchable Dropdown (chips)
@@ -984,10 +985,24 @@ const MonthlyPayroll = () => {
                 <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
                   <Calendar className="w-4 h-4 inline mr-1" /> Month <span className="text-red-500">*</span>
                 </label>
-                <select value={selectedMonth} onChange={e => { setSelectedMonth(e.target.value); setAllPayrollData([]); }} className="w-full px-3 py-2 border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] bg-[var(--color-bg-secondary)]">
+                {/* <select value={selectedMonth} onChange={e => { setSelectedMonth(e.target.value); setAllPayrollData([]); }} className="w-full px-3 py-2 border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] bg-[var(--color-bg-secondary)]">
                   <option value="">Choose Month</option>
                   {months.map(m => <option key={m.value} value={m.value}>{m.label}</option>)}
-                </select>
+                </select> */}
+                <CustomSelect
+                  name="selectedMonth"
+                  value={selectedMonth}
+                  onChange={(e) => {
+                    setSelectedMonth(e.target.value);
+                    setAllPayrollData([]);
+                  }}
+                  options={months.map((m) => ({
+                    value: m.value,
+                    label: m.label,
+                  }))}
+                  placeholder="Choose Month"
+                  searchable={true}
+                />
               </div>
 
               {/* Year */}
@@ -995,10 +1010,24 @@ const MonthlyPayroll = () => {
                 <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
                   <Calendar className="w-4 h-4 inline mr-1" /> Year <span className="text-red-500">*</span>
                 </label>
-                <select value={selectedYear} onChange={e => { setSelectedYear(e.target.value); setAllPayrollData([]); }} className="w-full px-3 py-2 border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] bg-[var(--color-bg-secondary)]">
+                {/* <select value={selectedYear} onChange={e => { setSelectedYear(e.target.value); setAllPayrollData([]); }} className="w-full px-3 py-2 border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] bg-[var(--color-bg-secondary)]">
                   <option value="">Choose Year</option>
                   {years.map(y => <option key={y} value={y.toString()}>{y}</option>)}
-                </select>
+                </select> */}
+                <CustomSelect
+                  name="selectedYear"
+                  value={selectedYear}
+                  onChange={(e) => {
+                    setSelectedYear(e.target.value);
+                    setAllPayrollData([]);
+                  }}
+                  options={years.map((y) => ({
+                    value: y.toString(),
+                    label: y.toString(),
+                  }))}
+                  placeholder="Choose Year"
+                  searchable={true}
+                />
               </div>
 
               {/* Branch */}
@@ -1006,7 +1035,7 @@ const MonthlyPayroll = () => {
                 <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
                   <Building className="w-4 h-4 inline mr-1" /> Branch <span className="text-red-500">*</span>
                 </label>
-                <select
+                {/* <select
                   value={selectedBranch}
                   onChange={e => { setSelectedBranch(e.target.value); setSelectedDepartment(''); setSelectedEmployeeIds([]); setAllPayrollData([]); }}
                   className="w-full px-3 py-2 border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] bg-[var(--color-bg-secondary)]"
@@ -1014,7 +1043,24 @@ const MonthlyPayroll = () => {
                 >
                   <option value="">Select Branch</option>
                   {branches.map(b => <option key={b.branch_id} value={b.branch_id}>{b.name}</option>)}
-                </select>
+                </select> */}
+                <CustomSelect
+                  name="selectedBranch"
+                  value={selectedBranch}
+                  onChange={(e) => {
+                    setSelectedBranch(e.target.value);
+                    setSelectedDepartment('');
+                    setSelectedEmployeeIds([]);
+                    setAllPayrollData([]);
+                  }}
+                  options={branches.map((b) => ({
+                    value: b.branch_id,
+                    label: b.name,
+                  }))}
+                  placeholder="Select Branch"
+                  searchable={true}
+                  disabled={dropdownLoading}
+                />
               </div>
 
               {/* Department */}
@@ -1022,7 +1068,7 @@ const MonthlyPayroll = () => {
                 <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
                   <Users className="w-4 h-4 inline mr-1" /> Department <span className="text-red-500">*</span>
                 </label>
-                <select
+                {/* <select
                   value={selectedDepartment}
                   onChange={e => { setSelectedDepartment(e.target.value); setSelectedEmployeeIds([]); setAllPayrollData([]); }}
                   className={`w-full px-3 py-2 border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] transition-colors
@@ -1034,7 +1080,23 @@ const MonthlyPayroll = () => {
                 >
                   <option value="" disabled>{!selectedBranch ? 'Select branch first' : 'Choose Department'}</option>
                   {departments.map(d => <option key={d.department_id} value={d.department_id}>{d.name}</option>)}
-                </select>
+                </select> */}
+                <CustomSelect
+                  name="selectedDepartment"
+                  value={selectedDepartment}
+                  onChange={(e) => {
+                    setSelectedDepartment(e.target.value);
+                    setSelectedEmployeeIds([]);
+                    setAllPayrollData([]);
+                  }}
+                  options={departments.map((d) => ({
+                    value: d.department_id,
+                    label: d.name,
+                  }))}
+                  placeholder={!selectedBranch ? 'Select branch first' : 'Choose Department'}
+                  searchable={true}
+                  disabled={dropdownLoading || !selectedBranch}
+                />
               </div>
 
               {/* Employee multi-select */}
