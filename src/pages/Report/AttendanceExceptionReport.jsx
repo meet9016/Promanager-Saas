@@ -33,6 +33,7 @@ import { Toast } from '../../Components/ui/Toast';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Pagination from '../../Components/Pagination';
+import { Table, TableHeader, TableBody, TableRow, TableHeaderRow, Th, Td } from '../../Components/ui/Table';
 
 // ─── Floating anchor helpers (same pattern as DailyReport) ───────────────────
 const getScrollParents = (node) => {
@@ -608,24 +609,24 @@ const AttendanceExceptionReport = () => {
             }
 
             return (
-                <tr key={emp.employee_id || emp.employee_code || idx}
+                <TableRow key={emp.employee_id || emp.employee_code || idx}
                     className={`hover:bg-[var(--color-bg-hover)] transition-colors ${rowClass}`}>
 
                     {/* # */}
-                    <td className="px-4 py-3 text-center text-sm text-[var(--color-text-muted)]">{sno}</td>
+                    <Td className="text-center text-sm text-[var(--color-text-muted)]">{sno}</Td>
 
                     {/* Employee */}
-                    <td className="px-4 py-3">
+                    <Td>
                         <div className="flex flex-col items-start">
                             <span className="font-medium text-sm text-[var(--color-text-primary)]" title={emp.employee_name}>
                                 {emp.employee_name || '--'}
                             </span>
                             <span className="text-xs text-[var(--color-text-secondary)] mt-0.5">{emp.employee_code || '--'}</span>
                         </div>
-                    </td>
+                    </Td>
 
                     {/* Shift */}
-                    <td className="px-4 py-3 text-center text-sm text-[var(--color-text-primary)]">
+                    <Td className="text-center text-sm text-[var(--color-text-primary)]">
                         <div className="flex flex-col items-center gap-0.5">
                             <span>{emp.shift_name || '--'}</span>
                             {emp.shift_from_time && emp.shift_to_time && (
@@ -634,41 +635,41 @@ const AttendanceExceptionReport = () => {
                                 </span>
                             )}
                         </div>
-                    </td>
+                    </Td>
 
                     {/* Clock In */}
-                    <td className="px-4 py-3 text-center text-sm">
+                    <Td className="text-center text-sm">
                         <span className={exTypes.includes('late_coming') ? 'font-semibold text-yellow-700' : 'text-[var(--color-text-primary)]'}>
                             {emp.attandance_first_clock_in || '--'}
                         </span>
-                    </td>
+                    </Td>
 
                     {/* Clock Out */}
-                    <td className="px-4 py-3 text-center text-sm">
+                    <Td className="text-center text-sm">
                         <span className={exTypes.includes('early_going') ? 'font-semibold text-orange-700' : 'text-[var(--color-text-primary)]'}>
                             {emp.attandance_last_clock_out || '--'}
                         </span>
-                    </td>
+                    </Td>
 
                     {/* Working Hrs */}
-                    <td className="px-4 py-3 text-center text-sm text-[var(--color-text-secondary)]">
+                    <Td className="text-center text-sm text-[var(--color-text-secondary)]">
                         {emp.shift_working_hours || '--'}
-                    </td>
+                    </Td>
 
                     {/* Attendance Hrs */}
-                    <td className="px-4 py-3 text-center text-sm">
+                    <Td className="text-center text-sm">
                         <span className={exTypes.includes('short_hours') ? 'font-semibold text-red-700' : 'text-[var(--color-text-secondary)]'}>
                             {emp.attandance_hours || '--'}
                         </span>
-                    </td>
+                    </Td>
 
                     {/* Status */}
-                    <td className="px-4 py-3 text-center text-sm">
+                    <Td className="text-center text-sm">
                         <StatusBadge status={emp.status} />
-                    </td>
+                    </Td>
 
                     {/* Exception Details */}
-                    <td className="px-4 py-3">
+                    <Td>
                         {exDetails.length === 0 ? (
                             !emp.attandance_first_clock_in ? (
                                 <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-700 border border-red-300">
@@ -694,8 +695,8 @@ const AttendanceExceptionReport = () => {
                                 ))}
                             </div>
                         )}
-                    </td>
-                </tr>
+                    </Td>
+                </TableRow>
             );
         }
 
@@ -713,70 +714,70 @@ const AttendanceExceptionReport = () => {
         const extraCells = {
             late_coming: (
                 <>
-                    <td className="px-4 py-3 text-center text-sm font-semibold text-yellow-700">
+                    <Td className="text-center text-sm font-semibold text-yellow-700">
                         {emp.late_coming_time || '--'}
-                    </td>
-                    <td className="px-4 py-3 text-center text-sm">
+                    </Td>
+                    <Td className="text-center text-sm">
                         <StatusBadge status={emp.status} />
-                    </td>
+                    </Td>
                 </>
             ),
             early_going: (
                 <>
-                    <td className="px-4 py-3 text-center text-sm font-semibold text-orange-700">
+                    <Td className="text-center text-sm font-semibold text-orange-700">
                         {emp.early_going_time || '--'}
-                    </td>
-                    <td className="px-4 py-3 text-center text-sm">
+                    </Td>
+                    <Td className="text-center text-sm">
                         <StatusBadge status={emp.status} />
-                    </td>
+                    </Td>
                 </>
             ),
             short_hours: (
                 <>
-                    <td className="px-4 py-3 text-center text-sm text-[var(--color-text-secondary)]">
+                    <Td className="text-center text-sm text-[var(--color-text-secondary)]">
                         {emp.shift_working_hours || '--'}
-                    </td>
-                    <td className="px-4 py-3 text-center text-sm text-[var(--color-text-secondary)]">
+                    </Td>
+                    <Td className="text-center text-sm text-[var(--color-text-secondary)]">
                         {emp.attandance_hours || '--'}
-                    </td>
-                    <td className="px-4 py-3 text-center text-sm font-semibold text-red-700">
+                    </Td>
+                    <Td className="text-center text-sm font-semibold text-red-700">
                         {shortMins}
-                    </td>
-                    <td className="px-4 py-3 text-center text-sm">
+                    </Td>
+                    <Td className="text-center text-sm">
                         <StatusBadge status={emp.status} />
-                    </td>
+                    </Td>
                 </>
             ),
             missed_punch: (
                 <>
-                    <td className="px-4 py-3 text-center text-sm font-semibold text-purple-700">
+                    <Td className="text-center text-sm font-semibold text-purple-700">
                         {(emp.attendance_history || []).length} punch{(emp.attendance_history || []).length !== 1 ? 'es' : ''}
-                    </td>
-                    <td className="px-4 py-3 text-center text-sm">
+                    </Td>
+                    <Td className="text-center text-sm">
                         <StatusBadge status={emp.status} />
-                    </td>
+                    </Td>
                 </>
             )
         };
 
         return (
-            <tr key={emp.employee_id || emp.employee_code || idx}
+            <TableRow key={emp.employee_id || emp.employee_code || idx}
                 className="hover:bg-[var(--color-bg-hover)] transition-colors border-b border-[var(--color-border-secondary)]">
-                <td className="px-4 py-3 text-center text-sm text-[var(--color-text-muted)]">{sno}</td>
-                <td className="px-4 py-3">
+                <Td className="text-center text-sm text-[var(--color-text-muted)]">{sno}</Td>
+                <Td>
                     <div className="flex flex-col items-start">
                         <span className="font-medium text-sm text-[var(--color-text-primary)] truncate max-w-[160px]" title={emp.employee_name}>{emp.employee_name || '--'}</span>
                         <span className="text-xs text-[var(--color-text-secondary)]">{emp.employee_code || '--'}</span>
                     </div>
-                </td>
-                <td className="px-4 py-3 text-center text-sm text-[var(--color-text-primary)]">{emp.shift_name || '--'}</td>
-                <td className="px-4 py-3 text-center text-sm text-[var(--color-text-secondary)]">
+                </Td>
+                <Td className="text-center text-sm text-[var(--color-text-primary)]">{emp.shift_name || '--'}</Td>
+                <Td className="text-center text-sm text-[var(--color-text-secondary)]">
                     {emp.shift_from_time && emp.shift_to_time ? `${emp.shift_from_time} – ${emp.shift_to_time}` : '--'}
-                </td>
-                <td className="px-4 py-3 text-center text-sm text-[var(--color-text-primary)]">{emp.attandance_first_clock_in || '--'}</td>
-                <td className="px-4 py-3 text-center text-sm text-[var(--color-text-primary)]">{emp.attandance_last_clock_out || '--'}</td>
+                </Td>
+                <Td className="text-center text-sm text-[var(--color-text-primary)]">{emp.attandance_first_clock_in || '--'}</Td>
+                <Td className="text-center text-sm text-[var(--color-text-primary)]">{emp.attandance_last_clock_out || '--'}</Td>
                 {extraCells[activeTab]}
-            </tr>
+            </TableRow>
         );
     };
 
@@ -1012,27 +1013,27 @@ const AttendanceExceptionReport = () => {
                             </div>
                         ) : (
                             <>
-                                <table className="w-full min-w-[900px]">
-                                    <thead className="bg-[var(--color-primary-dark)] border-b border-[var(--color-border-secondary)]">
-                                        <tr>
+                                <Table className="w-full min-w-[900px]">
+                                    <TableHeader className="bg-[var(--color-primary-dark)] border-b border-[var(--color-border-secondary)]">
+                                        <TableHeaderRow>
                                             {renderTableHead().map((col) => (
-                                                <th key={col.key} className="px-4 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
+                                                <Th key={col.key} className="text-center font-medium text-white">
                                                     {col.label}
-                                                </th>
+                                                </Th>
                                             ))}
-                                        </tr>
-                                    </thead>
-                                    <tbody className="bg-[var(--color-bg-secondary)] divide-y divide-[var(--color-border-secondary)]">
+                                        </TableHeaderRow>
+                                    </TableHeader>
+                                    <TableBody className="bg-[var(--color-bg-secondary)] divide-y divide-[var(--color-border-secondary)]">
                                         {paginatedData.map((emp, idx) => renderTableRow(emp, idx, currentPage))}
                                         {Array.from({ length: emptyRowCount }).map((_, i) => (
-                                            <tr key={`empty-${i}`} className="hover:bg-[var(--color-bg-hover)] transition-colors">
+                                            <TableRow key={`empty-${i}`} className="hover:bg-[var(--color-bg-hover)] transition-colors">
                                                 {renderTableHead().map((col) => (
-                                                    <td key={col.key} className="px-4 py-6 text-center text-sm text-transparent">—</td>
+                                                    <Td key={col.key} className="text-center text-sm text-transparent">—</Td>
                                                 ))}
-                                            </tr>
+                                            </TableRow>
                                         ))}
-                                    </tbody>
-                                </table>
+                                    </TableBody>
+                                </Table>
 
                                 <Pagination
                                     currentPage={currentPage}

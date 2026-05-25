@@ -15,6 +15,7 @@ import { Toast } from '../../Components/ui/Toast';
 import { exportSalaryStatusToPDF } from '../../utils/exportUtils/salary/pdfExportSalaryGenerationStatus';
 import { exportSalaryStatusToExcel } from '../../utils/exportUtils/salary/excelExportSalaryGenerationStatus';
 import CustomSelect from '../../Components/comman/CustomSelect';
+import { Table, TableHeader, TableBody, TableRow, TableHeaderRow, Th, Td } from '../../Components/ui/Table';
 
 /** ─── Anchored position helpers ─────────────────────────────────────────── **/
 const getScrollParents = (node) => {
@@ -433,77 +434,77 @@ const SalaryGenerationStatusReport = () => {
                         </div>
 
                         <div className="overflow-x-auto">
-                            <table className="w-full">
-                                <thead>
-                                    <tr className="bg-[var(--color-primary-dark)] border-b border-[var(--color-border-primary)]">
-                                        <th className="px-4 py-4 text-left text-sm font-semibold text-white w-8">#</th>
-                                        <th className="px-4 py-4 text-left text-sm font-semibold text-white">
+                            <Table className="w-full">
+                                <TableHeader>
+                                    <TableHeaderRow className="bg-[var(--color-primary-dark)] border-b border-[var(--color-border-primary)]">
+                                        <Th className="text-left font-semibold text-white w-8">#</Th>
+                                        <Th className="text-left font-semibold text-white">
                                             <div className="flex items-center gap-2"><User className="h-4 w-4" />Employee</div>
-                                        </th>
-                                        <th className="px-4 py-4 text-center text-sm font-semibold text-white">Monthly Salary</th>
-                                        <th className="px-4 py-4 text-center text-sm font-semibold text-white">Final Salary</th>
-                                        <th className="px-4 py-4 text-center text-sm font-semibold text-white">Net Payable</th>
-                                        <th className="px-4 py-4 text-center text-sm font-semibold text-white">Total Paid</th>
-                                        <th className="px-4 py-4 text-center text-sm font-semibold text-white">Balance Due</th>
-                                        <th className="px-4 py-4 text-center text-sm font-semibold text-white">Generated At</th>
-                                        <th className="px-4 py-4 text-center text-sm font-semibold text-white">Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="divide-y divide-[var(--color-border-primary)]">
+                                        </Th>
+                                        <Th className="text-center font-semibold text-white">Monthly Salary</Th>
+                                        <Th className="text-center font-semibold text-white">Final Salary</Th>
+                                        <Th className="text-center font-semibold text-white">Net Payable</Th>
+                                        <Th className="text-center font-semibold text-white">Total Paid</Th>
+                                        <Th className="text-center font-semibold text-white">Balance Due</Th>
+                                        <Th className="text-center font-semibold text-white">Generated At</Th>
+                                        <Th className="text-center font-semibold text-white">Status</Th>
+                                    </TableHeaderRow>
+                                </TableHeader>
+                                <TableBody className="divide-y divide-[var(--color-border-primary)]">
                                     {currentItems.map((emp, idx) => {
                                         const isPaid = String(emp.payment_status_label || '').toLowerCase() === 'paid';
                                         const isGenerated = String(emp.salary_generation_status || '').toLowerCase() === 'generated';
                                         const balanceDue = parseFloat(emp.balance_due || 0);
 
                                         return (
-                                            <tr key={emp.employee_id || idx} className="bg-[var(--color-bg-secondary)] hover:bg-[var(--color-bg-primary)] transition-colors">
-                                                <td className="px-4 py-4 text-sm text-[var(--color-text-secondary)]">
+                                            <TableRow key={emp.employee_id || idx} className="bg-[var(--color-bg-secondary)] hover:bg-[var(--color-bg-primary)] transition-colors">
+                                                <Td className="text-sm text-[var(--color-text-secondary)]">
                                                     {(currentPage - 1) * itemsPerPage + idx + 1}
-                                                </td>
-                                                <td className="px-4 py-4">
+                                                </Td>
+                                                <Td>
                                                     <div className="font-semibold text-sm text-[var(--color-text-primary)]">{emp.employee_name || '--'}</div>
                                                     <div className="text-xs text-[var(--color-text-secondary)] bg-[var(--color-bg-primary)] px-2 py-0.5 rounded mt-1 inline-block">{emp.employee_code || '--'}</div>
-                                                </td>
-                                                <td className="px-4 py-4 text-center">
+                                                </Td>
+                                                <Td className="text-center">
                                                     <span className="text-sm font-semibold text-[var(--color-primary-dark)]">{formatCurrency(emp.monthly_salary)}</span>
-                                                </td>
-                                                <td className="px-4 py-4 text-center">
+                                                </Td>
+                                                <Td className="text-center">
                                                     {isGenerated
                                                         ? <span className="text-sm font-semibold text-[var(--color-text-primary)]">{formatCurrency(emp.final_salary)}</span>
                                                         : <span className="text-xs text-[var(--color-text-secondary)]">—</span>}
-                                                </td>
-                                                <td className="px-4 py-4 text-center">
+                                                </Td>
+                                                <Td className="text-center">
                                                     {isGenerated
                                                         ? <span className="text-sm font-bold text-green-600">{formatCurrency(emp.net_payable)}</span>
                                                         : <span className="text-xs text-[var(--color-text-secondary)]">—</span>}
-                                                </td>
-                                                <td className="px-4 py-4 text-center">
+                                                </Td>
+                                                <Td className="text-center">
                                                     {isPaid
                                                         ? <span className="text-sm font-bold text-primary-600">{formatCurrency(emp.total_paid)}</span>
                                                         : <span className="text-xs text-[var(--color-text-secondary)]">—</span>}
-                                                </td>
-                                                <td className="px-4 py-4 text-center">
+                                                </Td>
+                                                <Td className="text-center">
                                                     {isGenerated
                                                         ? <span className={`text-sm font-semibold ${balanceDue > 0 ? 'text-red-500' : 'text-green-600'}`}>
                                                             {balanceDue > 0 ? formatCurrency(balanceDue) : '✓ Cleared'}
                                                         </span>
                                                         : <span className="text-xs text-[var(--color-text-secondary)]">—</span>}
-                                                </td>
-                                                <td className="px-4 py-4 text-center">
+                                                </Td>
+                                                <Td className="text-center">
                                                     <span className="text-xs text-[var(--color-text-secondary)]">
                                                         {emp.generated_at
                                                             ? new Date(emp.generated_at).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })
                                                             : '—'}
                                                     </span>
-                                                </td>
-                                                <td className="px-4 py-4 text-center">
+                                                </Td>
+                                                <Td className="text-center">
                                                     <SalaryStatusBadge genStatus={emp.salary_generation_status} paymentLabel={emp.payment_status_label} />
-                                                </td>
-                                            </tr>
+                                                </Td>
+                                            </TableRow>
                                         );
                                     })}
-                                </tbody>
-                            </table>
+                                </TableBody>
+                            </Table>
                         </div>
 
                         <div className="border-t border-[var(--color-border-primary)] bg-[var(--color-bg-primary)]">

@@ -36,6 +36,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import Pagination from '../../Components/Pagination';
 import { SearchableDropdown } from '../../Components/Report/ReportComponents';
 import CustomSelect from '../../Components/comman/CustomSelect';
+import { Table, TableHeader, TableBody, TableRow, TableHeaderRow, Th, Td } from '../../Components/ui/Table';
 
 // ─── Floating anchor helpers ──────────────────────────────────────────────────
 const getScrollParents = (node) => {
@@ -575,39 +576,39 @@ const MonthlyExceptionReport = () => {
             }
 
             return (
-                <tr key={emp.employee_code || idx}
+                <TableRow key={emp.employee_code || idx}
                     className={`hover:bg-[var(--color-bg-hover)] transition-colors ${rowClass}`}>
-                    <td className="px-4 py-3 text-center text-sm text-[var(--color-text-muted)]">{sno}</td>
-                    <td className="px-4 py-3">
+                    <Td className="text-center text-sm text-[var(--color-text-muted)]">{sno}</Td>
+                    <Td>
                         <div className="flex flex-col items-start">
                             <span className="font-medium text-sm text-[var(--color-text-primary)]">{emp.employee_name || '--'}</span>
                             <span className="text-xs text-[var(--color-text-secondary)] mt-0.5">{emp.employee_code || '--'}</span>
                         </div>
-                    </td>
-                    <td className="px-4 py-3 text-center text-sm text-[var(--color-text-secondary)]">
+                    </Td>
+                    <Td className="text-center text-sm text-[var(--color-text-secondary)]">
                         {emp.totalDays}
-                    </td>
-                    <td className="px-4 py-3 text-center text-sm">
+                    </Td>
+                    <Td className="text-center text-sm">
                         <span className={emp.lateDays > 0 ? 'font-semibold text-yellow-700' : 'text-[var(--color-text-muted)]'}>
                             {emp.lateDays > 0 ? emp.lateDays : '--'}
                         </span>
-                    </td>
-                    <td className="px-4 py-3 text-center text-sm">
+                    </Td>
+                    <Td className="text-center text-sm">
                         <span className={emp.earlyDays > 0 ? 'font-semibold text-orange-700' : 'text-[var(--color-text-muted)]'}>
                             {emp.earlyDays > 0 ? emp.earlyDays : '--'}
                         </span>
-                    </td>
-                    <td className="px-4 py-3 text-center text-sm">
+                    </Td>
+                    <Td className="text-center text-sm">
                         <span className={emp.shortHoursDays > 0 ? 'font-semibold text-red-700' : 'text-[var(--color-text-muted)]'}>
                             {emp.shortHoursDays > 0 ? emp.shortHoursDays : '--'}
                         </span>
-                    </td>
-                    <td className="px-4 py-3 text-center text-sm">
+                    </Td>
+                    <Td className="text-center text-sm">
                         <span className={emp.missedPunchDays > 0 ? 'font-semibold text-purple-700' : 'text-[var(--color-text-muted)]'}>
                             {emp.missedPunchDays > 0 ? emp.missedPunchDays : '--'}
                         </span>
-                    </td>
-                    <td className="px-4 py-3">
+                    </Td>
+                    <Td>
                         {exDetails.length === 0 ? (
                             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700 border border-green-300">
                                 <CheckCircle className="h-3.5 w-3.5" />
@@ -627,8 +628,8 @@ const MonthlyExceptionReport = () => {
                                 ))}
                             </div>
                         )}
-                    </td>
-                </tr>
+                    </Td>
+                </TableRow>
             );
         }
 
@@ -636,58 +637,58 @@ const MonthlyExceptionReport = () => {
         const extraCells = {
             late_coming: (
                 <>
-                    <td className="px-4 py-3 text-center text-sm font-semibold text-yellow-700">
+                    <Td className="text-center text-sm font-semibold text-yellow-700">
                         {emp.lateDays}
-                    </td>
-                    <td className="px-4 py-3 text-center text-sm font-semibold text-yellow-700">
+                    </Td>
+                    <Td className="text-center text-sm font-semibold text-yellow-700">
                         {emp.totalLateTime}
-                    </td>
+                    </Td>
                 </>
             ),
             early_going: (
                 <>
-                    <td className="px-4 py-3 text-center text-sm font-semibold text-orange-700">
+                    <Td className="text-center text-sm font-semibold text-orange-700">
                         {emp.earlyDays}
-                    </td>
-                    <td className="px-4 py-3 text-center text-sm font-semibold text-orange-700">
+                    </Td>
+                    <Td className="text-center text-sm font-semibold text-orange-700">
                         {emp.totalEarlyTime}
-                    </td>
+                    </Td>
                 </>
             ),
             short_hours: (
                 <>
-                    <td className="px-4 py-3 text-center text-sm font-semibold text-red-700">
+                    <Td className="text-center text-sm font-semibold text-red-700">
                         {emp.shortHoursDays}
-                    </td>
-                    <td className="px-4 py-3 text-center text-sm font-semibold text-red-700">
+                    </Td>
+                    <Td className="text-center text-sm font-semibold text-red-700">
                         {emp.totalShortTime}
-                    </td>
+                    </Td>
                 </>
             ),
             missed_punch: (
                 <>
-                    <td className="px-4 py-3 text-center text-sm font-semibold text-purple-700">
+                    <Td className="text-center text-sm font-semibold text-purple-700">
                         {emp.missedPunchDays} day{emp.missedPunchDays !== 1 ? 's' : ''}
-                    </td>
+                    </Td>
                 </>
             ),
         };
 
         return (
-            <tr key={emp.employee_code || idx}
+            <TableRow key={emp.employee_code || idx}
                 className="hover:bg-[var(--color-bg-hover)] transition-colors border-b border-[var(--color-border-secondary)]">
-                <td className="px-4 py-3 text-center text-sm text-[var(--color-text-muted)]">{sno}</td>
-                <td className="px-4 py-3">
+                <Td className="text-center text-sm text-[var(--color-text-muted)]">{sno}</Td>
+                <Td>
                     <div className="flex flex-col items-start">
                         <span className="font-medium text-sm text-[var(--color-text-primary)] truncate max-w-[160px]" title={emp.employee_name}>{emp.employee_name || '--'}</span>
                         <span className="text-xs text-[var(--color-text-secondary)]">{emp.employee_code || '--'}</span>
                     </div>
-                </td>
-                <td className="px-4 py-3 text-center text-sm text-[var(--color-text-secondary)]">
+                </Td>
+                <Td className="text-center text-sm text-[var(--color-text-secondary)]">
                     {emp.totalDays}
-                </td>
+                </Td>
                 {extraCells[activeTab]}
-            </tr>
+            </TableRow>
         );
     };
 
@@ -1149,27 +1150,27 @@ const MonthlyExceptionReport = () => {
                                     </div>
                                 ) : (
                                     <>
-                                        <table className="w-full min-w-[900px]">
-                                            <thead className="bg-[var(--color-bg-gray-light)] border-b border-[var(--color-border-secondary)]">
-                                                <tr>
+                                        <Table className="w-full min-w-[900px]">
+                                            <TableHeader className="bg-[var(--color-bg-gray-light)] border-b border-[var(--color-border-secondary)]">
+                                                <TableHeaderRow>
                                                     {renderTableHead().map((col) => (
-                                                        <th key={col.key} className="px-4 py-3 text-center text-xs font-medium text-[var(--color-text-muted)] uppercase tracking-wider">
+                                                        <Th key={col.key} className="text-center font-medium text-[var(--color-text-muted)] uppercase tracking-wider">
                                                             {col.label}
-                                                        </th>
+                                                        </Th>
                                                     ))}
-                                                </tr>
-                                            </thead>
-                                            <tbody className="bg-[var(--color-bg-secondary)] divide-y divide-[var(--color-border-secondary)]">
+                                                </TableHeaderRow>
+                                            </TableHeader>
+                                            <TableBody className="bg-[var(--color-bg-secondary)] divide-y divide-[var(--color-border-secondary)]">
                                                 {paginatedData.map((emp, idx) => renderTableRow(emp, idx))}
                                                 {Array.from({ length: emptyRowCount }).map((_, i) => (
-                                                    <tr key={`empty-${i}`} className="hover:bg-[var(--color-bg-hover)] transition-colors">
+                                                    <TableRow key={`empty-${i}`} className="hover:bg-[var(--color-bg-hover)] transition-colors">
                                                         {renderTableHead().map((col) => (
-                                                            <td key={col.key} className="px-4 py-6 text-center text-sm text-transparent">—</td>
+                                                            <Td key={col.key} className="text-center text-sm text-transparent">—</Td>
                                                         ))}
-                                                    </tr>
+                                                    </TableRow>
                                                 ))}
-                                            </tbody>
-                                        </table>
+                                            </TableBody>
+                                        </Table>
 
                                         <Pagination
                                             currentPage={currentPage}

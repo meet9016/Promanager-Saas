@@ -10,6 +10,7 @@ import { Toast } from '../../Components/ui/Toast';
 import Pagination from '../../Components/Pagination';
 import CustomSelect from '../../Components/comman/CustomSelect';
 import CustomInput from '../../Components/comman/CustomInput';
+import { Table, TableHeader, TableBody, TableRow, TableHeaderRow, Th, Td } from '../../Components/ui/Table';
 
 const ShiftReallocation = () => {
     const { user } = useAuth();
@@ -599,44 +600,44 @@ const ShiftReallocation = () => {
                         ) : (
                             <>
                                 <div className="overflow-x-auto">
-                                    <table className="min-w-full divide-y divide-[var(--color-border-divider)]">
-                                        <thead className="bg-[var(--color-primary-dark)]">
-                                            <tr>
-                                                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--color-text-white)] uppercase tracking-wider">
+                                    <Table className="min-w-full divide-y divide-[var(--color-border-divider)]">
+                                        <TableHeader className="bg-[var(--color-primary-dark)]">
+                                            <TableHeaderRow>
+                                                <Th className="px-6 py-3 text-left font-medium">
                                                     From Shift
-                                                </th>
-                                                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--color-text-white)] uppercase tracking-wider">
+                                                </Th>
+                                                <Th className="px-6 py-3 text-left font-medium">
                                                     To Shift
-                                                </th>
-                                                <th className="px-6 py-3 text-left  text-xs font-medium text-[var(--color-text-white)] uppercase tracking-wider">
+                                                </Th>
+                                                <Th className="px-6 py-3 text-left font-medium">
                                                     Reallocation Date
-                                                </th>
-                                                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--color-text-white)] uppercase tracking-wider">
+                                                </Th>
+                                                <Th className="px-6 py-3 text-left font-medium">
                                                     Status
-                                                </th>
-                                                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--color-text-white)] uppercase tracking-wider">
+                                                </Th>
+                                                <Th className="px-6 py-3 text-left font-medium">
                                                     Employees
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody className="bg-[var(--color-bg-secondary)] divide-y divide-[var(--color-border-divider)]">
+                                                </Th>
+                                            </TableHeaderRow>
+                                        </TableHeader>
+                                        <TableBody className="bg-[var(--color-bg-secondary)] divide-y divide-[var(--color-border-divider)]">
                                             {reallocationHistory.map((item, index) => (
-                                                <tr key={item.id || index} className="hover:bg-[var(--color-bg-primary)] transition-colors">
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-[var(--color-text-primary)]">
+                                                <TableRow key={item.id || index} className="hover:bg-[var(--color-bg-primary)] transition-colors">
+                                                    <Td className="px-6 py-4 text-left whitespace-nowrap font-medium text-[var(--color-text-primary)]">
                                                         {item.from_shift_name || 'N/A'}
-                                                    </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-[var(--color-text-primary)]">
+                                                    </Td>
+                                                    <Td className="px-6 py-4 text-left whitespace-nowrap font-medium text-[var(--color-text-primary)]">
                                                         {item.to_shift_name || 'N/A'}
-                                                    </td>
-                                                    <td className="px-12 py-4 text-left whitespace-nowrap text-sm text-[var(--color-text-secondary)]">
+                                                    </Td>
+                                                    <Td className="px-12 py-4 text-left whitespace-nowrap text-[var(--color-text-secondary)]">
                                                         {formatDate(item.change_date || item.reallocation_date)}
-                                                    </td>
-                                                    <td className="px-3 py-4 whitespace-nowrap">
+                                                    </Td>
+                                                    <Td className="px-3 py-4 text-left whitespace-nowrap">
                                                         <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full border ${getStatusBadge(item.executed_name)}`}>
                                                             {item.executed_name || 'Pending'}
                                                         </span>
-                                                    </td>
-                                                    <td className="px-9 py-4 whitespace-nowrap text-sm text-[var(--color-text-secondary)]">
+                                                    </Td>
+                                                    <Td className="px-9 py-4 text-left whitespace-nowrap text-[var(--color-text-secondary)]">
                                                         {permissions['shift_reallocation_view'] && (
                                                             <button
                                                                 onClick={() => setEmployeeModal({
@@ -652,11 +653,11 @@ const ShiftReallocation = () => {
                                                                 <Users className="w-4 h-4" />
                                                             </button>
                                                         )}
-                                                    </td>
-                                                </tr>
+                                                    </Td>
+                                                </TableRow>
                                             ))}
-                                        </tbody>
-                                    </table>
+                                        </TableBody>
+                                    </Table>
                                 </div>
 
                                 {totalPages > 1 && (

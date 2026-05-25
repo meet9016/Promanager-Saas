@@ -35,6 +35,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 // ⬇️ ADD THIS: adjust the import path to where your Pagination component lives
 // e.g. '../../Components/common/Pagination' or '../Pagination'
 import Pagination from '../../Components/Pagination';
+import { Table, TableHeader, TableBody, TableRow, TableHeaderRow, Th, Td } from '../../Components/ui/Table';
 
 /** ---------- Floating Anchors: robust positioning utilities ---------- **/
 const getScrollParents = (node) => {
@@ -122,18 +123,6 @@ const useAnchoredPosition = (anchorRef, isOpen, opts = {}) => {
     return pos;
 };
 
-/** ---------- Small building blocks ---------- **/
-const Th = ({ children, small, className = '' }) => (
-    <th className={`px-4 py-2 text-center ${small ? 'text-[11px]' : 'text-xs'} font-medium text-[var(--color-text-muted)] uppercase tracking-wider ${className}`}>
-        {children}
-    </th>
-);
-
-const Td = ({ children, small, className = '', colSpan }) => (
-    <td className={`px-4 py-3 text-center ${small ? 'text-xs' : 'text-sm'} text-[var(--color-text-primary)] ${className}`} colSpan={colSpan}>
-        {children}
-    </td>
-);
 const DailyReport = () => {
     const [selectedDate, setSelectedDate] = useState(new Date());
 
@@ -1068,40 +1057,40 @@ const DailyReport = () => {
                             <div className="p-8 text-center text-[var(--color-text-secondary)]">No records found</div>
                         ) : (
                             <>
-                                <table className="w-full min-w-[1200px] border-separate border-spacing-0">
-                                    <thead className="sticky top-0 z-10 bg-[var(--color-primary-dark)] backdrop-blur supports-[backdrop-filter]:bg-[var(--color-bg-gray-light)]/60">
-                                        <tr className="border-b border-[var(--color-border-secondary)]">
-                                            <Th className="text-white">
+                                <Table className="w-full min-w-[1200px] border-separate border-spacing-0">
+                                    <TableHeader className="sticky top-0 z-10 bg-[var(--color-primary-dark)] backdrop-blur supports-[backdrop-filter]:bg-[var(--color-bg-gray-light)]/60">
+                                        <TableHeaderRow>
+                                            <Th className="text-center font-medium">
                                                 Employee
                                             </Th>
-                                            <Th className="text-white">
+                                            <Th className="text-center font-medium">
                                                 Shift
                                             </Th>
-                                            <Th className="text-white">
+                                            <Th className="text-center font-medium">
                                                 Shift Time
                                             </Th>
-                                            <Th className="text-white">
+                                            <Th className="text-center font-medium">
                                                 Clock In
                                             </Th>
-                                            <Th className="text-white">
+                                            <Th className="text-center font-medium">
                                                 Clock Out
                                             </Th>
-                                            <Th className="text-white">
+                                            <Th className="text-center font-medium">
                                                 Working Hours
                                             </Th>
-                                            <Th className="text-white">
+                                            <Th className="text-center font-medium">
                                                 Attendance Hours
                                             </Th>
-                                            <Th className="text-white">
+                                            <Th className="text-center font-medium">
                                                 Status
                                             </Th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="bg-[var(--color-bg-secondary)] divide-y divide-[var(--color-border-secondary)]">
+                                        </TableHeaderRow>
+                                    </TableHeader>
+                                    <TableBody className="bg-[var(--color-bg-secondary)] divide-y divide-[var(--color-border-secondary)]">
                                         {paginatedData.map((emp, idx) => {
                                             const timeColorClass = getTimeColor(emp);
                                             return (
-                                                <tr
+                                                <TableRow
                                                     key={emp.employee_id || emp.employee_code || idx}
                                                     className={`hover:bg-[var(--color-bg-hover)] transition-colors ${getRowStyling(emp.status)}`}
                                                 >
@@ -1165,13 +1154,13 @@ const DailyReport = () => {
                                                             {emp.status || '--'}
                                                         </span>
                                                     </Td>
-                                                </tr>
+                                                </TableRow>
                                             );
                                         })}
 
                                         {/* ⬇️ Filler rows to keep 10 rows visible */}
                                         {Array.from({ length: emptyRowCount }).map((_, i) => (
-                                            <tr key={`empty-${i}`} className="hover:bg-[var(--color-bg-hover)] transition-colors">
+                                            <TableRow key={`empty-${i}`} className="hover:bg-[var(--color-bg-hover)] transition-colors">
                                                 <Td className="px-6 py-6 text-center text-sm text-transparent">—</Td>
                                                 <Td className="px-6 py-6 text-center text-sm text-transparent">—</Td>
                                                 <Td className="px-6 py-6 text-center text-sm text-transparent">—</Td>
@@ -1180,10 +1169,10 @@ const DailyReport = () => {
                                                 <Td className="px-6 py-6 text-center text-sm text-transparent">—</Td>
                                                 <Td className="px-6 py-6 text-center text-sm text-transparent">—</Td>
                                                 <Td className="px-6 py-6 text-center text-sm text-transparent">—</Td>
-                                            </tr>
+                                            </TableRow>
                                         ))}
-                                    </tbody>
-                                </table>
+                                    </TableBody>
+                                </Table>
 
                                 {/* ⬇️ Pagination controls */}
                                 <Pagination

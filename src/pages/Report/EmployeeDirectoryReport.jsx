@@ -26,6 +26,7 @@ import {
 } from 'lucide-react';
 import Pagination from '../../Components/Pagination';
 import { Toast } from '../../Components/ui/Toast';
+import { Table, TableHeader, TableBody, TableRow, TableHeaderRow, Th, Td } from '../../Components/ui/Table';
 import { exportEmployeeDirectoryToPDF } from '../../utils/exportUtils/EmployeeReport/employeeDirectoryPdfExport';
 import { exportToExcel } from '../../utils/exportUtils/EmployeeReport/excelExportEmployeeDirectory';
 
@@ -910,24 +911,24 @@ const EmployeeDirectoryReport = () => {
 
                         {/* Table */}
                         <div className="overflow-x-auto">
-                            <table className="w-full min-w-[1200px]">
-                                <thead className="bg-[var(--color-primary-dark)] border-b border-[var(--color-border-secondary)]">
-                                    <tr>
-                                        <th className="px-6 py-3 text-center text-xs font-medium text-[var(--color-text-white)] uppercase tracking-wider">Employee</th>
-                                        <th className="px-6 py-3 text-center text-xs font-medium text-[var(--color-text-white)] uppercase tracking-wider">Code</th>
-                                        <th className="px-6 py-3 text-center text-xs font-medium text-[var(--color-text-white)] uppercase tracking-wider">Department</th>
-                                        <th className="px-6 py-3 text-center text-xs font-medium text-[var(--color-text-white)] uppercase tracking-wider">Designation</th>
-                                        <th className="px-6 py-3 text-center text-xs font-medium text-[var(--color-text-white)] uppercase tracking-wider">Branch</th>
-                                        <th className="px-6 py-3 text-center text-xs font-medium text-[var(--color-text-white)] uppercase tracking-wider">Contact</th>
-                                        <th className="px-6 py-3 text-center text-xs font-medium text-[var(--color-text-white)] uppercase tracking-wider">Join Date</th>
-                                        <th className="px-6 py-3 text-center text-xs font-medium text-[var(--color-text-white)] uppercase tracking-wider">Action</th>
-                                    </tr>
-                                </thead>
+                            <Table className="w-full min-w-[1200px]">
+                                <TableHeader className="bg-[var(--color-primary-dark)] border-b border-[var(--color-border-secondary)]">
+                                    <TableHeaderRow>
+                                        <Th className="px-6 py-3 text-center font-medium">Employee</Th>
+                                        <Th className="px-6 py-3 text-center font-medium">Code</Th>
+                                        <Th className="px-6 py-3 text-center font-medium">Department</Th>
+                                        <Th className="px-6 py-3 text-center font-medium">Designation</Th>
+                                        <Th className="px-6 py-3 text-center font-medium">Branch</Th>
+                                        <Th className="px-6 py-3 text-center font-medium">Contact</Th>
+                                        <Th className="px-6 py-3 text-center font-medium">Join Date</Th>
+                                        <Th className="px-6 py-3 text-center font-medium">Action</Th>
+                                    </TableHeaderRow>
+                                </TableHeader>
 
-                                <tbody className="bg-[var(--color-bg-secondary)] divide-y divide-[var(--color-border-secondary)]">
+                                <TableBody className="bg-[var(--color-bg-secondary)] divide-y divide-[var(--color-border-secondary)]">
                                     {currentItems.map((employee, index) => (
-                                        <tr key={employee.employee_id || index} className="hover:bg-[var(--color-bg-hover)] transition-colors">
-                                            <td className="px-6 py-4 whitespace-nowrap">
+                                        <TableRow key={employee.employee_id || index} className="hover:bg-[var(--color-bg-hover)] transition-colors">
+                                            <Td className="px-6 py-4 whitespace-nowrap text-left">
                                                 <div className="flex items-center">
                                                     <div className="flex-shrink-0 h-10 w-10 relative">
                                                         <div className="h-10 w-10 rounded-full bg-[var(--color-primary-dark)] flex items-center justify-center">
@@ -960,20 +961,20 @@ const EmployeeDirectoryReport = () => {
                                                     </div>
 
                                                 </div>
-                                            </td>
-                                            <td className="px-6 py-4 text-center whitespace-nowrap text-sm text-[var(--color-text-primary)]">
+                                            </Td>
+                                            <Td className="px-6 py-4 text-center whitespace-nowrap text-sm text-[var(--color-text-primary)]">
                                                 {employee.employee_code || '--'}
-                                            </td>
-                                            <td className="px-6 py-4 text-center whitespace-nowrap text-sm text-[var(--color-text-primary)]">
+                                            </Td>
+                                            <Td className="px-6 py-4 text-center whitespace-nowrap text-sm text-[var(--color-text-primary)]">
                                                 {truncateText(employee.department_name, 10)}
-                                            </td>
-                                            <td className="px-6 py-4 text-center whitespace-nowrap text-sm text-[var(--color-text-primary)]">
+                                            </Td>
+                                            <Td className="px-6 py-4 text-center whitespace-nowrap text-sm text-[var(--color-text-primary)]">
                                                 {truncateText(employee.designation_name, 10)}
-                                            </td>
-                                            <td className="px-6 py-4 text-center whitespace-nowrap text-sm text-[var(--color-text-primary)]">
+                                            </Td>
+                                            <Td className="px-6 py-4 text-center whitespace-nowrap text-sm text-[var(--color-text-primary)]">
                                                 {truncateText(employee.branch_name, 10)}
-                                            </td>
-                                            <td className="px-6 py-4 text-center whitespace-nowrap text-sm text-[var(--color-text-primary)]">
+                                            </Td>
+                                            <Td className="px-6 py-4 text-center whitespace-nowrap text-sm text-[var(--color-text-primary)]">
                                                 <div className="space-y-1">
                                                     {employee.email && (
                                                         <div className="flex items-center gap-1">
@@ -988,11 +989,11 @@ const EmployeeDirectoryReport = () => {
                                                         </div>
                                                     )}
                                                 </div>
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--color-text-primary)]">
+                                            </Td>
+                                            <Td className="px-6 py-4 text-center whitespace-nowrap text-sm text-[var(--color-text-primary)]">
                                                 {employee.date_of_joining ? new Date(employee.date_of_joining).toLocaleDateString('en-GB') : '--'}
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-center">
+                                            </Td>
+                                            <Td className="px-6 py-4 text-center whitespace-nowrap">
                                                 <button
                                                     onClick={() => handleViewDetails(employee.employee_id)}
                                                     disabled={reportGenerating}
@@ -1001,24 +1002,25 @@ const EmployeeDirectoryReport = () => {
                                                 >
                                                     <Eye className="w-4 h-4" strokeWidth={2.5} />
                                                 </button>
-                                            </td>
-                                        </tr>
+                                            </Td>
+                                        </TableRow>
                                     ))}
 
                                     {/* Empty placeholder rows to keep exactly 10 rows per page */}
                                     {Array.from({ length: emptyRows }).map((_, i) => (
-                                        <tr key={`empty-${i}`} className="hover:bg-transparent">
-                                            <td className="px-6 py-4 h-12">&nbsp;</td>
-                                            <td className="px-6 py-4 h-12">&nbsp;</td>
-                                            <td className="px-6 py-4 h-12">&nbsp;</td>
-                                            <td className="px-6 py-4 h-12">&nbsp;</td>
-                                            <td className="px-6 py-4 h-12">&nbsp;</td>
-                                            <td className="px-6 py-4 h-12">&nbsp;</td>
-                                            <td className="px-6 py-4 h-12">&nbsp;</td>
-                                        </tr>
+                                        <TableRow key={`empty-${i}`} className="hover:bg-transparent">
+                                            <Td className="px-6 py-4 h-12">&nbsp;</Td>
+                                            <Td className="px-6 py-4 h-12">&nbsp;</Td>
+                                            <Td className="px-6 py-4 h-12">&nbsp;</Td>
+                                            <Td className="px-6 py-4 h-12">&nbsp;</Td>
+                                            <Td className="px-6 py-4 h-12">&nbsp;</Td>
+                                            <Td className="px-6 py-4 h-12">&nbsp;</Td>
+                                            <Td className="px-6 py-4 h-12">&nbsp;</Td>
+                                            <Td className="px-6 py-4 h-12">&nbsp;</Td>
+                                        </TableRow>
                                     ))}
-                                </tbody>
-                            </table>
+                                </TableBody>
+                            </Table>
                         </div>
 
                         <Pagination

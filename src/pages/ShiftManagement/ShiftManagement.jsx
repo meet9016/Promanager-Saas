@@ -8,6 +8,7 @@ import { useSelector } from 'react-redux';
 import { Toast } from '../../Components/ui/Toast';
 import { ConfirmDialog } from '../../Components/ui/ConfirmDialog';
 import Pagination from '../../Components/Pagination';
+import { Table, TableHeader, TableBody, TableRow, TableHeaderRow, Th, Td } from '../../Components/ui/Table';
 
 // Day Status Legend Component
 const DayStatusLegend = () => {
@@ -532,41 +533,41 @@ const ShiftManagement = () => {
                                 </div>
                             ) : (
                                 <div className="overflow-x-auto">
-                                    <table className="min-w-full divide-y divide-[var(--color-border-divider)]">
-                                        <thead className="bg-[var(--color-primary-dark)] ">
-                                            <tr>
-                                                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--color-text-white)] uppercase tracking-wider">
+                                    <Table className="min-w-full divide-y divide-[var(--color-border-divider)]">
+                                        <TableHeader className="bg-[var(--color-primary-dark)]">
+                                            <TableHeaderRow>
+                                                <Th className="px-6 py-3 text-left font-medium">
                                                     Shift Name
-                                                </th>
-                                                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--color-text-white)] uppercase tracking-wider">
+                                                </Th>
+                                                <Th className="px-6 py-3 text-left font-medium">
                                                     Shift Days
-                                                </th>
-                                                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--color-text-white)] uppercase tracking-wider">
+                                                </Th>
+                                                <Th className="px-6 py-3 text-left font-medium">
                                                     Assigned Employees
-                                                </th>
-                                                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--color-text-white)] uppercase tracking-wider">
+                                                </Th>
+                                                <Th className="px-6 py-3 text-left font-medium">
                                                     Created On
-                                                </th>
+                                                </Th>
                                                 {(permissions?.shift_edit || permissions?.shift_delete) && (
-                                                    <th className="px-6 py-3 text-left text-xs font-medium text-[var(--color-text-white)] uppercase tracking-wider">
+                                                    <Th className="px-6 py-3 text-left font-medium">
                                                         Actions
-                                                    </th>
+                                                    </Th>
                                                 )}
-                                            </tr>
-                                        </thead>
-                                        <tbody className="bg-[var(--color-bg-secondary)] divide-y divide-[var(--color-border-divider)]">
+                                            </TableHeaderRow>
+                                        </TableHeader>
+                                        <TableBody className="bg-[var(--color-bg-secondary)] divide-y divide-[var(--color-border-divider)]">
                                             {/* Actual shift rows */}
                                             {shifts.map((shift) => (
-                                                <tr key={shift.shift_id} className="hover:bg-[var(--color-bg-primary)] transition-colors">
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-[var(--color-text-primary)]">
+                                                <TableRow key={shift.shift_id} className="hover:bg-[var(--color-bg-primary)] transition-colors">
+                                                    <Td className="px-6 py-4 text-left whitespace-nowrap font-medium text-[var(--color-text-primary)]">
                                                         <div className="flex items-center space-x-2">
                                                             <div className="w-8 h-8 bg-[var(--color-primary-lighter)] rounded-full flex items-center justify-center">
                                                                 <Calendar className="w-4 h-4 text-[var(--color-primary-dark)]" />
                                                             </div>
                                                             <span>{shift.shift_name}</span>
                                                         </div>
-                                                    </td>
-                                                    <td className="px-6 py-4">
+                                                    </Td>
+                                                    <Td className="px-6 py-4 text-left">
                                                         <div className="flex flex-wrap gap-3">
                                                             {shift.shift_days.map((day) => (
                                                                 <div key={day.day_id} className="relative group">
@@ -582,8 +583,8 @@ const ShiftManagement = () => {
                                                                 </div>
                                                             ))}
                                                         </div>
-                                                    </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--color-text-secondary)] ">
+                                                    </Td>
+                                                    <Td className="px-6 py-4 text-left whitespace-nowrap text-[var(--color-text-secondary)]">
                                                         <button
                                                             onClick={() => fetchAssignedEmployees(shift.shift_id, shift.shift_name)}
                                                             className="flex items-center gap-2 text-[var(--color-primary-dark)] hover:text-primary-800 transition-colors"
@@ -593,12 +594,12 @@ const ShiftManagement = () => {
                                                             </span>
                                                             <Users className="w-4 h-4" />
                                                         </button>
-                                                    </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--color-text-secondary)]">
+                                                    </Td>
+                                                    <Td className="px-6 py-4 text-left whitespace-nowrap text-[var(--color-text-secondary)]">
                                                         {shift.created_date}
-                                                    </td>
+                                                    </Td>
                                                     {(permissions?.shift_edit || permissions?.shift_delete) && (
-                                                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                                        <Td className="px-6 py-4 text-left whitespace-nowrap font-medium">
                                                             <div className="flex space-x-3">
                                                                 {permissions['shift_edit'] && (
                                                                     <button
@@ -619,21 +620,21 @@ const ShiftManagement = () => {
                                                                     </button>
                                                                 )}
                                                             </div>
-                                                        </td>
+                                                        </Td>
                                                     )}
-                                                </tr>
+                                                </TableRow>
                                             ))}
 
                                             {/* Empty rows to fill up to 10 rows */}
                                             {generateEmptyRows(shifts.length).map((_, index) => (
-                                                <tr key={`empty-${index}`} className="h-16">
-                                                    <td className="px-6 py-4" colSpan={permissions?.shift_edit || permissions?.shift_delete ? 5 : 4}>
+                                                <TableRow key={`empty-${index}`} className="h-16">
+                                                    <Td className="px-6 py-4 text-left" colSpan={permissions?.shift_edit || permissions?.shift_delete ? 5 : 4}>
                                                         <div className="h-10">&nbsp;</div>
-                                                    </td>
-                                                </tr>
+                                                    </Td>
+                                                </TableRow>
                                             ))}
-                                        </tbody>
-                                    </table>
+                                        </TableBody>
+                                    </Table>
                                 </div>
                             )}
 

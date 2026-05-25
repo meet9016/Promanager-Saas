@@ -35,6 +35,7 @@ import { Toast } from '../../Components/ui/Toast';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Pagination from '../../Components/Pagination';
+import { Table, TableHeader, TableBody, TableRow, TableHeaderRow, Th, Td } from '../../Components/ui/Table';
 
 /** ---------- Floating Anchors ---------- **/
 const getScrollParents = (node) => {
@@ -121,17 +122,6 @@ const useAnchoredPosition = (anchorRef, isOpen, opts = {}) => {
 };
 
 /** ---------- Small building blocks ---------- **/
-const Th = ({ children, small, className = '' }) => (
-    <th className={`px-4 py-2 text-center ${small ? 'text-[11px]' : 'text-xs'} font-medium text-[var(--color-text-muted)] uppercase tracking-wider ${className}`}>
-        {children}
-    </th>
-);
-
-const Td = ({ children, small, className = '', colSpan }) => (
-    <td className={`px-4 py-3 text-center ${small ? 'text-xs' : 'text-sm'} text-[var(--color-text-primary)] ${className}`} colSpan={colSpan}>
-        {children}
-    </td>
-);
 
 const SummaryCard = ({ label, value, icon: Icon, tone = 'text-[var(--color-text-primary)]', onClick, isActive = false }) => {
     // Map tone classes to a rich color scheme
@@ -1054,28 +1044,28 @@ const DetailedDailyReport = () => {
                             <div className="p-8 text-center text-[var(--color-text-secondary)]">No records found</div>
                         ) : (
                             <>
-                                <table className="w-full min-w-[1200px] border-separate border-spacing-0">
-                                    <thead className="sticky top-0 z-10 bg-[var(--color-primary-dark)] backdrop-blur supports-[backdrop-filter]:bg-[var(--color-bg-gray-light)]/60">
-                                        <tr className="border-b border-[var(--color-border-secondary)]">
-                                            <Th className='text-white'>Employee</Th>
-                                            <Th className='text-white'>Shift</Th>
-                                            <Th className='text-white'>Shift Time</Th>
-                                            <Th className='text-white'>Clock In</Th>
-                                            <Th className='text-white'>Clock Out</Th>
-                                            <Th className='text-white'>Working Hours</Th>
-                                            <Th className='text-white'>Attendance Hours</Th>
-                                            <Th className='text-white'>Remaining Hours</Th>
-                                            <Th className='text-white'>OT Hours</Th>
-                                            <Th className='text-white'>Status</Th>
-                                            <Th className='text-white'>Timeline</Th>
-                                        </tr>
-                                    </thead>
+                                <Table className="w-full min-w-[1200px] border-separate border-spacing-0">
+                                    <TableHeader className="sticky top-0 z-10 bg-[var(--color-primary-dark)] backdrop-blur supports-[backdrop-filter]:bg-[var(--color-bg-gray-light)]/60">
+                                        <TableHeaderRow className="border-b border-[var(--color-border-secondary)]">
+                                            <Th className='text-white text-center font-medium'>Employee</Th>
+                                            <Th className='text-white text-center font-medium'>Shift</Th>
+                                            <Th className='text-white text-center font-medium'>Shift Time</Th>
+                                            <Th className='text-white text-center font-medium'>Clock In</Th>
+                                            <Th className='text-white text-center font-medium'>Clock Out</Th>
+                                            <Th className='text-white text-center font-medium'>Working Hours</Th>
+                                            <Th className='text-white text-center font-medium'>Attendance Hours</Th>
+                                            <Th className='text-white text-center font-medium'>Remaining Hours</Th>
+                                            <Th className='text-white text-center font-medium'>OT Hours</Th>
+                                            <Th className='text-white text-center font-medium'>Status</Th>
+                                            <Th className='text-white text-center font-medium'>Timeline</Th>
+                                        </TableHeaderRow>
+                                    </TableHeader>
 
-                                    <tbody className="divide-y divide-[var(--color-border-secondary)]">
+                                    <TableBody className="divide-y divide-[var(--color-border-secondary)]">
                                         {paginatedData.map((emp, idx) => {
                                             const timeColorClass = getTimeColor(emp);
                                             return (
-                                                <tr
+                                                <TableRow
                                                     key={emp.employee_id || emp.employee_code || idx}
                                                     className={`hover:bg-[var(--color-bg-hover)] transition-colors ${getRowStyling(emp.status)}`}
                                                 >
@@ -1100,37 +1090,37 @@ const DetailedDailyReport = () => {
                                                     </Td>
 
 
-                                                    <Td className="text-left">{emp.shift_name || '--'}</Td>
+                                                    <Td className="text-center">{emp.shift_name || '--'}</Td>
 
-                                                    <Td className="whitespace-nowrap">
+                                                    <Td className="whitespace-nowrap text-center">
                                                         {emp.shift_from_time && emp.shift_to_time ? `${emp.shift_from_time} - ${emp.shift_to_time}` : '--'}
                                                     </Td>
 
-                                                    <Td className={`whitespace-nowrap ${timeColorClass}`}>
+                                                    <Td className={`whitespace-nowrap text-center ${timeColorClass}`}>
                                                         {emp.attandance_first_clock_in || '--'}
                                                     </Td>
 
-                                                    <Td className={`whitespace-nowrap ${timeColorClass}`}>
+                                                    <Td className={`whitespace-nowrap text-center ${timeColorClass}`}>
                                                         {emp.attandance_last_clock_out || '--'}
                                                     </Td>
 
-                                                    <Td>
+                                                    <Td className="text-center">
                                                         {emp.shift_working_hours ? `${emp.shift_working_hours}` : '--'}
                                                     </Td>
 
-                                                    <Td>
+                                                    <Td className="text-center">
                                                         {emp.attandance_hours ? `${emp.attandance_hours}` : '--'}
                                                     </Td>
 
-                                                    <Td className={`${parseFloat(emp.late_hours || 0) > 0 ? 'text-[var(--color-warning-dark)] font-medium' : ''}`}>
+                                                    <Td className={`text-center ${parseFloat(emp.late_hours || 0) > 0 ? 'text-[var(--color-warning-dark)] font-medium' : ''}`}>
                                                         {emp.late_hours && parseFloat(emp.late_hours) > 0 ? `${emp.late_hours}` : '--'}
                                                     </Td>
 
-                                                    <Td className={`${parseFloat(emp.overtime_hours || 0) > 0 ? 'text-[var(--color-primary-dark)] font-medium' : ''}`}>
+                                                    <Td className={`text-center ${parseFloat(emp.overtime_hours || 0) > 0 ? 'text-[var(--color-primary-dark)] font-medium' : ''}`}>
                                                         {emp.overtime_hours && parseFloat(emp.overtime_hours) > 0 ? `${emp.overtime_hours}` : '--'}
                                                     </Td>
 
-                                                    <Td>
+                                                    <Td className="text-center">
                                                         <span
                                                             className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium whitespace-nowrap ${emp.status === 'Present'
                                                                 ? 'bg-green-100 text-green-800'
@@ -1151,7 +1141,7 @@ const DetailedDailyReport = () => {
                                                         </span>
                                                     </Td>
 
-                                                    <Td>
+                                                    <Td className="text-center">
                                                         <button
                                                             onClick={() => setTimelineFor(emp)}
                                                             className="inline-flex items-center gap-1 px-2 py-1 rounded-md border border-[var(--color-border-secondary)] text-sm hover:bg-[var(--color-bg-hover)]"
@@ -1161,13 +1151,13 @@ const DetailedDailyReport = () => {
                                                             View
                                                         </button>
                                                     </Td>
-                                                </tr>
+                                                </TableRow>
                                             );
                                         })}
 
                                         {/* Filler rows to keep 10 visible */}
                                         {Array.from({ length: emptyRowCount }).map((_, i) => (
-                                            <tr key={`empty-${i}`} className="transition-colors">
+                                            <TableRow key={`empty-${i}`} className="transition-colors">
                                                 <Td className="text-transparent">—</Td>
                                                 <Td className="text-transparent">—</Td>
                                                 <Td className="text-transparent">—</Td>
@@ -1179,10 +1169,10 @@ const DetailedDailyReport = () => {
                                                 <Td className="text-transparent">—</Td>
                                                 <Td className="text-transparent">—</Td>
                                                 <Td className="text-transparent">—</Td>
-                                            </tr>
+                                            </TableRow>
                                         ))}
-                                    </tbody>
-                                </table>
+                                    </TableBody>
+                                </Table>
 
                                 {/* Pagination controls */}
                                 <Pagination
@@ -1239,15 +1229,15 @@ const DetailedDailyReport = () => {
                                         <h5 className="text-sm font-semibold">Timeline</h5>
                                     </div>
                                     <div className="overflow-x-auto">
-                                        <table className="w-full">
-                                            <thead className="bg-[var(--color-bg-gray-light)]">
-                                                <tr>
-                                                    <Th small>#</Th>
-                                                    <Th small>Clock In</Th>
-                                                    <Th small>Clock Out</Th>
-                                                </tr>
-                                            </thead>
-                                            <tbody className="divide-y divide-[var(--color-border-secondary)]">
+                                        <Table className="w-full">
+                                            <TableHeader className="bg-[var(--color-bg-gray-light)]">
+                                                <TableHeaderRow>
+                                                    <Th className="text-[11px] text-center font-medium">#</Th>
+                                                    <Th className="text-[11px] text-center font-medium">Clock In</Th>
+                                                    <Th className="text-[11px] text-center font-medium">Clock Out</Th>
+                                                </TableHeaderRow>
+                                            </TableHeader>
+                                            <TableBody className="divide-y divide-[var(--color-border-secondary)]">
                                                 {Array.isArray(timelineFor.attendance_history) && timelineFor.attendance_history.length > 0 ? (
                                                     (() => {
                                                         // Group consecutive clock entries into in/out pairs
@@ -1259,22 +1249,22 @@ const DetailedDailyReport = () => {
                                                             });
                                                         }
                                                         return pairs.map((pair, idx) => (
-                                                            <tr key={idx} className="bg-[var(--color-bg-secondary)]">
-                                                                <Td small className="text-center">{idx + 1}</Td>
-                                                                <Td small className="text-center">{pair.clock_in}</Td>
-                                                                <Td small className="text-center">{pair.clock_out}</Td>
-                                                            </tr>
+                                                            <TableRow key={idx} className="bg-[var(--color-bg-secondary)]">
+                                                                <Td className="text-center text-xs">{idx + 1}</Td>
+                                                                <Td className="text-center text-xs">{pair.clock_in}</Td>
+                                                                <Td className="text-center text-xs">{pair.clock_out}</Td>
+                                                            </TableRow>
                                                         ));
                                                     })()
                                                 ) : (
-                                                    <tr>
+                                                    <TableRow>
                                                         <Td colSpan={3} className="text-center text-sm text-[var(--color-text-secondary)] py-4">
                                                             No clock-in/out entries.
                                                         </Td>
-                                                    </tr>
+                                                    </TableRow>
                                                 )}
-                                            </tbody>
-                                        </table>
+                                            </TableBody>
+                                        </Table>
                                     </div>
                                 </div>
                             </div>

@@ -25,6 +25,7 @@ import LoadingSpinner from "../../Components/Loader/LoadingSpinner";
 import { ConfirmDialog } from "../../Components/ui/ConfirmDialog";
 import { Toast } from "../../Components/ui/Toast";
 import CustomSelect from "../../Components/comman/CustomSelect";
+import { Table, TableHeader, TableBody, TableRow, TableHeaderRow, Th, Td } from '../../Components/ui/Table';
 
 export default function HolidayManagement() {
     const { user } = useAuth();
@@ -444,41 +445,41 @@ export default function HolidayManagement() {
                             </div> */}
 
                             <div className="overflow-x-auto">
-                                <table className="min-w-full divide-y divide-[var(--color-border-divider)]">
-                                    <thead className="bg-[var(--color-primary-dark)] ">
-                                        <tr>
+                                <Table className="min-w-full divide-y divide-[var(--color-border-divider)]">
+                                    <TableHeader className="bg-[var(--color-primary-dark)]">
+                                        <TableHeaderRow>
                                             {["Holiday Name", "Type", "Paid?", "Dates", "Description", "Actions"].map((head) => (
-                                                <th key={head} className="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider">
+                                                <Th key={head} className="px-6 py-3 text-left font-semibold">
                                                     {head}
-                                                </th>
+                                                </Th>
                                             ))}
-                                        </tr>
-                                    </thead>
-                                    <tbody className="bg-[var(--color-bg-secondary)] divide-y divide-[var(--color-border-divider)]">
+                                        </TableHeaderRow>
+                                    </TableHeader>
+                                    <TableBody className="bg-[var(--color-bg-secondary)] divide-y divide-[var(--color-border-divider)]">
                                         {holidays.length ? (
                                             holidays.map((h) => {
                                                 const dates = Array.isArray(h.holiday_dates) ? h.holiday_dates : (h.holiday_dates ? h.holiday_dates.split(',') : []);
                                                 return (
-                                                    <tr key={h.holiday_id} className="hover:bg-[var(--color-bg-hover)] transition-colors align-top">
-                                                        <td className="px-6 py-4 align-top">
+                                                    <TableRow key={h.holiday_id} className="hover:bg-[var(--color-bg-hover)] transition-colors align-top">
+                                                        <Td className="px-6 py-4 align-top">
                                                             <div className="font-semibold text-[var(--color-text-primary)]">{h.holiday_name}</div>
-                                                        </td>
-                                                        <td className="px-6 py-4 align-top">
+                                                        </Td>
+                                                        <Td className="px-6 py-4 align-top">
                                                             <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border ${getTypeColor(h.holiday_type_name)}`}>
                                                                 {getTypeIcon(h.holiday_type_name)}
                                                                 {h.holiday_type_name}
                                                             </span>
-                                                        </td>
+                                                        </Td>
 
-                                                        <td className="px-6 py-4 align-top">
+                                                        <Td className="px-6 py-4 align-top">
                                                             {h.holiday_paid === "1" ? (
                                                                 <span className="px-3 py-1 text-xs bg-green-100 text-green-700 rounded-full">Paid</span>
                                                             ) : (
                                                                 <span className="px-3 py-1 text-xs bg-red-100 text-red-700 rounded-full">Unpaid</span>
                                                             )}
-                                                        </td>
+                                                        </Td>
 
-                                                        <td className="px-6 py-4 align-top max-w-[280px]">
+                                                        <Td className="px-6 py-4 align-top max-w-[280px]">
                                                             <div className="flex flex-wrap gap-1 text-xs max-h-20 overflow-y-auto pr-2">
                                                                 {dates.map((d, idx) => (
                                                                     <span key={idx} className="px-2 py-0.5 bg-primary-50 text-primary-700 rounded border border-primary-200">
@@ -486,12 +487,12 @@ export default function HolidayManagement() {
                                                                     </span>
                                                                 ))}
                                                             </div>
-                                                        </td>
+                                                        </Td>
 
-                                                        <td className="px-6 py-4 text-sm text-[var(--color-text-secondary)] max-w-xs align-top">
+                                                        <Td className="px-6 py-4 text-sm text-[var(--color-text-secondary)] max-w-xs align-top">
                                                             <div className="truncate">{h.description || "-"}</div>
-                                                        </td>
-                                                        <td className="px-6 py-4 align-top">
+                                                        </Td>
+                                                        <Td className="px-6 py-4 align-top">
                                                             <div className="flex items-center gap-3">
                                                                 {permissions['holiday_view'] && (
                                                                     <button
@@ -521,13 +522,13 @@ export default function HolidayManagement() {
                                                                     </button>
                                                                 )}
                                                             </div>
-                                                        </td>
-                                                    </tr>
+                                                        </Td>
+                                                    </TableRow>
                                                 );
                                             })
                                         ) : (
-                                            <tr>
-                                                <td colSpan="6" className="py-16 text-center">
+                                            <TableRow>
+                                                <Td colSpan="6" className="py-16 text-center">
                                                     <Calendar className="h-12 w-12 mx-auto mb-4 text-[var(--color-text-muted)]" />
                                                     <p className="font-semibold text-[var(--color-text-primary)] text-lg mb-1">No holidays found</p>
                                                     <p className="text-[var(--color-text-secondary)] text-sm mb-4">Get started by adding your first holiday</p>
@@ -543,11 +544,11 @@ export default function HolidayManagement() {
                                                             Add Holiday
                                                         </button>
                                                     )}
-                                                </td>
-                                            </tr>
+                                                </Td>
+                                            </TableRow>
                                         )}
-                                    </tbody>
-                                </table>
+                                    </TableBody>
+                                </Table>
                             </div>
                         </>
                     )}

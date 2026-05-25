@@ -9,6 +9,7 @@ import { Toast } from '../../Components/ui/Toast';
 import { ConfirmDialog } from '../../Components/ui/ConfirmDialog';
 import Pagination from '../../Components/Pagination';
 import LoadingSpinner from "../../Components/Loader/LoadingSpinner"
+import { Table, TableHeader, TableBody, TableRow, TableHeaderRow, Th, Td } from '../../Components/ui/Table';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -299,32 +300,32 @@ const UserManagement = () => {
                         ) : (
                             <>
                                 <div className="overflow-x-auto">
-                                    <table className="min-w-full divide-y divide-[var(--color-border-divider)]">
-                                        <thead className="bg-[var(--color-primary-dark)]">
-                                            <tr>
-                                                <th className="px-6 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
+                                    <Table className="min-w-full divide-y divide-[var(--color-border-divider)]">
+                                        <TableHeader className="bg-[var(--color-primary-dark)]">
+                                            <TableHeaderRow>
+                                                <Th className="px-6 py-3 font-medium">
                                                     Full Name
-                                                </th>
-                                                <th className="px-6 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
+                                                </Th>
+                                                <Th className="px-6 py-3 font-medium">
                                                     Email
-                                                </th>
-                                                <th className="px-6 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
+                                                </Th>
+                                                <Th className="px-6 py-3 font-medium">
                                                     Phone Number
-                                                </th>
-                                                <th className="px-6 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
+                                                </Th>
+                                                <Th className="px-6 py-3 font-medium">
                                                     Role
-                                                </th>
+                                                </Th>
                                                 {(permissions['user_edit'] || permissions['user_delete']) && (
-                                                    <th className="px-6 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
+                                                    <Th className="px-6 py-3 font-medium">
                                                         Actions
-                                                    </th>
+                                                    </Th>
                                                 )}
-                                            </tr>
-                                        </thead>
-                                        <tbody className="bg-[var(--color-bg-secondary)] divide-y divide-[var(--color-border-divider)]">
+                                            </TableHeaderRow>
+                                        </TableHeader>
+                                        <TableBody className="bg-[var(--color-bg-secondary)] divide-y divide-[var(--color-border-divider)]">
                                             {users.map(userData => (
-                                                <tr key={userData.edit_user_id} className="hover:bg-[var(--color-bg-primary)] transition-colors">
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-[var(--color-text-primary)] text-center">
+                                                <TableRow key={userData.edit_user_id} className="hover:bg-[var(--color-bg-primary)] transition-colors">
+                                                    <Td className="px-6 py-4 whitespace-nowrap font-medium text-[var(--color-text-primary)]">
                                                         <div className="flex items-center justify-center space-x-2">
                                                             {isAdminUser(userData) ? (
                                                                 <Shield className="w-4 h-4 text-[var(--color-primary-dark)]" />
@@ -333,14 +334,14 @@ const UserManagement = () => {
                                                             )}
                                                             <span>{userData.full_name || 'Unnamed User'}</span>
                                                         </div>
-                                                    </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--color-text-secondary)] text-center">
+                                                    </Td>
+                                                    <Td className="px-6 py-4 whitespace-nowrap text-[var(--color-text-secondary)]">
                                                         {userData.email || '--'}
-                                                    </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--color-text-secondary)] text-center">
+                                                    </Td>
+                                                    <Td className="px-6 py-4 whitespace-nowrap text-[var(--color-text-secondary)]">
                                                         {userData.number || '--'}
-                                                    </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--color-text-secondary)] text-center">
+                                                    </Td>
+                                                    <Td className="px-6 py-4 whitespace-nowrap text-[var(--color-text-secondary)]">
                                                         <div className="flex justify-center">
                                                             <span className={`inline-flex items-center px-2.5 py-0.5 text-xs font-semibold rounded-full ${isAdminUser(userData)
                                                                 ? 'bg-[var(--color-primary-lighter)] text-[var(--color-primary-darkest)]'
@@ -359,9 +360,9 @@ const UserManagement = () => {
                                                                 )}
                                                             </span>
                                                         </div>
-                                                    </td>
+                                                    </Td>
                                                     {(permissions['user_edit'] || permissions['user_delete']) && (
-                                                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-center">
+                                                        <Td className="px-6 py-4 whitespace-nowrap font-medium">
                                                             <div className="flex justify-center space-x-2">
                                                                 {permissions['user_edit'] && (
                                                                     <button
@@ -394,12 +395,12 @@ const UserManagement = () => {
                                                                     </button>
                                                                 )}
                                                             </div>
-                                                        </td>
+                                                        </Td>
                                                     )}
-                                                </tr>
+                                                </TableRow>
                                             ))}
-                                        </tbody>
-                                    </table>
+                                        </TableBody>
+                                    </Table>
                                 </div>
 
                                 {/* Pagination Component */}
