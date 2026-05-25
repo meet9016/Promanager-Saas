@@ -324,13 +324,13 @@ const CompanyForm = ({ onSubmit, loading = false, showToast, editData }) => {
                             </h3>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            {/* Company Name */}
-                            <div>
+                        <div className="grid grid-cols-1 md:grid-cols-1 gap-6">
+
+                            {/* <div>
                                 <label htmlFor="company_name" className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
                                     Company Name <span className="text-[var(--color-error)]">*</span>
                                 </label>
-                                {/* <input
+                                <input
                                     id="company_name"
                                     name="company_name"
                                     type="text"
@@ -340,25 +340,15 @@ const CompanyForm = ({ onSubmit, loading = false, showToast, editData }) => {
                                     className="w-full px-4 py-3 border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-all duration-200 placeholder-gray-400 bg-[var(--color-bg-secondary)]"
                                     disabled={isSubmitting || loading}
                                     required
-                                /> */}
-                                <CustomInput
-                                    type="text"
-                                    name="company_name"
-                                    value={formData.company_name}
-                                    onChange={handleInputChange}
-                                    // onBlur={handleFieldBlur}
-                                    placeholder="Enter company name"
-                                    required
-                                    clearable={true}
                                 />
+                              
                             </div>
 
-                            {/* Company Number */}
                             <div>
                                 <label htmlFor="company_number" className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
                                     Company Number
                                 </label>
-                                {/* <input
+                                <input
                                     id="company_number"
                                     name="company_number"
                                     type="text"
@@ -367,21 +357,57 @@ const CompanyForm = ({ onSubmit, loading = false, showToast, editData }) => {
                                     onChange={handleInputChange}
                                     className="w-full px-4 py-3 border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-all duration-200 placeholder-gray-400 bg-[var(--color-bg-secondary)]"
                                     disabled={isSubmitting || loading}
-                                /> */}
-                                <CustomInput
-                                    type="text"
-                                    name="company_number"
-                                    value={formData.company_number}
-                                    onChange={handleInputChange}
-                                    // onBlur={handleFieldBlur}
-                                    placeholder="Enter company number"
-                                    required
-                                    clearable={true}
-                                />
+                                />                          
+                            </div> */}
+
+
+
+
+
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                {/* Company Name */}
+                                <div>
+                                    <label htmlFor="company_name" className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                        Company Name <span className="text-[var(--color-error)]">*</span>
+                                    </label>
+                                    <CustomInput
+                                        type="text"
+                                        name="company_name"
+                                        value={formData.company_name}
+                                        onChange={handleInputChange}
+                                        placeholder="Enter company name"
+                                        required
+                                        clearable={true}
+                                    />
+                                </div>
+
+                                {/* Company Number */}
+                                <div>
+                                    <label htmlFor="company_number" className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                        Company Number
+                                    </label>
+                                    <CustomInput
+                                        type="text"
+                                        name="company_number"
+                                        value={formData.company_number}
+                                        onChange={handleInputChange}
+                                        placeholder="Enter company number"
+                                        required
+                                        clearable={true}
+                                    />
+                                </div>
                             </div>
 
+
+
+
+
+
                             {/* Company Address */}
-                            <div className="md:col-span-2">
+
+
+                            {/* <div className="md:col-span-2">
                                 <label htmlFor="company_address" className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
                                     Company Address
                                 </label>
@@ -397,7 +423,7 @@ const CompanyForm = ({ onSubmit, loading = false, showToast, editData }) => {
                                 />
                             </div>
 
-                            {/* Salary Slip Policy */}
+                            
                             <div className="md:col-span-2">
                                 <label htmlFor="salary_slip_policy" className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
                                     Salary Slip Policy
@@ -412,10 +438,46 @@ const CompanyForm = ({ onSubmit, loading = false, showToast, editData }) => {
                                     className="w-full px-4 py-3 border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-all duration-200 placeholder-gray-400 bg-[var(--color-bg-secondary)] resize-vertical"
                                     disabled={isSubmitting || loading}
                                 />
+                            </div> */}
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                {/* Company Address */}
+                                <div>
+                                    <label htmlFor="company_address" className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                        Company Address
+                                    </label>
+                                    <textarea
+                                        id="company_address"
+                                        name="company_address"
+                                        placeholder="Enter company address"
+                                        value={formData.company_address}
+                                        onChange={handleInputChange}
+                                        rows={4}
+                                        className="w-full px-4 py-3 border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-all duration-200 placeholder-gray-400 bg-[var(--color-bg-secondary)] resize-vertical"
+                                        disabled={isSubmitting || loading}
+                                    />
+                                </div>
+
+                                {/* Salary Slip Policy */}
+                                <div>
+                                    <label htmlFor="salary_slip_policy" className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                        Salary Slip Policy
+                                    </label>
+                                    <textarea
+                                        id="salary_slip_policy"
+                                        name="salary_slip_policy"
+                                        placeholder="Enter salary slip policy details"
+                                        value={formData.salary_slip_policy}
+                                        onChange={handleInputChange}
+                                        rows={4}
+                                        className="w-full px-4 py-3 border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-all duration-200 placeholder-gray-400 bg-[var(--color-bg-secondary)] resize-vertical"
+                                        disabled={isSubmitting || loading}
+                                    />
+                                </div>
                             </div>
 
                             {/* Enhanced File Uploads using SettingsComponent style */}
-                            <ImageUploadField
+                            {/* <ImageUploadField
                                 field="company_logo"
                                 label="Company Logo"
                                 preview={filePreviews.company_logo}
@@ -425,7 +487,26 @@ const CompanyForm = ({ onSubmit, loading = false, showToast, editData }) => {
                                 field="authorized_signatory"
                                 label="Authorized Signatory"
                                 preview={filePreviews.authorized_signatory}
-                            />
+                            /> */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                {/* Company Logo */}
+                                <div>
+                                    <ImageUploadField
+                                        field="company_logo"
+                                        label="Company Logo"
+                                        preview={filePreviews.company_logo}
+                                    />
+                                </div>
+
+                                {/* Authorized Signatory */}
+                                <div>
+                                    <ImageUploadField
+                                        field="authorized_signatory"
+                                        label="Authorized Signatory"
+                                        preview={filePreviews.authorized_signatory}
+                                    />
+                                </div>
+                            </div>
                         </div>
 
                         <div className="flex justify-end">

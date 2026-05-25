@@ -19,6 +19,7 @@ import { ConfirmDialog } from '../../Components/ui/ConfirmDialog';
 import { useRef } from 'react';
 import LoadingSpinner from "../../Components/Loader/LoadingSpinner"
 import { useSelector } from 'react-redux';
+import CustomInput from '../../Components/comman/CustomInput';
 
 const AddRole = () => {
     const navigate = useNavigate();
@@ -500,14 +501,14 @@ const AddRole = () => {
             <div className=" mx-auto px-4 py-8">
                 <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-xl mb-8 overflow-hidden">
                     <div className="bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)]">
-                        <div className="bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] p-8">
+                        <div className="bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] p-4">
                             <div className="flex items-center gap-4">
                                 <button
                                     onClick={handleCancel}
-                                    className="flex items-center gap-2 text-[var(--color-text-white)] hover:text-[var(--color-text-white)] transition-colors bg-[var(--color-bg-secondary-20)] hover:bg-[var(--color-bg-secondary-30)] px-4 py-2 rounded-lg backdrop-blur-sm"
+                                    className="flex items-center gap-2 text-[var(--color-text-white)] hover:text-[var(--color-text-white)] transition-colors bg-[var(--color-bg-secondary-20)] hover:bg-[var(--color-bg-secondary-30)] px-2 py-2 rounded-lg backdrop-blur-sm"
                                 >
                                     <ArrowLeft size={18} />
-                                    Back
+
                                 </button>
                                 <div className="flex items-center gap-3">
                                     <div>
@@ -537,15 +538,22 @@ const AddRole = () => {
                                 Role Name <span className="text-[var(--color-error)]">*</span>
                             </label>
                             <div className="relative">
-                                <input
+                                {/* <input
                                     type="text"
                                     id="role_name"
                                     value={name}
                                     onChange={(e) => setName(e.target.value)}
                                     className="w-full px-4 py-3 pl-12 border rounded-xl shadow-sm focus:outline-none focus:ring-3 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-all duration-200 border-[var(--color-border-secondary)] hover:border-[var(--color-primary-medium)]"
                                     placeholder="Enter role name"
+                                /> */}
+                                <CustomInput
+                                    type="text"
+                                    id="role_name"
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
+                                    placeholder="Enter role name"
                                 />
-                                <User className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[var(--color-text-muted)]" />
+                                {/* <User className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[var(--color-text-muted)]" /> */}
                             </div>
                         </div>
 

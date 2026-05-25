@@ -409,22 +409,7 @@ const LeaveApplication = () => {
                             </button>
                         </div>
                     </form>
-                    <div className="flex items-center justify-end pt-4 space-x-4 p-10">
-                        <button
-                            type="button"
-                            onClick={resetForm}
-                            className="px-4 py-2 text-sm font-medium text-[var(--color-text-secondary)] bg-[var(--color-bg-gradient-start)] hover:bg-[var(--color-bg-gray-light)] rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
-                        >
-                            Cancel
-                        </button>
-                        <button
-                            type="submit"
-                            className="px-6 py-2 text-sm font-medium text-[var(--color-text-white)] bg-[var(--color-primary-dark)] hover:bg-[var(--color-primary-darker)] rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--color-primary)] disabled:opacity-50 disabled:cursor-not-allowed"
-                            disabled={isSubmitting}
-                        >
-                            {isSubmitting ? 'Submitting...' : 'Submit Request'}
-                        </button>
-                    </div>
+                  
                 </div>
             </div>
         </div>

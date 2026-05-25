@@ -996,12 +996,12 @@ const MonthlyExceptionReport = () => {
                         <div className="bg-[var(--color-bg-secondary)] rounded-lg border border-[var(--color-primary-dark)] overflow-hidden shadow-sm">
 
                             {/* Table toolbar */}
-                            <div className="px-6 py-4 border-b border-[var(--color-primary-light)] bg-[var(--color-primary-dark)]">
+                            <div className="px-6 py-4 border-b border-[var(--color-primary-light)] bg-[var(--color-primary-lighter)]">
                                 <div className="flex justify-between items-center flex-wrap gap-3">
                                     <div className="flex items-center gap-2">
-                                        {currentTab && <currentTab.icon className="h-5 w-5 text-white" />}
-                                        <h3 className="text-lg font-medium text-[var(--color-text-white)]">{currentTab?.label}</h3>
-                                        <span className="px-2 py-0.5 bg-white/20 rounded-full text-xs text-white font-medium">
+                                        {currentTab && <currentTab.icon className="h-5 w-5 text-[var(--color-primary-darker)]" />}
+                                        <h3 className="text-lg font-medium text-[var(--color-primary-darker)]">{currentTab?.label}</h3>
+                                        <span className="px-2 py-0.5 bg-white/20 rounded-full text-xs text-[var(--color-primary-darker)] font-medium">
                                             {activeData.length} record{activeData.length !== 1 ? 's' : ''}
                                         </span>
                                     </div>
@@ -1105,7 +1105,7 @@ const MonthlyExceptionReport = () => {
                             </div>
 
                             {/* ── Tab strip ── */}
-                            <div className="flex border-b border-[var(--color-border-secondary)] bg-[var(--color-bg-primary)] overflow-x-auto">
+                            <div className="flex border-b border-[var(--color-border-secondary)] bg-[var(--color-primary-dark)] overflow-x-auto">
                                 {TABS.map((tab) => {
                                     const Icon = tab.icon;
                                     const isActive = activeTab === tab.key;
@@ -1114,7 +1114,7 @@ const MonthlyExceptionReport = () => {
                                             key={tab.key}
                                             type="button"
                                             onClick={() => setActiveTab(tab.key)}
-                                            className={`flex items-center gap-2 px-5 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition-all ${isActive ? `border-[var(--color-primary-dark)] text-[var(--color-primary-dark)]` : 'border-transparent text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)]'}`}
+                                            className={`flex items-center gap-2 px-5 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition-all ${isActive ? `border-[var(--color-primary-dark)] text-white` : 'border-transparent text-white '}`}
                                         >
                                             <Icon className={`h-4 w-4 ${isActive ? tab.color : ''}`} />
                                             {tab.label}

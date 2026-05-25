@@ -281,11 +281,9 @@ const Increment = () => {
 
 
                 {/* Main Content */}
-                <div className="space-y-8">
-
-
-                    <div className="bg-[var(--color-bg-secondary)] rounded-xl shadow-sm border border-[var(--color-primary-dark)] ">
-                        <div className="relative">
+                <div className="space-y-8 ">
+                    <div className="bg-[var(--color-bg-secondary)] rounded-xl shadow-sm border border-[var(--color-primary-dark)] overflow-visible w-full relative">
+                        <div className="relative ">
                             <div className="bg-[var(--color-primary-dark)] px-6 py-4">
                                 <div className="flex items-center space-x-3">
                                     <div className="p-2 bg-[var(--color-bg-secondary-20)] rounded-lg">
@@ -298,11 +296,9 @@ const Increment = () => {
                             </div>
                         </div>
 
-                        <div className="p-8 bg-[var(--color-bg-secondary)] flex flex-col gap-4">
-
-
-                            <div className="bg-[var(--color-bg-secondary)] rounded-xl shadow-sm border border-[var(--color-primary-dark)] ">
-                                <div className="p-8 bg-[var(--color-bg-secondary)]">
+                        <div className="p-8 bg-[var(--color-bg-secondary)] flex flex-col gap-4 rounded-b-xl">
+                            <div className="bg-[var(--color-bg-secondary)] rounded-xl shadow-sm border border-[var(--color-primary-dark)] overflow-visible w-full relative">
+                                <div className="p-8 bg-[var(--color-bg-secondary)]  box-border rounded-xl">
                                     <div className="flex w-full flex-row items-center justify-between mb-4">
                                         <div className="space-y-2" >
                                             <label htmlFor="allowanceName" className=" text-sm font-medium text-[var(--color-text-secondary)] mb-2 ">
@@ -322,7 +318,7 @@ const Increment = () => {
 
                                             </select> */}
 
-                                            <div className="w-[500px]">
+                                            <div className="w-[500px] relative z-50">
                                                 <CustomSelect
                                                     name="employmentType"
                                                     value={employeeId}
@@ -334,6 +330,7 @@ const Increment = () => {
                                                     placeholder="Select Employee"
                                                     required
                                                     searchable={true}
+
                                                 />
                                             </div>
                                         </div>
@@ -504,10 +501,34 @@ const Increment = () => {
                                                         />
                                                     </div>
                                                 </div>
+                                                {index === incrementList.length - 1 && (
+
+                                                    // <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-lg border border-[var(--color-border-primary)] p-8">
+                                                    <div className="flex gap-4 justify-end mt-10">
+                                                        <button
+                                                            type="button"
+                                                            className="px-6 py-3 border border-[var(--color-border-secondary)] text-[var(--color-text-secondary)] rounded-lg hover:bg-[var(--color-bg-primary)] transition-colors font-medium"
+                                                        >
+                                                            Cancel
+                                                        </button>
+                                                        <button
+                                                            onClick={handleSubmit}
+                                                            className="px-8 py-3 bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] text-[var(--color-text-white)] rounded-lg hover:from-[var(--color-primary-darker)] hover:to-[var(--color-primary-darkest)] transition-all duration-200 font-medium shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                                                        >
+                                                            {isSubmitting && (
+                                                                <div className="w-4 h-4 border-2 border-[var(--color-border-primary)] border-t-transparent rounded-full animate-spin"></div>
+                                                            )}
+                                                            {isSubmitting ?
+                                                                'Please wait' : 'Submit'
+                                                            }
+                                                        </button>
+                                                    </div>
+                                                    // </div>
+                                                )}
                                             </div>)
                                     }
                                     )}
-
+                                    {/* 
                                     {employeeId &&
 
                                         <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-lg border border-[var(--color-border-primary)] p-8">
@@ -530,9 +551,8 @@ const Increment = () => {
                                                     }
                                                 </button>
                                             </div>
-                                        </div>}
-
-
+                                        </div>
+                                    } */}
                                 </div>
                             </div>
                         </div>
