@@ -1,43 +1,132 @@
 import React from 'react';
+import { clsx } from 'clsx';
+import { twMerge } from 'tailwind-merge';
 
-export const Table = ({ children, className = '', ...props }) => (
-  <table className={`w-full border-separate border-spacing-0 ${className}`} {...props}>
-    {children}
-  </table>
-);
+export function cn(...inputs) {
+  return twMerge(clsx(inputs));
+}
 
-export const TableHeader = ({ children, className = '', ...props }) => (
-  <thead className={`sticky top-0 z-10 bg-[var(--color-primary-dark)] ${className}`} {...props}>
-    {children}
-  </thead>
-);
+const Table = React.forwardRef(({ className, wrapperClassName, ...props }, ref) => (
+  <div className={cn("relative w-full overflow-auto", wrapperClassName)}>
+    <table
+      ref={ref}
+      className={cn("w-full border-separate border-spacing-0 caption-bottom text-sm", className)}
+      {...props}
+    />
+  </div>
+));
+Table.displayName = "Table";
 
-export const TableBody = ({ children, className = '', ...props }) => (
-  <tbody className={`divide-y divide-[var(--color-border-secondary)] ${className}`} {...props}>
-    {children}
-  </tbody>
-);
+const TableHeader = React.forwardRef(({ className, ...props }, ref) => (
+  <thead ref={ref} className={cn("sticky top-0 z-10 bg-[var(--color-primary-dark)]", className)} {...props} />
+));
+TableHeader.displayName = "TableHeader";
 
-export const TableRow = ({ children, className = '', ...props }) => (
-  <tr className={`transition-colors ${className}`} {...props}>
-    {children}
-  </tr>
-);
+const TableBody = React.forwardRef(({ className, ...props }, ref) => (
+  <tbody
+    ref={ref}
+    className={cn("divide-y divide-[var(--color-border-secondary)]", className)}
+    {...props}
+  />
+));
+TableBody.displayName = "TableBody";
 
-export const TableHeaderRow = ({ children, className = '', ...props }) => (
-  <tr className={`border-b border-[var(--color-primary-light)] ${className}`} {...props}>
-    {children}
-  </tr>
-);
+const TableFooter = React.forwardRef(({ className, ...props }, ref) => (
+  <tfoot
+    ref={ref}
+    className={cn("border-t bg-muted/50 font-medium [&>tr]:last:border-b-0", className)}
+    {...props}
+  />
+));
+TableFooter.displayName = "TableFooter";
 
-export const Th = ({ children, small, className = '', ...props }) => (
-  <th className={`px-2 sm:px-4 py-3 text-center ${small ? 'text-[11px]' : 'text-xs'} font-semibold text-white uppercase tracking-wider ${className}`} {...props}>
-    {children}
-  </th>
-);
+const TableRow = React.forwardRef(({ className, ...props }, ref) => (
+  <tr
+    ref={ref}
+    className={cn(
+      "border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted",
+      className
+    )}
+    {...props}
+  />
+));
+TableRow.displayName = "TableRow";
 
-export const Td = ({ children, small, className = '', colSpan, ...props }) => (
-  <td className={`px-2 sm:px-4 py-3 text-center ${small ? 'text-xs' : 'text-sm'} text-[var(--color-text-primary)] ${className}`} colSpan={colSpan} {...props}>
-    {children}
-  </td>
-);
+const TableHeaderRow = React.forwardRef(({ className, ...props }, ref) => (
+  <tr
+    ref={ref}
+    className={cn("border-b border-[var(--color-primary-light)]", className)}
+    {...props}
+  />
+));
+TableHeaderRow.displayName = "TableHeaderRow";
+
+const TableHead = React.forwardRef(({ className, ...props }, ref) => (
+  <th
+    ref={ref}
+    className={cn(
+      "h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0",
+      className
+    )}
+    {...props}
+  />
+));
+TableHead.displayName = "TableHead";
+
+const Th = React.forwardRef(({ className, small, ...props }, ref) => (
+  <th
+    ref={ref}
+    className={cn(
+      "px-2 sm:px-4 py-3 text-center font-semibold text-white uppercase tracking-wider",
+      small ? "text-[11px]" : "text-xs",
+      className
+    )}
+    {...props}
+  />
+));
+Th.displayName = "Th";
+
+const TableCell = React.forwardRef(({ className, ...props }, ref) => (
+  <td
+    ref={ref}
+    className={cn("p-4 align-middle [&:has([role=checkbox])]:pr-0", className)}
+    {...props}
+  />
+));
+TableCell.displayName = "TableCell";
+
+const Td = React.forwardRef(({ className, small, ...props }, ref) => (
+  <td
+    ref={ref}
+    className={cn(
+      "px-2 sm:px-4 py-3 text-center text-[var(--color-text-primary)]",
+      small ? "text-xs" : "text-sm",
+      className
+    )}
+    {...props}
+  />
+));
+Td.displayName = "Td";
+
+const TableCaption = React.forwardRef(({ className, ...props }, ref) => (
+  <caption
+    ref={ref}
+    className={cn("mt-4 text-sm text-muted-foreground", className)}
+    {...props}
+  />
+));
+TableCaption.displayName = "TableCaption";
+
+export {
+  Table,
+  TableHeader,
+  TableBody,
+  TableFooter,
+  TableHead,
+  TableRow,
+  TableHeaderRow,
+  TableCell,
+  TableCaption,
+  Th,
+  Td,
+};
