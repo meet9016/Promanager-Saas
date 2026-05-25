@@ -16,6 +16,7 @@ import { exportSalaryStatusToPDF } from '../../utils/exportUtils/salary/pdfExpor
 import { exportSalaryStatusToExcel } from '../../utils/exportUtils/salary/excelExportSalaryGenerationStatus';
 import CustomSelect from '../../Components/comman/CustomSelect';
 import { Table, TableHeader, TableBody, TableRow, TableHeaderRow, Th, Td } from '../../Components/ui/Table';
+import CustomDatePicker from '../../Components/comman/CustomDatePicker';
 
 /** ─── Anchored position helpers ─────────────────────────────────────────── **/
 const getScrollParents = (node) => {
@@ -301,6 +302,9 @@ const SalaryGenerationStatusReport = () => {
                                 className="w-full px-3 py-2 rounded-lg border border-[var(--color-border-secondary)] bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-border-focus)] focus:border-transparent"
                                 placeholderText="Select month and year" maxDate={new Date()} showPopperArrow={false}
                             />
+
+                           
+
                         </div>
                         <div className="flex flex-col">
                             <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-2"><Building className="inline h-4 w-4 mr-1" />Branch</label>

@@ -501,7 +501,7 @@ const AddRole = () => {
             <div className=" mx-auto px-4 py-8">
                 <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-xl mb-8 overflow-hidden">
                     <div className="bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)]">
-                        <div className="bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] p-4">
+                        <div className="bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] p-6">
                             <div className="flex items-center gap-4">
                                 <button
                                     onClick={handleCancel}

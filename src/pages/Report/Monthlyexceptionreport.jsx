@@ -1106,7 +1106,7 @@ const MonthlyExceptionReport = () => {
                             </div>
 
                             {/* ── Tab strip ── */}
-                            <div className="flex border-b border-[var(--color-border-secondary)] bg-[var(--color-primary-dark)] overflow-x-auto">
+                            <div className="flex border-b border-[var(--color-border-secondary)]  overflow-x-auto">
                                 {TABS.map((tab) => {
                                     const Icon = tab.icon;
                                     const isActive = activeTab === tab.key;
@@ -1115,7 +1115,7 @@ const MonthlyExceptionReport = () => {
                                             key={tab.key}
                                             type="button"
                                             onClick={() => setActiveTab(tab.key)}
-                                            className={`flex items-center gap-2 px-5 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition-all ${isActive ? `border-[var(--color-primary-dark)] text-white` : 'border-transparent text-white '}`}
+                                            className={`flex items-center gap-2 px-5 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition-all ${isActive ? `border-[var(--color-primary-dark)] text-[var(--color-primary-darker)]` : 'border-transparent text-[var(--color-primary-darker)] '}`}
                                         >
                                             <Icon className={`h-4 w-4 ${isActive ? tab.color : ''}`} />
                                             {tab.label}
@@ -1151,10 +1151,10 @@ const MonthlyExceptionReport = () => {
                                 ) : (
                                     <>
                                         <Table className="w-full min-w-[900px]">
-                                            <TableHeader className="bg-[var(--color-bg-gray-light)] border-b border-[var(--color-border-secondary)]">
+                                            <TableHeader className="bg-[var(--color-primary-dark)] border-b border-[var(--color-border-secondary)]">
                                                 <TableHeaderRow>
                                                     {renderTableHead().map((col) => (
-                                                        <Th key={col.key} className="text-center font-medium text-[var(--color-text-muted)] uppercase tracking-wider">
+                                                        <Th key={col.key} className="text-center font-medium text-white uppercase tracking-wider">
                                                             {col.label}
                                                         </Th>
                                                     ))}
@@ -1208,7 +1208,7 @@ const FilterSelect = ({ label, icon: Icon, value, onChange, options, disabled, p
             <Icon className="inline h-4 w-4 mr-1" />
             {label}
         </label>
-        <select
+        {/* <select
             value={value}
             onChange={(e) => onChange(e.target.value)}
             className="w-full px-3 py-2 bg-[var(--color-bg-primary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent text-[var(--color-text-primary)] text-sm"
@@ -1218,7 +1218,18 @@ const FilterSelect = ({ label, icon: Icon, value, onChange, options, disabled, p
             {options.map((o) => (
                 <option key={o.id} value={o.id}>{o.name}</option>
             ))}
-        </select>
+        </select> */}
+        <CustomSelect
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            options={options.map((o) => ({
+                value: o.id,
+                label: o.name,
+            }))}
+            placeholder={placeholder}
+            searchable={true}
+            disabled={disabled}
+        />
     </div>
 );
 

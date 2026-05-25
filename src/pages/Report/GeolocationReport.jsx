@@ -43,6 +43,8 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Pagination from '../../Components/Pagination';
 import { Table, TableHeader, TableBody, TableRow, TableHeaderRow, Th, Td } from '../../Components/ui/Table';
+import CustomDatePicker from '../../Components/comman/CustomDatePicker';
+import CustomSelect from '../../Components/comman/CustomSelect';
 
 /** ---------- Floating Anchors ---------- **/
 const getScrollParents = (node) => {
@@ -155,7 +157,7 @@ const FilterSelect = ({ label, icon: Icon, value, onChange, options = [], disabl
             <Icon className="inline h-4 w-4 mr-1" />
             {label}
         </label>
-        <select
+        {/* <select
             value={value}
             onChange={(e) => onChange(e.target.value)}
             className="w-full px-3 py-2 bg-[var(--color-bg-primary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-[var(--color-text-primary)] text-sm"
@@ -166,7 +168,17 @@ const FilterSelect = ({ label, icon: Icon, value, onChange, options = [], disabl
                     {o.name}
                 </option>
             ))}
-        </select>
+        </select> */}
+        <CustomSelect
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            options={options.map((o) => ({
+                value: o.id,
+                label: o.name,
+            }))}
+            disabled={disabled}
+            searchable={true}
+        />
     </div>
 );
 
@@ -831,30 +843,6 @@ const GeolocationReport = () => {
                             </div>
 
                             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-                                {/* Export */}
-
-                                {/* Date */}
-                                {/* <div className="flex items-center space-x-2 z-20">
-                                    <Calendar className="w-5 h-5 text-[var(--color-text-white)] flex-shrink-0" />
-                                    <DatePicker
-                                        selected={selectedDate}
-                                        onChange={handleDateChange}
-                                        dateFormat="dd-MM-yyyy"
-                                        placeholderText="DD-MM-YYYY"
-                                        className="w-32 bg-[var(--color-bg-secondary-20)] border border-white/30 rounded-lg px-3 py-2 text-sm text-[var(--color-text-white)] placeholder-white/90 focus:outline-none focus:ring-2 focus:ring-white/30"
-                                    />
-                                </div> */}
-                                <div className="relative flex items-center z-[40] min-w-[140px] sm:min-w-[160px]">
-                                    <Calendar className="absolute left-3 w-4 h-4 text-[var(--color-primary)] pointer-events-none z-10" />
-
-                                    <DatePicker
-                                        selected={selectedDate}
-                                        onChange={handleDateChange}
-                                        dateFormat="dd-MM-yyyy"
-                                        placeholderText="DD-MM-YYYY"
-                                        className="w-full bg-[var(--color-bg-primary)] border border-[var(--color-border-secondary)] rounded-xl pl-9 pr-3 py-1.5 sm:py-2 text-xs sm:text-sm text-[var(--color-text-primary)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent transition-all duration-200 cursor-pointer font-medium shadow-sm"
-                                    />
-                                </div>
 
                                 {/* Search */}
                                 <div className="relative w-full sm:w-64">
@@ -875,6 +863,29 @@ const GeolocationReport = () => {
                                         </button>
                                     )}
                                 </div>
+
+                                <div className="relative flex items-center z-[40] min-w-[140px] sm:min-w-[160px]">
+                                    {/* <Calendar className="absolute left-3 w-4 h-4 text-[var(--color-primary)] pointer-events-none z-10" />
+
+                                    <DatePicker
+                                        selected={selectedDate}
+                                        onChange={handleDateChange}
+                                        dateFormat="dd-MM-yyyy"
+                                        placeholderText="DD-MM-YYYY"
+                                        className="w-full bg-[var(--color-bg-primary)] border border-[var(--color-border-secondary)] rounded-xl pl-9 pr-3 py-1.5 sm:py-2 text-xs sm:text-sm text-[var(--color-text-primary)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent transition-all duration-200 cursor-pointer font-medium shadow-sm"
+                                    /> */}
+                                    <CustomDatePicker
+                                        name="selected_date"
+                                        value={selectedDate}
+                                        onChange={(e) => handleDateChange(new Date(e.target.value))}
+                                        placeholder="DD-MM-YYYY"
+                                        maxDate={new Date()}
+                                        clearable={true}
+                                        className="w-full h-[40px]"
+                                    />
+                                </div>
+
+
 
                                 {/* Filters */}
                                 <Filters

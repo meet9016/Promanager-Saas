@@ -481,7 +481,6 @@ const AddLoanAdvance = ({
                                 title="Go Back"
                             >
                                 <ArrowLeft size={18} />
-                                Back
 
                             </button>
                             <div className="flex items-center gap-3">
@@ -552,7 +551,7 @@ const AddLoanAdvance = ({
                                             disabled={loading}
                                         /> */}
 
-                                        <CustomInput
+                                        {/* <CustomInput
                                             type="text"
                                             name="employeeSearch"
                                             placeholder="Search employee by name or ID..."
@@ -572,6 +571,45 @@ const AddLoanAdvance = ({
                                             }}
                                             onFocus={() => setIsDropdownOpen(true)}
                                             disabled={loading}
+                                        /> */}
+
+                                        <CustomSelect
+                                            name="employeeSearch"
+                                            value={selectedEmployee}
+                                            placeholder="Search employee by name or ID..."
+                                            searchable={true}
+                                            disabled={loading}
+                                            options={employees.map((emp) => ({
+                                                value: emp.employee_id,
+                                                label: `${emp.full_name} (${emp.employee_id})`,
+                                            }))}
+                                            onChange={(e) => {
+
+                                                const selectedEmp = employees.find(
+                                                    (emp) => String(emp.employee_id) === String(e.target.value)
+                                                );
+
+                                                setSelectedEmployee(e.target.value);
+
+                                                setFormData((prev) => ({
+                                                    ...prev,
+                                                    employeeName: selectedEmp?.full_name || '',
+                                                    employeeId: selectedEmp?.employee_id || '',
+                                                }));
+
+                                                setSearchTerm(selectedEmp?.full_name || '');
+
+                                                if (!e.target.value) {
+                                                    setSelectedEmployee('');
+
+                                                    setFormData((prev) => ({
+                                                        ...prev,
+                                                        employeeName: '',
+                                                        employeeId: '',
+                                                    }));
+                                                }
+                                            }}
+                                            className="w-full"
                                         />
 
                                         {isDropdownOpen && filteredEmployees.length > 0 && (
@@ -602,7 +640,7 @@ const AddLoanAdvance = ({
                     </div>
 
                     {/* Enhanced Loan Details */}
-                    <div className="bg-[var(--color-bg-secondary)] backdrop-blur-sm rounded-2xl border border-slate-200 shadow-lg relative z-10">
+                    <div className="bg-[var(--color-bg-secondary)] backdrop-blur-sm rounded-2xl border border-slate-200 shadow-lg relative z-[9999] overflow-visible">
                         <div className="px-8 py-6 border-b border-slate-200 bg-gradient-to-r from-[var(--color-bg-primary)] to-[var(--color-bg-secondary)] rounded-t-2xl">
                             <div className="flex items-center gap-3">
                                 <div className="w-10 h-10 bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-dark)] rounded-xl flex items-center justify-center">

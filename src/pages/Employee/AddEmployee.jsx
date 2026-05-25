@@ -1079,7 +1079,7 @@ const AddEmployee = () => {
                                                     clearable={true}
                                                 />
                                             </div>
-                                            
+
                                             <div className="space-y-2">
                                                 <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Full Name <span className="text-[var(--color-error)]">*</span></label>
                                                 <CustomInput
@@ -1205,7 +1205,7 @@ const AddEmployee = () => {
                                                     maxDate={new Date()}
                                                     clearable={true}
                                                 />
-                                            </div>
+                                            </div> 
                                             <div className="space-y-2">
                                                 <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Date of Joining <span className="text-[var(--color-error)]">*</span></label>
                                                 <CustomDatePicker

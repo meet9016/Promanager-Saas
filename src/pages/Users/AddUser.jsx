@@ -360,7 +360,7 @@ const AddUser = () => {
                         </div>
                     </div>
 
-                    <div className="bg-[var(--color-bg-secondary)] rounded-2xl border border-[var(--color-primary-light)] shadow-xl overflow-hidden">
+                    <div className="bg-[var(--color-bg-secondary)] rounded-2xl border border-[var(--color-primary-light)] shadow-xl overflow-visible">
                         <div className="px-6 py-4 border-b border-[var(--color-primary-light)] bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)]">
                             <div className="flex items-center gap-3">
                                 <UserPlus className="w-5 h-5 text-[var(--color-text-white)]" />
@@ -368,7 +368,7 @@ const AddUser = () => {
                             </div>
                         </div>
 
-                        <form onSubmit={validateForm} className="p-8 space-y-8">
+                        <form onSubmit={validateForm} className="p-8 grid grid-cols-1 md:grid-cols-2 gap-6">
                             {/* Full Name */}
                             <div className="space-y-2">
                                 <label htmlFor="full_name" className="flex items-center gap-2 text-sm font-semibold text-gray-800">
@@ -577,7 +577,7 @@ const AddUser = () => {
                                         disabled={isFormDisabled}
                                     />
                                     {/* <Shield className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[var(--color-text-muted)]" /> */}
-                                    <ChevronDown className="absolute right-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[var(--color-text-muted)]" />
+                                    {/* <ChevronDown className="absolute right-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[var(--color-text-muted)]" /> */}
                                 </div>
                                 {errors.user_roles_id && (
                                     <p className="mt-2 text-sm text-[var(--color-text-error)] flex items-center gap-2">
@@ -588,7 +588,7 @@ const AddUser = () => {
                             </div>
 
                             {/* Form Actions */}
-                            <div className="flex items-center justify-end space-x-4 pt-8 border-t border-[var(--color-border-primary)]">
+                            <div className="md:col-span-2 flex items-center justify-end space-x-4 pt-8  border-[var(--color-border-primary)]">
                                 <button
                                     type="button"
                                     onClick={handleCancel}

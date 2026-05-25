@@ -29,7 +29,8 @@ const LeaveApplication = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isLoadingData, setIsLoadingData] = useState(true);
     const [notification, setNotification] = useState({ show: false, type: '', message: '' });
-
+  
+    
     const employeeDropdownRef = useRef(null);
 
     // Set user_id from auth context
@@ -251,7 +252,7 @@ const LeaveApplication = () => {
     return (
         <div className="min-h-screen bg-[var(--color-bg-primary)] py-8 px-4">
             <div className=" mx-auto px-4 py-8">
-                <div className="bg-[var(--color-bg-secondary)] shadow-lg rounded-lg overflow-hidden">
+                <div className="bg-[var(--color-bg-secondary)] shadow-lg rounded-lg ">
                     <div className="bg-[var(--color-primary-dark)] py-4 px-6">
                         <h2 className="text-xl font-bold text-[var(--color-text-white)]">Apply for Leave</h2>
                     </div>
@@ -265,7 +266,7 @@ const LeaveApplication = () => {
                         </div>
                     )}
 
-                    <form onSubmit={handleSubmit} className="p-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <form onSubmit={handleSubmit} className="p-8 grid grid-cols-1 md:grid-cols-3 gap-6 ">
                         {/* Employee Selection with Search */}
                         <div className="space-y-2" ref={employeeDropdownRef}>
                             <label className="block text-sm font-medium text-[var(--color-text-secondary)]">
@@ -281,14 +282,20 @@ const LeaveApplication = () => {
                                     className="w-full px-3 py-2 border border-[var(--color-border-secondary)] rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)]"
                                     required
                                 /> */}
-                                <CustomInput
-                                    type="text"
+                             
+                                <CustomSelect
                                     name="employeeSearch"
                                     value={employeeSearch}
                                     onChange={handleEmployeeSearch}
                                     onFocus={() => setShowEmployeeDropdown(true)}
                                     placeholder="Search and select employee"
+                                    searchable={true}
                                     required
+                                    options={employees.map((emp) => ({
+                                        value: emp.id,
+                                        label: emp.full_name,
+                                    }))}
+                                  
                                 />
 
                                 {showEmployeeDropdown && (
@@ -382,7 +389,7 @@ const LeaveApplication = () => {
                                 value={formData.reason}
                                 onChange={handleChange}
                                 required
-                                rows="4"
+                                rows="3"
                                 className="w-full px-3 py-2 border border-[var(--color-border-secondary)] rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)]"
                                 placeholder="Please provide details about your leave request"
                             />
@@ -406,7 +413,7 @@ const LeaveApplication = () => {
                             </button>
                         </div>
                     </form>
-                  
+
                 </div>
             </div>
         </div>

@@ -9,6 +9,15 @@ import { LoanDetailsModal } from '../../Components/ui/LoanDetailsModal';
 import { AdvanceDetailsModal } from '../../Components/ui/AdvanceDetailsModal';
 import { ConfirmDialog } from '../../Components/ui/ConfirmDialog';
 import LoadingSpinner from "../../Components/Loader/LoadingSpinner";
+import {
+    Table,
+    TableHeader,
+    TableBody,
+    TableRow,
+    TableHeaderRow,
+    Th,
+    Td
+} from '../../Components/ui/Table';
 
 const SORT_DIRECTIONS = {
     ASCENDING: 'ascending',
@@ -573,11 +582,11 @@ const LoanAdvance = () => {
                 </div> */}
 
                 <div className="bg-[var(--color-bg-secondary)] rounded-lg border border-[var(--color-primary-dark)] overflow-hidden shadow-sm">
-                    <div className="px-6 py-3 border-b border-[var(--color-primary-light)] bg-[var(--color-primary-dark)]">
+                    <div className="px-6 py-3 border-b border-[var(--color-primary-light)] bg-[var(--color-primary-lighter)]">
                         <div className="flex justify-between items-center">
                             <div className="flex items-center">
-                                <CreditCard className="h-6 w-6 text-[var(--color-text-white)] mr-2" />
-                                <h3 className="text-lg font-medium text-[var(--color-text-white)]">
+                                <CreditCard className="h-6 w-6 text-[var(--color-primary-darker)] mr-2" />
+                                <h3 className="text-lg font-medium text-[var(--color-primary-darker)]">
                                     Total Loans/Advances
                                 </h3>
                             </div>
@@ -667,7 +676,7 @@ const LoanAdvance = () => {
                         </div>
                     ) : (
                         <div className="overflow-x-auto">
-                            <table className="min-w-full divide-y divide-[var(--color-border-divider)]">
+                            {/* <table className="min-w-full divide-y divide-[var(--color-border-divider)]">
                                 <thead className="bg-[var(--color-primary-lightest)]">
                                     <tr>
                                         {[
@@ -765,7 +774,159 @@ const LoanAdvance = () => {
                                         );
                                     })}
                                 </tbody>
-                            </table>
+                            </table> */}
+
+
+
+
+
+
+                            <Table>
+
+                                <TableHeader>
+                                    <TableHeaderRow>
+
+                                        {[
+                                            { key: COLUMN_KEYS.EMPLOYEE_NAME, label: 'Employee Name' },
+                                            { key: COLUMN_KEYS.LOAN_TYPE, label: 'Loan Type' },
+                                            { key: COLUMN_KEYS.AMOUNT, label: 'Amount' },
+                                            { key: COLUMN_KEYS.INTEREST_RATE, label: 'Interest Rate' },
+                                            { key: COLUMN_KEYS.TENURE, label: 'Tenure (Months)' },
+                                            { key: COLUMN_KEYS.INSTALLMENT, label: 'Installment Amount' },
+                                            { key: COLUMN_KEYS.OUTSTANDING, label: 'Outstanding Amount' },
+                                            { key: COLUMN_KEYS.STATUS, label: 'Status' }
+                                        ].map(({ key, label }) => (
+                                            <Th
+                                                key={`header-${key}`}
+                                                className="text-left"
+                                                onClick={() => requestSort(key)}
+                                            >
+                                                <div className="flex items-center">
+                                                    {label}
+                                                    {renderSortIcon(key)}
+                                                </div>
+                                            </Th>
+                                        ))}
+
+                                        {(permissions?.loan_edit ||
+                                            permissions?.loan_view ||
+                                            permissions?.loan_delete) && (
+                                                <Th className="text-left">
+                                                    Actions
+                                                </Th>
+                                            )}
+
+                                    </TableHeaderRow>
+                                </TableHeader>
+
+                                <TableBody>
+
+                                    {sortedLoans.map((loan, index) => {
+
+                                        const loanId = loan.loan_id || `loan-${index}`;
+
+                                        const outstandingAmount =
+                                            calculateOutstandingAmount(loan);
+
+                                        return (
+                                            <TableRow
+                                                key={`loan-${loanId}`}
+                                                className="hover:bg-[var(--color-bg-primary)] transition-colors"
+                                            >
+
+                                                {/* Employee Name */}
+                                                <Td>
+                                                    <div className="flex items-center space-x-2">
+                                                        <div className="w-8 h-8 bg-[var(--color-primary-lighter)] rounded-full flex items-center justify-center">
+                                                            <Users className="w-4 h-4 text-[var(--color-primary-dark)]" />
+                                                        </div>
+
+                                                        <span>
+                                                            {loan.employee_full_name || '--'}
+                                                        </span>
+                                                    </div>
+                                                </Td>
+
+                                                {/* Loan Type */}
+                                                <Td>
+                                                    {renderLoanTypeBadge(loan.loan_type_name)}
+                                                </Td>
+
+                                                {/* Amount */}
+                                                <Td className="font-medium">
+                                                    {formatCurrency(loan.amount)}
+                                                </Td>
+
+                                                {/* Interest */}
+                                                <Td>
+                                                    {loan.interest_rate}%
+                                                </Td>
+
+                                                {/* Tenure */}
+                                                <Td>
+                                                    {loan.tenure} months
+                                                </Td>
+
+                                                {/* Installment */}
+                                                <Td>
+                                                    {formatCurrency(loan.installment_amount)}
+                                                </Td>
+
+                                                {/* Outstanding */}
+                                                <Td className="font-medium">
+                                                    {formatCurrency(outstandingAmount)}
+                                                </Td>
+
+                                                {/* Status */}
+                                                <Td>
+                                                    {renderStatusBadge(loan.loan_status)}
+                                                </Td>
+
+                                                {/* Actions */}
+                                                {(permissions?.loan_edit ||
+                                                    permissions?.loan_view ||
+                                                    permissions?.loan_delete) && (
+                                                        <Td>
+                                                            <div className="flex space-x-3">
+
+                                                                {permissions['loan_view'] && (
+                                                                    <button
+                                                                        onClick={() => handleViewDetails(loan)}
+                                                                        className="w-9 h-9 flex items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 hover:bg-emerald-100 hover:scale-110 hover:shadow-md transition-all duration-200"
+                                                                        title="View Details"
+                                                                    >
+                                                                        <Eye
+                                                                            className="w-4 h-4"
+                                                                            strokeWidth={2.5}
+                                                                        />
+                                                                    </button>
+                                                                )}
+
+                                                                {permissions['loan_delete'] && (
+                                                                    <button
+                                                                        onClick={() => handleDeleteClick(loan)}
+                                                                        className="w-9 h-9 flex items-center justify-center rounded-xl bg-red-50 text-red-500 hover:bg-red-100 hover:scale-110 hover:shadow-md transition-all duration-200 disabled:opacity-50"
+                                                                        title="Delete Loan"
+                                                                        disabled={deleteLoading}
+                                                                    >
+                                                                        <Trash2
+                                                                            className="w-4 h-4"
+                                                                            strokeWidth={2.5}
+                                                                        />
+                                                                    </button>
+                                                                )}
+
+                                                            </div>
+                                                        </Td>
+                                                    )}
+
+                                            </TableRow>
+                                        );
+                                    })}
+
+                                </TableBody>
+
+                            </Table>
                         </div>
                     )}
                 </div>

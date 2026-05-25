@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Plus, Settings2, ChevronDown, ChevronUp } from "lucide-react";
 import CustomInput from "../comman/CustomInput";
+import CustomSelect from "../comman/CustomSelect";
 
 // ─── Defaults ──────────────────────────────────────────────────────────────────
 const defaultFormulas = () => ({
@@ -36,7 +37,7 @@ const OTRow = ({ otFormula, onFormulaChange, minValue, onMinChange, disabled }) 
             {/* Left: label + dropdown */}
             <div className="flex items-center gap-3 pr-4">
                 <span className="text-sm text-[var(--color-text-primary)] whitespace-nowrap">OT Formula</span>
-                <select
+                {/* <select
                     value={otFormula}
                     onChange={(e) => onFormulaChange(e.target.value)}
                     disabled={disabled}
@@ -44,7 +45,24 @@ const OTRow = ({ otFormula, onFormulaChange, minValue, onMinChange, disabled }) 
                 >
                     <option value="1">OT Not Applicable</option>
                     <option value="2">OT Applied</option>
-                </select>
+                </select> */}
+                <CustomSelect
+                    value={otFormula}
+                    onChange={(e) => onFormulaChange(e.target.value)}
+                    disabled={disabled}
+                    searchable={false}
+                    options={[
+                        {
+                            value: '1',
+                            label: 'OT Not Applicable',
+                        },
+                        {
+                            value: '2',
+                            label: 'OT Applied',
+                        },
+                    ]}
+                    className="flex-1 text-sm"
+                />
             </div>
 
             {/* Right: Min OT input — only visible when applied */}

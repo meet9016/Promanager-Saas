@@ -29,6 +29,7 @@ import { Toast } from '../../Components/ui/Toast';
 import { Table, TableHeader, TableBody, TableRow, TableHeaderRow, Th, Td } from '../../Components/ui/Table';
 import { exportEmployeeDirectoryToPDF } from '../../utils/exportUtils/EmployeeReport/employeeDirectoryPdfExport';
 import { exportToExcel } from '../../utils/exportUtils/EmployeeReport/excelExportEmployeeDirectory';
+import CustomSelect from '../../Components/comman/CustomSelect';
 
 /** ---------- Floating Anchors: robust positioning utilities ---------- **/
 const getScrollParents = (node) => {
@@ -434,7 +435,7 @@ const EmployeeDirectoryReport = () => {
                 {summaryStats && (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
                         <div className="bg-[var(--color-bg-secondary)] rounded-xl p-8 shadow-sm border border-[var(--color-border-primary)]">
-                            <div className="flex items-center justify-between">
+                            <div className="flex items-center justify-between ">
                                 <div>
                                     <p className="text-sm text-[var(--color-text-secondary)]">Total Employees</p>
                                     <p className="text-2xl font-bold text-[var(--color-text-primary)]">{summaryStats.totalEmployees}</p>
@@ -541,7 +542,7 @@ const EmployeeDirectoryReport = () => {
                                                             </div>
                                                         )}
 
-                                                        <div className="flex-1 overflow-y-auto p-4">
+                                                        <div className="flex-1 overflow-y-auto p-4 w-full overflow-hiddens">
                                                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                                                 {/* Branch */}
                                                                 <div>
@@ -549,7 +550,7 @@ const EmployeeDirectoryReport = () => {
                                                                         <Building className="inline h-4 w-4 mr-1" />
                                                                         Branch
                                                                     </label>
-                                                                    <select
+                                                                    {/* <select
                                                                         value={filters.branch_id}
                                                                         onChange={(e) => handleFilterChange('branch_id', e.target.value)}
                                                                         className="w-full px-3 py-2 bg-[var(--color-bg-primary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent text-[var(--color-text-primary)] text-sm"
@@ -559,7 +560,21 @@ const EmployeeDirectoryReport = () => {
                                                                         {branches.map((b) => (
                                                                             <option key={b.id} value={b.id}>{b.name}</option>
                                                                         ))}
-                                                                    </select>
+                                                                    </select> */}
+                                                                    <CustomSelect
+                                                                        name="branch_id"
+                                                                        value={filters.branch_id}
+                                                                        onChange={(e) =>
+                                                                            handleFilterChange('branch_id', e.target.value)
+                                                                        }
+                                                                        options={branches.map((b) => ({
+                                                                            value: b.id,
+                                                                            label: b.name,
+                                                                        }))}
+                                                                        placeholder="All Branches"
+                                                                        searchable={true}
+                                                                        disabled={dropdownLoading}
+                                                                    />
                                                                 </div>
 
                                                                 {/* Department */}
@@ -568,7 +583,7 @@ const EmployeeDirectoryReport = () => {
                                                                         <Users className="inline h-4 w-4 mr-1" />
                                                                         Department
                                                                     </label>
-                                                                    <select
+                                                                    {/* <select
                                                                         value={filters.department_id}
                                                                         onChange={(e) => handleFilterChange('department_id', e.target.value)}
                                                                         className="w-full px-3 py-2 bg-[var(--color-bg-primary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent text-[var(--color-text-primary)] text-sm"
@@ -578,7 +593,21 @@ const EmployeeDirectoryReport = () => {
                                                                         {departments.map((d) => (
                                                                             <option key={d.id} value={d.id}>{d.name}</option>
                                                                         ))}
-                                                                    </select>
+                                                                    </select> */}
+                                                                    <CustomSelect
+                                                                        name="department_id"
+                                                                        value={filters.department_id}
+                                                                        onChange={(e) =>
+                                                                            handleFilterChange('department_id', e.target.value)
+                                                                        }
+                                                                        options={departments.map((d) => ({
+                                                                            value: d.id,
+                                                                            label: d.name,
+                                                                        }))}
+                                                                        placeholder="All Departments"
+                                                                        searchable={true}
+                                                                        disabled={dropdownLoading}
+                                                                    />
                                                                 </div>
 
                                                                 {/* Designation */}
@@ -587,7 +616,7 @@ const EmployeeDirectoryReport = () => {
                                                                         <Award className="inline h-4 w-4 mr-1" />
                                                                         Designation
                                                                     </label>
-                                                                    <select
+                                                                    {/* <select
                                                                         value={filters.designation_id}
                                                                         onChange={(e) => handleFilterChange('designation_id', e.target.value)}
                                                                         className="w-full px-3 py-2 bg-[var(--color-bg-primary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent text-[var(--color-text-primary)] text-sm"
@@ -597,7 +626,21 @@ const EmployeeDirectoryReport = () => {
                                                                         {designations.map((g) => (
                                                                             <option key={g.id} value={g.id}>{g.name}</option>
                                                                         ))}
-                                                                    </select>
+                                                                    </select> */}
+                                                                    <CustomSelect
+                                                                        name="designation_id"
+                                                                        value={filters.designation_id}
+                                                                        onChange={(e) =>
+                                                                            handleFilterChange('designation_id', e.target.value)
+                                                                        }
+                                                                        options={designations.map((g) => ({
+                                                                            value: g.id,
+                                                                            label: g.name,
+                                                                        }))}
+                                                                        placeholder="All Designations"
+                                                                        searchable={true}
+                                                                        disabled={dropdownLoading}
+                                                                    />
                                                                 </div>
 
                                                                 {/* Employee Type */}
@@ -606,7 +649,7 @@ const EmployeeDirectoryReport = () => {
                                                                         <Briefcase className="inline h-4 w-4 mr-1" />
                                                                         Employee Type
                                                                     </label>
-                                                                    <select
+                                                                    {/* <select
                                                                         value={filters.employee_type_id}
                                                                         onChange={(e) => handleFilterChange('employee_type_id', e.target.value)}
                                                                         className="w-full px-3 py-2 bg-[var(--color-bg-primary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent text-[var(--color-text-primary)] text-sm"
@@ -616,7 +659,21 @@ const EmployeeDirectoryReport = () => {
                                                                         {employeeTypes.map((t) => (
                                                                             <option key={t.id} value={t.id}>{t.name}</option>
                                                                         ))}
-                                                                    </select>
+                                                                    </select> */}
+                                                                    <CustomSelect
+                                                                        name="employee_type_id"
+                                                                        value={filters.employee_type_id}
+                                                                        onChange={(e) =>
+                                                                            handleFilterChange('employee_type_id', e.target.value)
+                                                                        }
+                                                                        options={employeeTypes.map((t) => ({
+                                                                            value: t.id,
+                                                                            label: t.name,
+                                                                        }))}
+                                                                        placeholder="All Employee Types"
+                                                                        searchable={true}
+                                                                        disabled={dropdownLoading}
+                                                                    />
                                                                 </div>
 
                                                                 {/* Salary Type */}
@@ -625,7 +682,7 @@ const EmployeeDirectoryReport = () => {
                                                                         <IndianRupee className="inline h-4 w-4 mr-1" />
                                                                         Salary Type
                                                                     </label>
-                                                                    <select
+                                                                    {/* <select
                                                                         value={filters.salary_type_id}
                                                                         onChange={(e) => handleFilterChange('salary_type_id', e.target.value)}
                                                                         className="w-full px-3 py-2 bg-[var(--color-bg-primary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent text-[var(--color-text-primary)] text-sm"
@@ -635,7 +692,21 @@ const EmployeeDirectoryReport = () => {
                                                                         {salaryTypes.map((t) => (
                                                                             <option key={t.id} value={t.id}>{t.name}</option>
                                                                         ))}
-                                                                    </select>
+                                                                    </select> */}
+                                                                    <CustomSelect
+                                                                        name="salary_type_id"
+                                                                        value={filters.salary_type_id}
+                                                                        onChange={(e) =>
+                                                                            handleFilterChange('salary_type_id', e.target.value)
+                                                                        }
+                                                                        options={salaryTypes.map((t) => ({
+                                                                            value: t.id,
+                                                                            label: t.name,
+                                                                        }))}
+                                                                        placeholder="All Salary Types"
+                                                                        searchable={true}
+                                                                        disabled={dropdownLoading}
+                                                                    />
                                                                 </div>
 
                                                                 {/* Gender */}
@@ -644,7 +715,7 @@ const EmployeeDirectoryReport = () => {
                                                                         <User className="inline h-4 w-4 mr-1" />
                                                                         Gender
                                                                     </label>
-                                                                    <select
+                                                                    {/* <select
                                                                         value={filters.gender_id}
                                                                         onChange={(e) => handleFilterChange('gender_id', e.target.value)}
                                                                         className="w-full px-3 py-2 bg-[var(--color-bg-primary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent text-[var(--color-text-primary)] text-sm"
@@ -654,7 +725,21 @@ const EmployeeDirectoryReport = () => {
                                                                         {genders.map((g) => (
                                                                             <option key={g.id} value={g.id}>{g.name}</option>
                                                                         ))}
-                                                                    </select>
+                                                                    </select> */}
+                                                                    <CustomSelect
+                                                                        name="gender_id"
+                                                                        value={filters.gender_id}
+                                                                        onChange={(e) =>
+                                                                            handleFilterChange('gender_id', e.target.value)
+                                                                        }
+                                                                        options={genders.map((g) => ({
+                                                                            value: g.id,
+                                                                            label: g.name,
+                                                                        }))}
+                                                                        placeholder="All Genders"
+                                                                        searchable={true}
+                                                                        disabled={dropdownLoading}
+                                                                    />
                                                                 </div>
 
                                                                 {/* Status */}
@@ -663,7 +748,7 @@ const EmployeeDirectoryReport = () => {
                                                                         <UserCheck className="inline h-4 w-4 mr-1" />
                                                                         Status
                                                                     </label>
-                                                                    <select
+                                                                    {/* <select
                                                                         value={filters.status_id}
                                                                         onChange={(e) => handleFilterChange('status_id', e.target.value)}
                                                                         className="w-full px-3 py-2 bg-[var(--color-bg-primary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent text-[var(--color-text-primary)] text-sm"
@@ -673,7 +758,21 @@ const EmployeeDirectoryReport = () => {
                                                                         {status.map((s) => (
                                                                             <option key={s.id} value={s.id}>{s.name}</option>
                                                                         ))}
-                                                                    </select>
+                                                                    </select> */}
+                                                                    <CustomSelect
+                                                                        name="status_id"
+                                                                        value={filters.status_id}
+                                                                        onChange={(e) =>
+                                                                            handleFilterChange('status_id', e.target.value)
+                                                                        }
+                                                                        options={status.map((s) => ({
+                                                                            value: s.id,
+                                                                            label: s.name,
+                                                                        }))}
+                                                                        placeholder="All Status"
+                                                                        searchable={true}
+                                                                        disabled={dropdownLoading}
+                                                                    />
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -685,7 +784,7 @@ const EmployeeDirectoryReport = () => {
                                                                 disabled={reportGenerating}
                                                                 className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-[var(--color-primary-dark)] text-[var(--color-text-white)] rounded-lg hover:bg-[var(--color-primary-darker)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
                                                             >
-                                                                {reportGenerating ? <Loader2 className="h-4 w-4 animate-spin" /> : <Filter className="h-4 w-4" />}
+                                                                {reportGenerating ? <Loader2 className="h-8 w-4 animate-spin" /> : <Filter className="h-4 w-4" />}
                                                                 {reportGenerating ? 'Loading...' : 'Apply Filters'}
                                                             </button>
                                                             <button
@@ -853,58 +952,58 @@ const EmployeeDirectoryReport = () => {
                                                 </>,
                                                 document.body
                                             )}
-                                        </div>
+                                    </div>
 
-                                        {/* Export button */}
-                                        <div className="relative">
-                                            <button
-                                                ref={exportBtnRef}
-                                                onClick={() => setExportDropdown((v) => !v)}
-                                                className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-lg font-medium transition-colors"
-                                            >
-                                                <Download className="h-4 w-4" />
-                                                Export
-                                                <ChevronDown className="h-4 w-4" />
-                                            </button>
+                                    {/* Export button */}
+                                    <div className="relative">
+                                        <button
+                                            ref={exportBtnRef}
+                                            onClick={() => setExportDropdown((v) => !v)}
+                                            className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-lg font-medium transition-colors"
+                                        >
+                                            <Download className="h-4 w-4" />
+                                            Export
+                                            <ChevronDown className="h-4 w-4" />
+                                        </button>
 
-                                            {/* Export dropdown (anchored, scroll/resize-safe) */}
-                                            {exportDropdown &&
-                                                exportPos.ready &&
-                                                createPortal(
-                                                    <>
-                                                        <div
-                                                            className="fixed inset-0 z-[40]"
-                                                            onClick={() => setExportDropdown(false)}
-                                                        />
-                                                        <div
-                                                            className="absolute z-[50] bg-[var(--color-bg-secondary)] rounded-lg shadow-2xl border border-[var(--color-border-secondary)] py-2"
-                                                            style={{
-                                                                position: 'absolute',
-                                                                top: exportPos.top,
-                                                                left: exportPos.left,
-                                                                width: Math.max(192, exportPos.width),
-                                                                minWidth: 192
-                                                            }}
+                                        {/* Export dropdown (anchored, scroll/resize-safe) */}
+                                        {exportDropdown &&
+                                            exportPos.ready &&
+                                            createPortal(
+                                                <>
+                                                    <div
+                                                        className="fixed inset-0 z-[40]"
+                                                        onClick={() => setExportDropdown(false)}
+                                                    />
+                                                    <div
+                                                        className="absolute z-[50] bg-[var(--color-bg-secondary)] rounded-lg shadow-2xl border border-[var(--color-border-secondary)] py-2"
+                                                        style={{
+                                                            position: 'absolute',
+                                                            top: exportPos.top,
+                                                            left: exportPos.left,
+                                                            width: Math.max(192, exportPos.width),
+                                                            minWidth: 192
+                                                        }}
+                                                    >
+                                                        <button
+                                                            onClick={handleExportExcel}
+                                                            className="flex items-center gap-2 w-full px-4 py-2 text-left hover:bg-[var(--color-bg-hover)] transition-colors text-[var(--color-text-secondary)]"
                                                         >
-                                                            <button
-                                                                onClick={handleExportExcel}
-                                                                className="flex items-center gap-2 w-full px-4 py-2 text-left hover:bg-[var(--color-bg-hover)] transition-colors text-[var(--color-text-secondary)]"
-                                                            >
-                                                                <FileSpreadsheet className="h-4 w-4 text-[var(--color-success)]" />
-                                                                Export to Excel
-                                                            </button>
-                                                            <button
-                                                                onClick={handleExportPDF}
-                                                                className="flex items-center gap-2 w-full px-4 py-2 text-left hover:bg-[var(--color-bg-hover)] transition-colors text-[var(--color-text-secondary)]"
-                                                            >
-                                                                <FileDown className="h-4 w-4 text-[var(--color-error)]" />
-                                                                Export to PDF
-                                                            </button>
-                                                        </div>
-                                                    </>,
-                                                    document.body
-                                                )}
-                                        </div>
+                                                            <FileSpreadsheet className="h-4 w-4 text-[var(--color-success)]" />
+                                                            Export to Excel
+                                                        </button>
+                                                        <button
+                                                            onClick={handleExportPDF}
+                                                            className="flex items-center gap-2 w-full px-4 py-2 text-left hover:bg-[var(--color-bg-hover)] transition-colors text-[var(--color-text-secondary)]"
+                                                        >
+                                                            <FileDown className="h-4 w-4 text-[var(--color-error)]" />
+                                                            Export to PDF
+                                                        </button>
+                                                    </div>
+                                                </>,
+                                                document.body
+                                            )}
+                                    </div>
                                 </div>
                             </div>
                         </div>

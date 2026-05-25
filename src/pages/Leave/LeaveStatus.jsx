@@ -403,7 +403,7 @@ const LeaveManagement = () => {
                                 {permissions['leave_create'] && (
                                     <button
                                         onClick={() => navigate('/leaveapplication')}
-                                        className="flex items-center gap-2 bg-[var(--color-primary)] text-[var(--color-text-white)] hover:bg-[var(--color-primary-dark)] px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm"
+                                        className="flex items-center gap-2 bg-white text-[var(--color-primary-darker)] px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm"
                                     >
                                         <Plus className="h-4 w-4" />
                                         Add Leave

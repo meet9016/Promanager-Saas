@@ -6,6 +6,7 @@ import useDepartments from "../../hooks/useDepartments";
 import LoadingSpinner from "../Loader/LoadingSpinner";
 import { Toast } from "../ui/Toast";
 import { ConfirmDialog } from "../ui/ConfirmDialog";
+import CustomSelect from "../comman/CustomSelect";
 
 // ─── Shared layout primitives (same as DepartmentForm) ────────────────────────
 
@@ -24,7 +25,7 @@ const OTRow = ({ otFormula, onFormulaChange, minValue, onMinChange, disabled }) 
         <>
             <div className="flex items-center gap-3 pr-4">
                 <span className="text-sm text-[var(--color-text-primary)] whitespace-nowrap">OT Formula</span>
-                <select
+                {/* <select
                     value={otFormula}
                     onChange={(e) => onFormulaChange(e.target.value)}
                     disabled={disabled}
@@ -32,7 +33,24 @@ const OTRow = ({ otFormula, onFormulaChange, minValue, onMinChange, disabled }) 
                 >
                     <option value="1">OT Not Applicable</option>
                     <option value="2">OT Applied</option>
-                </select>
+                </select> */}
+                <CustomSelect
+                    value={otFormula}
+                    onChange={(e) => onFormulaChange(e.target.value)}
+                    disabled={disabled}
+                    searchable={false}
+                    options={[
+                        {
+                            value: '1',
+                            label: 'OT Not Applicable',
+                        },
+                        {
+                            value: '2',
+                            label: 'OT Applied',
+                        },
+                    ]}
+                    className="flex-1 text-sm"
+                />
             </div>
             <div className="flex items-center justify-end gap-2">
                 {isApplied ? (

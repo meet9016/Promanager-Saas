@@ -628,18 +628,18 @@ const PayMonthlySalaryReport = () => {
                 {/* Table */}
                 {reportData && (
                     <div className="bg-[var(--color-bg-secondary)] rounded-xl shadow-lg border border-[var(--color-border-primary)] overflow-hidden">
-                        <div className="px-6 py-5 border-b border-[var(--color-border-primary)] bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)]">
+                        <div className="px-6 py-5 border-b border-[var(--color-border-primary)] bg-[var(--color-primary-lighter)]">
                             <div className="flex justify-between items-center">
                                 <div className="flex items-center">
-                                    <div className="p-2 bg-[var(--color-bg-secondary-20)] rounded-lg mr-3"><IndianRupee className="h-6 w-6 text-white" /></div>
+                                    <div className="p-2 bg-[var(--color-bg-secondary-20)] rounded-lg mr-3"><IndianRupee className="h-6 w-6 text-[var(--color-primary-darker)]" /></div>
                                     <div>
-                                        <h3 className="text-xl font-bold text-white">Paid Salary Report</h3>
-                                        <p className="text-sm text-white/80">{getMonthYearDisplay(filters.month_year)} · Click <ChevronRight className="inline h-3 w-3" /> to expand breakdown</p>
+                                        <h3 className="text-xl font-bold text-[var(--color-primary-darker)]">Paid Salary Report</h3>
+                                        <p className="text-sm text-[var(--color-primary-darker)]">{getMonthYearDisplay(filters.month_year)} · Click <ChevronRight className="inline h-3 w-3" /> to expand breakdown</p>
                                     </div>
                                 </div>
                                 <div className="text-right">
-                                    <div className="text-sm text-white/80">Total Records</div>
-                                    <div className="text-2xl font-bold text-white">{reportData.length}</div>
+                                    <div className="text-sm text-[var(--color-primary-darker)]">Total Records</div>
+                                    <div className="text-2xl font-bold text-[var(--color-primary-darker)]">{reportData.length}</div>
                                 </div>
                             </div>
                         </div>
@@ -647,18 +647,18 @@ const PayMonthlySalaryReport = () => {
                         <div className="overflow-x-auto">
                             <table className="w-full">
                                 <thead>
-                                    <tr className="bg-[var(--color-bg-primary)] border-b border-[var(--color-border-primary)]">
-                                        <th className="px-4 py-4 text-center text-sm font-semibold text-[var(--color-text-primary)] w-10">#</th>
-                                        <th className="px-4 py-4 text-left text-sm font-semibold text-[var(--color-text-primary)]">Employee</th>
-                                        <th className="px-4 py-4 text-center text-sm font-semibold text-[var(--color-text-primary)]">Monthly Salary</th>
-                                        <th className="px-4 py-4 text-center text-sm font-semibold text-[var(--color-text-primary)]">Att. Salary</th>
-                                        <th className="px-4 py-4 text-center text-sm font-semibold text-[var(--color-text-primary)] text-green-600">+ Allowance</th>
-                                        <th className="px-4 py-4 text-center text-sm font-semibold text-[var(--color-text-primary)] text-red-500">− Deduction</th>
-                                        <th className="px-4 py-4 text-center text-sm font-semibold text-[var(--color-text-primary)] text-orange-500">− Loan</th>
-                                        <th className="px-4 py-4 text-center text-sm font-semibold text-[var(--color-text-primary)] text-yellow-600">− Advance</th>
-                                        <th className="px-4 py-4 text-center text-sm font-semibold text-[var(--color-text-primary)]">Net Payable</th>
-                                        <th className="px-4 py-4 text-center text-sm font-semibold text-[var(--color-text-primary)]">Total Paid</th>
-                                        <th className="px-4 py-4 text-center text-sm font-semibold text-[var(--color-text-primary)]">Status</th>
+                                    <tr className="bg-[var(--color-primary-dark)] border-b border-[var(--color-border-primary)]">
+                                        <th className="px-4 py-4 text-center text-sm font-semibold text-white w-10">#</th>
+                                        <th className="px-4 py-4 text-left text-sm font-semibold text-white">Employee</th>
+                                        <th className="px-4 py-4 text-center text-sm font-semibold text-white">Monthly Salary</th>
+                                        <th className="px-4 py-4 text-center text-sm font-semibold text-white">Att. Salary</th>
+                                        <th className="px-4 py-4 text-center text-sm font-semibold text-white text-green-600">+ Allowance</th>
+                                        <th className="px-4 py-4 text-center text-sm font-semibold text-white text-red-500">− Deduction</th>
+                                        <th className="px-4 py-4 text-center text-sm font-semibold text-white text-orange-500">− Loan</th>
+                                        <th className="px-4 py-4 text-center text-sm font-semibold text-white text-white">− Advance</th>
+                                        <th className="px-4 py-4 text-center text-sm font-semibold text-white">Net Payable</th>
+                                        <th className="px-4 py-4 text-center text-sm font-semibold text-white">Total Paid</th>
+                                        <th className="px-4 py-4 text-center text-sm font-semibold text-white">Status</th>
                                         <th className="px-4 py-4 w-10"></th>
                                     </tr>
                                 </thead>

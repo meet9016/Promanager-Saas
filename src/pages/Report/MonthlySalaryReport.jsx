@@ -32,6 +32,7 @@ import { handleSalaryReportPDFExport } from '../../utils/exportUtils/salary/pdfE
 import { handlePayrollExportExcel } from '../../utils/exportUtils/salary/exportSalaryReportToExcel';
 import CustomSelect from '../../Components/comman/CustomSelect';
 import { Table, TableHeader, TableBody, TableRow, TableHeaderRow, Th, Td } from '../../Components/ui/Table';
+import CustomDatePicker from '../../Components/comman/CustomDatePicker';
 
 /** ------------------- Robust anchored positioning helpers ------------------- **/
 const getScrollParents = (node) => {
@@ -122,6 +123,9 @@ const useAnchoredPosition = (anchorRef, isOpen, opts = {}) => {
 /** -------------------------------------------------------------------------- **/
 
 const MonthlySalaryReport = () => {
+
+    const [selectedDate, setSelectedDate] = useState(new Date());
+    const handleDateChange = (date) => setSelectedDate(date);
     const navigate = useNavigate();
     const { user } = useAuth();
 
@@ -489,6 +493,8 @@ const MonthlySalaryReport = () => {
                                 maxDate={new Date()}
                                 showPopperArrow={false}
                             />
+                            
+                           
                         </div>
 
                         {/* Branch */}
@@ -680,22 +686,22 @@ const MonthlySalaryReport = () => {
                 {reportData && (
                     <div className="bg-[var(--color-bg-secondary)] rounded-xl shadow-lg border border-[var(--color-border-primary)] overflow-hidden">
                         {/* Header */}
-                        <div className="px-6 py-5 border-b border-[var(--color-border-primary)] bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)]">
+                        <div className="px-6 py-5 border-b border-[var(--color-border-primary)] bg-[var(--color-primary-lighter)]">
                             <div className="flex justify-between items-center">
                                 <div className="flex items-center">
                                     <div className="p-2 bg-[var(--color-bg-secondary-20)] rounded-lg mr-3">
-                                        <IndianRupee className="h-6 w-6 text-[var(--color-text-white)]" />
+                                        <IndianRupee className="h-6 w-6 text-[var(--color-primary-darker)]" />
                                     </div>
                                     <div>
-                                        <h3 className="text-xl font-bold text-[var(--color-text-white)]">Monthly Salary Report</h3>
-                                        <p className="text-sm text-[var(--color-text-white)] opacity-80">
+                                        <h3 className="text-xl font-bold text-[var(--color-primary-darker)]">Monthly Salary Report</h3>
+                                        <p className="text-sm text-[var(--color-primary-darker)] opacity-80">
                                             {getMonthYearDisplay(filters.month_year)}
                                         </p>
                                     </div>
                                 </div>
                                 <div className="text-right">
-                                    <div className="text-sm text-[var(--color-text-white)] opacity-80">Total Records</div>
-                                    <div className="text-2xl font-bold text-[var(--color-text-white)]">{reportData.length}</div>
+                                    <div className="text-sm text-[var(--color-primary-darker)] opacity-80">Total Records</div>
+                                    <div className="text-2xl font-bold text-[var(--color-primary-darker)]">{reportData.length}</div>
                                 </div>
                             </div>
                         </div>
@@ -704,44 +710,44 @@ const MonthlySalaryReport = () => {
                         <div className="overflow-x-auto">
                             <Table className="w-full">
                                 <TableHeader>
-                                    <TableHeaderRow className="bg-[var(--color-bg-primary)] border-b border-[var(--color-border-primary)]">
-                                        <Th className="text-left font-semibold text-[var(--color-text-primary)]">
+                                    <TableHeaderRow className="bg-[var(--color-primary-dark)] border-b border-[var(--color-border-primary)]">
+                                        <Th className="text-left font-semibold text-white">
                                             <div className="flex items-center gap-2">
                                                 <User className="h-4 w-4" />
                                                 Employee Details
                                             </div>
                                         </Th>
-                                        <Th className="text-center font-semibold text-[var(--color-text-primary)]">
+                                        <Th className="text-center font-semibold text-white">
                                             <div className="flex items-center justify-center gap-2">
                                                 <IndianRupee className="h-4 w-4" />
                                                 Base Salary
                                             </div>
                                         </Th>
-                                        <Th className="text-center font-semibold text-[var(--color-text-primary)]">
+                                        <Th className="text-center font-semibold text-white">
                                             <div className="flex items-center justify-center gap-2">
                                                 <Calendar className="h-4 w-4" />
                                                 Attendance Summary
                                             </div>
                                         </Th>
-                                        <Th className="text-center font-semibold text-[var(--color-text-primary)]">
+                                        <Th className="text-center font-semibold text-white">
                                             <div className="flex items-center justify-center gap-2">
                                                 <Clock className="h-4 w-4" />
                                                 Overtime Details
                                             </div>
                                         </Th>
-                                        <Th className="text-center font-semibold text-[var(--color-text-primary)]">
+                                        <Th className="text-center font-semibold text-white">
                                             <div className="flex items-center justify-center gap-2">
                                                 <CalendarX className="h-4 w-4" />
                                                 Week Off
                                             </div>
                                         </Th>
-                                        <Th className="text-center font-semibold text-[var(--color-text-primary)]">
+                                        <Th className="text-center font-semibold text-white">
                                             <div className="flex items-center justify-center gap-2">
                                                 <Calculator className="h-4 w-4" />
                                                 Subtotal
                                             </div>
                                         </Th>
-                                        <Th className="text-center font-semibold text-[var(--color-text-primary)]">
+                                        <Th className="text-center font-semibold text-white">
                                             <div className="flex items-center justify-center gap-2">
                                                 <TrendingUp className="h-4 w-4" />
                                                 Final Salary

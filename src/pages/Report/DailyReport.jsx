@@ -36,6 +36,8 @@ import 'react-datepicker/dist/react-datepicker.css';
 // e.g. '../../Components/common/Pagination' or '../Pagination'
 import Pagination from '../../Components/Pagination';
 import { Table, TableHeader, TableBody, TableRow, TableHeaderRow, Th, Td } from '../../Components/ui/Table';
+import CustomDatePicker from '../../Components/comman/CustomDatePicker';
+import CustomSelect from '../../Components/comman/CustomSelect';
 
 /** ---------- Floating Anchors: robust positioning utilities ---------- **/
 const getScrollParents = (node) => {
@@ -650,17 +652,7 @@ const DailyReport = () => {
                             <div className="flex items-center gap-3">
                                 {/* Export */}
 
-                                <div className="relative flex items-center z-[40] min-w-[140px] sm:min-w-[160px]">
-                                    <Calendar className="absolute left-3 w-4 h-4 text-[var(--color-primary)] pointer-events-none z-10" />
 
-                                    <DatePicker
-                                        selected={selectedDate}
-                                        onChange={handleDateChange}
-                                        dateFormat="dd-MM-yyyy"
-                                        placeholderText="DD-MM-YYYY"
-                                        className="w-full bg-[var(--color-bg-primary)] hover:bg-[var(--color-bg-hover)] border border-[var(--color-border-secondary)] rounded-xl pl-9 pr-3 py-1.5 sm:py-2 text-xs sm:text-sm text-[var(--color-text-primary)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent transition-all duration-200 cursor-pointer font-medium shadow-sm"
-                                    />
-                                </div>
 
                                 <div className="relative w-full sm:w-64">
                                     <input
@@ -679,6 +671,17 @@ const DailyReport = () => {
                                             <XCircle className="h-4 w-4" />
                                         </button>
                                     )}
+                                </div>
+                                <div className="relative flex items-center z-[40] min-w-[140px] sm:min-w-[160px] h-[40px]">
+                                    <CustomDatePicker
+                                        name="dateOfBirth"
+                                        value={selectedDate}
+                                        onChange={(e) => handleDateChange(new Date(e.target.value))}
+                                        placeholder="DD-MM-YYYY"
+                                        maxDate={new Date()}
+                                        clearable={true}
+                                       
+                                    />
                                 </div>
 
                                 <div className="relative">
@@ -736,7 +739,7 @@ const DailyReport = () => {
                                                                     <CheckCircle className="inline h-4 w-4 mr-1" />
                                                                     Attendance Status
                                                                 </label>
-                                                                <select
+                                                                {/* <select
                                                                     value={filters.attendance_status_id}
                                                                     onChange={(e) => handleFilterChange('attendance_status_id', e.target.value)}
                                                                     className="w-full px-3 py-2 bg-[var(--color-bg-primary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent text-[var(--color-text-primary)] text-sm"
@@ -748,7 +751,26 @@ const DailyReport = () => {
                                                                             {s.name}
                                                                         </option>
                                                                     ))}
-                                                                </select>
+                                                                </select> */}
+                                                                <CustomSelect
+                                                                    name="attendance_status_id"
+                                                                    value={filters.attendance_status_id}
+                                                                    onChange={(e) =>
+                                                                        handleFilterChange(
+                                                                            'attendance_status_id',
+                                                                            e.target.value
+                                                                        )
+                                                                    }
+                                                                    options={attendanceStatuses.map((s) => ({
+                                                                        value: s.id,
+                                                                        label: s.name,
+                                                                    }))}
+                                                                    placeholder="All Status"
+                                                                    searchable={true}
+                                                                    disabled={dropdownLoading}
+                                                                />
+
+
                                                             </div>
 
                                                             <div>
@@ -756,7 +778,7 @@ const DailyReport = () => {
                                                                     <Building className="inline h-4 w-4 mr-1" />
                                                                     Branch
                                                                 </label>
-                                                                <select
+                                                                {/* <select
                                                                     value={filters.branch_id}
                                                                     onChange={(e) => handleFilterChange('branch_id', e.target.value)}
                                                                     className="w-full px-3 py-2 bg-[var(--color-bg-primary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent text-[var(--color-text-primary)] text-sm"
@@ -768,7 +790,24 @@ const DailyReport = () => {
                                                                             {b.name}
                                                                         </option>
                                                                     ))}
-                                                                </select>
+                                                                </select> */}
+                                                                <CustomSelect
+                                                                    name="branch_id"
+                                                                    value={filters.branch_id}
+                                                                    onChange={(e) =>
+                                                                        handleFilterChange(
+                                                                            'branch_id',
+                                                                            e.target.value
+                                                                        )
+                                                                    }
+                                                                    options={branches.map((b) => ({
+                                                                        value: b.id,
+                                                                        label: b.name,
+                                                                    }))}
+                                                                    placeholder="All Branches"
+                                                                    searchable={true}
+                                                                    disabled={dropdownLoading}
+                                                                />
                                                             </div>
 
                                                             <div>
@@ -776,7 +815,7 @@ const DailyReport = () => {
                                                                     <Users className="inline h-4 w-4 mr-1" />
                                                                     Department
                                                                 </label>
-                                                                <select
+                                                                {/* <select
                                                                     value={filters.department_id}
                                                                     onChange={(e) => handleFilterChange('department_id', e.target.value)}
                                                                     className="w-full px-3 py-2 bg-[var(--color-bg-primary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent text-[var(--color-text-primary)] text-sm"
@@ -788,7 +827,24 @@ const DailyReport = () => {
                                                                             {d.name}
                                                                         </option>
                                                                     ))}
-                                                                </select>
+                                                                </select> */}
+                                                                <CustomSelect
+                                                                    name="department_id"
+                                                                    value={filters.department_id}
+                                                                    onChange={(e) =>
+                                                                        handleFilterChange(
+                                                                            'department_id',
+                                                                            e.target.value
+                                                                        )
+                                                                    }
+                                                                    options={departments.map((d) => ({
+                                                                        value: d.id,
+                                                                        label: d.name,
+                                                                    }))}
+                                                                    placeholder="All Departments"
+                                                                    searchable={true}
+                                                                    disabled={dropdownLoading}
+                                                                />
                                                             </div>
 
                                                             <div>
@@ -796,7 +852,7 @@ const DailyReport = () => {
                                                                     <Award className="inline h-4 w-4 mr-1" />
                                                                     Designation
                                                                 </label>
-                                                                <select
+                                                                {/* <select
                                                                     value={filters.designation_id}
                                                                     onChange={(e) => handleFilterChange('designation_id', e.target.value)}
                                                                     className="w-full px-3 py-2 bg-[var(--color-bg-primary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent text-[var(--color-text-primary)] text-sm"
@@ -808,7 +864,24 @@ const DailyReport = () => {
                                                                             {d.name}
                                                                         </option>
                                                                     ))}
-                                                                </select>
+                                                                </select> */}
+                                                                <CustomSelect
+                                                                    name="designation_id"
+                                                                    value={filters.designation_id}
+                                                                    onChange={(e) =>
+                                                                        handleFilterChange(
+                                                                            'designation_id',
+                                                                            e.target.value
+                                                                        )
+                                                                    }
+                                                                    options={designations.map((d) => ({
+                                                                        value: d.id,
+                                                                        label: d.name,
+                                                                    }))}
+                                                                    placeholder="All Designations"
+                                                                    searchable={true}
+                                                                    disabled={dropdownLoading}
+                                                                />
                                                             </div>
 
                                                             <div>
@@ -816,7 +889,7 @@ const DailyReport = () => {
                                                                     <Timer className="inline h-4 w-4 mr-1" />
                                                                     Shift
                                                                 </label>
-                                                                <select
+                                                                {/* <select
                                                                     value={filters.shift_id}
                                                                     onChange={(e) => handleFilterChange('shift_id', e.target.value)}
                                                                     className="w-full px-3 py-2 bg-[var(--color-bg-primary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent text-[var(--color-text-primary)] text-sm"
@@ -828,7 +901,24 @@ const DailyReport = () => {
                                                                             {s.name}
                                                                         </option>
                                                                     ))}
-                                                                </select>
+                                                                </select> */}
+                                                                <CustomSelect
+                                                                    name="shift_id"
+                                                                    value={filters.shift_id}
+                                                                    onChange={(e) =>
+                                                                        handleFilterChange(
+                                                                            'shift_id',
+                                                                            e.target.value
+                                                                        )
+                                                                    }
+                                                                    options={shifts.map((s) => ({
+                                                                        value: s.id,
+                                                                        label: s.name,
+                                                                    }))}
+                                                                    placeholder="All Shifts"
+                                                                    searchable={true}
+                                                                    disabled={dropdownLoading}
+                                                                />
                                                             </div>
                                                         </div>
                                                     </div>

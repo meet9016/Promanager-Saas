@@ -28,6 +28,15 @@ import { useSelector } from 'react-redux';
 import Pagination from '../../Components/Pagination'; // Adjust path as needed
 import LoadingSpinner from '../../Components/Loader/LoadingSpinner';
 import { Toast } from '../../Components/ui/Toast'; // Import your toast component
+import {
+    Table,
+    TableHeader,
+    TableBody,
+    TableRow,
+    TableHeaderRow,
+    Th,
+    Td
+} from '../../Components/ui/Table';
 
 const SORT_DIRECTIONS = {
     ASCENDING: 'ascending',
@@ -915,7 +924,7 @@ export default function Employee() {
                         <>
                             {/* Table */}
                             <div className="overflow-hidden">
-                                <table className="w-full">
+                                {/* <table className="w-full">
                                     <thead className="bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)]">
                                         <tr>
                                             {[
@@ -940,7 +949,7 @@ export default function Employee() {
                                             <th className="w-[10%] px-3 py-4 text-center text-xs font-semibold text-white uppercase tracking-wider">
                                                 Mobile
                                             </th>
-                                            {/* Attendance Permission Column */}
+                                   
                                             <th className="w-[15%] px-3 py-4 text-center">
                                                 <button
                                                     className="flex items-center justify-center w-full text-xs font-semibold text-white uppercase tracking-wider hover:text-gray-200 transition-colors"
@@ -950,7 +959,7 @@ export default function Employee() {
                                                     {renderSortIcon(COLUMN_KEYS.ATTENDANCE_TYPE)}
                                                 </button>
                                             </th>
-                                            {/* Location Permission Column */}
+                                          
                                             <th className="w-[15%] px-3 py-4 text-center text-xs font-semibold text-white uppercase tracking-wider">
                                                 Location Permission
                                             </th>
@@ -962,7 +971,7 @@ export default function Employee() {
                                         </tr>
                                     </thead>
                                     <tbody className="bg-[var(--color-bg-secondary)] divide-y divide-[var(--color-border-divider)]">
-                                        {/* Render actual employee rows */}
+                                       
                                         {sortedEmployees.map((employee, index) => {
                                             const employeeId = employee.employee_id || `employee-${index}`;
                                             const truncatedName = truncateText(employee.full_name, 15);
@@ -975,7 +984,7 @@ export default function Employee() {
                                                     className={`h-[60px] hover:bg-[var(--color-primary-lightest)] transition-colors border-b border-[var(--color-border-divider)] ${(paginationLoading || searchLoading) ? 'opacity-50' : ''}`}
                                                 >
 
-                                                    {/* Full Name */}
+                                                
                                                     <td className="px-3 py-4 text-center">
                                                         <div className="flex items-center justify-start gap-3">
                                                             <div className="flex-shrink-0 h-10 w-10 relative">
@@ -1015,45 +1024,44 @@ export default function Employee() {
                                                         </span>
                                                     </td>
 
-                                                    {/* Department */}
+                                                
                                                     <td className="px-3 py-4 text-center">
                                                         <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium  text-[var(--color-text-success)] max-w-[90px] truncate">
                                                             {truncatedDepartment}
                                                         </span>
                                                     </td>
 
-                                                    {/* Designation */}
+                                                  
                                                     <td className="px-3 py-4 text-center">
                                                         <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium text-[var(--color-text-primary)] max-w-[90px] truncate">
                                                             {truncatedDesignation}
                                                         </span>
                                                     </td>
 
-                                                    {/* Email */}
                                                     <td className="px-3 py-4 text-center">
                                                         <div className="text-sm text-[var(--color-text-secondary)] truncate max-w-[160px] mx-auto" title={employee.email}>
                                                             {employee.email || '--'}
                                                         </div>
                                                     </td>
 
-                                                    {/* Mobile */}
+                                                 
                                                     <td className="px-3 py-4 text-center">
                                                         <div className="text-sm font-mono text-[var(--color-text-primary)]">
                                                             {employee.mobile_number || '--'}
                                                         </div>
                                                     </td>
 
-                                                    {/* Attendance Permission */}
+                                                   
                                                     <td className="px-2 py-4 text-center">
                                                         {renderAttendanceTypeDisplay(employee)}
                                                     </td>
 
-                                                    {/* Location Permission */}
+                                                  
                                                     <td className="px-2 py-4 text-center">
                                                         {renderLocationPermissionDisplay(employee)}
                                                     </td>
 
-                                                    {/* Actions */}
+                                                  
                                                     {(permissions?.employee_edit || permissions?.employee_view) && (
                                                         <td className="px-3 py-4 text-center">
                                                             <div className="flex justify-center space-x-1">
@@ -1084,7 +1092,7 @@ export default function Employee() {
                                             );
                                         })}
 
-                                        {/* Fill empty rows to maintain consistent height for 10 rows */}
+                                 
                                         {Array.from({ length: Math.max(0, ITEMS_PER_PAGE - sortedEmployees.length) }).map((_, index) => (
                                             <tr key={`empty-${index}`} className="h-[60px] border-b border-[var(--color-border-divider)]">
                                                 <td className="px-3 py-4 text-center">&nbsp;</td>
@@ -1107,7 +1115,198 @@ export default function Employee() {
                                             </tr>
                                         ))}
                                     </tbody>
-                                </table>
+                                </table> */}
+
+
+                                <Table>
+                                    <TableHeader>
+                                        <TableHeaderRow>
+
+                                            {[
+                                                { key: COLUMN_KEYS.NAME, label: 'Full Name', width: 'w-[14%]' },
+                                                { key: COLUMN_KEYS.ID, label: 'Employee ID', width: 'w-[8%]' },
+                                                { key: COLUMN_KEYS.DEPARTMENT, label: 'Department', width: 'w-[9%]' },
+                                                { key: COLUMN_KEYS.DESIGNATION, label: 'Designation', width: 'w-[9%]' },
+                                            ].map(({ key, label, width }) => (
+                                                <Th
+                                                    key={`header-${key}`}
+                                                    className={`${width} text-center`}
+                                                    onClick={() => requestSort(key)}
+                                                >
+                                                    <div className="flex items-center justify-center w-full">
+                                                        {label}
+                                                        {renderSortIcon(key)}
+                                                    </div>
+                                                </Th>
+                                            ))}
+
+                                            <Th className="w-[15%] text-center">
+                                                Email
+                                            </Th>
+
+                                            <Th className="w-[10%] text-center">
+                                                Mobile
+                                            </Th>
+
+                                            <Th
+                                                className="w-[15%] text-center"
+                                                onClick={() => requestSort(COLUMN_KEYS.ATTENDANCE_TYPE)}
+                                            >
+                                                <div className="flex items-center justify-center w-full">
+                                                    Attendance Permission
+                                                    {renderSortIcon(COLUMN_KEYS.ATTENDANCE_TYPE)}
+                                                </div>
+                                            </Th>
+
+                                            <Th className="w-[15%] text-center">
+                                                Location Permission
+                                            </Th>
+
+                                            {(permissions?.employee_edit || permissions?.employee_view) && (
+                                                <Th className="w-[5%] text-center">
+                                                    Actions
+                                                </Th>
+                                            )}
+                                        </TableHeaderRow>
+                                    </TableHeader>
+
+                                    <TableBody>
+
+                                        {sortedEmployees.map((employee, index) => {
+
+                                            const employeeId = employee.employee_id || `employee-${index}`;
+
+                                            const truncatedName = truncateText(employee.full_name, 15);
+
+                                            const truncatedDepartment = truncateText(employee.department_name, 10);
+
+                                            const truncatedDesignation = truncateText(employee.designation_name, 10);
+
+                                            return (
+                                                <TableRow
+                                                    key={`emp-${employeeId}`}
+                                                    className={`${(paginationLoading || searchLoading)
+                                                        ? 'opacity-50'
+                                                        : ''
+                                                        }`}
+                                                >
+
+                                                    {/* Full Name */}
+                                                    <Td className="text-center">
+                                                        <div className="flex items-center justify-start gap-3">
+                                                            <div className="flex-shrink-0 h-10 w-10 relative">
+                                                                <div className="h-10 w-10 rounded-full bg-[var(--color-primary-dark)] flex items-center justify-center">
+                                                                    <span className="text-sm font-medium text-white">
+                                                                        {employee.full_name?.charAt(0) || 'N'}
+                                                                    </span>
+                                                                </div>
+
+                                                                <div
+                                                                    className={`absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-white ${employee.status_id === 1 || employee.status_id === '1'
+                                                                        ? 'bg-green-500'
+                                                                        : employee.status === 2 || employee.status === '2'
+                                                                            ? 'bg-red-500'
+                                                                            : 'bg-green-400'
+                                                                        }`}
+                                                                />
+                                                            </div>
+
+                                                            <div
+                                                                className="text-sm font-medium cursor-help truncate max-w-[120px]"
+                                                                title={employee.full_name}
+                                                            >
+                                                                {truncatedName || '--'}
+                                                            </div>
+                                                        </div>
+                                                    </Td>
+
+                                                    {/* Employee ID */}
+                                                    <Td className="text-center">
+                                                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium">
+                                                            {employee.employee_code || '-'}
+                                                        </span>
+                                                    </Td>
+
+                                                    {/* Department */}
+                                                    <Td className="text-center">
+                                                        <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium max-w-[90px] truncate">
+                                                            {truncatedDepartment}
+                                                        </span>
+                                                    </Td>
+
+                                                    {/* Designation */}
+                                                    <Td className="text-center">
+                                                        <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium max-w-[90px] truncate">
+                                                            {truncatedDesignation}
+                                                        </span>
+                                                    </Td>
+
+                                                    {/* Email */}
+                                                    <Td className="text-center">
+                                                        <div
+                                                            className="text-sm truncate max-w-[160px] mx-auto"
+                                                            title={employee.email}
+                                                        >
+                                                            {employee.email || '--'}
+                                                        </div>
+                                                    </Td>
+
+                                                    {/* Mobile */}
+                                                    <Td className="text-center">
+                                                        <div className="text-sm font-mono">
+                                                            {employee.mobile_number || '--'}
+                                                        </div>
+                                                    </Td>
+
+                                                    {/* Attendance */}
+                                                    <Td className="text-center">
+                                                        {renderAttendanceTypeDisplay(employee)}
+                                                    </Td>
+
+                                                    {/* Location */}
+                                                    <Td className="text-center">
+                                                        {renderLocationPermissionDisplay(employee)}
+                                                    </Td>
+
+                                                    {/* Actions */}
+                                                    {(permissions?.employee_edit || permissions?.employee_view) && (
+                                                        <Td className="text-center">
+                                                            <div className="flex justify-center space-x-1">
+
+                                                                {permissions['employee_edit'] && (
+                                                                    <button
+                                                                        onClick={() => handleEditEmployee(employee.employee_id)}
+                                                                        disabled={paginationLoading || searchLoading}
+                                                                        className="w-9 h-9 flex items-center justify-center rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-100 hover:scale-110 hover:shadow-md transition-all duration-200 disabled:opacity-50"
+                                                                    >
+                                                                        <Edit className="w-4 h-4" strokeWidth={2.5} />
+                                                                    </button>
+                                                                )}
+
+                                                                {permissions['employee_view'] && (
+                                                                    <button
+                                                                        onClick={() => handleViewDetails(employee.employee_id)}
+                                                                        disabled={paginationLoading || searchLoading}
+                                                                        className="w-9 h-9 flex items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 hover:bg-emerald-100 hover:scale-110 hover:shadow-md transition-all duration-200 disabled:opacity-50"
+                                                                    >
+                                                                        <Eye className="w-4 h-4" strokeWidth={2.5} />
+                                                                    </button>
+                                                                )}
+
+                                                            </div>
+                                                        </Td>
+                                                    )}
+
+                                                </TableRow>
+                                            );
+                                        })}
+
+                                    </TableBody>
+                                </Table>
+
+
+
+
                             </div>
 
                             {/* Pagination Component */}
