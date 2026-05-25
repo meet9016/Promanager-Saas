@@ -34,20 +34,9 @@ import { Toast } from '../../Components/ui/Toast';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Pagination from '../../Components/Pagination';
+import { Table, TableHeader, TableBody, TableRow, TableHeaderRow, Th, Td } from '../../Components/ui/Table';
 
 
-/** ---------- Small building blocks ---------- **/
-const Th = ({ children, small, className = '' }) => (
-  <th className={`px-2 sm:px-4 py-3 text-center ${small ? 'text-[11px]' : 'text-xs'} font-semibold text-white uppercase tracking-wider ${className}`}>
-    {children}
-  </th>
-);
-
-const Td = ({ children, small, className = '', colSpan }) => (
-  <td className={`px-2 sm:px-4 py-3 text-center ${small ? 'text-xs' : 'text-sm'} text-[var(--color-text-primary)] ${className}`} colSpan={colSpan}>
-    {children}
-  </td>
-);
 
 const SummaryCard = ({ label, value, icon: Icon, tone = 'text-[var(--color-text-primary)]', onClick, isActive = false }) => {
   // Map tone classes to a rich color scheme
@@ -1081,9 +1070,9 @@ const DailyAttendance = () => {
                 <div className="p-8 text-center text-[var(--color-text-secondary)]">No records found</div>
               ) : (
                 <>
-                  <table className="w-full min-w-[1200px] border-separate border-spacing-0">
-                    <thead className="sticky top-0 z-10 bg-[var(--color-primary-dark)]">
-                      <tr className="border-b border-[var(--color-primary-light)]">
+                  <Table className="min-w-[1200px]">
+                    <TableHeader>
+                      <TableHeaderRow>
                         <Th>Employee</Th>
                         <Th>Shift</Th>
                         <Th>Clock In</Th>
@@ -1096,16 +1085,16 @@ const DailyAttendance = () => {
                         <Th>Early Going</Th>
                         <Th>Status</Th>
                         <Th>Actions</Th>
-                      </tr>
-                    </thead>
+                      </TableHeaderRow>
+                    </TableHeader>
 
-                    <tbody className="divide-y divide-[var(--color-border-secondary)]">
+                    <TableBody>
                       {paginatedData.map((emp, idx) => {
                         const timeColorClass = getTimeColor(emp);
                         return (
-                          <tr
+                          <TableRow
                             key={emp.employee_code || idx}
-                            className={`hover:bg-[var(--color-bg-hover)] transition-colors ${getRowStyling(emp.status, emp.edit_reason)}`}
+                            className={`hover:bg-[var(--color-bg-hover)] ${getRowStyling(emp.status, emp.edit_reason)}`}
                           >
                             {/* Employee */}
                             <Td className="bg-inherit text-left">
@@ -1229,20 +1218,20 @@ const DailyAttendance = () => {
                                 )}
                               </div>
                             </Td>
-                          </tr>
+                          </TableRow>
                         );
                       })}
 
                       {/* Filler rows — 13 columns now */}
                       {Array.from({ length: emptyRowCount }).map((_, i) => (
-                        <tr key={`empty-${i}`} className="transition-colors">
+                        <TableRow key={`empty-${i}`}>
                           {Array.from({ length: 12 }).map((__, j) => (
                             <Td key={j} className="text-transparent">—</Td>
                           ))}
-                        </tr>
+                        </TableRow>
                       ))}
-                    </tbody>
-                  </table>
+                    </TableBody>
+                  </Table>
 
                   {/* Pagination */}
                   <Pagination
