@@ -122,6 +122,18 @@ const useAnchoredPosition = (anchorRef, isOpen, opts = {}) => {
     return pos;
 };
 
+/** ---------- Small building blocks ---------- **/
+const Th = ({ children, small, className = '' }) => (
+    <th className={`px-4 py-2 text-center ${small ? 'text-[11px]' : 'text-xs'} font-medium text-[var(--color-text-muted)] uppercase tracking-wider ${className}`}>
+        {children}
+    </th>
+);
+
+const Td = ({ children, small, className = '', colSpan }) => (
+    <td className={`px-4 py-3 text-center ${small ? 'text-xs' : 'text-sm'} text-[var(--color-text-primary)] ${className}`} colSpan={colSpan}>
+        {children}
+    </td>
+);
 const DailyReport = () => {
     const [selectedDate, setSelectedDate] = useState(new Date());
 
@@ -643,7 +655,7 @@ const DailyReport = () => {
                         <div className="flex justify-between items-center">
                             <div className="flex items-center">
                                 <Activity className="h-6 w-6 text-[var(--color-primary-darker)] mr-2" />
-                                <h3 className="text-lg font-medium text-[var(--color-primary-darker)]">Daily Attendance Details</h3>
+                                <h3 className="text-lg font-medium text-[var(--color-primary-darker)]">Daily Attendance Report</h3>
                             </div>
 
                             <div className="flex items-center gap-3">
@@ -1056,33 +1068,33 @@ const DailyReport = () => {
                             <div className="p-8 text-center text-[var(--color-text-secondary)]">No records found</div>
                         ) : (
                             <>
-                                <table className="w-full min-w-[1200px]">
-                                    <thead className="bg-[var(--color-primary-dark)] border-b border-[var(--color-border-secondary)]">
-                                        <tr>
-                                            <th className="px-6 py-3 text-center text-xs font-medium text-[var(--color-text-white)] uppercase tracking-wider">
+                                <table className="w-full min-w-[1200px] border-separate border-spacing-0">
+                                    <thead className="sticky top-0 z-10 bg-[var(--color-primary-dark)] backdrop-blur supports-[backdrop-filter]:bg-[var(--color-bg-gray-light)]/60">
+                                        <tr className="border-b border-[var(--color-border-secondary)]">
+                                            <Th className="text-white">
                                                 Employee
-                                            </th>
-                                            <th className="px-6 py-3 text-center text-xs font-medium text-[var(--color-text-white)] uppercase tracking-wider">
+                                            </Th>
+                                            <Th className="text-white">
                                                 Shift
-                                            </th>
-                                            <th className="px-6 py-3 text-center text-xs font-medium text-[var(--color-text-white)] uppercase tracking-wider">
+                                            </Th>
+                                            <Th className="text-white">
                                                 Shift Time
-                                            </th>
-                                            <th className="px-6 py-3 text-center text-xs font-medium text-[var(--color-text-white)] uppercase tracking-wider">
+                                            </Th>
+                                            <Th className="text-white">
                                                 Clock In
-                                            </th>
-                                            <th className="px-6 py-3 text-center text-xs font-medium text-[var(--color-text-white)] uppercase tracking-wider">
+                                            </Th>
+                                            <Th className="text-white">
                                                 Clock Out
-                                            </th>
-                                            <th className="px-6 py-3 text-center text-xs font-medium text-[var(--color-text-white)] uppercase tracking-wider">
+                                            </Th>
+                                            <Th className="text-white">
                                                 Working Hours
-                                            </th>
-                                            <th className="px-6 py-3 text-center text-xs font-medium text-[var(--color-text-white)] uppercase tracking-wider">
+                                            </Th>
+                                            <Th className="text-white">
                                                 Attendance Hours
-                                            </th>
-                                            <th className="px-6 py-3 text-center text-xs font-medium text-[var(--color-text-white)] uppercase tracking-wider">
+                                            </Th>
+                                            <Th className="text-white">
                                                 Status
-                                            </th>
+                                            </Th>
                                         </tr>
                                     </thead>
                                     <tbody className="bg-[var(--color-bg-secondary)] divide-y divide-[var(--color-border-secondary)]">
@@ -1093,7 +1105,7 @@ const DailyReport = () => {
                                                     key={emp.employee_id || emp.employee_code || idx}
                                                     className={`hover:bg-[var(--color-bg-hover)] transition-colors ${getRowStyling(emp.status)}`}
                                                 >
-                                                    <td className="bg-inherit">
+                                                    <Td className="bg-inherit">
                                                         <div className="flex flex-col text-center items-start px-6">
                                                             {/* Employee Name with truncate */}
                                                             <span
@@ -1111,27 +1123,27 @@ const DailyReport = () => {
                                                                 {truncateText(emp.employee_code, 15)}
                                                             </span>
                                                         </div>
-                                                    </td>
+                                                    </Td>
 
-                                                    <td className="px-6 py-4 text-center text-sm text-[var(--color-text-primary)]">
+                                                    <Td className="px-6 py-4 text-center text-sm text-[var(--color-text-primary)]">
                                                         {emp.shift_name || '--'}
-                                                    </td>
-                                                    <td className="px-6 py-4 text-center text-sm text-[var(--color-text-primary)]">
+                                                    </Td>
+                                                    <Td className="px-6 py-4 text-center text-sm text-[var(--color-text-primary)]">
                                                         {emp.shift_from_time && emp.shift_to_time ? `${emp.shift_from_time} - ${emp.shift_to_time}` : '--'}
-                                                    </td>
-                                                    <td className={`px-6 py-4 text-center text-sm ${timeColorClass}`}>
+                                                    </Td>
+                                                    <Td className={`px-6 py-4 text-center text-sm ${timeColorClass}`}>
                                                         {emp.attandance_first_clock_in || '--'}
-                                                    </td>
-                                                    <td className={`px-6 py-4 text-center text-sm ${timeColorClass}`}>
+                                                    </Td>
+                                                    <Td className={`px-6 py-4 text-center text-sm ${timeColorClass}`}>
                                                         {emp.attandance_last_clock_out || '--'}
-                                                    </td>
-                                                    <td className="px-6 py-4 text-center text-sm text-[var(--color-text-primary)]">
+                                                    </Td>
+                                                    <Td className="px-6 py-4 text-center text-sm text-[var(--color-text-primary)]">
                                                         {emp.shift_working_hours ? `${emp.shift_working_hours}` : '--'}
-                                                    </td>
-                                                    <td className="px-6 py-4 text-center text-sm text-[var(--color-text-primary)]">
+                                                    </Td>
+                                                    <Td className="px-6 py-4 text-center text-sm text-[var(--color-text-primary)]">
                                                         {emp.attandance_hours ? `${emp.attandance_hours}` : '--'}
-                                                    </td>
-                                                    <td className="px-6 py-4 text-center text-sm">
+                                                    </Td>
+                                                    <Td className="px-6 py-4 text-center text-sm">
                                                         <span
                                                             className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${emp.status === 'Present'
                                                                 ? 'bg-green-100 text-green-800'
@@ -1152,7 +1164,7 @@ const DailyReport = () => {
                                                         >
                                                             {emp.status || '--'}
                                                         </span>
-                                                    </td>
+                                                    </Td>
                                                 </tr>
                                             );
                                         })}
@@ -1160,14 +1172,14 @@ const DailyReport = () => {
                                         {/* ⬇️ Filler rows to keep 10 rows visible */}
                                         {Array.from({ length: emptyRowCount }).map((_, i) => (
                                             <tr key={`empty-${i}`} className="hover:bg-[var(--color-bg-hover)] transition-colors">
-                                                <td className="px-6 py-6 text-center text-sm text-transparent">—</td>
-                                                <td className="px-6 py-6 text-center text-sm text-transparent">—</td>
-                                                <td className="px-6 py-6 text-center text-sm text-transparent">—</td>
-                                                <td className="px-6 py-6 text-center text-sm text-transparent">—</td>
-                                                <td className="px-6 py-6 text-center text-sm text-transparent">—</td>
-                                                <td className="px-6 py-6 text-center text-sm text-transparent">—</td>
-                                                <td className="px-6 py-6 text-center text-sm text-transparent">—</td>
-                                                <td className="px-6 py-6 text-center text-sm text-transparent">—</td>
+                                                <Td className="px-6 py-6 text-center text-sm text-transparent">—</Td>
+                                                <Td className="px-6 py-6 text-center text-sm text-transparent">—</Td>
+                                                <Td className="px-6 py-6 text-center text-sm text-transparent">—</Td>
+                                                <Td className="px-6 py-6 text-center text-sm text-transparent">—</Td>
+                                                <Td className="px-6 py-6 text-center text-sm text-transparent">—</Td>
+                                                <Td className="px-6 py-6 text-center text-sm text-transparent">—</Td>
+                                                <Td className="px-6 py-6 text-center text-sm text-transparent">—</Td>
+                                                <Td className="px-6 py-6 text-center text-sm text-transparent">—</Td>
                                             </tr>
                                         ))}
                                     </tbody>
