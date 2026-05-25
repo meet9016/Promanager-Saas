@@ -6,6 +6,7 @@ import api from '../../api/axiosInstance'; // Adjust path as needed
 import { Toast } from '../../Components/ui/Toast';
 import { useSelector } from 'react-redux';
 import CustomInput from '../../Components/comman/CustomInput';
+import CustomDatePicker from '../../Components/comman/CustomDatePicker';
 import CustomSelect from '../../Components/comman/CustomSelect';
 
 const AddLoanAdvance = ({
@@ -826,24 +827,22 @@ const AddLoanAdvance = ({
                                     <label className="block text-sm font-semibold text-[var(--color-text-secondary)] mb-3">
                                         Disbursement Date
                                     </label>
-                                    <input
-                                        type="date"
+                                    <CustomDatePicker
                                         name="disbursementDate"
                                         value={formData.disbursementDate}
                                         onChange={handleInputChange}
-                                        className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-all duration-200 shadow-sm bg-[var(--color-bg-secondary)]"
+                                        placeholder="DD-MM-YYYY"
                                     />
                                 </div>
                                 <div>
                                     <label className="block text-sm font-semibold text-[var(--color-text-secondary)] mb-3">
                                         Repayment Start Date
                                     </label>
-                                    <input
-                                        type="date"
+                                    <CustomDatePicker
                                         name="repaymentStartDate"
                                         value={formData.repaymentStartDate}
                                         onChange={handleInputChange}
-                                        className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-all duration-200 shadow-sm bg-[var(--color-bg-secondary)]"
+                                        placeholder="DD-MM-YYYY"
                                     />
                                 </div>
                             </div>

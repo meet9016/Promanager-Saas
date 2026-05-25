@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import api from '../../api/axiosInstance';
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
+import CustomDatePicker from '../../Components/comman/CustomDatePicker';
 // import { format } from "date-fns";
 import LoadingSpinner from "../../Components/Loader/LoadingSpinner"
 import { ArrowLeft } from 'lucide-react';
@@ -352,24 +351,22 @@ const LeaveApplication = () => {
                         {/* <div className="grid md:grid-cols-2 gap-6"> */}
                         <div className="space-y-2">
                             <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Start Date *</label>
-                            <DatePicker
-                                selected={formData.start_date}
-                                onChange={handleStartDateChange}
+                            <CustomDatePicker
+                                name="start_date"
+                                value={formData.start_date}
+                                onChange={(e) => handleStartDateChange(new Date(e.target.value))}
                                 minDate={today}
-                                placeholderText="DD-MM-YYYY"
-                                dateFormat="dd-MM-yyyy"
-                                className="w-full px-3 py-2 border rounded-md"
+                                placeholder="DD-MM-YYYY"
                             />
                         </div>
                         <div className="space-y-2">
                             <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">End Date *</label>
-                            <DatePicker
-                                selected={formData.end_date}
-                                onChange={(date) => setFormData({ ...formData, end_date: date })}
+                            <CustomDatePicker
+                                name="end_date"
+                                value={formData.end_date}
+                                onChange={(e) => setFormData({ ...formData, end_date: new Date(e.target.value) })}
                                 minDate={formData.start_date || today}
-                                placeholderText="DD-MM-YYYY"
-                                dateFormat="dd-MM-yyyy"
-                                className="w-full px-3 py-2 border rounded-md"
+                                placeholder="DD-MM-YYYY"
                             />
                         </div>
                         {/* </div> */}

@@ -1,7 +1,6 @@
 import { useState, useMemo, useEffect, useRef, useCallback } from 'react';
 import { ArrowLeft, Users, Calendar, RefreshCw, X, Building, Filter, CheckCircle2, XCircle, Plus, Search, Eye } from 'lucide-react';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
+import CustomDatePicker from '../../Components/comman/CustomDatePicker';
 import { useAuth } from '../../context/AuthContext';
 import { useSelector } from 'react-redux';
 import api from '../../api/axiosInstance';
@@ -776,14 +775,13 @@ const ShiftReallocation = () => {
                                                 <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
                                                     Effective Date <span className="text-[var(--color-error)]">*</span>
                                                 </label>
-                                                <DatePicker
-                                                    selected={effectiveDate}
-                                                    onChange={(date) => setEffectiveDate(date)}
+                                                <CustomDatePicker
+                                                    name="effectiveDate"
+                                                    value={effectiveDate}
+                                                    onChange={(e) => setEffectiveDate(new Date(e.target.value))}
                                                     minDate={minDate}
                                                     disabled={!sourceShift || !targetShift}
-                                                    dateFormat="MMMM d, yyyy"
-                                                    placeholderText="Select date"
-                                                    className="w-full px-3 py-2 border border-[var(--color-border-secondary)] rounded-md focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)] disabled:bg-[var(--color-bg-gray-light)] disabled:cursor-not-allowed"
+                                                    placeholder="Select date"
                                                 />
                                             </div>
                                         </div>

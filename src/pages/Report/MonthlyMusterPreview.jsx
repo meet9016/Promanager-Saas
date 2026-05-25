@@ -120,6 +120,14 @@ const getDaysInMonth = (yyyyMm) => {
     return new Date(y, m, 0).getDate();
 };
 
+const getDayOfWeek = (yyyyMm, day) => {
+    if (!yyyyMm) return -1;
+    const [y, m] = yyyyMm.split('-').map(Number);
+    return new Date(y, m - 1, day).getDay();
+};
+
+const DAY_SHORT = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+
 const CODE_LABELS = {
     P: 'Present',
     A: 'Absent',
@@ -128,6 +136,7 @@ const CODE_LABELS = {
     H: 'Holiday',
     INC: 'Incomplete',
     OT: 'Overtime',
+    L: 'Late Coming'
 };
 
 const CELL_DISPLAY_CODES = {
@@ -144,33 +153,47 @@ const CELL_DISPLAY_CODES = {
 /* Legend order must stay fixed */
 const TOTALS_ORDER = ['P', 'A', 'WO', '½P', 'H', 'INC', 'OT'];
 
-/* Enhanced status colors matching the design */
+/* Circular cell pill colors */
+const CELL_CIRCLE = {
+    P:   'bg-emerald-100  text-emerald-700',
+    A:   'bg-red-100      text-red-500',
+    WO:  'bg-slate-200    text-slate-500',
+    '½P':'bg-amber-100    text-amber-600',
+    H:   'bg-violet-100   text-violet-600',
+    INC: 'bg-orange-100   text-orange-600',
+    OT:  'bg-purple-100   text-purple-600',
+    L:   'bg-orange-50    text-orange-500',
+};
+
+/* Legend badge colors */
 const CODE_COLORS = {
-    P: 'bg-[var(--color-code-p-bg)] text-[var(--color-code-p-text)] border border-[var(--color-code-p-border)]',
-    A: 'bg-[var(--color-code-a-bg)] text-[var(--color-a-text)] border border-[var(--color-code-a-border)]',
-    L: 'bg-[var(--color-code-l-bg)] text-[var(--color-code-l-text)] border border-[var(--color-code-l-border)]',
-    "½P": 'bg-[var(--color-code-halfp-bg)] text-[var(--color-code-halfp-text)] border border-[var(--color-code-halfp-border)]',
-    WO: 'bg-[var(--color-code-wo-bg)] text-[var(--color-code-wo-text)] border border-[var(--color-code-wo-border)]',
-    H: 'bg-[var(--color-code-h-bg)] text-[var(--color-code-h-text)] border border-[var(--color-code-h-border)]',
-    INC: 'bg-[var(--color-code-l-bg)] text-[var(--color-code-l-text)] border border-[var(--color-code-l-border)]',
-    OT: 'bg-purple-100 text-purple-700 border border-purple-200',
+    P:   'bg-emerald-50  text-emerald-700 border-emerald-200',
+    A:   'bg-red-50      text-red-500     border-red-200',
+    WO:  'bg-slate-100   text-slate-500   border-slate-300',
+    '½P':'bg-amber-50    text-amber-600   border-amber-200',
+    H:   'bg-violet-50   text-violet-600  border-violet-200',
+    INC: 'bg-orange-50   text-orange-600  border-orange-200',
+    OT:  'bg-purple-50   text-purple-600  border-purple-200',
+    L:   'bg-orange-50   text-orange-500  border-orange-200',
 };
 
-const CELL_STATUS_COLORS = {
-    P: 'bg-[var(--color-cell-p-bg)] text-[var(--color-cell-p-text)] border-l-4 border-l-[var(--color-cell-p-border)]',
-    A: 'bg-[var(--color-cell-a-bg)] text-[var(--color-cell-a-text)] border-l-4 border-l-[var(--color-cell-a-border)]',
-    L: 'bg-[var(--color-cell-l-bg)] text-[var(--color-cell-l-text)] border-l-4 border-l-[var(--color-cell-l-border)]',
-    "½P": 'bg-[var(--color-cell-halfp-bg)] text-[var(--color-cell-halfp-text)] border-l-4 border-l-[var(--color-cell-halfp-border)]',
-    WO: 'bg-[var(--color-cell-wo-bg)] text-[var(--color-cell-wo-text)] border-l-4 border-l-[var(--color-cell-wo-border)]',
-    H: 'bg-[var(--color-cell-h-bg)] text-[var(--color-cell-h-text)] border-l-4 border-l-[var(--color-cell-h-border)]',
-    INC: 'bg-[var(--color-cell-l-bg)] text-[var(--color-cell-l-text)] border-l-4 border-l-[var(--color-cell-l-border)]',
-    OT: 'bg-purple-50 text-purple-700 border-l-4 border-l-purple-400',
+/* Avatar palette */
+const AVATAR_COLORS = [
+    'bg-violet-500','bg-blue-500','bg-emerald-500','bg-rose-500',
+    'bg-amber-500','bg-cyan-500','bg-fuchsia-500','bg-teal-500',
+    'bg-indigo-500','bg-orange-500',
+];
+const avatarColor = (name = '') => {
+    const idx = (name.charCodeAt(0) || 0) % AVATAR_COLORS.length;
+    return AVATAR_COLORS[idx];
 };
 
-
-/* Compact cell sizes */
-const CELL_W = 70;  // Wider for better readability but still compact
-const CELL_H = 40;  // Consistent height
+/* Cell sizes */
+const CELL_W = 44;
+const CELL_H = 54;
+const CODE_COL_W = 86;
+const NAME_COL_W = 170;
+const SUMMARY_COL_W = 220;
 
 const normalizeCode = (rawShort, rawStatus) => {
     let s = (rawShort || '').toString().trim().toUpperCase();
@@ -255,10 +278,14 @@ const MonthlyMusterPreview = () => {
 
     const daysInMonth = useMemo(() => getDaysInMonth(filters.month_year), [filters.month_year]);
 
-    /* Simple day meta (no weekend styling) */
+    /* Day meta with weekend styling */
     const dayMeta = useMemo(() => {
         if (!filters.month_year) return [];
-        return Array.from({ length: daysInMonth }, (_, i) => ({ day: i + 1 }));
+        return Array.from({ length: daysInMonth }, (_, i) => {
+            const d = i + 1;
+            const dow = getDayOfWeek(filters.month_year, d);
+            return { day: d, dow, isSun: dow === 0, isSat: dow === 6, isWeekend: dow === 0 || dow === 6 };
+        });
     }, [filters.month_year, daysInMonth]);
 
     // Auto-close export dropdown if anchor goes off-screen
@@ -392,12 +419,10 @@ const MonthlyMusterPreview = () => {
     }, [rows, daysInMonth]);
 
     const gridTemplate = useMemo(() => {
-        const empCodeWidth = '120px';
-        const nameWidth = '200px';
-        const dayWidth = `${CELL_W}px`;
-        const totalsWidth = '250px';
-        return `${empCodeWidth} ${nameWidth} repeat(${daysInMonth}, ${dayWidth}) ${totalsWidth}`;
+        return `${CODE_COL_W}px ${NAME_COL_W}px repeat(${daysInMonth}, ${CELL_W}px) ${SUMMARY_COL_W}px`;
     }, [daysInMonth]);
+
+    const minInnerWidth = CODE_COL_W + NAME_COL_W + daysInMonth * CELL_W + SUMMARY_COL_W;
 
     /* Legend always shows full set (report order) */
     const legendCodes = TOTALS_ORDER;
@@ -797,10 +822,10 @@ const MonthlyMusterPreview = () => {
                     <div className="px-4 py-4 border-b border-[var(--color-border-primary)] bg-[var(--color-bg-secondary)]">
                         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                             <div>
-                                <h3 className="font-semibold text-[var(--color-text-primary)] mb-1">
-                                    Monthly Attendance Report - {formatMonthYear(filters.month_year)}
+                                <h3 className="font-semibold text-slate-800 mb-1">
+                                    Monthly Attendance Muster - {formatMonthYear(filters.month_year)}
                                 </h3>
-                                <p className="text-sm text-[var(--color-text-secondary)]">
+                                <p className="text-sm text-slate-500">
                                     {hasGenerated
                                         ? `${gridData.length} employee${gridData.length !== 1 ? 's' : ''} found`
                                         : 'Click "Generate Report" to load data'
@@ -810,16 +835,23 @@ const MonthlyMusterPreview = () => {
 
                             {/* Legend - only show when data is loaded */}
                             {hasGenerated && (
-                                <div className="flex flex-wrap gap-2">
-                                    {legendCodes.map((c) => (
-                                        <div
-                                            key={c}
-                                            className={`px-2 py-1 rounded text-xs font-medium ${CODE_COLORS[c] || 'bg-[var(--color-card-detail-bg)] text-[var(--color-text-secondary)] border border-[var(--color-card-detail-border)]'} border`}
-                                        >
-                                            <span className="font-bold">{c}</span>
-                                            <span className="ml-1 hidden sm:inline">{CODE_LABELS[c]}</span>
-                                        </div>
+                                <div className="flex flex-wrap gap-1.5 sm:ml-auto">
+                                    {[...TOTALS_ORDER].map((c) => (
+                                        <span key={c}
+                                            className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold border ${CODE_COLORS[c] || 'bg-gray-100 text-gray-600 border-gray-200'}`}>
+                                            <span className="w-1.5 h-1.5 rounded-full bg-current opacity-60" />
+                                            {c === '½P' ? '½P' : c}&nbsp;
+                                            <span className="font-normal opacity-70">{CODE_LABELS[c]}</span>
+                                        </span>
                                     ))}
+                                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold border bg-slate-100 text-slate-500 border-slate-300">
+                                        <span className="w-1.5 h-1.5 rounded-full bg-blue-400" />
+                                        Sat
+                                    </span>
+                                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold border bg-red-50 text-red-400 border-red-200">
+                                        <span className="w-1.5 h-1.5 rounded-full bg-red-400" />
+                                        Sun
+                                    </span>
                                 </div>
                             )}
                         </div>
@@ -827,130 +859,183 @@ const MonthlyMusterPreview = () => {
 
                     {/* Loading indicator (thin bar) */}
                     {loading && (
-                        <div className="relative h-1 bg-[var(--color-bg-gray-light)]">
-                            <div className="absolute inset-y-0 left-0 bg-[var(--color-primary)] animate-pulse w-1/3" />
+                        <div className="h-0.5 bg-slate-100">
+                            <div className="h-full bg-gradient-to-r from-violet-400 to-blue-400 animate-pulse w-2/3 rounded-full" />
                         </div>
                     )}
 
                     {/* Data Grid Container */}
-                    <div
-                        ref={containerRef}
-                        className="overflow-auto max-h-[70vh] "
-                        style={{ minWidth: '100%' }}
-                    >
-                        <div style={{ minWidth: `${140 + 240 + (daysInMonth * CELL_W) + 300}px` }}>
-                            {/* Header row - only show when data is generated */}
-                            {hasGenerated && (
-                                <div
-                                    className="sticky top-0 z-20 bg-[var(--color-bg-primary)] border-b border-[var(--color-border-primary)]"
-                                    style={{ display: 'grid', gridTemplateColumns: gridTemplate }}
-                                >
-                                    <div className="px-3 py-3 text-sm font-semibold text-[var(--color-text-primary)] border-r border-[var(--color-border-primary)] sticky left-0 z-30 bg-[var(--color-bg-primary)]">
-                                        Employee Code
-                                    </div>
-                                    <div className="px-3 py-3 text-sm font-semibold text-[var(--color-text-primary)] border-r border-[var(--color-border-primary)] sticky left-[120px] z-30 bg-[var(--color-bg-primary)]">
-                                        Employee Name
-                                    </div>
+                    <div ref={containerRef} className="overflow-auto" style={{ maxHeight: '65vh' }}>
+                        {!hasGenerated && !loading && (
+                            <div className="py-20 text-center">
+                                <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-slate-100 mb-4">
+                                    <Calendar size={28} className="text-slate-400" />
+                                </div>
+                                <p className="text-slate-600 font-semibold text-sm mb-1">Ready to Generate Report</p>
+                                <p className="text-slate-400 text-xs">
+                                    Select your filters and click "Generate Report" to view muster data
+                                </p>
+                            </div>
+                        )}
 
-                                    {dayMeta.map(({ day }) => (
+                        {hasGenerated && gridData.length === 0 && !loading && (
+                            <div className="py-20 text-center">
+                                <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-slate-100 mb-4">
+                                    <Users size={28} className="text-slate-400" />
+                                </div>
+                                <p className="text-slate-600 font-semibold text-sm mb-1">No attendance data found</p>
+                                <p className="text-slate-400 text-xs">
+                                    Try adjusting your filters or select a different month
+                                </p>
+                            </div>
+                        )}
+
+                        {hasGenerated && gridData.length > 0 && (
+                            <div style={{ minWidth: `${minInnerWidth}px` }}>
+                                {/* Header row */}
+                                <div
+                                    className="sticky top-0 z-20 border-b border-slate-200"
+                                    style={{ display: 'grid', gridTemplateColumns: gridTemplate, background: '#f8fafc' }}
+                                >
+                                    {/* Code */}
+                                    <div
+                                        className="sticky left-0 z-30 flex items-center px-3 border-r border-slate-200"
+                                        style={{ width: `${CODE_COL_W}px`, height: 54, background: '#f8fafc', boxShadow: '2px 0 4px -2px rgba(0,0,0,0.06)' }}
+                                    >
+                                        <span className="text-[11px] font-extrabold text-slate-400 uppercase tracking-widest">Code</span>
+                                    </div>
+                                    {/* Employee */}
+                                    <div
+                                        className="sticky z-30 flex items-center px-3 border-r border-slate-200"
+                                        style={{ left: `${CODE_COL_W}px`, width: `${NAME_COL_W}px`, height: 54, background: '#f8fafc', boxShadow: '2px 0 4px -2px rgba(0,0,0,0.06)' }}
+                                    >
+                                        <span className="text-[11px] font-extrabold text-slate-400 uppercase tracking-widest">Employee</span>
+                                    </div>
+                                    {/* Days */}
+                                    {dayMeta.map(({ day, dow, isSun, isSat }) => (
                                         <div
                                             key={day}
-                                            className="text-xs font-semibold text-center border-r border-[var(--color-border-primary)] flex items-center justify-center text-[var(--color-text-primary)] bg-[var(--color-bg-primary)] relative z-0"
-                                            style={{ height: `${CELL_H}px` }}
+                                            className={`flex flex-col items-center justify-center gap-0.5
+                                                ${isSun ? 'bg-red-50' : isSat ? 'bg-blue-50' : 'bg-slate-50'}`}
+                                            style={{ height: 54, width: CELL_W }}
                                         >
-                                            {day}
+                                            <span className={`text-[9px] font-semibold leading-none
+                                                ${isSun ? 'text-red-400' : isSat ? 'text-blue-400' : 'text-slate-400'}`}>
+                                                {DAY_SHORT[dow]}
+                                            </span>
+                                            <span className={`text-[11px] font-extrabold leading-none
+                                                ${isSun ? 'text-red-500' : isSat ? 'text-blue-500' : 'text-slate-600'}`}>
+                                                {day}
+                                            </span>
                                         </div>
                                     ))}
 
-                                    <div className="px-3 py-3 text-sm font-semibold text-[var(--color-text-primary)]">
-                                        Summary Totals
+                                    {/* Summary header */}
+                                    <div className="flex items-center px-3" style={{ height: 54, width: SUMMARY_COL_W, background: '#f8fafc' }}>
+                                        <span className="text-[11px] font-extrabold text-slate-400 uppercase tracking-widest">Summary</span>
                                     </div>
                                 </div>
-                            )}
 
-                            {/* Empty state - show different messages based on state */}
-                            {!hasGenerated && !loading && (
-                                <div className="p-12 text-center ">
-                                    <div className="text-[var(--color-text-muted)] mb-4">
-                                        <Calendar size={64} className="mx-auto" />
-                                    </div>
-                                    <p className="text-[var(--color-text-primary)] font-medium text-lg mb-2">Ready to Generate Report</p>
-                                    <p className="text-sm text-[var(--color-text-muted)]">
-                                        Select your filters and click "Generate Report" to view attendance data
-                                    </p>
-                                </div>
-                            )}
-
-                            {hasGenerated && gridData.length === 0 && !loading && (
-                                <div className="p-8 text-center "
-                                    style={{
-                                        scrollbarWidth: 'none', /* Firefox */
-                                        msOverflowStyle: 'none'  /* IE and Edge */
-                                    }}
-                                >
-                                    <div className="text-[var(--color-text-muted)] mb-2">
-                                        <Users size={48} className="mx-auto" />
-                                    </div>
-                                    <p className="text-[var(--color-text-secondary)] font-medium">No attendance data found</p>
-                                    <p className="text-sm text-[var(--color-text-muted)] mt-1">
-                                        Try adjusting your filters or select a different month
-                                    </p>
-                                </div>
-                            )}
-
-                            {/* Data rows */}
-                            {hasGenerated && gridData.map((r, rowIndex) => {
-                                return (
-                                    <div
-                                        key={`${r.employee_code}-${rowIndex}`}
-                                        className={`border-b border-[var(--color-border-secondary)]  transition-colors duration-150 bg-[var(--color-bg-secondary)]`}
-                                        style={{ display: 'grid', gridTemplateColumns: gridTemplate }}
-                                    >
-                                        {/* Employee Code - Sticky */}
-                                        <div className={`px-4 py-3 text-sm font-medium  text-gray-900 border-b border-[var(--color-border-secondary)] sticky left-0 z-10 bg-[var(--color-bg-secondary)]`}>
-                                            {r.employee_code}
-                                        </div>
-
-                                        {/* Employee Name - Sticky */}
-                                        <div className={`px-4 py-3 text-sm text-gray-700 border-b border-[var(--color-border-secondary)] sticky left-[120px] z-10 bg-[var(--color-bg-secondary)] truncate`}>
-                                            {r.employee_name}
-                                        </div>
-
-                                        {/* Day cells with enhanced styling */}
-                                        {r.dayCodes.map((c, dayIndex) => (
+                                {/* Data rows */}
+                                {gridData.map((r, rowIndex) => {
+                                    const rowBg = rowIndex % 2 === 0 ? '#ffffff' : '#f8fafc';
+                                    return (
+                                        <div
+                                            key={`${r.employee_code}-${rowIndex}`}
+                                            className="border-b border-slate-100 group hover:bg-violet-50/40 transition-colors"
+                                            style={{ display: 'grid', gridTemplateColumns: gridTemplate, background: rowBg }}
+                                        >
+                                            {/* Employee Code */}
                                             <div
-                                                key={dayIndex}
-                                                className="flex items-center justify-center text-xs font-medium py-1 mr-1 ml-1 relative z-0"
+                                                className="sticky left-0 z-10 border-r border-slate-100 flex items-center px-3 transition-colors"
+                                                style={{
+                                                    width: `${CODE_COL_W}px`, height: `${CELL_H}px`,
+                                                    background: rowBg,
+                                                    boxShadow: '2px 0 4px -2px rgba(0,0,0,0.06)'
+                                                }}
                                             >
-                                                {c && (
-                                                    <div className={`w-full h-full rounded-md flex items-center justify-center text-xs font-bold ${CELL_STATUS_COLORS[c] || 'bg-gray-100 text-gray-600 border-l-4 border-l-gray-300'}`}>
-                                                        {CELL_DISPLAY_CODES[c] || c}
+                                                <span className="text-xs font-bold text-blue-500 tracking-wide truncate">
+                                                    {r.employee_code}
+                                                </span>
+                                            </div>
+
+                                            {/* Employee Name */}
+                                            <div
+                                                className="sticky z-10 border-r border-slate-100 flex items-center gap-2.5 px-3 transition-colors"
+                                                style={{
+                                                    left: `${CODE_COL_W}px`, width: `${NAME_COL_W}px`, height: `${CELL_H}px`,
+                                                    background: rowBg,
+                                                    boxShadow: '2px 0 4px -2px rgba(0,0,0,0.06)'
+                                                }}
+                                            >
+                                                <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 text-white font-extrabold text-xs shadow-sm ${avatarColor(r.employee_name)}`}>
+                                                    {(r.employee_name || '?').slice(0, 2).toUpperCase()}
+                                                </div>
+                                                <div className="min-w-0">
+                                                    <p className="text-[13px] font-bold text-slate-700 truncate leading-tight">{r.employee_name}</p>
+                                                    <p className="text-[10px] text-slate-400 font-medium">Employee</p>
+                                                </div>
+                                            </div>
+
+                                            {/* Day cells */}
+                                            {r.dayCodes.map((c, dayIndex) => {
+                                                const { isSun, isSat } = dayMeta[dayIndex] || {};
+                                                const circleColor = c ? (CELL_CIRCLE[c] || 'bg-gray-100 text-gray-500') : '';
+                                                return (
+                                                    <div
+                                                        key={dayIndex}
+                                                        className={`flex items-center justify-center
+                                                            ${isSun ? 'bg-red-50/60' : isSat ? 'bg-blue-50/60' : ''}`}
+                                                        style={{ height: `${CELL_H}px`, width: CELL_W }}
+                                                    >
+                                                        {c ? (
+                                                            <div
+                                                                title={CODE_LABELS[c] || c}
+                                                                className={`w-8 h-8 rounded-full flex items-center justify-center text-[9px] font-extrabold leading-none shadow-sm ${circleColor}`}
+                                                            >
+                                                                {c === '½P' ? '½P' : c}
+                                                            </div>
+                                                        ) : (
+                                                            <div className={`w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-light
+                                                                ${isSun ? 'bg-red-50 text-red-200' : isSat ? 'bg-blue-50 text-blue-200' : 'text-slate-200'}`}>
+                                                                –
+                                                            </div>
+                                                        )}
                                                     </div>
+                                                );
+                                            })}
+
+                                            {/* Summary column */}
+                                            <div
+                                                className="flex flex-wrap items-center gap-1 px-2 py-1 content-center"
+                                                style={{ height: `${CELL_H}px`, width: SUMMARY_COL_W }}
+                                            >
+                                                {TOTALS_ORDER.filter(k => r.totals[k] > 0).map(k => {
+                                                    const colorMap = {
+                                                        P:   'bg-emerald-100 text-emerald-700 border-emerald-200',
+                                                        A:   'bg-red-100 text-red-500 border-red-200',
+                                                        WO:  'bg-slate-200 text-slate-500 border-slate-300',
+                                                        '½P':'bg-amber-100 text-amber-600 border-amber-200',
+                                                        H:   'bg-violet-100 text-violet-600 border-violet-200',
+                                                        INC: 'bg-orange-100 text-orange-600 border-orange-200',
+                                                        OT:  'bg-purple-100 text-purple-600 border-purple-200',
+                                                    };
+                                                    return (
+                                                        <span key={k}
+                                                            className={`inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[9px] font-bold border ${colorMap[k] || 'bg-gray-100 text-gray-500 border-gray-200'}`}>
+                                                            {k} <span className="font-extrabold">{Number.isInteger(r.totals[k]) ? r.totals[k] : r.totals[k].toFixed(1)}</span>
+                                                        </span>
+                                                    );
+                                                })}
+                                                {TOTALS_ORDER.every(k => r.totals[k] === 0) && (
+                                                    <span className="text-slate-300 text-[9px] italic">No records</span>
                                                 )}
                                             </div>
-                                        ))}
-
-                                        {/* Totals column */}
-                                        <div className="px-3 py-2 flex flex-wrap items-center gap-1">
-                                            {TOTALS_ORDER.filter(k => r.totals[k] > 0).map(k => (
-                                                <span
-                                                    key={k}
-                                                    className={`inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-medium ${CODE_COLORS[k] || 'bg-gray-100 text-gray-600'}`}
-                                                >
-                                                    <span className="font-bold">{k}</span>
-                                                    <span className="bg-white/50 px-1 rounded text-xs font-bold">
-                                                        {Number.isInteger(r.totals[k]) ? r.totals[k] : r.totals[k].toFixed(1)}
-                                                    </span>
-                                                </span>
-                                            ))}
-                                            {TOTALS_ORDER.every(k => r.totals[k] === 0) && (
-                                                <span className="text-gray-500 text-sm">No records</span>
-                                            )}
                                         </div>
-                                    </div>
-                                );
-                            })}
-                        </div>
+                                    );
+                                })}
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

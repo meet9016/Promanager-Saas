@@ -984,7 +984,7 @@ const DailyAttendance = () => {
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
               <div className="flex items-center">
                 <Activity className="h-5 w-5 sm:h-6 sm:w-6 text-[var(--color-primary-darker)] mr-2" />
-                <h3 className="text-sm sm:text-lg font-medium text-[var(--color-primary-darker)]">Daily Attendance Details</h3>
+                <h3 className="text-sm sm:text-lg font-medium text-[var(--color-primary-darker)]">Daily Attendance</h3>
               </div>
 
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3">

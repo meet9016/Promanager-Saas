@@ -8,9 +8,8 @@ import { Trash2, IndianRupee } from "lucide-react";
 import { Plus } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import api from "../../api/axiosInstance";
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
 import CustomSelect from "../comman/CustomSelect";
+import CustomDatePicker from '../comman/CustomDatePicker';
 
 const Increment = () => {
 
@@ -435,22 +434,15 @@ const Increment = () => {
 
                                                     <div className="space-y-2">
                                                         <label className="block text-sm font-medium text-[var(--color-text-secondary)]">Start Date <span className="text-[var(--color-error)]">*</span></label>
-                                                        <DatePicker
-                                                            selected={getValidDate(item?.starting_date || "") || ""}
-                                                            className="w-full px-3 py-2 border border-[var(--color-border-primary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition-all"
-                                                            dateFormat="dd-MM-yyyy"
-                                                            placeholderText="DD-MM-YYYY"
-                                                            showYearDropdown
-                                                            showMonthDropdown
-                                                            scrollableYearDropdown
-                                                            scrollableMonthDropdown
+                                                        <CustomDatePicker
+                                                            name="starting_date"
+                                                            value={item?.starting_date || ""}
+                                                            placeholder="DD-MM-YYYY"
+                                                            onChange={(e) => {
+                                                                const formatted = e.target.value;
+                                                                if (!formatted) return;
 
-                                                            onChange={(date) => {
-                                                                if (!date) return;
-
-                                                                const formatted = formatLocalDate(date);
-
-                                                                const prevDate = new Date(date);
+                                                                const prevDate = new Date(formatted);
                                                                 prevDate.setDate(prevDate.getDate() - 1);
                                                                 const prevFormatted = formatLocalDate(prevDate);
 
@@ -477,20 +469,14 @@ const Increment = () => {
                                                     <div className="space-y-2">
                                                         <label className="block text-sm font-medium text-[var(--color-text-secondary)]">End Date </label>
 
-                                                        <DatePicker
-                                                            selected={getValidDate(item?.ending_date) || null}
-                                                            className="w-full px-3 py-2 border border-[var(--color-border-primary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition-all"
-                                                            dateFormat="dd-MM-yyyy"
-                                                            placeholderText="DD-MM-YYYY"
-                                                            showYearDropdown
-                                                            showMonthDropdown
-                                                            scrollableYearDropdown
-                                                            scrollableMonthDropdown
+                                                        <CustomDatePicker
+                                                            name="ending_date"
+                                                            value={item?.ending_date || ""}
+                                                            placeholder="DD-MM-YYYY"
                                                             disabled={index === incrementList.length - 1}
-                                                            onChange={(date) => {
-                                                                if (!date) return;
-
-                                                                const formatted = formatLocalDate(date);
+                                                            onChange={(e) => {
+                                                                const formatted = e.target.value;
+                                                                if (!formatted) return;
 
                                                                 setIncrementList(prev =>
                                                                     prev.map((row, i) =>
