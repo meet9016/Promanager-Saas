@@ -20,6 +20,8 @@ import {
     Sun,
     Building2,
     Star,
+    CheckCircle2,
+    XCircle
 } from "lucide-react";
 import LoadingSpinner from "../../Components/Loader/LoadingSpinner";
 import { ConfirmDialog } from "../../Components/ui/ConfirmDialog";
@@ -557,73 +559,117 @@ export default function HolidayManagement() {
                 {/* Create/Edit Modal */}
                 {createModal && (
                     <Modal onClose={() => { setCreateModal(false); resetForm(); }} title={editingId ? "Edit Holiday" : "Add New Holiday"}>
-                        <div className="space-y-5">
-                            <InputField
-                                label="Holiday Name"
-                                required
-                                value={formData.holiday_name}
-                                onChange={(e) => setFormData({ ...formData, holiday_name: e.target.value })}
-                                placeholder="e.g., Diwali, Christmas"
-                                icon={<Calendar size={16} />}
-                            />
-
-                            <div>
-                                <label className="block text-sm font-semibold text-[var(--color-text-primary)] mb-2">
-                                    Holiday Type <span className="text-red-500">*</span>
-                                </label>
-                                {/* <select
-                                    value={formData.holiday_type_id}
-                                    onChange={(e) => setFormData({ ...formData, holiday_type_id: e.target.value })}
-                                    className="w-full px-4 py-2.5 border border-[var(--color-border-secondary)] rounded-lg focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] outline-none transition-all bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)]"
-                                >
-                                    <option value="">Select Type</option>
-                                    {holidayTypes.map((t) => (
-                                        <option key={t.holiday_type_id} value={t.holiday_type_id}>
-                                            {t.holiday_type_name}
-                                        </option>
-                                    ))}
-                                </select> */}
-                                <CustomSelect
-                                    name="holiday_type_id"
-                                    value={formData.holiday_type_id}
-                                    onChange={(e) =>
-                                        setFormData({
-                                            ...formData,
-                                            holiday_type_id: e.target.value,
-                                        })
-                                    }
-                                    options={holidayTypes.map((t) => ({
-                                        value: t.holiday_type_id,
-                                        label: t.holiday_type_name,
-                                    }))}
-                                    placeholder="Select Type"
-                                    searchable={true}
+                        <div className="space-y-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                <InputField
+                                    label="Holiday Name"
+                                    required
+                                    value={formData.holiday_name}
+                                    onChange={(e) => setFormData({ ...formData, holiday_name: e.target.value })}
+                                    placeholder="e.g., Diwali, Christmas"
+                                    icon={<Calendar size={16} />}
                                 />
-                            </div>
 
-                            <div>
-                                <label className="block text-sm font-semibold text-[var(--color-text-primary)] mb-2">
-                                    Select Dates <span className="text-red-500">*</span>
-                                </label>
-                                <div className="border border-[var(--color-border-secondary)] rounded-lg p-4 bg-[var(--color-bg-primary)]">
-                                    <DatePickerComponent selectedDates={selectedDates} setSelectedDates={setSelectedDates} />
+                                <div>
+                                    <label className="block text-sm font-semibold text-[var(--color-text-primary)] mb-2">
+                                        Holiday Type <span className="text-red-500">*</span>
+                                    </label>
+                                    <CustomSelect
+                                        name="holiday_type_id"
+                                        value={formData.holiday_type_id}
+                                        onChange={(e) =>
+                                            setFormData({
+                                                ...formData,
+                                                holiday_type_id: e.target.value,
+                                            })
+                                        }
+                                        options={holidayTypes.map((t) => ({
+                                            value: t.holiday_type_id,
+                                            label: t.holiday_type_name,
+                                        }))}
+                                        placeholder="Select Type"
+                                        searchable={true}
+                                    />
+                                </div>
+                            </div>
+                        <div>
+                            <label className="block text-sm font-semibold text-[var(--color-text-primary)] mb-2">
+                                Select Dates <span className="text-red-500">*</span>
+                            </label>
+
+                            <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+                                {/* Calendar Left Side */}
+                                <div className="lg:col-span-7 border border-[var(--color-border-secondary)] rounded-xl p-2 bg-[var(--color-bg-primary)] shadow-sm transition-all flex justify-center">
+                                    <DatePickerComponent
+                                        selectedDates={selectedDates}
+                                        setSelectedDates={setSelectedDates}
+                                    />
                                 </div>
 
-                                {selectedDates.length > 0 && (
-                                    <div className="mt-3 flex flex-wrap gap-2">
-                                        {selectedDates.map((d) => (
-                                            <span key={d} className="inline-flex items-center gap-2 bg-primary-50 text-primary-700 border border-primary-200 px-3 py-1.5 rounded-lg text-sm font-medium">
-                                                <Calendar size={14} />
-                                                {d}
-                                                <button type="button" onClick={() => setSelectedDates((prev) => prev.filter((x) => x !== d))} className="hover:bg-primary-100 rounded-full p-0.5 transition-colors">
-                                                    <X size={14} />
-                                                </button>
-                                            </span>
-                                        ))}
+                                {/* Selected Dates Right Side */}
+                                <div className="lg:col-span-5 bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] rounded-xl p-4 shadow-sm flex flex-col h-[300px]">
+                                    <div className="flex items-center justify-between pb-3 mb-3 border-b border-[var(--color-border-primary)]">
+                                        <h4 className="text-sm font-semibold text-[var(--color-text-primary)]">
+                                            Selected Dates
+                                        </h4>
+                                        <span className="bg-[var(--color-primary-lighter)] text-[var(--color-primary-dark)] py-0.5 px-2.5 rounded-full text-xs font-bold">
+                                            {selectedDates.length}
+                                        </span>
                                     </div>
-                                )}
+                                    
+                                    {selectedDates.length === 0 ? (
+                                        <div className="flex-1 flex flex-col items-center justify-center text-center p-4">
+                                            <div className="w-12 h-12 bg-[var(--color-primary-lightest)] rounded-full flex items-center justify-center mb-3">
+                                                <CalendarDays className="w-6 h-6 text-[var(--color-primary-light)]" />
+                                            </div>
+                                            <p className="text-sm text-[var(--color-text-secondary)] font-medium">No dates selected</p>
+                                            <p className="text-xs text-[var(--color-text-secondary)] mt-1 opacity-70">Click on the calendar to select holidays</p>
+                                        </div>
+                                    ) : (
+                                        <>
+                                            <div className="flex-1 overflow-y-auto pr-1 space-y-2 custom-scrollbar">
+                                                {selectedDates.map((d) => (
+                                                    <div
+                                                        key={d}
+                                                        className="flex items-center justify-between bg-[var(--color-bg-primary)] border border-[var(--color-border-secondary)] hover:border-[var(--color-primary-light)] px-3 py-2.5 rounded-lg text-sm transition-all group shadow-sm hover:shadow"
+                                                    >
+                                                        <div className="flex items-center gap-2.5 text-[var(--color-text-primary)] font-medium">
+                                                            <CalendarDays size={16} className="text-[var(--color-primary)]" />
+                                                            <span>{d}</span>
+                                                        </div>
+                                                        
+                                                        <button
+                                                            type="button"
+                                                            onClick={() =>
+                                                                setSelectedDates((prev) =>
+                                                                    prev.filter((x) => x !== d)
+                                                                )
+                                                            }
+                                                            className="text-[var(--color-text-secondary)] hover:text-red-500 hover:bg-red-50 rounded-full p-1.5 transition-colors opacity-70 hover:opacity-100"
+                                                            title="Remove Date"
+                                                        >
+                                                            <X size={14} />
+                                                        </button>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                            
+                                            {selectedDates.length > 1 && (
+                                                <div className="pt-3 mt-2 border-t border-[var(--color-border-primary)]">
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setSelectedDates([])}
+                                                        className="w-full text-xs text-red-500 hover:text-red-600 font-medium py-1 transition-colors text-center"
+                                                    >
+                                                        Clear All Dates
+                                                    </button>
+                                                </div>
+                                            )}
+                                        </>
+                                    )}
+                                </div>
                             </div>
-
+                        </div>
                             <InputField
                                 label="Description"
                                 value={formData.description}
@@ -632,39 +678,47 @@ export default function HolidayManagement() {
                                 textarea
                             />
 
-                            {/* Holiday Paid radio group */}
+                            {/* Holiday Paid radio group - Styled as cards */}
                             <div>
-                                <label className="block text-sm font-semibold text-[var(--color-text-primary)] mb-2">Holiday Paid?</label>
-                                <div className="flex items-center gap-4">
-                                    <label className="flex items-center gap-2 cursor-pointer">
+                                <label className="block text-sm font-semibold text-[var(--color-text-primary)] mb-3">Holiday Status</label>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <label className={`flex items-center justify-center p-4 border-2 rounded-xl cursor-pointer transition-all ${formData.holiday_paid === "1" ? 'border-[var(--color-primary)] bg-[var(--color-primary-lighter)] text-[var(--color-primary-dark)] shadow-md' : 'border-[var(--color-border-secondary)] bg-[var(--color-bg-primary)] hover:border-[var(--color-primary-light)] text-[var(--color-text-secondary)] hover:shadow-sm'}`}>
                                         <input
                                             type="radio"
                                             name="holiday_paid"
                                             value="1"
+                                            className="hidden"
                                             checked={formData.holiday_paid === "1"}
                                             onChange={(e) => setFormData({ ...formData, holiday_paid: e.target.value })}
                                         />
-                                        <span className="text-[var(--color-text-primary)] text-sm">Paid Holiday</span>
+                                        <div className="flex items-center gap-2 font-semibold">
+                                            <CheckCircle2 size={20} className={formData.holiday_paid === "1" ? 'text-[var(--color-primary)]' : 'text-gray-400'} />
+                                            Paid Holiday
+                                        </div>
                                     </label>
-                                    <label className="flex items-center gap-2 cursor-pointer">
+                                    <label className={`flex items-center justify-center p-4 border-2 rounded-xl cursor-pointer transition-all ${formData.holiday_paid === "2" ? 'border-orange-500 bg-orange-50 text-orange-700 shadow-md' : 'border-[var(--color-border-secondary)] bg-[var(--color-bg-primary)] hover:border-orange-300 text-[var(--color-text-secondary)] hover:shadow-sm'}`}>
                                         <input
                                             type="radio"
                                             name="holiday_paid"
                                             value="2"
+                                            className="hidden"
                                             checked={formData.holiday_paid === "2"}
                                             onChange={(e) => setFormData({ ...formData, holiday_paid: e.target.value })}
                                         />
-                                        <span className="text-[var(--color-text-primary)] text-sm">Unpaid Holiday</span>
+                                        <div className="flex items-center gap-2 font-semibold">
+                                            <XCircle size={20} className={formData.holiday_paid === "2" ? 'text-orange-500' : 'text-gray-400'} />
+                                            Unpaid Holiday
+                                        </div>
                                     </label>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="flex justify-end gap-3 pt-6 border-t border-[var(--color-border-primary)] mt-6">
+                        <div className="flex justify-end gap-3 pt-6 border-t border-[var(--color-border-primary)] mt-8">
                             <button
                                 type="button"
                                 onClick={() => { setCreateModal(false); resetForm(); }}
-                                className="px-5 py-2.5 bg-[var(--color-bg-primary)] hover:bg-[var(--color-bg-hover)] rounded-lg text-[var(--color-text-primary)] font-medium transition-colors border border-[var(--color-border-secondary)]"
+                                className="px-6 py-2.5 bg-[var(--color-bg-primary)] hover:bg-[var(--color-bg-hover)] rounded-xl text-[var(--color-text-primary)] font-semibold transition-all border border-[var(--color-border-secondary)] shadow-sm hover:shadow-md"
                                 disabled={isSubmitting}
                             >
                                 Cancel
@@ -672,10 +726,20 @@ export default function HolidayManagement() {
                             <button
                                 type="button"
                                 onClick={handleSubmit}
-                                className="px-5 py-2.5 bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] rounded-lg text-white font-semibold transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="px-6 py-2.5 bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-primary-dark)] hover:from-[var(--color-primary-dark)] hover:to-[var(--color-primary-darker)] rounded-xl text-white font-semibold transition-all shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                                 disabled={isSubmitting}
                             >
-                                {isSubmitting ? 'Submitting...' : (editingId ? "Update Holiday" : "Add Holiday")}
+                                {isSubmitting ? (
+                                    <>
+                                        <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                                        Submitting...
+                                    </>
+                                ) : (
+                                    <>
+                                        <Check size={18} />
+                                        {editingId ? "Update Holiday" : "Add Holiday"}
+                                    </>
+                                )}
                             </button>
                         </div>
                     </Modal>
@@ -892,87 +956,157 @@ function DatePickerComponent({ selectedDates, setSelectedDates }) {
     const [currentMonth, setCurrentMonth] = useState(new Date());
 
     const formatDate = (date) => {
-        const d = String(date.getDate()).padStart(2, '0');
-        const m = String(date.getMonth() + 1).padStart(2, '0');
+        const d = String(date.getDate()).padStart(2, "0");
+        const m = String(date.getMonth() + 1).padStart(2, "0");
         const y = date.getFullYear();
         return `${d}/${m}/${y}`;
     };
 
-    const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    const monthNames = [
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+    ];
+
     const dayNames = ["S", "M", "T", "W", "T", "F", "S"];
 
     const getDaysInMonth = (date) => {
         const year = date.getFullYear();
         const month = date.getMonth();
+
         const firstDay = new Date(year, month, 1);
         const lastDay = new Date(year, month + 1, 0);
+
         const daysInMonth = lastDay.getDate();
         const startingDayOfWeek = firstDay.getDay();
 
         const days = [];
-        for (let i = 0; i < startingDayOfWeek; i++) days.push(null);
-        for (let day = 1; day <= daysInMonth; day++) days.push(new Date(year, month, day));
+
+        for (let i = 0; i < startingDayOfWeek; i++) {
+            days.push(null);
+        }
+
+        for (let day = 1; day <= daysInMonth; day++) {
+            days.push(new Date(year, month, day));
+        }
+
         return days;
     };
 
     const days = getDaysInMonth(currentMonth);
-    const nextMonth = () => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1));
-    const prevMonth = () => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1));
+
+    const nextMonth = () => {
+        setCurrentMonth(
+            new Date(
+                currentMonth.getFullYear(),
+                currentMonth.getMonth() + 1,
+                1
+            )
+        );
+    };
+
+    const prevMonth = () => {
+        setCurrentMonth(
+            new Date(
+                currentMonth.getFullYear(),
+                currentMonth.getMonth() - 1,
+                1
+            )
+        );
+    };
 
     const handleDateClick = (date) => {
         const formatted = formatDate(date);
-        setSelectedDates(prev => {
+
+        setSelectedDates((prev) => {
             let newDates;
+
             if (prev.includes(formatted)) {
-                newDates = prev.filter(d => d !== formatted);
+                newDates = prev.filter((d) => d !== formatted);
             } else {
                 newDates = [...prev, formatted];
             }
 
-            // Sort dates in ascending order (DD/MM/YYYY format)
             return newDates.sort((a, b) => {
-                const [dayA, monthA, yearA] = a.split('/').map(Number);
-                const [dayB, monthB, yearB] = b.split('/').map(Number);
+                const [dayA, monthA, yearA] = a.split("/").map(Number);
+                const [dayB, monthB, yearB] = b.split("/").map(Number);
 
-                // Compare year first, then month, then day
                 if (yearA !== yearB) return yearA - yearB;
                 if (monthA !== monthB) return monthA - monthB;
+
                 return dayA - dayB;
             });
         });
     };
 
     return (
-        <div>
-            <div className="flex items-center justify-between mb-4">
-                <button onClick={prevMonth} type="button" className="p-2 hover:bg-[var(--color-bg-hover)] rounded-lg transition-colors">
-                    <ChevronLeft size={18} className="text-[var(--color-text-secondary)]" />
+        <div className="w-full max-w-[280px]">
+            {/* Header */}
+            <div className="flex items-center justify-between mb-3">
+                <button
+                    onClick={prevMonth}
+                    type="button"
+                    className="p-1 hover:bg-[var(--color-bg-hover)] rounded-md transition-colors"
+                >
+                    <ChevronLeft
+                        size={16}
+                        className="text-[var(--color-text-secondary)]"
+                    />
                 </button>
-                <h3 className="text-sm font-semibold text-[var(--color-text-primary)]">
-                    {monthNames[currentMonth.getMonth()]} {currentMonth.getFullYear()}
+
+                <h3 className="text-xs font-semibold text-[var(--color-text-primary)]">
+                    {monthNames[currentMonth.getMonth()]}{" "}
+                    {currentMonth.getFullYear()}
                 </h3>
-                <button onClick={nextMonth} type="button" className="p-2 hover:bg-[var(--color-bg-hover)] rounded-lg transition-colors">
-                    <ChevronRight size={18} className="text-[var(--color-text-secondary)]" />
+
+                <button
+                    onClick={nextMonth}
+                    type="button"
+                    className="p-1 hover:bg-[var(--color-bg-hover)] rounded-md transition-colors"
+                >
+                    <ChevronRight
+                        size={16}
+                        className="text-[var(--color-text-secondary)]"
+                    />
                 </button>
             </div>
 
+            {/* Days */}
             <div className="grid grid-cols-7 gap-1 text-center">
                 {dayNames.map((day, idx) => (
-                    <div key={idx} className="font-semibold text-[var(--color-text-secondary)] text-xs py-2">{day}</div>
+                    <div
+                        key={idx}
+                        className="text-[10px] font-semibold text-[var(--color-text-secondary)] py-1"
+                    >
+                        {day}
+                    </div>
                 ))}
 
                 {days.map((date, idx) => {
-                    if (!date) return <div key={`empty-${idx}`} className="aspect-square"></div>;
+                    if (!date) {
+                        return (
+                            <div
+                                key={`empty-${idx}`}
+                                className="w-8 h-8"
+                            ></div>
+                        );
+                    }
+
                     const formatted = formatDate(date);
-                    const isSelected = selectedDates.includes(formatted);
+                    const isSelected =
+                        selectedDates.includes(formatted);
 
                     return (
                         <button
                             key={idx}
                             type="button"
                             onClick={() => handleDateClick(date)}
-                            className={`aspect-square text-sm rounded-lg border flex items-center justify-center transition-all font-medium
-                                ${isSelected ? "bg-[var(--color-primary)] text-white border-[var(--color-primary)] shadow-sm" : "border-[var(--color-border-secondary)] hover:bg-[var(--color-bg-hover)] text-[var(--color-text-primary)]"}`}
+                            className={`w-8 h-8 text-xs rounded-md border flex items-center justify-center transition-all font-medium
+                            
+                            ${
+                                isSelected
+                                    ? "bg-[var(--color-primary)] text-white border-[var(--color-primary)]"
+                                    : "border-[var(--color-border-secondary)] hover:bg-[var(--color-bg-hover)] text-[var(--color-text-primary)]"
+                            }`}
                         >
                             {date.getDate()}
                         </button>
@@ -1019,7 +1153,7 @@ function Modal({ onClose, title, children }) {
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
             <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-2xl w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto border border-[var(--color-border-primary)]">
-                <div className="flex justify-between items-center border-b border-[var(--color-border-primary)] px-6 py-4 sticky top-0 bg-[var(--color-bg-secondary)] rounded-t-2xl">
+                <div className="flex justify-between items-center border-b border-[var(--color-border-primary)] px-6 py-4 sticky top-0 bg-[var(--color-bg-secondary)] rounded-t-2xl z-[9]">
                     <h2 className="text-xl font-bold text-[var(--color-text-primary)]">{title}</h2>
                     <button type="button" onClick={onClose} className="text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-hover)] rounded-lg p-1.5 transition-colors">
                         <X size={20} />

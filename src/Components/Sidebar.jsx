@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
     Home, Users, Clock, Calendar, IndianRupee, Briefcase, BarChart2,
     User as UserIcon, Settings as SettingsIcon, Phone, Youtube,
-    ChevronRight, Star, ChevronLeft,
+    ChevronRight, Star, ChevronLeft, CreditCard
 } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import { ThemeContext } from '../context/Themecontext';
@@ -111,6 +111,7 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
                 permissions?.user_roles_view && { label: 'Roles', path: '/role' },
             ].filter(Boolean)
         },
+        { id: 'subscription', label: 'Subscription', icon: CreditCard, hasSubmenu: false, path: '/subscription' },
         { id: 'settings', label: 'Settings', icon: SettingsIcon, hasSubmenu: false, path: '/settings' },
     ].filter(Boolean);
 
