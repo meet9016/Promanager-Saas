@@ -542,7 +542,7 @@ const EmployeeDirectoryReport = () => {
                                                             </div>
                                                         )}
 
-                                                        <div className="flex-1 overflow-y-auto p-4 w-full overflow-hiddens">
+                                                        <div className="flex-1 overflow-y-auto p-4 w-full overflow-x-hidden custom-scrollbar">
                                                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                                                 {/* Branch */}
                                                                 <div>

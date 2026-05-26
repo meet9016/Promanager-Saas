@@ -166,7 +166,7 @@ const CustomSelect = ({
                         bg-[var(--color-bg-secondary)]
                         border border-[var(--color-border-primary)]
                         rounded-xl shadow-xl
-                    overflow-y-auto
+                        overflow-hidden
                         animate-fadeIn
                     "
                     style={{ maxHeight: '280px' }}
@@ -206,7 +206,7 @@ const CustomSelect = ({
                     {/* Options List */}
                     <div
                         ref={listRef}
-                        className="overflow-y-auto custom-scrollbar"
+                        className="overflow-y-auto overflow-x-hidden custom-scrollbar"
                         style={{ maxHeight: searchable ? '210px' : '260px' }}
                         role="listbox"
                     >
