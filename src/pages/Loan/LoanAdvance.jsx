@@ -18,6 +18,7 @@ import {
     Th,
     Td
 } from '../../Components/ui/Table';
+import CustomSelect from '../../Components/comman/CustomSelect';
 
 const SORT_DIRECTIONS = {
     ASCENDING: 'ascending',
@@ -592,7 +593,7 @@ const LoanAdvance = () => {
                             </div>
 
                             <div className="flex items-center gap-3">
-                                <select
+                                {/* <select
                                     value={filter}
                                     onChange={(e) => handleFilterChange(e.target.value)}
                                     className="px-3 py-2 border border-[var(--color-border-secondary)] rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-text-white)] focus:border-[var(--color-border-primary)] text-sm"
@@ -601,7 +602,23 @@ const LoanAdvance = () => {
                                     {getFilterOptions.map(option => (
                                         <option key={option} value={option}>{option}</option>
                                     ))}
-                                </select>
+                                </select> */}
+                                <div className="relative w-full sm:w-44">
+
+                                    <CustomSelect
+                                        name="filter"
+                                        value={filter}
+                                        onChange={(e) => handleFilterChange(e.target.value)}
+                                        options={getFilterOptions.map((option) => ({
+                                            value: option,
+                                            label: option,
+                                        }))}
+                                        searchable={false}
+                                        disabled={loading || dropdownLoading}
+                                        className="!h-10"
+                                    />
+
+                                </div>
 
                                 <div className="relative w-full sm:w-64">
                                     <input

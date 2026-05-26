@@ -37,6 +37,7 @@ import {
     Th,
     Td
 } from '../../Components/ui/Table';
+import CustomSelect from '../../Components/comman/CustomSelect';
 
 const SORT_DIRECTIONS = {
     ASCENDING: 'ascending',
@@ -696,7 +697,7 @@ export default function Employee() {
                                     <Building className="inline h-4 w-4 mr-1" />
                                     Branch
                                 </label>
-                                <select
+                                {/* <select
                                     value={filters.branch_id}
                                     onChange={(e) => handleFilterChange('branch_id', e.target.value)}
                                     className="w-full px-3 py-2 bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent text-[var(--color-text-primary)]"
@@ -704,7 +705,24 @@ export default function Employee() {
                                 >
                                     <option value="">All Branches</option>
                                     {branches.map(b => <option key={b.id} value={b.id}>{b.name}</option>)}
-                                </select>
+                                </select> */}
+                                <CustomSelect
+                                    name="branch_id"
+                                    value={filters.branch_id}
+                                    onChange={(e) =>
+                                        handleFilterChange(
+                                            'branch_id',
+                                            e.target.value
+                                        )
+                                    }
+                                    options={branches.map((b) => ({
+                                        value: b.id,
+                                        label: b.name,
+                                    }))}
+                                    placeholder="All Branches"
+                                    searchable={true}
+                                    disabled={dropdownLoading}
+                                />
                             </div>
 
                             {/* Department */}
@@ -713,7 +731,7 @@ export default function Employee() {
                                     <Users className="inline h-4 w-4 mr-1" />
                                     Department
                                 </label>
-                                <select
+                                {/* <select
                                     value={filters.department_id}
                                     onChange={(e) => handleFilterChange('department_id', e.target.value)}
                                     className="w-full px-3 py-2 bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent text-[var(--color-text-primary)]"
@@ -721,7 +739,24 @@ export default function Employee() {
                                 >
                                     <option value="">All Departments</option>
                                     {departments.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
-                                </select>
+                                </select> */}
+                                <CustomSelect
+                                    name="department_id"
+                                    value={filters.department_id}
+                                    onChange={(e) =>
+                                        handleFilterChange(
+                                            'department_id',
+                                            e.target.value
+                                        )
+                                    }
+                                    options={departments.map((d) => ({
+                                        value: d.id,
+                                        label: d.name,
+                                    }))}
+                                    placeholder="All Departments"
+                                    searchable={true}
+                                    disabled={dropdownLoading}
+                                />
                             </div>
 
                             {/* Designation */}
@@ -730,7 +765,7 @@ export default function Employee() {
                                     <Award className="inline h-4 w-4 mr-1" />
                                     Designation
                                 </label>
-                                <select
+                                {/* <select
                                     value={filters.designation_id}
                                     onChange={(e) => handleFilterChange('designation_id', e.target.value)}
                                     className="w-full px-3 py-2 bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent text-[var(--color-text-primary)]"
@@ -738,7 +773,24 @@ export default function Employee() {
                                 >
                                     <option value="">All Designations</option>
                                     {designations.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
-                                </select>
+                                </select> */}
+                                <CustomSelect
+                                    name="designation_id"
+                                    value={filters.designation_id}
+                                    onChange={(e) =>
+                                        handleFilterChange(
+                                            'designation_id',
+                                            e.target.value
+                                        )
+                                    }
+                                    options={designations.map((d) => ({
+                                        value: d.id,
+                                        label: d.name,
+                                    }))}
+                                    placeholder="All Designations"
+                                    searchable={true}
+                                    disabled={dropdownLoading}
+                                />
                             </div>
 
                             {/* Employee Type */}
@@ -747,7 +799,7 @@ export default function Employee() {
                                     <UserCheck className="inline h-4 w-4 mr-1" />
                                     Employee Type
                                 </label>
-                                <select
+                                {/* <select
                                     value={filters.employee_type_id}
                                     onChange={(e) => handleFilterChange('employee_type_id', e.target.value)}
                                     className="w-full px-3 py-2 bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent text-[var(--color-text-primary)]"
@@ -755,7 +807,24 @@ export default function Employee() {
                                 >
                                     <option value="">All Employee Types</option>
                                     {employeeTypes.map(et => <option key={et.id} value={et.id}>{et.name}</option>)}
-                                </select>
+                                </select> */}
+                                <CustomSelect
+                                    name="employee_type_id"
+                                    value={filters.employee_type_id}
+                                    onChange={(e) =>
+                                        handleFilterChange(
+                                            'employee_type_id',
+                                            e.target.value
+                                        )
+                                    }
+                                    options={employeeTypes.map((et) => ({
+                                        value: et.id,
+                                        label: et.name,
+                                    }))}
+                                    placeholder="All Employee Types"
+                                    searchable={true}
+                                    disabled={dropdownLoading}
+                                />
                             </div>
 
                             {/* Salary Type */}
@@ -764,7 +833,7 @@ export default function Employee() {
                                     <DollarSign className="inline h-4 w-4 mr-1" />
                                     Salary Type
                                 </label>
-                                <select
+                                {/* <select
                                     value={filters.salary_type_id}
                                     onChange={(e) => handleFilterChange('salary_type_id', e.target.value)}
                                     className="w-full px-3 py-2 bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent text-[var(--color-text-primary)]"
@@ -772,7 +841,24 @@ export default function Employee() {
                                 >
                                     <option value="">All Salary Types</option>
                                     {salaryTypes.map(st => <option key={st.id} value={st.id}>{st.name}</option>)}
-                                </select>
+                                </select> */}
+                                <CustomSelect
+                                    name="salary_type_id"
+                                    value={filters.salary_type_id}
+                                    onChange={(e) =>
+                                        handleFilterChange(
+                                            'salary_type_id',
+                                            e.target.value
+                                        )
+                                    }
+                                    options={salaryTypes.map((st) => ({
+                                        value: st.id,
+                                        label: st.name,
+                                    }))}
+                                    placeholder="All Salary Types"
+                                    searchable={true}
+                                    disabled={dropdownLoading}
+                                />
                             </div>
 
                             {/* Gender */}
@@ -781,7 +867,7 @@ export default function Employee() {
                                     <UserCircle className="inline h-4 w-4 mr-1" />
                                     Gender
                                 </label>
-                                <select
+                                {/* <select
                                     value={filters.gender_id}
                                     onChange={(e) => handleFilterChange('gender_id', e.target.value)}
                                     className="w-full px-3 py-2 bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent text-[var(--color-text-primary)]"
@@ -789,7 +875,24 @@ export default function Employee() {
                                 >
                                     <option value="">All Genders</option>
                                     {genders.map(g => <option key={g.id} value={g.id}>{g.name}</option>)}
-                                </select>
+                                </select> */}
+                                <CustomSelect
+                                    name="gender_id"
+                                    value={filters.gender_id}
+                                    onChange={(e) =>
+                                        handleFilterChange(
+                                            'gender_id',
+                                            e.target.value
+                                        )
+                                    }
+                                    options={genders.map((g) => ({
+                                        value: g.id,
+                                        label: g.name,
+                                    }))}
+                                    placeholder="All Genders"
+                                    searchable={true}
+                                    disabled={dropdownLoading}
+                                />
                             </div>
 
                             {/* Status */}
@@ -798,7 +901,7 @@ export default function Employee() {
                                     <CheckCircle className="inline h-4 w-4 mr-1" />
                                     Status
                                 </label>
-                                <select
+                                {/* <select
                                     value={filters.status_id}
                                     onChange={(e) => handleFilterChange('status_id', e.target.value)}
                                     className="w-full px-3 py-2 bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent text-[var(--color-text-primary)]"
@@ -806,7 +909,24 @@ export default function Employee() {
                                 >
                                     <option value="">All Status</option>
                                     {status.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
-                                </select>
+                                </select> */}
+                                <CustomSelect
+                                    name="status_id"
+                                    value={filters.status_id}
+                                    onChange={(e) =>
+                                        handleFilterChange(
+                                            'status_id',
+                                            e.target.value
+                                        )
+                                    }
+                                    options={status.map((s) => ({
+                                        value: s.id,
+                                        label: s.name,
+                                    }))}
+                                    placeholder="All Status"
+                                    searchable={true}
+                                    disabled={dropdownLoading}
+                                />
                             </div>
                         </div>
                     </div>

@@ -6,6 +6,7 @@ import api from '../../api/axiosInstance';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Toast } from '../../Components/ui/Toast';
 import LoadingSpinner from '../../Components/Loader/LoadingSpinner';
+import CustomSelect from '../../Components/comman/CustomSelect';
 
 const AssignShift = () => {
     const { user } = useAuth();
@@ -253,16 +254,16 @@ const AssignShift = () => {
             <div className="p-8 mx-auto ">
                 {/* Header */}
                 <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-xl mb-8 overflow-hidden">
-                    <div className="bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] p-8">
+                    <div className="bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] p-6">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-4">
                                 <button
                                     onClick={handleBack}
-                                    className="flex items-center gap-2 text-[var(--color-text-white)] transition-colors bg-[var(--color-bg-secondary-20)] hover:bg-[var(--color-bg-secondary-30)] px-4 py-2 rounded-lg backdrop-blur-sm"
+                                    className="flex items-center gap-2 text-[var(--color-text-white)] transition-colors bg-[var(--color-bg-secondary-20)] hover:bg-[var(--color-bg-secondary-30)] px-2 py-2 rounded-lg backdrop-blur-sm"
                                     title="Go Back"
                                 >
                                     <ArrowLeft size={18} />
-                                    Back
+
                                 </button>
                                 <div className="flex items-center gap-3">
                                     <h1 className="text-2xl font-bold text-[var(--color-text-white)]">
@@ -313,7 +314,7 @@ const AssignShift = () => {
                                         <Building className="inline h-4 w-4 mr-1" />
                                         Branch
                                     </label>
-                                    <select
+                                    {/* <select
                                         value={filters.branch_id}
                                         onChange={(e) => handleFilterChange('branch_id', e.target.value)}
                                         className="w-full px-3 py-2 bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent text-[var(--color-text-primary)]"
@@ -323,7 +324,24 @@ const AssignShift = () => {
                                         {branches.map(branch => (
                                             <option key={branch.id} value={branch.id}>{branch.name}</option>
                                         ))}
-                                    </select>
+                                    </select> */}
+                                    <CustomSelect
+                                        name="branch_id"
+                                        value={filters.branch_id}
+                                        onChange={(e) =>
+                                            handleFilterChange(
+                                                'branch_id',
+                                                e.target.value
+                                            )
+                                        }
+                                        options={branches.map((branch) => ({
+                                            value: branch.id,
+                                            label: branch.name,
+                                        }))}
+                                        placeholder="All Branches"
+                                        searchable={true}
+                                        disabled={dropdownLoading}
+                                    />
                                 </div>
 
                                 {/* Department Filter */}
@@ -332,7 +350,7 @@ const AssignShift = () => {
                                         <Users className="inline h-4 w-4 mr-1" />
                                         Department
                                     </label>
-                                    <select
+                                    {/* <select
                                         value={filters.department_id}
                                         onChange={(e) => handleFilterChange('department_id', e.target.value)}
                                         className="w-full px-3 py-2 bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent text-[var(--color-text-primary)]"
@@ -342,7 +360,24 @@ const AssignShift = () => {
                                         {departments.map(department => (
                                             <option key={department.id} value={department.id}>{department.name}</option>
                                         ))}
-                                    </select>
+                                    </select> */}
+                                    <CustomSelect
+                                        name="department_id"
+                                        value={filters.department_id}
+                                        onChange={(e) =>
+                                            handleFilterChange(
+                                                'department_id',
+                                                e.target.value
+                                            )
+                                        }
+                                        options={departments.map((department) => ({
+                                            value: department.id,
+                                            label: department.name,
+                                        }))}
+                                        placeholder="All Departments"
+                                        searchable={true}
+                                        disabled={dropdownLoading}
+                                    />
                                 </div>
                             </div>
                         </div>
@@ -351,7 +386,7 @@ const AssignShift = () => {
                     {/* Main Form Card */}
                     <div className="bg-[var(--color-bg-secondary)] backdrop-blur-sm rounded-2xl border border-slate-200 shadow-lg">
                         {/* Employee Selection */}
-                        <div className="p-8">
+                        <div className="p-8 grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="mb-6">
                                 <div className="employee-dropdown-container relative">
                                     <label className="block text-sm font-semibold text-[var(--color-text-secondary)] mb-3">
@@ -471,7 +506,7 @@ const AssignShift = () => {
                                     <Calendar className="w-4 h-4 inline mr-2" />
                                     Select Shift <span className="text-[var(--color-error)]">*</span>
                                 </label>
-                                <select
+                                {/* <select
                                     value={selectedShift}
                                     onChange={(e) => setSelectedShift(e.target.value)}
                                     className="w-full px-4 py-3 border border-[var(--color-border-secondary)] rounded-xl focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-all duration-200 shadow-sm bg-[var(--color-bg-secondary)]"
@@ -486,49 +521,63 @@ const AssignShift = () => {
                                             {shift.shift_name}
                                         </option>
                                     ))}
-                                </select>
-                            </div>
-
-                            {/* Actions */}
-                            <div className="flex items-center justify-between pt-4 border-t border-slate-200">
-                                <div className="text-sm text-[var(--color-text-secondary)]">
-                                    {selectedEmployees.length
-                                        ? `${selectedEmployees.length} employee(s) selected`
-                                        : 'No employees selected'}
-                                </div>
-
-                                <div className="flex items-center gap-3">
-                                    <button
-                                        type="button"
-                                        onClick={handleBack}
-                                        disabled={submitting}
-                                        className="px-6 py-2.5 border border-[var(--color-border-secondary)] text-[var(--color-text-secondary)] rounded-lg hover:bg-[var(--color-bg-primary)] transition-colors font-medium"
-                                    >
-                                        Cancel
-                                    </button>
-
-                                    <button
-                                        onClick={handleSubmit}
-                                        disabled={submitting || !selectedEmployees.length || !selectedShift}
-                                        className="px-6 py-2.5 bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] text-[var(--color-text-white)] rounded-xl hover:from-[var(--color-primary-darker)] hover:to-[var(--color-primary-darkest)] focus:ring-2 focus:ring-[var(--color-primary)] focus:outline-none transition-all duration-200 font-medium shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
-                                    >
-                                        <div className="flex items-center gap-2">
-                                            {submitting ? (
-                                                <>
-                                                    <div className="w-4 h-4 border-2 border-[var(--color-border-primary)] rounded-full animate-spin border-t-white"></div>
-                                                    Assigning...
-                                                </>
-                                            ) : (
-                                                <>
-                                                    <Save className="w-4 h-4" />
-                                                    Assign Shift
-                                                </>
-                                            )}
-                                        </div>
-                                    </button>
-                                </div>
+                                </select> */}
+                                <CustomSelect
+                                    name="selectedShift"
+                                    value={selectedShift}
+                                    onChange={(e) => setSelectedShift(e.target.value)}
+                                    options={shifts.map((shift) => ({
+                                        value: shift.shift_id,
+                                        label: shift.shift_name,
+                                    }))}
+                                    placeholder={loading ? 'Loading shifts...' : 'Choose a shift...'}
+                                    searchable={true}
+                                    disabled={loading}
+                                    required
+                                />
                             </div>
                         </div>
+
+                        {/* Actions */}
+                        <div className="flex items-center justify-end gap-3 pt-4 border-slate-200 p-4">
+                            <div className="text-sm text-[var(--color-text-secondary)]">
+                                {selectedEmployees.length
+                                    ? `${selectedEmployees.length} employee(s) selected`
+                                    : 'No employees selected'}
+                            </div>
+
+                            <div className="flex items-center gap-3">
+                                <button
+                                    type="button"
+                                    onClick={handleBack}
+                                    disabled={submitting}
+                                    className="px-6 py-2.5 border border-[var(--color-border-secondary)] text-[var(--color-text-secondary)] rounded-lg hover:bg-[var(--color-bg-primary)] transition-colors font-medium"
+                                >
+                                    Cancel
+                                </button>
+
+                                <button
+                                    onClick={handleSubmit}
+                                    disabled={submitting || !selectedEmployees.length || !selectedShift}
+                                    className="px-6 py-2.5 bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] text-[var(--color-text-white)] rounded-xl hover:from-[var(--color-primary-darker)] hover:to-[var(--color-primary-darkest)] focus:ring-2 focus:ring-[var(--color-primary)] focus:outline-none transition-all duration-200 font-medium shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                    <div className="flex items-center gap-2">
+                                        {submitting ? (
+                                            <>
+                                                <div className="w-4 h-4 border-2 border-[var(--color-border-primary)] rounded-full animate-spin border-t-white"></div>
+                                                Assigning...
+                                            </>
+                                        ) : (
+                                            <>
+                                                <Save className="w-4 h-4" />
+                                                Assign Shift
+                                            </>
+                                        )}
+                                    </div>
+                                </button>
+                            </div>
+                        </div>
+                        {/* </div> */}
                     </div>
                 </div>
 

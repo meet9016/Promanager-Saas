@@ -35,6 +35,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Pagination from '../../Components/Pagination';
 import { Table, TableHeader, TableBody, TableRow, TableHeaderRow, Th, Td } from '../../Components/ui/Table';
+import CustomDatePicker from '../../Components/comman/CustomDatePicker';
 
 
 
@@ -990,7 +991,7 @@ const DailyAttendance = () => {
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3">
                 {/* Date */}
                 <div className="relative flex items-center z-[40] min-w-[140px] sm:min-w-[160px]">
-                  <Calendar className="absolute left-3 w-4 h-4 text-[var(--color-primary)] pointer-events-none z-10" />
+                  {/* <Calendar className="absolute left-3 w-4 h-4 text-[var(--color-primary)] pointer-events-none z-10" />
 
                   <DatePicker
                     selected={selectedDate}
@@ -998,6 +999,15 @@ const DailyAttendance = () => {
                     dateFormat="dd-MM-yyyy"
                     placeholderText="DD-MM-YYYY"
                     className="w-full bg-[var(--color-bg-primary)] hover:bg-[var(--color-bg-hover)] border border-[var(--color-border-secondary)] rounded-xl pl-9 pr-3 py-1.5 sm:py-2 text-xs sm:text-sm text-[var(--color-text-primary)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent transition-all duration-200 cursor-pointer font-medium shadow-sm"
+                  /> */}
+
+                  <CustomDatePicker
+                    name="selected_date"
+                    value={selectedDate}
+                    onChange={(e) => setSelectedDate(new Date(e.target.value))}
+                    placeholder="DD-MM-YYYY"
+                    maxDate={new Date()}
+                    clearable={true}
                   />
                 </div>
 

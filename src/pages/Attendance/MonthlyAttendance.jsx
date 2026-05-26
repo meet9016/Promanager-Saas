@@ -6,6 +6,8 @@ import { Filter, Users, Calendar, Building, Award, RefreshCw, HelpCircle, Chevro
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { Toast } from '../../Components/ui/Toast';
+import CustomDatePicker from '../../Components/comman/CustomDatePicker';
+import CustomSelect from '../../Components/comman/CustomSelect';
 
 /* ------------ utils ------------ */
 const pad2 = (n) => (n < 10 ? `0${n}` : String(n));
@@ -39,33 +41,33 @@ const TOTALS_ORDER = ['P', 'A', 'WO', '½P', 'H', 'INC', 'OT'];
 
 /* Circular cell pill colors */
 const CELL_CIRCLE = {
-    P:   'bg-emerald-100  text-emerald-700',
-    A:   'bg-red-100      text-red-500',
-    WO:  'bg-slate-200    text-slate-500',
-    '½P':'bg-amber-100    text-amber-600',
-    H:   'bg-violet-100   text-violet-600',
+    P: 'bg-emerald-100  text-emerald-700',
+    A: 'bg-red-100      text-red-500',
+    WO: 'bg-slate-200    text-slate-500',
+    '½P': 'bg-amber-100    text-amber-600',
+    H: 'bg-violet-100   text-violet-600',
     INC: 'bg-orange-100   text-orange-600',
-    OT:  'bg-purple-100   text-purple-600',
-    L:   'bg-orange-50    text-orange-500',
+    OT: 'bg-purple-100   text-purple-600',
+    L: 'bg-orange-50    text-orange-500',
 };
 
 /* Legend badge colors */
 const CODE_COLORS = {
-    P:   'bg-emerald-50  text-emerald-700 border-emerald-200',
-    A:   'bg-red-50      text-red-500     border-red-200',
-    WO:  'bg-slate-100   text-slate-500   border-slate-300',
-    '½P':'bg-amber-50    text-amber-600   border-amber-200',
-    H:   'bg-violet-50   text-violet-600  border-violet-200',
+    P: 'bg-emerald-50  text-emerald-700 border-emerald-200',
+    A: 'bg-red-50      text-red-500     border-red-200',
+    WO: 'bg-slate-100   text-slate-500   border-slate-300',
+    '½P': 'bg-amber-50    text-amber-600   border-amber-200',
+    H: 'bg-violet-50   text-violet-600  border-violet-200',
     INC: 'bg-orange-50   text-orange-600  border-orange-200',
-    OT:  'bg-purple-50   text-purple-600  border-purple-200',
-    L:   'bg-orange-50   text-orange-500  border-orange-200',
+    OT: 'bg-purple-50   text-purple-600  border-purple-200',
+    L: 'bg-orange-50   text-orange-500  border-orange-200',
 };
 
 /* Avatar palette — deterministic by first char */
 const AVATAR_COLORS = [
-    'bg-violet-500','bg-blue-500','bg-emerald-500','bg-rose-500',
-    'bg-amber-500','bg-cyan-500','bg-fuchsia-500','bg-teal-500',
-    'bg-indigo-500','bg-orange-500',
+    'bg-violet-500', 'bg-blue-500', 'bg-emerald-500', 'bg-rose-500',
+    'bg-amber-500', 'bg-cyan-500', 'bg-fuchsia-500', 'bg-teal-500',
+    'bg-indigo-500', 'bg-orange-500',
 ];
 const avatarColor = (name = '') => {
     const idx = (name.charCodeAt(0) || 0) % AVATAR_COLORS.length;
@@ -156,7 +158,7 @@ const MonthlyAttendance = () => {
             const dow = getDayOfWeek(filters.month_year, d);
             return { day: d, dow, isSun: dow === 0, isSat: dow === 6, isWeekend: dow === 0 || dow === 6 };
         })
-    , [daysInMonth, filters.month_year]);
+        , [daysInMonth, filters.month_year]);
 
     const gridData = useMemo(() => {
         if (!rows?.length) return [];
@@ -388,7 +390,7 @@ const MonthlyAttendance = () => {
 
                 {/* ══ FILTERS PANEL ══ */}
                 {showFilters && (
-                    <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+                    <div className="bg-white rounded-2xl shadow-sm border border-slate-100 ">
                         <div className="flex items-center justify-between px-5 py-3 border-b border-slate-100 bg-slate-50/60">
                             <span className="text-sm font-bold text-slate-700">Filter Attendance</span>
                             <button onClick={resetFilters}
@@ -403,7 +405,7 @@ const MonthlyAttendance = () => {
                                     <Calendar size={11} /> Month & Year <span className="text-red-400">*</span>
                                 </label>
                                 <div className="relative">
-                                    <DatePicker
+                                    {/* <DatePicker
                                         selected={filters.month_year ? new Date(`${filters.month_year}-01`) : null}
                                         onChange={(date) => {
                                             const iso = date ? `${date.getFullYear()}-${pad2(date.getMonth() + 1)}` : '';
@@ -415,7 +417,40 @@ const MonthlyAttendance = () => {
                                         placeholderText="Select month and year"
                                         maxDate={new Date()} showPopperArrow={false}
                                     />
-                                    <Calendar size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                                    <Calendar size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" /> */}
+
+
+                                    <CustomDatePicker
+                                        name="month_year"
+                                        value={
+                                            filters.month_year
+                                                ? new Date(`${filters.month_year}-01`)
+                                                : null
+                                        }
+                                        onChange={(e) => {
+
+                                            const value = e?.target?.value || '';
+
+                                            if (!value) {
+                                                handleFilterChange('month_year', '');
+                                                return;
+                                            }
+
+                                            const [year, month] = value.split('-');
+
+                                            handleFilterChange(
+                                                'month_year',
+                                                `${year}-${month}`
+                                            );
+                                        }}
+                                        placeholder="Select month and year"
+                                        maxDate={new Date()}
+                                        clearable={true}
+                                        showMonthYearPicker={true}
+                                        showFullMonthYearPicker={true}
+                                        showPopperArrow={false}
+                                        className="w-full h-[40px]"
+                                    />
                                 </div>
                             </div>
 
@@ -425,15 +460,32 @@ const MonthlyAttendance = () => {
                                     <Building size={11} /> Branch
                                 </label>
                                 <div className="relative">
-                                    <select value={filters.branch_id}
+                                    {/* <select value={filters.branch_id}
                                         onChange={(e) => handleFilterChange('branch_id', e.target.value)}
                                         className="w-full pl-8 pr-8 py-2.5 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-violet-400 focus:border-transparent text-slate-700 text-sm appearance-none transition-all"
                                         disabled={dropdownLoading}>
                                         <option value="">All Branches</option>
                                         {branches.map(b => <option key={b.id} value={b.id}>{b.name}</option>)}
-                                    </select>
-                                    <Building size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
-                                    <ChevronDown size={14} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                                    </select> */}
+
+                                    <CustomSelect
+                                        name="branch_id"
+                                        value={filters.branch_id}
+                                        onChange={(e) =>
+                                            handleFilterChange(
+                                                'branch_id',
+                                                e.target.value
+                                            )
+                                        }
+                                        options={branches.map((b) => ({
+                                            value: b.id,
+                                            label: b.name,
+                                        }))}
+                                        placeholder="All Branches"
+                                        searchable={true}
+                                        disabled={dropdownLoading}
+                                    />
+
                                 </div>
                             </div>
 
@@ -443,15 +495,33 @@ const MonthlyAttendance = () => {
                                     <Users size={11} /> Department
                                 </label>
                                 <div className="relative">
-                                    <select value={filters.department_id}
+                                    {/* <select value={filters.department_id}
                                         onChange={(e) => handleFilterChange('department_id', e.target.value)}
                                         className="w-full pl-8 pr-8 py-2.5 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-violet-400 focus:border-transparent text-slate-700 text-sm appearance-none transition-all"
                                         disabled={dropdownLoading}>
                                         <option value="">All Departments</option>
                                         {departments.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
-                                    </select>
-                                    <Users size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
-                                    <ChevronDown size={14} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                                    </select> */}
+
+                                    <CustomSelect
+                                        name="department_id"
+                                        value={filters.department_id}
+                                        onChange={(e) =>
+                                            handleFilterChange(
+                                                'department_id',
+                                                e.target.value
+                                            )
+                                        }
+                                        options={departments.map((d) => ({
+                                            value: d.id,
+                                            label: d.name,
+                                        }))}
+                                        placeholder="All Departments"
+                                        searchable={true}
+                                        disabled={dropdownLoading}
+                                    />
+                                    {/* <Users size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                                    <ChevronDown size={14} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" /> */}
                                 </div>
                             </div>
 
@@ -461,15 +531,32 @@ const MonthlyAttendance = () => {
                                     <Award size={11} /> Designation
                                 </label>
                                 <div className="relative">
-                                    <select value={filters.designation_id}
+                                    {/* <select value={filters.designation_id}
                                         onChange={(e) => handleFilterChange('designation_id', e.target.value)}
                                         className="w-full pl-8 pr-8 py-2.5 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-violet-400 focus:border-transparent text-slate-700 text-sm appearance-none transition-all"
                                         disabled={dropdownLoading}>
                                         <option value="">All Designations</option>
                                         {designations.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
-                                    </select>
-                                    <Award size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
-                                    <ChevronDown size={14} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                                    </select> */}
+                                    <CustomSelect
+                                        name="designation_id"
+                                        value={filters.designation_id}
+                                        onChange={(e) =>
+                                            handleFilterChange(
+                                                'designation_id',
+                                                e.target.value
+                                            )
+                                        }
+                                        options={designations.map((d) => ({
+                                            value: d.id,
+                                            label: d.name,
+                                        }))}
+                                        placeholder="All Designations"
+                                        searchable={true}
+                                        disabled={dropdownLoading}
+                                    />
+                                    {/* <Award size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                                    <ChevronDown size={14} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" /> */}
                                 </div>
                             </div>
                         </div>
@@ -590,130 +677,130 @@ const MonthlyAttendance = () => {
                             {filteredData.map((r, rowIndex) => {
                                 const rowBg = rowIndex % 2 === 0 ? '#ffffff' : '#f8fafc';
                                 return (
-                                <div
-                                    key={`${r.employee_code}-${rowIndex}`}
-                                    className="border-b border-slate-100 group hover:bg-violet-50/40 transition-colors"
-                                    style={{ display: 'grid', gridTemplateColumns: gridTemplate, background: rowBg }}
-                                >
-                                    {/* Employee Code — sticky, solid bg */}
                                     <div
-                                        className="sticky left-0 z-10 border-r border-slate-100 flex items-center px-3 transition-colors"
-                                        style={{
-                                            width: `${codeColW}px`, height: `${CELL_H}px`,
-                                            background: rowBg,
-                                            boxShadow: '2px 0 4px -2px rgba(0,0,0,0.06)'
-                                        }}
+                                        key={`${r.employee_code}-${rowIndex}`}
+                                        className="border-b border-slate-100 group hover:bg-violet-50/40 transition-colors"
+                                        style={{ display: 'grid', gridTemplateColumns: gridTemplate, background: rowBg }}
                                     >
-                                        <span className="text-xs font-bold text-blue-500 hover:underline cursor-pointer tracking-wide truncate">
-                                            {r.employee_code}
-                                        </span>
-                                    </div>
-
-                                    {/* Employee Name — sticky, solid bg */}
-                                    <div
-                                        className="sticky z-10 border-r border-slate-100 flex items-center gap-2.5 px-3 transition-colors"
-                                        style={{
-                                            left: `${codeColW}px`, width: `${nameColW}px`, height: `${CELL_H}px`,
-                                            background: rowBg,
-                                            boxShadow: '2px 0 4px -2px rgba(0,0,0,0.06)'
-                                        }}
-                                    >
-                                        <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 text-white font-extrabold text-xs shadow-sm ${avatarColor(r.employee_name)}`}>
-                                            {(r.employee_name || '?').slice(0, 2).toUpperCase()}
+                                        {/* Employee Code — sticky, solid bg */}
+                                        <div
+                                            className="sticky left-0 z-10 border-r border-slate-100 flex items-center px-3 transition-colors"
+                                            style={{
+                                                width: `${codeColW}px`, height: `${CELL_H}px`,
+                                                background: rowBg,
+                                                boxShadow: '2px 0 4px -2px rgba(0,0,0,0.06)'
+                                            }}
+                                        >
+                                            <span className="text-xs font-bold text-blue-500 hover:underline cursor-pointer tracking-wide truncate">
+                                                {r.employee_code}
+                                            </span>
                                         </div>
-                                        <div className="min-w-0">
-                                            <p className="text-[13px] font-bold text-slate-700 truncate leading-tight">{r.employee_name}</p>
-                                            <p className="text-[10px] text-slate-400 font-medium">Employee</p>
-                                        </div>
-                                    </div>
 
-                                    {/* Day cells */}
-                                    {r.dayCells.map((cell, dayIndex) => {
-                                        const { isSun, isSat } = dayMeta[dayIndex] || {};
-                                        const circleColor = cell?.code ? (CELL_CIRCLE[cell.code] || 'bg-gray-100 text-gray-500') : '';
-                                        return (
-                                            <div
-                                                key={dayIndex}
-                                                className={`flex items-center justify-center
-                                                    ${isSun ? 'bg-red-50/60' : isSat ? 'bg-blue-50/60' : ''}`}
-                                                style={{ height: `${CELL_H}px`, width: cellWidth }}
-                                            >
-                                                {cell && cell.code ? (
-                                                    <div className="relative flex flex-col items-center gap-0.5">
-                                                        <div
-                                                            title={[
-                                                                CODE_LABELS[cell.code] || cell.code,
-                                                                cell.late ? '⏰ Late' : '',
-                                                                cell.early ? '🚪 Early Going' : '',
-                                                            ].filter(Boolean).join(' · ')}
-                                                            className={`w-8 h-8 rounded-full flex items-center justify-center text-[9px] font-extrabold leading-none shadow-sm ${circleColor}`}
-                                                        >
-                                                            {cell.code === '½P' ? '½P' : cell.code}
-                                                        </div>
-                                                        {/* Indicator dots */}
-                                                        {(cell.late || cell.early || cell.overtime) && (
-                                                            <div className="flex items-center gap-0.5">
-                                                                {cell.late && <span className="w-1 h-1 rounded-full bg-orange-400 flex-shrink-0" title="Late" />}
-                                                                {cell.early && <span className="w-1 h-1 rounded-full bg-blue-400 flex-shrink-0" title="Early Going" />}
-                                                                {cell.overtime && <span className="w-1 h-1 rounded-full bg-purple-400 flex-shrink-0" title="Overtime" />}
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                ) : (
-                                                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-light
-                                                        ${isSun ? 'bg-red-50 text-red-200' : isSat ? 'bg-blue-50 text-blue-200' : 'text-slate-200'}`}>
-                                                        –
-                                                    </div>
-                                                )}
+                                        {/* Employee Name — sticky, solid bg */}
+                                        <div
+                                            className="sticky z-10 border-r border-slate-100 flex items-center gap-2.5 px-3 transition-colors"
+                                            style={{
+                                                left: `${codeColW}px`, width: `${nameColW}px`, height: `${CELL_H}px`,
+                                                background: rowBg,
+                                                boxShadow: '2px 0 4px -2px rgba(0,0,0,0.06)'
+                                            }}
+                                        >
+                                            <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 text-white font-extrabold text-xs shadow-sm ${avatarColor(r.employee_name)}`}>
+                                                {(r.employee_name || '?').slice(0, 2).toUpperCase()}
                                             </div>
-                                        );
-                                    })}
+                                            <div className="min-w-0">
+                                                <p className="text-[13px] font-bold text-slate-700 truncate leading-tight">{r.employee_name}</p>
+                                                <p className="text-[10px] text-slate-400 font-medium">Employee</p>
+                                            </div>
+                                        </div>
 
-                                    {/* ── Summary column ── */}
-                                    <div
-                                        className="flex flex-wrap items-center gap-1 px-2 py-1 content-center"
-                                        style={{ height: `${CELL_H}px`, width: SUMMARY_COL_W }}
-                                    >
-                                        {TOTALS_ORDER.filter(k => r.totals[k] > 0).map(k => {
-                                            const colorMap = {
-                                                P:   'bg-emerald-100 text-emerald-700 border-emerald-200',
-                                                A:   'bg-red-100 text-red-500 border-red-200',
-                                                WO:  'bg-slate-200 text-slate-500 border-slate-300',
-                                                '½P':'bg-amber-100 text-amber-600 border-amber-200',
-                                                H:   'bg-violet-100 text-violet-600 border-violet-200',
-                                                INC: 'bg-orange-100 text-orange-600 border-orange-200',
-                                                OT:  'bg-purple-100 text-purple-600 border-purple-200',
-                                            };
+                                        {/* Day cells */}
+                                        {r.dayCells.map((cell, dayIndex) => {
+                                            const { isSun, isSat } = dayMeta[dayIndex] || {};
+                                            const circleColor = cell?.code ? (CELL_CIRCLE[cell.code] || 'bg-gray-100 text-gray-500') : '';
                                             return (
-                                                <span key={k}
-                                                    className={`inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[9px] font-bold border ${colorMap[k] || 'bg-gray-100 text-gray-500 border-gray-200'}`}>
-                                                    {k} <span className="font-extrabold">{r.totals[k]}</span>
-                                                </span>
+                                                <div
+                                                    key={dayIndex}
+                                                    className={`flex items-center justify-center
+                                                    ${isSun ? 'bg-red-50/60' : isSat ? 'bg-blue-50/60' : ''}`}
+                                                    style={{ height: `${CELL_H}px`, width: cellWidth }}
+                                                >
+                                                    {cell && cell.code ? (
+                                                        <div className="relative flex flex-col items-center gap-0.5">
+                                                            <div
+                                                                title={[
+                                                                    CODE_LABELS[cell.code] || cell.code,
+                                                                    cell.late ? '⏰ Late' : '',
+                                                                    cell.early ? '🚪 Early Going' : '',
+                                                                ].filter(Boolean).join(' · ')}
+                                                                className={`w-8 h-8 rounded-full flex items-center justify-center text-[9px] font-extrabold leading-none shadow-sm ${circleColor}`}
+                                                            >
+                                                                {cell.code === '½P' ? '½P' : cell.code}
+                                                            </div>
+                                                            {/* Indicator dots */}
+                                                            {(cell.late || cell.early || cell.overtime) && (
+                                                                <div className="flex items-center gap-0.5">
+                                                                    {cell.late && <span className="w-1 h-1 rounded-full bg-orange-400 flex-shrink-0" title="Late" />}
+                                                                    {cell.early && <span className="w-1 h-1 rounded-full bg-blue-400 flex-shrink-0" title="Early Going" />}
+                                                                    {cell.overtime && <span className="w-1 h-1 rounded-full bg-purple-400 flex-shrink-0" title="Overtime" />}
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    ) : (
+                                                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-light
+                                                        ${isSun ? 'bg-red-50 text-red-200' : isSat ? 'bg-blue-50 text-blue-200' : 'text-slate-200'}`}>
+                                                            –
+                                                        </div>
+                                                    )}
+                                                </div>
                                             );
                                         })}
-                                        {r.lateDays > 0 && (
-                                            <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-orange-100 text-orange-500 border border-orange-200">
-                                                <span className="w-1.5 h-1.5 rounded-full bg-orange-400" />
-                                                Late <span className="font-extrabold">{r.lateDays}</span>
-                                            </span>
-                                        )}
-                                        {r.earlyDays > 0 && (
-                                            <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-blue-100 text-blue-500 border border-blue-200">
-                                                <span className="w-1.5 h-1.5 rounded-full bg-blue-400" />
-                                                Early <span className="font-extrabold">{r.earlyDays}</span>
-                                            </span>
-                                        )}
-                                        {r.overtimeDays > 0 && (
-                                            <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-purple-100 text-purple-600 border border-purple-200">
-                                                <span className="w-1.5 h-1.5 rounded-full bg-purple-400" />
-                                                OT <span className="font-extrabold">{r.overtimeDays}</span>
-                                            </span>
-                                        )}
-                                        {TOTALS_ORDER.every(k => r.totals[k] === 0) && r.lateDays === 0 && r.earlyDays === 0 && (
-                                            <span className="text-slate-300 text-[9px] italic">No records</span>
-                                        )}
+
+                                        {/* ── Summary column ── */}
+                                        <div
+                                            className="flex flex-wrap items-center gap-1 px-2 py-1 content-center"
+                                            style={{ height: `${CELL_H}px`, width: SUMMARY_COL_W }}
+                                        >
+                                            {TOTALS_ORDER.filter(k => r.totals[k] > 0).map(k => {
+                                                const colorMap = {
+                                                    P: 'bg-emerald-100 text-emerald-700 border-emerald-200',
+                                                    A: 'bg-red-100 text-red-500 border-red-200',
+                                                    WO: 'bg-slate-200 text-slate-500 border-slate-300',
+                                                    '½P': 'bg-amber-100 text-amber-600 border-amber-200',
+                                                    H: 'bg-violet-100 text-violet-600 border-violet-200',
+                                                    INC: 'bg-orange-100 text-orange-600 border-orange-200',
+                                                    OT: 'bg-purple-100 text-purple-600 border-purple-200',
+                                                };
+                                                return (
+                                                    <span key={k}
+                                                        className={`inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[9px] font-bold border ${colorMap[k] || 'bg-gray-100 text-gray-500 border-gray-200'}`}>
+                                                        {k} <span className="font-extrabold">{r.totals[k]}</span>
+                                                    </span>
+                                                );
+                                            })}
+                                            {r.lateDays > 0 && (
+                                                <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-orange-100 text-orange-500 border border-orange-200">
+                                                    <span className="w-1.5 h-1.5 rounded-full bg-orange-400" />
+                                                    Late <span className="font-extrabold">{r.lateDays}</span>
+                                                </span>
+                                            )}
+                                            {r.earlyDays > 0 && (
+                                                <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-blue-100 text-blue-500 border border-blue-200">
+                                                    <span className="w-1.5 h-1.5 rounded-full bg-blue-400" />
+                                                    Early <span className="font-extrabold">{r.earlyDays}</span>
+                                                </span>
+                                            )}
+                                            {r.overtimeDays > 0 && (
+                                                <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-purple-100 text-purple-600 border border-purple-200">
+                                                    <span className="w-1.5 h-1.5 rounded-full bg-purple-400" />
+                                                    OT <span className="font-extrabold">{r.overtimeDays}</span>
+                                                </span>
+                                            )}
+                                            {TOTALS_ORDER.every(k => r.totals[k] === 0) && r.lateDays === 0 && r.earlyDays === 0 && (
+                                                <span className="text-slate-300 text-[9px] italic">No records</span>
+                                            )}
+                                        </div>
                                     </div>
-                                </div>
                                 );
                             })}
                         </div>

@@ -29,8 +29,8 @@ const LeaveApplication = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isLoadingData, setIsLoadingData] = useState(true);
     const [notification, setNotification] = useState({ show: false, type: '', message: '' });
-  
-    
+
+
     const employeeDropdownRef = useRef(null);
 
     // Set user_id from auth context
@@ -164,7 +164,7 @@ const LeaveApplication = () => {
         }));
     };
 
-    console.log("*****");
+    console.log("*****", employees);
     const handleSubmit = async (e) => {
         console.log("99999999");
 
@@ -282,23 +282,40 @@ const LeaveApplication = () => {
                                     className="w-full px-3 py-2 border border-[var(--color-border-secondary)] rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)]"
                                     required
                                 /> */}
-                             
+
                                 <CustomSelect
                                     name="employeeSearch"
-                                    value={employeeSearch}
-                                    onChange={handleEmployeeSearch}
-                                    onFocus={() => setShowEmployeeDropdown(true)}
+                                    value={formData.employee_id}
+                                    onChange={(e) => {
+
+                                        const selectedEmployee = employees.find(
+                                            (employee) =>
+                                                String(employee.employee_id) === String(e.target.value)
+                                        );
+
+                                        if (!selectedEmployee) return;
+
+                                        setFormData({
+                                            ...formData,
+                                            employee_id: selectedEmployee.employee_id,
+                                        });
+
+                                        setSelectedEmployeeName(selectedEmployee.full_name);
+
+                                        setEmployeeSearch(selectedEmployee.full_name);
+
+                                        setShowEmployeeDropdown(false);
+                                    }}
                                     placeholder="Search and select employee"
                                     searchable={true}
                                     required
-                                    options={employees.map((emp) => ({
-                                        value: emp.id,
-                                        label: emp.full_name,
+                                    options={employees.map((employee) => ({
+                                        value: employee.employee_id,
+                                        label: employee.full_name,
                                     }))}
-                                  
                                 />
 
-                                {showEmployeeDropdown && (
+                                {/* {showEmployeeDropdown && (
                                     <div className="absolute z-10 w-full mt-1 bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] rounded-md shadow-lg max-h-60 overflow-y-auto">
                                         {filteredEmployees.length > 0 ? (
                                             filteredEmployees.map((employee) => (
@@ -314,7 +331,7 @@ const LeaveApplication = () => {
                                             <div className="px-3 py-2 text-[var(--color-text-secondary)]">No employees found</div>
                                         )}
                                     </div>
-                                )}
+                                )} */}
                             </div>
                         </div>
 
