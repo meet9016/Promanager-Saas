@@ -292,13 +292,13 @@ const EmployeePayrollBlock = ({ empData, permissions, onDataChange, onUnsavedCha
     );
 
     const newAllowance = {
-      employee_allowance_id: Date.now(),
+      employee_allowance_id: '',
       allowance_name: selectedAllowance?.name || '',
-      allowance_type: selectedAllowance?.allowance_type_id || selectedAllowance?.type ,
+      allowance_type: 2,
       allowance_amount: payrollFormData.allowance_amount,
     };
 
-   
+
 
     payrollData.employee_allowance_arr.push(newAllowance);
 
@@ -344,9 +344,9 @@ const EmployeePayrollBlock = ({ empData, permissions, onDataChange, onUnsavedCha
     );
 
     const newDeduction = {
-      employee_deduction_id: Date.now(),
+      employee_deduction_id: '',
       deduction_name: selectedDeduction?.name || '',
-      deduction_type: selectedDeduction?.deduction_type_id || selectedDeduction?.type,
+      deduction_type: 2,
       deduction_amount: payrollFormData.deduction_amount,
     };
 
@@ -680,7 +680,7 @@ const EmployeePayrollBlock = ({ empData, permissions, onDataChange, onUnsavedCha
                   <input type="checkbox" checked={!!selectedAllowances[a.employee_allowance_id]} onChange={() => { setSelectedAllowances(p => ({ ...p, [a.employee_allowance_id]: !p[a.employee_allowance_id] })); markEdited(); }} className="w-3.5 h-3.5" />
                   <div>
                     <div className="font-medium">{a.allowance_name}</div>
-                    <div className="text-xs text-[var(--color-text-secondary)]">Type {a.allowance_type}</div>
+                    {/* <div className="text-xs text-[var(--color-text-secondary)]">Type {a.allowance_type}</div> */}
                   </div>
                 </div>
                 <div className="flex items-center gap-1">
@@ -868,7 +868,7 @@ const EmployeePayrollBlock = ({ empData, permissions, onDataChange, onUnsavedCha
                   <input type="checkbox" checked={!!selectedDeductions[d.employee_deduction_id]} onChange={() => { setSelectedDeductions(p => ({ ...p, [d.employee_deduction_id]: !p[d.employee_deduction_id] })); markEdited(); }} className="w-3.5 h-3.5" />
                   <div>
                     <div className="font-medium">{d.deduction_name}</div>
-                    <div className="text-xs text-[var(--color-text-secondary)]">Type {d.deduction_type}</div>
+                    {/* <div className="text-xs text-[var(--color-text-secondary)]">Type {d.deduction_type}</div> */}
                   </div>
                 </div>
                 <div className="flex items-center gap-1">
