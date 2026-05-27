@@ -42,6 +42,9 @@ import { Toast } from '../../Components/ui/Toast';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Pagination from '../../Components/Pagination';
+import { Table, TableHeader, TableBody, TableRow, TableHeaderRow, Th, Td } from '../../Components/ui/Table';
+import CustomDatePicker from '../../Components/comman/CustomDatePicker';
+import CustomSelect from '../../Components/comman/CustomSelect';
 
 /** ---------- Floating Anchors ---------- **/
 const getScrollParents = (node) => {
@@ -128,17 +131,6 @@ const useAnchoredPosition = (anchorRef, isOpen, opts = {}) => {
 };
 
 /** ---------- Small building blocks ---------- **/
-const Th = ({ children, small, className = '' }) => (
-    <th className={`px-4 py-3 text-center ${small ? 'text-[11px]' : 'text-xs'} font-medium text-[var(--color-text-muted)] uppercase tracking-wider ${className}`}>
-        {children}
-    </th>
-);
-
-const Td = ({ children, small, className = '', colSpan }) => (
-    <td className={`px-4 py-3 text-center ${small ? 'text-xs' : 'text-sm'} text-[var(--color-text-primary)] ${className}`} colSpan={colSpan}>
-        {children}
-    </td>
-);
 
 const SummaryCard = ({ label, value, icon: Icon, tone = 'text-[var(--color-text-primary)]' }) => (
     <div className="bg-[var(--color-bg-secondary)] rounded-xl p-8 shadow-sm border border-[var(--color-border-primary)]">
@@ -165,7 +157,7 @@ const FilterSelect = ({ label, icon: Icon, value, onChange, options = [], disabl
             <Icon className="inline h-4 w-4 mr-1" />
             {label}
         </label>
-        <select
+        {/* <select
             value={value}
             onChange={(e) => onChange(e.target.value)}
             className="w-full px-3 py-2 bg-[var(--color-bg-primary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-[var(--color-text-primary)] text-sm"
@@ -176,7 +168,17 @@ const FilterSelect = ({ label, icon: Icon, value, onChange, options = [], disabl
                     {o.name}
                 </option>
             ))}
-        </select>
+        </select> */}
+        <CustomSelect
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            options={options.map((o) => ({
+                value: o.id,
+                label: o.name,
+            }))}
+            disabled={disabled}
+            searchable={true}
+        />
     </div>
 );
 
@@ -255,7 +257,7 @@ const Filters = ({
 
                         {/* Desktop anchored */}
                         <div
-                            className="hidden sm:block absolute z-[110] bg-[var(--color-bg-secondary)] rounded-lg shadow-2xl border border-[var(--color-border-secondary)] max-h-[80vh] overflow-hidden flex flex-col"
+                            className="hidden sm:block absolute z-[110] bg-[var(--color-bg-secondary)] rounded-lg shadow-2xl border border-[var(--color-border-secondary)] max-h-[80vh] overflow-visible flex flex-col"
                             style={{
                                 position: 'absolute',
                                 top: filterPos.ready ? filterPos.top : -9999,
@@ -281,7 +283,7 @@ const Filters = ({
                                 </div>
                             )}
 
-                            <div className="flex-1 overflow-y-auto p-4">
+                            <div className="flex-1 overflow-visible p-4">
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <FilterSelect
                                         label="Attendance Status"
@@ -841,30 +843,6 @@ const GeolocationReport = () => {
                             </div>
 
                             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-                                {/* Export */}
-
-                                {/* Date */}
-                                {/* <div className="flex items-center space-x-2 z-20">
-                                    <Calendar className="w-5 h-5 text-[var(--color-text-white)] flex-shrink-0" />
-                                    <DatePicker
-                                        selected={selectedDate}
-                                        onChange={handleDateChange}
-                                        dateFormat="dd-MM-yyyy"
-                                        placeholderText="DD-MM-YYYY"
-                                        className="w-32 bg-[var(--color-bg-secondary-20)] border border-white/30 rounded-lg px-3 py-2 text-sm text-[var(--color-text-white)] placeholder-white/90 focus:outline-none focus:ring-2 focus:ring-white/30"
-                                    />
-                                </div> */}
-                                <div className="relative flex items-center z-[40] min-w-[140px] sm:min-w-[160px]">
-                                    <Calendar className="absolute left-3 w-4 h-4 text-[var(--color-primary)] pointer-events-none z-10" />
-
-                                    <DatePicker
-                                        selected={selectedDate}
-                                        onChange={handleDateChange}
-                                        dateFormat="dd-MM-yyyy"
-                                        placeholderText="DD-MM-YYYY"
-                                        className="w-full bg-[var(--color-bg-primary)] border border-[var(--color-border-secondary)] rounded-xl pl-9 pr-3 py-1.5 sm:py-2 text-xs sm:text-sm text-[var(--color-text-primary)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent transition-all duration-200 cursor-pointer font-medium shadow-sm"
-                                    />
-                                </div>
 
                                 {/* Search */}
                                 <div className="relative w-full sm:w-64">
@@ -885,6 +863,29 @@ const GeolocationReport = () => {
                                         </button>
                                     )}
                                 </div>
+
+                                <div className="relative flex items-center z-[40] min-w-[140px] sm:min-w-[160px]">
+                                    {/* <Calendar className="absolute left-3 w-4 h-4 text-[var(--color-primary)] pointer-events-none z-10" />
+
+                                    <DatePicker
+                                        selected={selectedDate}
+                                        onChange={handleDateChange}
+                                        dateFormat="dd-MM-yyyy"
+                                        placeholderText="DD-MM-YYYY"
+                                        className="w-full bg-[var(--color-bg-primary)] border border-[var(--color-border-secondary)] rounded-xl pl-9 pr-3 py-1.5 sm:py-2 text-xs sm:text-sm text-[var(--color-text-primary)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent transition-all duration-200 cursor-pointer font-medium shadow-sm"
+                                    /> */}
+                                    <CustomDatePicker
+                                        name="selected_date"
+                                        value={selectedDate}
+                                        onChange={(e) => handleDateChange(new Date(e.target.value))}
+                                        placeholder="DD-MM-YYYY"
+                                        maxDate={new Date()}
+                                        clearable={true}
+                                        className="w-full h-[40px]"
+                                    />
+                                </div>
+
+
 
                                 {/* Filters */}
                                 <Filters
@@ -968,24 +969,24 @@ const GeolocationReport = () => {
                             </div>
                         ) : (
                             <>
-                                <table className="w-full min-w-[1200px] border-separate border-spacing-0">
-                                    <thead className="sticky top-0 z-10 bg-[var(--color-primary-dark)] backdrop-blur">
-                                        <tr className="border-b border-[var(--color-border-secondary)]">
-                                            <Th className="text-left text-white">Employee</Th>
-                                            <Th className="text-left text-white">Shift</Th>
-                                            <Th className="text-center text-white">Clock In/Out</Th>
-                                            <Th className="text-center text-white">Attendance Hours</Th>
-                                            <Th className="text-center text-white">Status</Th>
-                                            <Th className="text-center text-white">Timeline</Th>
-                                        </tr>
-                                    </thead>
+                                <Table className="w-full min-w-[1200px] border-separate border-spacing-0">
+                                    <TableHeader className="sticky top-0 z-10 bg-[var(--color-primary-dark)] backdrop-blur">
+                                        <TableHeaderRow className="border-b border-[var(--color-border-secondary)]">
+                                            <Th className="text-left text-white font-medium">Employee</Th>
+                                            <Th className="text-left text-white font-medium">Shift</Th>
+                                            <Th className="text-center text-white font-medium">Clock In/Out</Th>
+                                            <Th className="text-center text-white font-medium">Attendance Hours</Th>
+                                            <Th className="text-center text-white font-medium">Status</Th>
+                                            <Th className="text-center text-white font-medium">Timeline</Th>
+                                        </TableHeaderRow>
+                                    </TableHeader>
 
-                                    <tbody className="divide-y divide-[var(--color-border-secondary)]">
+                                    <TableBody className="divide-y divide-[var(--color-border-secondary)]">
                                         {paginatedData.map((emp, idx) => {
                                             const timeColorClass = getTimeColor(emp);
 
                                             return (
-                                                <tr
+                                                <TableRow
                                                     key={emp.employee_id || emp.employee_code || idx}
                                                     className={`hover:bg-[var(--color-bg-hover)] transition-colors ${getRowStyling(emp.status)}`}
                                                 >
@@ -1069,23 +1070,23 @@ const GeolocationReport = () => {
                                                             Details
                                                         </button>
                                                     </Td>
-                                                </tr>
+                                                </TableRow>
                                             );
                                         })}
 
                                         {/* Filler rows to keep 10 visible */}
                                         {Array.from({ length: emptyRowCount }).map((_, i) => (
-                                            <tr key={`empty-${i}`} className="transition-colors">
+                                            <TableRow key={`empty-${i}`} className="transition-colors">
                                                 <Td className="text-transparent">—</Td>
                                                 <Td className="text-transparent">—</Td>
                                                 <Td className="text-transparent">—</Td>
                                                 <Td className="text-transparent">—</Td>
                                                 <Td className="text-transparent">—</Td>
                                                 <Td className="text-transparent">—</Td>
-                                            </tr>
+                                            </TableRow>
                                         ))}
-                                    </tbody>
-                                </table>
+                                    </TableBody>
+                                </Table>
 
                                 {/* Pagination controls */}
                                 <Pagination
@@ -1142,20 +1143,20 @@ const GeolocationReport = () => {
                                         <h5 className="text-sm font-semibold">Detailed Clock In/Out Timeline</h5>
                                     </div>
                                     <div className="overflow-x-auto">
-                                        <table className="w-full min-w-[800px]">
-                                            <thead className="bg-gray-50">
-                                                <tr>
-                                                    <Th small className="text-left">#</Th>
-                                                    <Th small className="text-center">Clock In</Th>
-                                                    <Th small className="text-center">Clock Out</Th>
-                                                    <Th small className="text-center">Clock In Type</Th>
-                                                    <Th small className="text-center">Clock In Location</Th>
-                                                    <Th small className="text-center">Clock Out Type</Th>
-                                                    <Th small className="text-center">Clock Out Location</Th>
-                                                    <Th small className="text-center">Face Photos</Th>
-                                                </tr>
-                                            </thead>
-                                            <tbody className="divide-y divide-[var(--color-border-secondary)]">
+                                        <Table className="w-full min-w-[800px]">
+                                            <TableHeader className="bg-gray-50">
+                                                <TableHeaderRow>
+                                                    <Th className="text-[11px] text-left font-medium">#</Th>
+                                                    <Th className="text-[11px] text-center font-medium">Clock In</Th>
+                                                    <Th className="text-[11px] text-center font-medium">Clock Out</Th>
+                                                    <Th className="text-[11px] text-center font-medium">Clock In Type</Th>
+                                                    <Th className="text-[11px] text-center font-medium">Clock In Location</Th>
+                                                    <Th className="text-[11px] text-center font-medium">Clock Out Type</Th>
+                                                    <Th className="text-[11px] text-center font-medium">Clock Out Location</Th>
+                                                    <Th className="text-[11px] text-center font-medium">Face Photos</Th>
+                                                </TableHeaderRow>
+                                            </TableHeader>
+                                            <TableBody className="divide-y divide-[var(--color-border-secondary)]">
                                                 {Array.isArray(timelineFor.attendance_history) && timelineFor.attendance_history.length > 0 ? (
                                                     (() => {
                                                         // Group consecutive clock entries into in/out pairs
@@ -1179,11 +1180,11 @@ const GeolocationReport = () => {
                                                         }
 
                                                         return pairs.map((entry, idx) => (
-                                                            <tr key={idx} className="bg-[var(--color-bg-secondary)]">
-                                                                <Td small className="text-left">{idx + 1}</Td>
-                                                                <Td small className="text-center">{entry.clock_in}</Td>
-                                                                <Td small className="text-center">{entry.clock_out}</Td>
-                                                                <Td small>
+                                                            <TableRow key={idx} className="bg-[var(--color-bg-secondary)]">
+                                                                <Td className="text-[11px] text-left text-xs">{idx + 1}</Td>
+                                                                <Td className="text-[11px] text-center text-xs">{entry.clock_in}</Td>
+                                                                <Td className="text-[11px] text-center text-xs">{entry.clock_out}</Td>
+                                                                <Td className="text-[11px]">
                                                                     <div className="flex items-center justify-center gap-1">
                                                                         {getClockInTypeIcon(entry.clock_in_type)}
                                                                         <span className="text-xs">
@@ -1191,7 +1192,7 @@ const GeolocationReport = () => {
                                                                         </span>
                                                                     </div>
                                                                 </Td>
-                                                                <Td small className="text-center">
+                                                                <Td className="text-[11px] text-center text-xs">
                                                                     {entry.clock_in_map_link && entry.clock_in_map_link !== "https://www.google.com/maps?q=," ? (
                                                                         <button
                                                                             onClick={() => window.open(entry.clock_in_map_link, '_blank')}
@@ -1204,7 +1205,7 @@ const GeolocationReport = () => {
                                                                         <span className="text-xs text-gray-500">No Location</span>
                                                                     )}
                                                                 </Td>
-                                                                <Td small>
+                                                                <Td className="text-[11px]">
                                                                     <div className="flex items-center justify-center gap-1">
                                                                         {getClockInTypeIcon(entry.clock_out_type)}
                                                                         <span className="text-xs">
@@ -1212,7 +1213,7 @@ const GeolocationReport = () => {
                                                                         </span>
                                                                     </div>
                                                                 </Td>
-                                                                <Td small className="text-center">
+                                                                <Td className="text-[11px] text-center">
                                                                     {entry.clock_out_map_link && entry.clock_out_map_link !== "https://www.google.com/maps?q=," ? (
                                                                         <button
                                                                             onClick={() => window.open(entry.clock_out_map_link, '_blank')}
@@ -1225,7 +1226,7 @@ const GeolocationReport = () => {
                                                                         <span className="text-xs text-gray-500">No Location</span>
                                                                     )}
                                                                 </Td>
-                                                                <Td small className="text-center">
+                                                                <Td className="text-[11px] text-center">
                                                                     <div className="flex items-center justify-center gap-2">
                                                                         {entry.clock_in_face_img ? (
                                                                             <button
@@ -1251,18 +1252,18 @@ const GeolocationReport = () => {
                                                                         )}
                                                                     </div>
                                                                 </Td>
-                                                            </tr>
+                                                            </TableRow>
                                                         ));
                                                     })()
                                                 ) : (
-                                                    <tr>
+                                                    <TableRow>
                                                         <Td colSpan={8} className="text-center text-sm text-[var(--color-text-secondary)] py-8">
                                                             No clock-in/out entries found.
                                                         </Td>
-                                                    </tr>
+                                                    </TableRow>
                                                 )}
-                                            </tbody>
-                                        </table>
+                                            </TableBody>
+                                        </Table>
                                     </div>
                                 </div>
                             </div>

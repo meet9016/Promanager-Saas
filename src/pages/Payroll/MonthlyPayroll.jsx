@@ -32,6 +32,8 @@ import { useSelector } from 'react-redux';
 import { Toast } from '../../Components/ui/Toast';
 import { ConfirmDialog } from '../../Components/ui/ConfirmDialog';
 import LoadingSpinner from '../../Components/Loader/LoadingSpinner';
+import CustomSelect from '../../Components/comman/CustomSelect';
+import CustomInput from '../../Components/comman/CustomInput';
 
 // ---------------------------------------------------------------------------
 // Multi-Select Searchable Dropdown (chips)
@@ -171,6 +173,223 @@ const EmployeePayrollBlock = ({ empData, permissions, onDataChange, onUnsavedCha
     return init;
   });
   const [editingAllowanceId, setEditingAllowanceId] = useState(null);
+
+
+
+
+
+
+
+
+
+
+
+  const [showAllowanceModal, setShowAllowanceModal] = useState(false);
+  const [showDeductionModal, setShowDeductionModal] = useState(false);
+  const [allowances, setAllowances] = useState([]);
+  const [allowanceLoading, setAllowanceLoading] = useState(false);
+  const [deductions, setDeductions] = useState([]);
+  const [deductionLoading, setDeductionLoading] = useState(false);
+
+  const [payrollFormData, setPayrollFormData] = useState({
+    allowance_type: '',
+    allowance_amount: '',
+
+    deduction_type: '',
+    deduction_amount: '',
+  });
+
+
+
+  const fetchDeductions = async () => {
+
+    setDeductionLoading(true);
+
+    try {
+
+      const formData = new FormData();
+
+      const res = await api.post(
+        "/deduction_list",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      const deductionData = res.data.data || res.data || [];
+
+      setDeductions(
+        Array.isArray(deductionData)
+          ? deductionData
+          : []
+      );
+
+    } catch (err) {
+
+      console.error("Error fetching deductions:", err);
+
+      setDeductions([]);
+
+    } finally {
+
+      setDeductionLoading(false);
+
+    }
+  };
+
+
+
+  const fetchAllowances = async (page = 1) => {
+
+    setAllowanceLoading(true);
+    try {
+      const formData = new FormData();
+      formData.append('page', page);
+      const res = await api.post(
+        "/allowance_list",
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          }
+        }
+      );
+      const allowanceData =
+        res.data.data || res.data || [];
+      console.log(allowanceData, "ppp")
+      setAllowances(
+        Array.isArray(allowanceData)
+          ? allowanceData
+          : []
+      );
+    } catch (err) {
+      console.error(
+        "Error fetching allowances:",
+        err
+      );
+      setAllowances([]);
+    } finally {
+      setAllowanceLoading(false);
+    }
+  };
+
+
+  const handleAddAllowance = () => {
+    if (
+      !payrollFormData.allowance_type ||
+      !payrollFormData.allowance_amount
+    ) {
+      showToast('Please fill all allowance fields', 'error');
+      return;
+    }
+
+    const selectedAllowance = allowances.find(
+      (item) =>
+        item.allowance_id == payrollFormData.allowance_type
+    );
+
+    const newAllowance = {
+      employee_allowance_id: '',
+      allowance_name: selectedAllowance?.name || '',
+      allowance_type: 2,
+      allowance_amount: payrollFormData.allowance_amount,
+    };
+
+
+
+    payrollData.employee_allowance_arr.push(newAllowance);
+
+    setSelectedAllowances((prev) => ({
+      ...prev,
+      [newAllowance.employee_allowance_id]: true,
+    }));
+
+    setEditableAllowances((prev) => ({
+      ...prev,
+      [newAllowance.employee_allowance_id]:
+        payrollFormData.allowance_amount,
+    }));
+
+    setPayrollFormData((prev) => ({
+      ...prev,
+      allowance_type: '',
+      allowance_amount: '',
+    }));
+
+    setShowAllowanceModal(false);
+
+    // markEdited();
+  };
+
+
+
+
+
+  const handleAddDeduction = () => {
+
+    if (
+      !payrollFormData.deduction_type ||
+      !payrollFormData.deduction_amount
+    ) {
+      showToast('Please fill all deduction fields', 'error');
+      return;
+    }
+
+    const selectedDeduction = deductions.find(
+      (item) =>
+        item.deduction_id == payrollFormData.deduction_type
+    );
+
+    const newDeduction = {
+      employee_deduction_id: '',
+      deduction_name: selectedDeduction?.name || '',
+      deduction_type: 2,
+      deduction_amount: payrollFormData.deduction_amount,
+    };
+
+    payrollData.employee_deduction_arr.push(newDeduction);
+
+    setSelectedDeductions((prev) => ({
+      ...prev,
+      [newDeduction.employee_deduction_id]: true,
+    }));
+
+    setEditableDeductions((prev) => ({
+      ...prev,
+      [newDeduction.employee_deduction_id]:
+        payrollFormData.deduction_amount,
+    }));
+
+    setPayrollFormData((prev) => ({
+      ...prev,
+      deduction_type: '',
+      deduction_amount: '',
+    }));
+
+    setShowDeductionModal(false);
+
+    // markEdited();
+  };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   // deductions
   const [selectedDeductions, setSelectedDeductions] = useState(() => {
@@ -430,81 +649,374 @@ const EmployeePayrollBlock = ({ empData, permissions, onDataChange, onUnsavedCha
       </div>
 
       {/* Allowances & Deductions */}
-      {(payrollData.employee_allowance_arr?.length > 0 || payrollData.employee_deduction_arr?.length > 0) && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          {payrollData.employee_allowance_arr?.length > 0 && (
-            <div className="bg-[var(--color-bg-secondary)] rounded-lg border p-4">
-              <div className="flex items-center justify-between mb-3">
-                <h4 className="font-semibold text-sm text-[var(--color-text-primary)]">Allowances</h4>
-                <span className="text-green-600 font-medium text-sm">+ ₹{totalAllowances.toLocaleString()}</span>
-              </div>
-              <div className="space-y-2">
-                {payrollData.employee_allowance_arr.map(a => (
-                  <div key={a.employee_allowance_id} className="flex items-center justify-between p-2 border rounded text-sm">
-                    <div className="flex items-center gap-2">
-                      <input type="checkbox" checked={!!selectedAllowances[a.employee_allowance_id]} onChange={() => { setSelectedAllowances(p => ({ ...p, [a.employee_allowance_id]: !p[a.employee_allowance_id] })); markEdited(); }} className="w-3.5 h-3.5" />
-                      <div>
-                        <div className="font-medium">{a.allowance_name}</div>
-                        <div className="text-xs text-[var(--color-text-secondary)]">Type {a.allowance_type}</div>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      {editingAllowanceId === a.employee_allowance_id ? (
-                        <>
-                          <input type="number" value={editableAllowances[a.employee_allowance_id] || '0'} onChange={e => setEditableAllowances(p => ({ ...p, [a.employee_allowance_id]: e.target.value }))} className="w-24 px-2 py-1 border rounded text-xs" min="0" step="0.01" />
-                          <button onClick={() => { const amt = parseFloat(editableAllowances[a.employee_allowance_id]); if (isNaN(amt) || amt < 0) return showToast('Invalid amount', 'error'); setEditingAllowanceId(null); markEdited(); }} className="p-1 text-green-600"><Save className="w-3.5 h-3.5" /></button>
-                          <button onClick={() => { setEditingAllowanceId(null); setEditableAllowances(p => ({ ...p, [a.employee_allowance_id]: a.allowance_amount })); }} className="p-1 text-gray-500"><X className="w-3.5 h-3.5" /></button>
-                        </>
-                      ) : (
-                        <>
-                          <span className="font-semibold text-green-600">₹{parseFloat(editableAllowances[a.employee_allowance_id] || 0).toLocaleString()}</span>
-                          {permissions.salary_edit && selectedAllowances[a.employee_allowance_id] && <button onClick={() => setEditingAllowanceId(a.employee_allowance_id)} className="p-1 text-[var(--color-text-secondary)]"><Edit className="w-3.5 h-3.5" /></button>}
-                        </>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
+      {/* {(payrollData.employee_allowance_arr?.length > 0 || payrollData.employee_deduction_arr?.length > 0) && ( */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
 
-          {payrollData.employee_deduction_arr?.length > 0 && (
-            <div className="bg-[var(--color-bg-secondary)] rounded-lg border p-4">
-              <div className="flex items-center justify-between mb-3">
-                <h4 className="font-semibold text-sm text-[var(--color-text-primary)]">Deductions</h4>
-                <span className="text-red-600 font-medium text-sm">- ₹{totalDeductions.toLocaleString()}</span>
-              </div>
-              <div className="space-y-2">
-                {payrollData.employee_deduction_arr.map(d => (
-                  <div key={d.employee_deduction_id} className="flex items-center justify-between p-2 border rounded text-sm">
-                    <div className="flex items-center gap-2">
-                      <input type="checkbox" checked={!!selectedDeductions[d.employee_deduction_id]} onChange={() => { setSelectedDeductions(p => ({ ...p, [d.employee_deduction_id]: !p[d.employee_deduction_id] })); markEdited(); }} className="w-3.5 h-3.5" />
-                      <div>
-                        <div className="font-medium">{d.deduction_name}</div>
-                        <div className="text-xs text-[var(--color-text-secondary)]">Type {d.deduction_type}</div>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      {editingDeductionId === d.employee_deduction_id ? (
-                        <>
-                          <input type="number" value={editableDeductions[d.employee_deduction_id] || '0'} onChange={e => setEditableDeductions(p => ({ ...p, [d.employee_deduction_id]: e.target.value }))} className="w-24 px-2 py-1 border rounded text-xs" min="0" step="0.01" />
-                          <button onClick={() => { const amt = parseFloat(editableDeductions[d.employee_deduction_id]); if (isNaN(amt) || amt < 0) return showToast('Invalid amount', 'error'); setEditingDeductionId(null); markEdited(); }} className="p-1 text-green-600"><Save className="w-3.5 h-3.5" /></button>
-                          <button onClick={() => { setEditingDeductionId(null); setEditableDeductions(p => ({ ...p, [d.employee_deduction_id]: d.deduction_amount })); }} className="p-1 text-gray-500"><X className="w-3.5 h-3.5" /></button>
-                        </>
-                      ) : (
-                        <>
-                          <span className="font-semibold text-red-600">₹{parseFloat(editableDeductions[d.employee_deduction_id] || 0).toLocaleString()}</span>
-                          {permissions.salary_edit && selectedDeductions[d.employee_deduction_id] && <button onClick={() => setEditingDeductionId(d.employee_deduction_id)} className="p-1 text-[var(--color-text-secondary)]"><Edit className="w-3.5 h-3.5" /></button>}
-                        </>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
+        <div className="bg-[var(--color-bg-secondary)] rounded-lg border p-4">
+          <div className="flex items-center justify-between mb-3">
+            <h4 className="font-semibold text-sm text-[var(--color-text-primary)]">Allowances</h4>
+            {/* <span className="text-green-600 font-medium text-sm">+ ₹{totalAllowances.toLocaleString()}</span> */}
+            <div className="flex items-center gap-2">
+              <span className="text-green-600 font-medium text-sm">
+                + ₹{totalAllowances.toLocaleString()}
+              </span>
+
+              <button
+                onClick={() => {
+                  setShowAllowanceModal(true);
+                  fetchAllowances();
+                }}
+                className="w-7 h-7 flex items-center justify-center rounded-full bg-green-500 hover:bg-green-600 text-white shadow-md transition-all duration-200"
+              >
+                <Plus className="w-4 h-4 stroke-[3]" />
+              </button>
             </div>
-          )}
+          </div>
+
+          <div className="space-y-2">
+            {payrollData.employee_allowance_arr.map(a => (
+              <div key={a.employee_allowance_id} className="flex items-center justify-between p-2 border rounded text-sm">
+                <div className="flex items-center gap-2">
+                  <input type="checkbox" checked={!!selectedAllowances[a.employee_allowance_id]} onChange={() => { setSelectedAllowances(p => ({ ...p, [a.employee_allowance_id]: !p[a.employee_allowance_id] })); markEdited(); }} className="w-3.5 h-3.5" />
+                  <div>
+                    <div className="font-medium">{a.allowance_name}</div>
+                    {/* <div className="text-xs text-[var(--color-text-secondary)]">Type {a.allowance_type}</div> */}
+                  </div>
+                </div>
+                <div className="flex items-center gap-1">
+                  {editingAllowanceId === a.employee_allowance_id ? (
+                    <>
+                      <input type="number" value={editableAllowances[a.employee_allowance_id] || '0'} onChange={e => setEditableAllowances(p => ({ ...p, [a.employee_allowance_id]: e.target.value }))} className="w-24 px-2 py-1 border rounded text-xs" min="0" step="0.01" />
+                      <button onClick={() => { const amt = parseFloat(editableAllowances[a.employee_allowance_id]); if (isNaN(amt) || amt < 0) return showToast('Invalid amount', 'error'); setEditingAllowanceId(null); markEdited(); }} className="p-1 text-green-600"><Save className="w-3.5 h-3.5" /></button>
+                      <button onClick={() => { setEditingAllowanceId(null); setEditableAllowances(p => ({ ...p, [a.employee_allowance_id]: a.allowance_amount })); }} className="p-1 text-gray-500"><X className="w-3.5 h-3.5" /></button>
+                    </>
+                  ) : (
+                    <>
+                      <span className="font-semibold text-green-600">₹{parseFloat(editableAllowances[a.employee_allowance_id] || 0).toLocaleString()}</span>
+                      {permissions.salary_edit && selectedAllowances[a.employee_allowance_id] && <button onClick={() => setEditingAllowanceId(a.employee_allowance_id)} className="p-1 text-[var(--color-text-secondary)]"><Edit className="w-3.5 h-3.5" /></button>}
+                    </>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
-      )}
+
+
+
+
+
+
+        {showAllowanceModal && (
+          <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+
+            <div className="relative w-full max-w-lg bg-white rounded-3xl shadow-[0_25px_80px_rgba(0,0,0,0.25)] overflow-hidden animate-in fade-in zoom-in duration-300">
+
+              {/* Top Gradient */}
+              <div className="h-2 bg-gradient-to-r from-[#5D18AF] via-[#7B2DDB] to-[#9B4DFF]" />
+
+              {/* Header */}
+              <div className="flex items-start justify-between px-6 pt-6 pb-4">
+
+                <div>
+                  <h2 className="text-2xl font-bold text-slate-800">
+                    Add Allowance
+                  </h2>
+
+                  <p className="text-sm text-slate-500 mt-1">
+                    Add additional employee allowance details
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setShowAllowanceModal(false)}
+                  className="w-9 h-9 flex items-center justify-center rounded-xl bg-slate-100 hover:bg-slate-200 transition-all duration-200"
+                >
+                  <X className="w-5 h-5 text-slate-600" />
+                </button>
+
+              </div>
+
+              {/* Body */}
+              <div className="px-6 pb-6 space-y-5">
+
+                {/* Allowance Type */}
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">
+                    Allowance Type
+                  </label>
+
+                  <div className="relative">
+
+                    <CustomSelect
+                      name="allowance_type"
+                      value={payrollFormData.allowance_type}
+                      onChange={(e) =>
+                        setPayrollFormData((prev) => ({
+                          ...prev,
+                          allowance_type: e.target.value,
+                        }))
+                      }
+                      options={allowances.map((item) => ({
+                        value: item.allowance_id,
+                        label: item.name,
+                      }))}
+                      placeholder={
+                        allowanceLoading
+                          ? 'Loading allowances...'
+                          : 'Select allowance type'
+                      }
+                      searchable={true}
+                      disabled={allowanceLoading}
+                      className="w-full h-[52px]"
+                    />
+
+
+                  </div>
+                </div>
+
+                {/* Amount */}
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">
+                    Allowance Amount
+                  </label>
+
+                  <div className="relative">
+
+                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-medium">
+                      ₹
+                    </span>
+
+                    <CustomInput
+                      type="number"
+                      name="allowance_amount"
+                      value={payrollFormData.allowance_amount}
+                      onChange={(e) =>
+                        setPayrollFormData((prev) => ({
+                          ...prev,
+                          allowance_amount: e.target.value,
+                        }))
+                      }
+                      placeholder="Enter allowance amount"
+                      required
+                      clearable={true}
+                    />
+
+                  </div>
+                </div>
+
+              </div>
+
+              {/* Footer */}
+              <div className="flex flex-col sm:flex-row items-center justify-end gap-3 px-6 py-5 border-t border-slate-100 bg-slate-50">
+
+                <button
+                  type="button"
+                  onClick={() => setShowAllowanceModal(false)}
+                  className="w-full sm:w-auto px-5 h-[46px] rounded-xl border border-slate-300 text-slate-600 font-medium hover:bg-slate-100 transition-all"
+                >
+                  Cancel
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleAddAllowance}
+                  className="w-full sm:w-auto px-6 h-[46px] rounded-xl bg-[#5D18AF] text-white font-semibold shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all duration-200"
+                >
+                  Add Allowance
+                </button>
+
+              </div>
+
+            </div>
+
+          </div>
+        )}
+
+
+
+
+
+
+
+
+        <div className="bg-[var(--color-bg-secondary)] rounded-lg border p-4">
+          <div className="flex items-center justify-between mb-3">
+            <h4 className="font-semibold text-sm text-[var(--color-text-primary)]">Deductions</h4>
+            {/* <span className="text-red-600 font-medium text-sm">- ₹{totalDeductions.toLocaleString()}</span> */}
+            <div className="flex items-center gap-2">
+              <span className="text-green-600 font-medium text-sm">
+                + ₹{totalAllowances.toLocaleString()}
+              </span>
+
+              <button
+                onClick={() => {
+                  setShowDeductionModal(true);
+                  fetchDeductions();
+                }}
+                className="w-7 h-7 flex items-center justify-center rounded-full bg-green-500 hover:bg-green-600 text-white shadow-md transition-all duration-200"
+              >
+                <Plus className="w-4 h-4 stroke-[3]" />
+              </button>
+            </div>
+          </div>
+          <div className="space-y-2">
+            {payrollData.employee_deduction_arr.map(d => (
+              <div key={d.employee_deduction_id} className="flex items-center justify-between p-2 border rounded text-sm">
+                <div className="flex items-center gap-2">
+                  <input type="checkbox" checked={!!selectedDeductions[d.employee_deduction_id]} onChange={() => { setSelectedDeductions(p => ({ ...p, [d.employee_deduction_id]: !p[d.employee_deduction_id] })); markEdited(); }} className="w-3.5 h-3.5" />
+                  <div>
+                    <div className="font-medium">{d.deduction_name}</div>
+                    {/* <div className="text-xs text-[var(--color-text-secondary)]">Type {d.deduction_type}</div> */}
+                  </div>
+                </div>
+                <div className="flex items-center gap-1">
+                  {editingDeductionId === d.employee_deduction_id ? (
+                    <>
+                      <input type="number" value={editableDeductions[d.employee_deduction_id] || '0'} onChange={e => setEditableDeductions(p => ({ ...p, [d.employee_deduction_id]: e.target.value }))} className="w-24 px-2 py-1 border rounded text-xs" min="0" step="0.01" />
+                      <button onClick={() => { const amt = parseFloat(editableDeductions[d.employee_deduction_id]); if (isNaN(amt) || amt < 0) return showToast('Invalid amount', 'error'); setEditingDeductionId(null); markEdited(); }} className="p-1 text-green-600"><Save className="w-3.5 h-3.5" /></button>
+                      <button onClick={() => { setEditingDeductionId(null); setEditableDeductions(p => ({ ...p, [d.employee_deduction_id]: d.deduction_amount })); }} className="p-1 text-gray-500"><X className="w-3.5 h-3.5" /></button>
+                    </>
+                  ) : (
+                    <>
+                      <span className="font-semibold text-red-600">₹{parseFloat(editableDeductions[d.employee_deduction_id] || 0).toLocaleString()}</span>
+                      {permissions.salary_edit && selectedDeductions[d.employee_deduction_id] && <button onClick={() => setEditingDeductionId(d.employee_deduction_id)} className="p-1 text-[var(--color-text-secondary)]"><Edit className="w-3.5 h-3.5" /></button>}
+                    </>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+
+        {showDeductionModal && (
+          <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+
+            <div className="relative w-full max-w-lg bg-white rounded-3xl shadow-[0_25px_80px_rgba(0,0,0,0.25)] overflow-hidden animate-in fade-in zoom-in duration-300">
+
+              {/* Top Gradient */}
+              <div className="h-2 bg-gradient-to-r from-[#5D18AF] via-[#7B2DDB] to-[#9B4DFF]" />
+
+              {/* Header */}
+              <div className="flex items-start justify-between px-6 pt-6 pb-4">
+
+                <div>
+                  <h2 className="text-2xl font-bold text-slate-800">
+                    Add Deductions
+                  </h2>
+
+                  <p className="text-sm text-slate-500 mt-1">
+                    Add additional employee Deductions details
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setShowDeductionModal(false)}
+                  className="w-9 h-9 flex items-center justify-center rounded-xl bg-slate-100 hover:bg-slate-200 transition-all duration-200"
+                >
+                  <X className="w-5 h-5 text-slate-600" />
+                </button>
+
+              </div>
+
+              {/* Body */}
+              <div className="px-6 pb-6 space-y-5">
+
+                {/* Allowance Type */}
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">
+                    Deductions Type
+                  </label>
+
+                  <div className="relative">
+                    <CustomSelect
+                      name="deduction_type"
+                      value={payrollFormData.deduction_type}
+                      onChange={(e) =>
+                        setPayrollFormData((prev) => ({
+                          ...prev,
+                          deduction_type: e.target.value,
+                        }))
+                      }
+                      options={deductions.map((item) => ({
+                        value: item.deduction_id,
+                        label: item.name,
+                      }))}
+                      placeholder={
+                        deductionLoading
+                          ? 'Loading deductions...'
+                          : 'Select deduction type'
+                      }
+                      searchable={true}
+                      disabled={deductionLoading}
+                      className="w-full h-[52px]"
+                    />
+
+                  </div>
+                </div>
+
+                {/* Amount */}
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">
+                    Deductions Amount
+                  </label>
+
+                  <div className="relative">
+
+                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-medium">
+                      ₹
+                    </span>
+
+                    <CustomInput
+                      type="number"
+                      name="deduction_amount"
+                      value={payrollFormData.deduction_amount}
+                      onChange={(e) =>
+                        setPayrollFormData((prev) => ({
+                          ...prev,
+                          deduction_amount: e.target.value,
+                        }))
+                      }
+                      placeholder="Enter deduction amount"
+                      required
+                      clearable={true}
+                    />
+
+                  </div>
+                </div>
+
+              </div>
+
+              {/* Footer */}
+              <div className="flex flex-col sm:flex-row items-center justify-end gap-3 px-6 py-5 border-t border-slate-100 bg-slate-50">
+
+                <button
+                  type="button"
+                  onClick={() => setShowDeductionModal(false)}
+                  className="w-full sm:w-auto px-5 h-[46px] rounded-xl border border-slate-300 text-slate-600 font-medium hover:bg-slate-100 transition-all"
+                >
+                  Cancel
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleAddDeduction}
+                  className="w-full sm:w-auto px-6 h-[46px] rounded-xl bg-[#5D18AF] text-white font-semibold shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all duration-200"
+                >
+                  Add Deduction
+                </button>
+
+              </div>
+
+            </div>
+
+          </div>
+        )}
+      </div>
+      {/* )} */}
 
       {/* Holidays */}
       {groupedHolidays.length > 0 && (
@@ -701,6 +1213,7 @@ const MonthlyPayroll = () => {
   const [selectedBranch, setSelectedBranch] = useState('');
   const [selectedDepartment, setSelectedDepartment] = useState('');
   const [selectedEmployeeIds, setSelectedEmployeeIds] = useState([]);
+
 
   // dropdown data
   const [branches, setBranches] = useState([]);
@@ -997,10 +1510,24 @@ const MonthlyPayroll = () => {
                 <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
                   <Calendar className="w-4 h-4 inline mr-1" /> Month <span className="text-red-500">*</span>
                 </label>
-                <select value={selectedMonth} onChange={e => { setSelectedMonth(e.target.value); setAllPayrollData([]); }} className="w-full px-3 py-2 border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] bg-[var(--color-bg-secondary)]">
+                {/* <select value={selectedMonth} onChange={e => { setSelectedMonth(e.target.value); setAllPayrollData([]); }} className="w-full px-3 py-2 border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] bg-[var(--color-bg-secondary)]">
                   <option value="">Choose Month</option>
                   {months.map(m => <option key={m.value} value={m.value}>{m.label}</option>)}
-                </select>
+                </select> */}
+                <CustomSelect
+                  name="selectedMonth"
+                  value={selectedMonth}
+                  onChange={(e) => {
+                    setSelectedMonth(e.target.value);
+                    setAllPayrollData([]);
+                  }}
+                  options={months.map((m) => ({
+                    value: m.value,
+                    label: m.label,
+                  }))}
+                  placeholder="Choose Month"
+                  searchable={true}
+                />
               </div>
 
               {/* Year */}
@@ -1008,10 +1535,24 @@ const MonthlyPayroll = () => {
                 <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
                   <Calendar className="w-4 h-4 inline mr-1" /> Year <span className="text-red-500">*</span>
                 </label>
-                <select value={selectedYear} onChange={e => { setSelectedYear(e.target.value); setAllPayrollData([]); }} className="w-full px-3 py-2 border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] bg-[var(--color-bg-secondary)]">
+                {/* <select value={selectedYear} onChange={e => { setSelectedYear(e.target.value); setAllPayrollData([]); }} className="w-full px-3 py-2 border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] bg-[var(--color-bg-secondary)]">
                   <option value="">Choose Year</option>
                   {years.map(y => <option key={y} value={y.toString()}>{y}</option>)}
-                </select>
+                </select> */}
+                <CustomSelect
+                  name="selectedYear"
+                  value={selectedYear}
+                  onChange={(e) => {
+                    setSelectedYear(e.target.value);
+                    setAllPayrollData([]);
+                  }}
+                  options={years.map((y) => ({
+                    value: y.toString(),
+                    label: y.toString(),
+                  }))}
+                  placeholder="Choose Year"
+                  searchable={true}
+                />
               </div>
 
               {/* Branch */}
@@ -1019,7 +1560,7 @@ const MonthlyPayroll = () => {
                 <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
                   <Building className="w-4 h-4 inline mr-1" /> Branch <span className="text-red-500">*</span>
                 </label>
-                <select
+                {/* <select
                   value={selectedBranch}
                   onChange={e => { setSelectedBranch(e.target.value); setSelectedDepartment(''); setSelectedEmployeeIds([]); setAllPayrollData([]); }}
                   className="w-full px-3 py-2 border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] bg-[var(--color-bg-secondary)]"
@@ -1027,7 +1568,24 @@ const MonthlyPayroll = () => {
                 >
                   <option value="">Select Branch</option>
                   {branches.map(b => <option key={b.branch_id} value={b.branch_id}>{b.name}</option>)}
-                </select>
+                </select> */}
+                <CustomSelect
+                  name="selectedBranch"
+                  value={selectedBranch}
+                  onChange={(e) => {
+                    setSelectedBranch(e.target.value);
+                    setSelectedDepartment('');
+                    setSelectedEmployeeIds([]);
+                    setAllPayrollData([]);
+                  }}
+                  options={branches.map((b) => ({
+                    value: b.branch_id,
+                    label: b.name,
+                  }))}
+                  placeholder="Select Branch"
+                  searchable={true}
+                  disabled={dropdownLoading}
+                />
               </div>
 
               {/* Department */}
@@ -1035,7 +1593,7 @@ const MonthlyPayroll = () => {
                 <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
                   <Users className="w-4 h-4 inline mr-1" /> Department <span className="text-red-500">*</span>
                 </label>
-                <select
+                {/* <select
                   value={selectedDepartment}
                   onChange={e => { setSelectedDepartment(e.target.value); setSelectedEmployeeIds([]); setAllPayrollData([]); }}
                   className={`w-full px-3 py-2 border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] transition-colors
@@ -1047,7 +1605,23 @@ const MonthlyPayroll = () => {
                 >
                   <option value="" disabled>{!selectedBranch ? 'Select branch first' : 'Choose Department'}</option>
                   {departments.map(d => <option key={d.department_id} value={d.department_id}>{d.name}</option>)}
-                </select>
+                </select> */}
+                <CustomSelect
+                  name="selectedDepartment"
+                  value={selectedDepartment}
+                  onChange={(e) => {
+                    setSelectedDepartment(e.target.value);
+                    setSelectedEmployeeIds([]);
+                    setAllPayrollData([]);
+                  }}
+                  options={departments.map((d) => ({
+                    value: d.department_id,
+                    label: d.name,
+                  }))}
+                  placeholder={!selectedBranch ? 'Select branch first' : 'Choose Department'}
+                  searchable={true}
+                  disabled={dropdownLoading || !selectedBranch}
+                />
               </div>
 
               {/* Employee multi-select */}

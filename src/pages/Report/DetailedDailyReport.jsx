@@ -35,6 +35,9 @@ import { Toast } from '../../Components/ui/Toast';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Pagination from '../../Components/Pagination';
+import { Table, TableHeader, TableBody, TableRow, TableHeaderRow, Th, Td } from '../../Components/ui/Table';
+import CustomDatePicker from '../../Components/comman/CustomDatePicker';
+import CustomSelect from '../../Components/comman/CustomSelect';
 
 /** ---------- Floating Anchors ---------- **/
 const getScrollParents = (node) => {
@@ -121,17 +124,6 @@ const useAnchoredPosition = (anchorRef, isOpen, opts = {}) => {
 };
 
 /** ---------- Small building blocks ---------- **/
-const Th = ({ children, small, className = '' }) => (
-    <th className={`px-4 py-2 text-center ${small ? 'text-[11px]' : 'text-xs'} font-medium text-[var(--color-text-muted)] uppercase tracking-wider ${className}`}>
-        {children}
-    </th>
-);
-
-const Td = ({ children, small, className = '', colSpan }) => (
-    <td className={`px-4 py-3 text-center ${small ? 'text-xs' : 'text-sm'} text-[var(--color-text-primary)] ${className}`} colSpan={colSpan}>
-        {children}
-    </td>
-);
 
 const SummaryCard = ({ label, value, icon: Icon, tone = 'text-[var(--color-text-primary)]', onClick, isActive = false }) => {
     // Map tone classes to a rich color scheme
@@ -235,7 +227,7 @@ const FilterSelect = ({ label, icon: Icon, value, onChange, options = [], disabl
             <Icon className="inline h-4 w-4 mr-1" />
             {label}
         </label>
-        <select
+        {/* <select
             value={value}
             onChange={(e) => onChange(e.target.value)}
             className="w-full px-3 py-2 bg-[var(--color-bg-primary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent text-[var(--color-text-primary)] text-sm"
@@ -246,7 +238,17 @@ const FilterSelect = ({ label, icon: Icon, value, onChange, options = [], disabl
                     {o.name}
                 </option>
             ))}
-        </select>
+        </select> */}
+        <CustomSelect
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            options={options.map((o) => ({
+                value: o.id,
+                label: o.name,
+            }))}
+            disabled={disabled}
+            searchable={true}
+        />
     </div>
 );
 
@@ -298,7 +300,7 @@ const Filters = ({
 
                         {/* Desktop anchored */}
                         <div
-                            className="hidden sm:block absolute z-[110] bg-[var(--color-bg-secondary)] rounded-lg shadow-2xl border border-[var(--color-border-secondary)] max-h-[80vh] overflow-hidden flex flex-col"
+                            className="hidden sm:block absolute z-[110] bg-[var(--color-bg-secondary)] rounded-lg shadow-2xl border border-[var(--color-border-secondary)] max-h-[80vh] overflow-visible flex flex-col"
                             style={{
                                 position: 'absolute',
                                 top: filterPos.ready ? filterPos.top : -9999,
@@ -324,7 +326,7 @@ const Filters = ({
                                 </div>
                             )}
 
-                            <div className="flex-1 overflow-y-auto p-4">
+                            <div className="flex-1 overflow-visible p-4">
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <FilterSelect
                                         label="Attendance Status"
@@ -479,6 +481,7 @@ const Filters = ({
 const DetailedDailyReport = () => {
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [attendanceData, setAttendanceData] = useState([]);
+    console.log("selectedDate", selectedDate);
 
     // API-driven summary stats
     const [summaryStats, setSummaryStats] = useState({
@@ -930,30 +933,7 @@ const DetailedDailyReport = () => {
                             </div>
 
                             <div className="flex items-center gap-3">
-                                {/* Export */}
 
-                                {/* Date */}
-                                {/* <div className="flex items-center space-x-2 z-20">
-                                    <Calendar className="w-5 h-5 text-[var(--color-text-white)]" />
-                                    <DatePicker
-                                        selected={selectedDate}
-                                        onChange={handleDateChange}
-                                        dateFormat="dd-MM-yyyy"
-                                        placeholderText="DD-MM-YYYY"
-                                        className="w-full bg-[var(--color-bg-secondary-20)] border border-[var(--color-bg-secondary-30)] rounded-lg px-3 py-2 text-sm text-[var(--color-text-white)] placeholder-[var(--color-text-white-90)] focus:outline-none focus:ring-2 focus:ring-[var(--color-bg-secondary-30)]"
-                                    />
-                                </div> */}
-                                <div className="relative flex items-center z-[40] min-w-[140px] sm:min-w-[160px]">
-                                    <Calendar className="absolute left-3 w-4 h-4 text-[var(--color-primary)] pointer-events-none z-10" />
-
-                                    <DatePicker
-                                        selected={selectedDate}
-                                        onChange={handleDateChange}
-                                        dateFormat="dd-MM-yyyy"
-                                        placeholderText="DD-MM-YYYY"
-                                        className="w-full bg-[var(--color-bg-primary)] hover:bg-[var(--color-bg-hover)] border border-[var(--color-border-secondary)] rounded-xl pl-9 pr-3 py-1.5 sm:py-2 text-xs sm:text-sm text-[var(--color-text-primary)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent transition-all duration-200 cursor-pointer font-medium shadow-sm"
-                                    />
-                                </div>
 
                                 {/* Search */}
                                 <div className="relative w-full sm:w-64">
@@ -964,6 +944,13 @@ const DetailedDailyReport = () => {
                                         onChange={(e) => setSearchQuery(e.target.value)}
                                         className="w-full pl-10 pr-10 py-2 border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-text-white)] focus:border-[var(--color-border-primary)] text-sm"
                                     />
+                                    {/* <CustomInput
+                                        type="text"
+                                        placeholder="Search employees..."
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                        className="w-full pl-10 pr-10 py-2 text-sm"
+                                    /> */}
                                     <Search className="absolute left-3 top-2.5 h-4 w-4 text-[var(--color-text-muted)]" />
                                     {searchQuery && (
                                         <button
@@ -973,6 +960,17 @@ const DetailedDailyReport = () => {
                                             <XCircle className="h-4 w-4" />
                                         </button>
                                     )}
+                                </div>
+                                <div className="space-y-2 h-[40px]">
+                                    {/* <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Date of Birth</label>  */}
+                                    <CustomDatePicker
+                                        name="dateOfBirth"
+                                        value={selectedDate}
+                                        onChange={(e) => handleDateChange(new Date(e.target.value))}
+                                        placeholder="DD-MM-YYYY"
+                                        maxDate={new Date()}
+                                        clearable={true}
+                                    />
                                 </div>
 
                                 {/* Filters */}
@@ -1054,28 +1052,28 @@ const DetailedDailyReport = () => {
                             <div className="p-8 text-center text-[var(--color-text-secondary)]">No records found</div>
                         ) : (
                             <>
-                                <table className="w-full min-w-[1200px] border-separate border-spacing-0">
-                                    <thead className="sticky top-0 z-10 bg-[var(--color-primary-dark)] backdrop-blur supports-[backdrop-filter]:bg-[var(--color-bg-gray-light)]/60">
-                                        <tr className="border-b border-[var(--color-border-secondary)]">
-                                            <Th className='text-white'>Employee</Th>
-                                            <Th className='text-white'>Shift</Th>
-                                            <Th className='text-white'>Shift Time</Th>
-                                            <Th className='text-white'>Clock In</Th>
-                                            <Th className='text-white'>Clock Out</Th>
-                                            <Th className='text-white'>Working Hours</Th>
-                                            <Th className='text-white'>Attendance Hours</Th>
-                                            <Th className='text-white'>Remaining Hours</Th>
-                                            <Th className='text-white'>OT Hours</Th>
-                                            <Th className='text-white'>Status</Th>
-                                            <Th className='text-white'>Timeline</Th>
-                                        </tr>
-                                    </thead>
+                                <Table className="w-full min-w-[1200px] border-separate border-spacing-0">
+                                    <TableHeader className="sticky top-0 z-10 bg-[var(--color-primary-dark)] backdrop-blur supports-[backdrop-filter]:bg-[var(--color-bg-gray-light)]/60">
+                                        <TableHeaderRow className="border-b border-[var(--color-border-secondary)]">
+                                            <Th className='text-white text-center font-medium'>Employee</Th>
+                                            <Th className='text-white text-center font-medium'>Shift</Th>
+                                            <Th className='text-white text-center font-medium'>Shift Time</Th>
+                                            <Th className='text-white text-center font-medium'>Clock In</Th>
+                                            <Th className='text-white text-center font-medium'>Clock Out</Th>
+                                            <Th className='text-white text-center font-medium'>Working Hours</Th>
+                                            <Th className='text-white text-center font-medium'>Attendance Hours</Th>
+                                            <Th className='text-white text-center font-medium'>Remaining Hours</Th>
+                                            <Th className='text-white text-center font-medium'>OT Hours</Th>
+                                            <Th className='text-white text-center font-medium'>Status</Th>
+                                            <Th className='text-white text-center font-medium'>Timeline</Th>
+                                        </TableHeaderRow>
+                                    </TableHeader>
 
-                                    <tbody className="divide-y divide-[var(--color-border-secondary)]">
+                                    <TableBody className="divide-y divide-[var(--color-border-secondary)]">
                                         {paginatedData.map((emp, idx) => {
                                             const timeColorClass = getTimeColor(emp);
                                             return (
-                                                <tr
+                                                <TableRow
                                                     key={emp.employee_id || emp.employee_code || idx}
                                                     className={`hover:bg-[var(--color-bg-hover)] transition-colors ${getRowStyling(emp.status)}`}
                                                 >
@@ -1100,37 +1098,37 @@ const DetailedDailyReport = () => {
                                                     </Td>
 
 
-                                                    <Td className="text-left">{emp.shift_name || '--'}</Td>
+                                                    <Td className="text-center">{emp.shift_name || '--'}</Td>
 
-                                                    <Td className="whitespace-nowrap">
+                                                    <Td className="whitespace-nowrap text-center">
                                                         {emp.shift_from_time && emp.shift_to_time ? `${emp.shift_from_time} - ${emp.shift_to_time}` : '--'}
                                                     </Td>
 
-                                                    <Td className={`whitespace-nowrap ${timeColorClass}`}>
+                                                    <Td className={`whitespace-nowrap text-center ${timeColorClass}`}>
                                                         {emp.attandance_first_clock_in || '--'}
                                                     </Td>
 
-                                                    <Td className={`whitespace-nowrap ${timeColorClass}`}>
+                                                    <Td className={`whitespace-nowrap text-center ${timeColorClass}`}>
                                                         {emp.attandance_last_clock_out || '--'}
                                                     </Td>
 
-                                                    <Td>
+                                                    <Td className="text-center">
                                                         {emp.shift_working_hours ? `${emp.shift_working_hours}` : '--'}
                                                     </Td>
 
-                                                    <Td>
+                                                    <Td className="text-center">
                                                         {emp.attandance_hours ? `${emp.attandance_hours}` : '--'}
                                                     </Td>
 
-                                                    <Td className={`${parseFloat(emp.late_hours || 0) > 0 ? 'text-[var(--color-warning-dark)] font-medium' : ''}`}>
+                                                    <Td className={`text-center ${parseFloat(emp.late_hours || 0) > 0 ? 'text-[var(--color-warning-dark)] font-medium' : ''}`}>
                                                         {emp.late_hours && parseFloat(emp.late_hours) > 0 ? `${emp.late_hours}` : '--'}
                                                     </Td>
 
-                                                    <Td className={`${parseFloat(emp.overtime_hours || 0) > 0 ? 'text-[var(--color-primary-dark)] font-medium' : ''}`}>
+                                                    <Td className={`text-center ${parseFloat(emp.overtime_hours || 0) > 0 ? 'text-[var(--color-primary-dark)] font-medium' : ''}`}>
                                                         {emp.overtime_hours && parseFloat(emp.overtime_hours) > 0 ? `${emp.overtime_hours}` : '--'}
                                                     </Td>
 
-                                                    <Td>
+                                                    <Td className="text-center">
                                                         <span
                                                             className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium whitespace-nowrap ${emp.status === 'Present'
                                                                 ? 'bg-green-100 text-green-800'
@@ -1151,7 +1149,7 @@ const DetailedDailyReport = () => {
                                                         </span>
                                                     </Td>
 
-                                                    <Td>
+                                                    <Td className="text-center">
                                                         <button
                                                             onClick={() => setTimelineFor(emp)}
                                                             className="inline-flex items-center gap-1 px-2 py-1 rounded-md border border-[var(--color-border-secondary)] text-sm hover:bg-[var(--color-bg-hover)]"
@@ -1161,13 +1159,13 @@ const DetailedDailyReport = () => {
                                                             View
                                                         </button>
                                                     </Td>
-                                                </tr>
+                                                </TableRow>
                                             );
                                         })}
 
                                         {/* Filler rows to keep 10 visible */}
                                         {Array.from({ length: emptyRowCount }).map((_, i) => (
-                                            <tr key={`empty-${i}`} className="transition-colors">
+                                            <TableRow key={`empty-${i}`} className="transition-colors">
                                                 <Td className="text-transparent">—</Td>
                                                 <Td className="text-transparent">—</Td>
                                                 <Td className="text-transparent">—</Td>
@@ -1179,10 +1177,10 @@ const DetailedDailyReport = () => {
                                                 <Td className="text-transparent">—</Td>
                                                 <Td className="text-transparent">—</Td>
                                                 <Td className="text-transparent">—</Td>
-                                            </tr>
+                                            </TableRow>
                                         ))}
-                                    </tbody>
-                                </table>
+                                    </TableBody>
+                                </Table>
 
                                 {/* Pagination controls */}
                                 <Pagination
@@ -1239,15 +1237,15 @@ const DetailedDailyReport = () => {
                                         <h5 className="text-sm font-semibold">Timeline</h5>
                                     </div>
                                     <div className="overflow-x-auto">
-                                        <table className="w-full">
-                                            <thead className="bg-[var(--color-bg-gray-light)]">
-                                                <tr>
-                                                    <Th small>#</Th>
-                                                    <Th small>Clock In</Th>
-                                                    <Th small>Clock Out</Th>
-                                                </tr>
-                                            </thead>
-                                            <tbody className="divide-y divide-[var(--color-border-secondary)]">
+                                        <Table className="w-full">
+                                            <TableHeader className="bg-[var(--color-bg-gray-light)]">
+                                                <TableHeaderRow>
+                                                    <Th className="text-[11px] text-center font-medium">#</Th>
+                                                    <Th className="text-[11px] text-center font-medium">Clock In</Th>
+                                                    <Th className="text-[11px] text-center font-medium">Clock Out</Th>
+                                                </TableHeaderRow>
+                                            </TableHeader>
+                                            <TableBody className="divide-y divide-[var(--color-border-secondary)]">
                                                 {Array.isArray(timelineFor.attendance_history) && timelineFor.attendance_history.length > 0 ? (
                                                     (() => {
                                                         // Group consecutive clock entries into in/out pairs
@@ -1259,22 +1257,22 @@ const DetailedDailyReport = () => {
                                                             });
                                                         }
                                                         return pairs.map((pair, idx) => (
-                                                            <tr key={idx} className="bg-[var(--color-bg-secondary)]">
-                                                                <Td small className="text-center">{idx + 1}</Td>
-                                                                <Td small className="text-center">{pair.clock_in}</Td>
-                                                                <Td small className="text-center">{pair.clock_out}</Td>
-                                                            </tr>
+                                                            <TableRow key={idx} className="bg-[var(--color-bg-secondary)]">
+                                                                <Td className="text-center text-xs">{idx + 1}</Td>
+                                                                <Td className="text-center text-xs">{pair.clock_in}</Td>
+                                                                <Td className="text-center text-xs">{pair.clock_out}</Td>
+                                                            </TableRow>
                                                         ));
                                                     })()
                                                 ) : (
-                                                    <tr>
+                                                    <TableRow>
                                                         <Td colSpan={3} className="text-center text-sm text-[var(--color-text-secondary)] py-4">
                                                             No clock-in/out entries.
                                                         </Td>
-                                                    </tr>
+                                                    </TableRow>
                                                 )}
-                                            </tbody>
-                                        </table>
+                                            </TableBody>
+                                        </Table>
                                     </div>
                                 </div>
                             </div>

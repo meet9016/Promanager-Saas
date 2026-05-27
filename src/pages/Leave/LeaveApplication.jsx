@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import api from '../../api/axiosInstance';
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
+import CustomDatePicker from '../../Components/comman/CustomDatePicker';
 // import { format } from "date-fns";
 import LoadingSpinner from "../../Components/Loader/LoadingSpinner"
 import { ArrowLeft } from 'lucide-react';
+import CustomInput from '../../Components/comman/CustomInput';
+import CustomSelect from '../../Components/comman/CustomSelect';
 
 const LeaveApplication = () => {
     const { user } = useAuth();
@@ -28,6 +29,7 @@ const LeaveApplication = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isLoadingData, setIsLoadingData] = useState(true);
     const [notification, setNotification] = useState({ show: false, type: '', message: '' });
+
 
     const employeeDropdownRef = useRef(null);
 
@@ -162,8 +164,12 @@ const LeaveApplication = () => {
         }));
     };
 
+    console.log("*****", employees);
     const handleSubmit = async (e) => {
+        console.log("99999999");
+
         e.preventDefault();
+
 
         if (!formData.employee_id) {
             setNotification({
@@ -246,7 +252,7 @@ const LeaveApplication = () => {
     return (
         <div className="min-h-screen bg-[var(--color-bg-primary)] py-8 px-4">
             <div className=" mx-auto px-4 py-8">
-                <div className="bg-[var(--color-bg-secondary)] shadow-lg rounded-lg overflow-hidden">
+                <div className="bg-[var(--color-bg-secondary)] shadow-lg rounded-lg ">
                     <div className="bg-[var(--color-primary-dark)] py-4 px-6">
                         <h2 className="text-xl font-bold text-[var(--color-text-white)]">Apply for Leave</h2>
                     </div>
@@ -260,14 +266,14 @@ const LeaveApplication = () => {
                         </div>
                     )}
 
-                    <form onSubmit={handleSubmit} className="p-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <form onSubmit={handleSubmit} className="p-8 grid grid-cols-1 md:grid-cols-3 gap-6 ">
                         {/* Employee Selection with Search */}
                         <div className="space-y-2" ref={employeeDropdownRef}>
                             <label className="block text-sm font-medium text-[var(--color-text-secondary)]">
                                 Select Employee <span className="text-[var(--color-error)]">*</span>
                             </label>
                             <div className="relative">
-                                <input
+                                {/* <input
                                     type="text"
                                     value={employeeSearch}
                                     onChange={handleEmployeeSearch}
@@ -275,9 +281,41 @@ const LeaveApplication = () => {
                                     placeholder="Search and select employee"
                                     className="w-full px-3 py-2 border border-[var(--color-border-secondary)] rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)]"
                                     required
+                                /> */}
+
+                                <CustomSelect
+                                    name="employeeSearch"
+                                    value={formData.employee_id}
+                                    onChange={(e) => {
+
+                                        const selectedEmployee = employees.find(
+                                            (employee) =>
+                                                String(employee.employee_id) === String(e.target.value)
+                                        );
+
+                                        if (!selectedEmployee) return;
+
+                                        setFormData({
+                                            ...formData,
+                                            employee_id: selectedEmployee.employee_id,
+                                        });
+
+                                        setSelectedEmployeeName(selectedEmployee.full_name);
+
+                                        setEmployeeSearch(selectedEmployee.full_name);
+
+                                        setShowEmployeeDropdown(false);
+                                    }}
+                                    placeholder="Search and select employee"
+                                    searchable={true}
+                                    required
+                                    options={employees.map((employee) => ({
+                                        value: employee.employee_id,
+                                        label: employee.full_name,
+                                    }))}
                                 />
 
-                                {showEmployeeDropdown && (
+                                {/* {showEmployeeDropdown && (
                                     <div className="absolute z-10 w-full mt-1 bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] rounded-md shadow-lg max-h-60 overflow-y-auto">
                                         {filteredEmployees.length > 0 ? (
                                             filteredEmployees.map((employee) => (
@@ -293,7 +331,7 @@ const LeaveApplication = () => {
                                             <div className="px-3 py-2 text-[var(--color-text-secondary)]">No employees found</div>
                                         )}
                                     </div>
-                                )}
+                                )} */}
                             </div>
                         </div>
 
@@ -302,7 +340,7 @@ const LeaveApplication = () => {
                             <label className="block text-sm font-medium text-[var(--color-text-secondary)]">
                                 Leave Type <span className="text-[var(--color-error)]">*</span>
                             </label>
-                            <select
+                            {/* <select
                                 name="leave_type"
                                 value={formData.leave_type}
                                 onChange={handleChange}
@@ -315,30 +353,44 @@ const LeaveApplication = () => {
                                         {leaveType.leave_type}
                                     </option>
                                 ))}
-                            </select>
+                            </select> */}
+                            <CustomSelect
+                                name="leave_type"
+                                value={formData.leave_type}
+                                onChange={handleChange}
+                                options={
+                                    Array.isArray(leaveTypes)
+                                        ? leaveTypes.map((leaveType) => ({
+                                            value: leaveType.leave_type_id,
+                                            label: leaveType.leave_type,
+                                        }))
+                                        : []
+                                }
+                                placeholder="Select leave type"
+                                required
+                                searchable={true}
+                            />
                         </div>
 
                         {/* <div className="grid md:grid-cols-2 gap-6"> */}
                         <div className="space-y-2">
                             <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Start Date *</label>
-                            <DatePicker
-                                selected={formData.start_date}
-                                onChange={handleStartDateChange}
+                            <CustomDatePicker
+                                name="start_date"
+                                value={formData.start_date}
+                                onChange={(e) => handleStartDateChange(new Date(e.target.value))}
                                 minDate={today}
-                                placeholderText="DD-MM-YYYY"
-                                dateFormat="dd-MM-yyyy"
-                                className="w-full px-3 py-2 border rounded-md"
+                                placeholder="DD-MM-YYYY"
                             />
                         </div>
                         <div className="space-y-2">
                             <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">End Date *</label>
-                            <DatePicker
-                                selected={formData.end_date}
-                                onChange={(date) => setFormData({ ...formData, end_date: date })}
+                            <CustomDatePicker
+                                name="end_date"
+                                value={formData.end_date}
+                                onChange={(e) => setFormData({ ...formData, end_date: new Date(e.target.value) })}
                                 minDate={formData.start_date || today}
-                                placeholderText="DD-MM-YYYY"
-                                dateFormat="dd-MM-yyyy"
-                                className="w-full px-3 py-2 border rounded-md"
+                                placeholder="DD-MM-YYYY"
                             />
                         </div>
                         {/* </div> */}
@@ -354,30 +406,31 @@ const LeaveApplication = () => {
                                 value={formData.reason}
                                 onChange={handleChange}
                                 required
-                                rows="4"
+                                rows="3"
                                 className="w-full px-3 py-2 border border-[var(--color-border-secondary)] rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)]"
                                 placeholder="Please provide details about your leave request"
                             />
                         </div>
 
                         {/* Action Buttons */}
+                        <div className="md:col-span-3 flex items-center justify-end pt-4 space-x-4">
+                            <button
+                                type="button"
+                                onClick={resetForm}
+                                className="px-4 py-2 text-sm font-medium text-[var(--color-text-secondary)] bg-[var(--color-bg-gradient-start)] hover:bg-[var(--color-bg-gray-light)] rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                type="submit"
+                                className="px-6 py-2 text-sm font-medium text-[var(--color-text-white)] bg-[var(--color-primary-dark)] hover:bg-[var(--color-primary-darker)] rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--color-primary)] disabled:opacity-50 disabled:cursor-not-allowed"
+                                disabled={isSubmitting}
+                            >
+                                {isSubmitting ? 'Submitting...' : 'Submit Request'}
+                            </button>
+                        </div>
                     </form>
-                    <div className="flex items-center justify-end pt-4 space-x-4 p-10">
-                        <button
-                            type="button"
-                            onClick={resetForm}
-                            className="px-4 py-2 text-sm font-medium text-[var(--color-text-secondary)] bg-[var(--color-bg-gradient-start)] hover:bg-[var(--color-bg-gray-light)] rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
-                        >
-                            Cancel
-                        </button>
-                        <button
-                            type="submit"
-                            className="px-6 py-2 text-sm font-medium text-[var(--color-text-white)] bg-[var(--color-primary-dark)] hover:bg-[var(--color-primary-darker)] rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--color-primary)] disabled:opacity-50 disabled:cursor-not-allowed"
-                            disabled={isSubmitting}
-                        >
-                            {isSubmitting ? 'Submitting...' : 'Submit Request'}
-                        </button>
-                    </div>
+
                 </div>
             </div>
         </div>

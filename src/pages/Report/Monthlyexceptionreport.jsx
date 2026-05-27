@@ -35,6 +35,9 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Pagination from '../../Components/Pagination';
 import { SearchableDropdown } from '../../Components/Report/ReportComponents';
+import CustomSelect from '../../Components/comman/CustomSelect';
+import { Table, TableHeader, TableBody, TableRow, TableHeaderRow, Th, Td } from '../../Components/ui/Table';
+import CustomDatePicker from '../../Components/comman/CustomDatePicker';
 
 // ─── Floating anchor helpers ──────────────────────────────────────────────────
 const getScrollParents = (node) => {
@@ -359,7 +362,7 @@ const MonthlyExceptionReport = () => {
                 const rows = Array.isArray(res.data.data) ? res.data.data : [];
                 setRawData(rows);
                 setHasGenerated(true);
-                showToast('Report generated successfully!', 'success');
+                // showToast('Report generated successfully!', 'success');
             } else {
                 throw new Error(res.data?.message || 'Failed to fetch report');
             }
@@ -372,6 +375,10 @@ const MonthlyExceptionReport = () => {
             setLoading(false);
         }
     };
+
+    useEffect(() => {
+        handleGenerateReport()
+    }, [])
 
     // ── Group raw daily records by employee, then classify exceptions ─────────
     /**
@@ -574,39 +581,39 @@ const MonthlyExceptionReport = () => {
             }
 
             return (
-                <tr key={emp.employee_code || idx}
+                <TableRow key={emp.employee_code || idx}
                     className={`hover:bg-[var(--color-bg-hover)] transition-colors ${rowClass}`}>
-                    <td className="px-4 py-3 text-center text-sm text-[var(--color-text-muted)]">{sno}</td>
-                    <td className="px-4 py-3">
+                    <Td className="text-center text-sm text-[var(--color-text-muted)]">{sno}</Td>
+                    <Td>
                         <div className="flex flex-col items-start">
                             <span className="font-medium text-sm text-[var(--color-text-primary)]">{emp.employee_name || '--'}</span>
                             <span className="text-xs text-[var(--color-text-secondary)] mt-0.5">{emp.employee_code || '--'}</span>
                         </div>
-                    </td>
-                    <td className="px-4 py-3 text-center text-sm text-[var(--color-text-secondary)]">
+                    </Td>
+                    <Td className="text-center text-sm text-[var(--color-text-secondary)]">
                         {emp.totalDays}
-                    </td>
-                    <td className="px-4 py-3 text-center text-sm">
+                    </Td>
+                    <Td className="text-center text-sm">
                         <span className={emp.lateDays > 0 ? 'font-semibold text-yellow-700' : 'text-[var(--color-text-muted)]'}>
                             {emp.lateDays > 0 ? emp.lateDays : '--'}
                         </span>
-                    </td>
-                    <td className="px-4 py-3 text-center text-sm">
+                    </Td>
+                    <Td className="text-center text-sm">
                         <span className={emp.earlyDays > 0 ? 'font-semibold text-orange-700' : 'text-[var(--color-text-muted)]'}>
                             {emp.earlyDays > 0 ? emp.earlyDays : '--'}
                         </span>
-                    </td>
-                    <td className="px-4 py-3 text-center text-sm">
+                    </Td>
+                    <Td className="text-center text-sm">
                         <span className={emp.shortHoursDays > 0 ? 'font-semibold text-red-700' : 'text-[var(--color-text-muted)]'}>
                             {emp.shortHoursDays > 0 ? emp.shortHoursDays : '--'}
                         </span>
-                    </td>
-                    <td className="px-4 py-3 text-center text-sm">
+                    </Td>
+                    <Td className="text-center text-sm">
                         <span className={emp.missedPunchDays > 0 ? 'font-semibold text-purple-700' : 'text-[var(--color-text-muted)]'}>
                             {emp.missedPunchDays > 0 ? emp.missedPunchDays : '--'}
                         </span>
-                    </td>
-                    <td className="px-4 py-3">
+                    </Td>
+                    <Td>
                         {exDetails.length === 0 ? (
                             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700 border border-green-300">
                                 <CheckCircle className="h-3.5 w-3.5" />
@@ -626,8 +633,8 @@ const MonthlyExceptionReport = () => {
                                 ))}
                             </div>
                         )}
-                    </td>
-                </tr>
+                    </Td>
+                </TableRow>
             );
         }
 
@@ -635,58 +642,58 @@ const MonthlyExceptionReport = () => {
         const extraCells = {
             late_coming: (
                 <>
-                    <td className="px-4 py-3 text-center text-sm font-semibold text-yellow-700">
+                    <Td className="text-center text-sm font-semibold text-yellow-700">
                         {emp.lateDays}
-                    </td>
-                    <td className="px-4 py-3 text-center text-sm font-semibold text-yellow-700">
+                    </Td>
+                    <Td className="text-center text-sm font-semibold text-yellow-700">
                         {emp.totalLateTime}
-                    </td>
+                    </Td>
                 </>
             ),
             early_going: (
                 <>
-                    <td className="px-4 py-3 text-center text-sm font-semibold text-orange-700">
+                    <Td className="text-center text-sm font-semibold text-orange-700">
                         {emp.earlyDays}
-                    </td>
-                    <td className="px-4 py-3 text-center text-sm font-semibold text-orange-700">
+                    </Td>
+                    <Td className="text-center text-sm font-semibold text-orange-700">
                         {emp.totalEarlyTime}
-                    </td>
+                    </Td>
                 </>
             ),
             short_hours: (
                 <>
-                    <td className="px-4 py-3 text-center text-sm font-semibold text-red-700">
+                    <Td className="text-center text-sm font-semibold text-red-700">
                         {emp.shortHoursDays}
-                    </td>
-                    <td className="px-4 py-3 text-center text-sm font-semibold text-red-700">
+                    </Td>
+                    <Td className="text-center text-sm font-semibold text-red-700">
                         {emp.totalShortTime}
-                    </td>
+                    </Td>
                 </>
             ),
             missed_punch: (
                 <>
-                    <td className="px-4 py-3 text-center text-sm font-semibold text-purple-700">
+                    <Td className="text-center text-sm font-semibold text-purple-700">
                         {emp.missedPunchDays} day{emp.missedPunchDays !== 1 ? 's' : ''}
-                    </td>
+                    </Td>
                 </>
             ),
         };
 
         return (
-            <tr key={emp.employee_code || idx}
+            <TableRow key={emp.employee_code || idx}
                 className="hover:bg-[var(--color-bg-hover)] transition-colors border-b border-[var(--color-border-secondary)]">
-                <td className="px-4 py-3 text-center text-sm text-[var(--color-text-muted)]">{sno}</td>
-                <td className="px-4 py-3">
+                <Td className="text-center text-sm text-[var(--color-text-muted)]">{sno}</Td>
+                <Td>
                     <div className="flex flex-col items-start">
                         <span className="font-medium text-sm text-[var(--color-text-primary)] truncate max-w-[160px]" title={emp.employee_name}>{emp.employee_name || '--'}</span>
                         <span className="text-xs text-[var(--color-text-secondary)]">{emp.employee_code || '--'}</span>
                     </div>
-                </td>
-                <td className="px-4 py-3 text-center text-sm text-[var(--color-text-secondary)]">
+                </Td>
+                <Td className="text-center text-sm text-[var(--color-text-secondary)]">
                     {emp.totalDays}
-                </td>
+                </Td>
                 {extraCells[activeTab]}
-            </tr>
+            </TableRow>
         );
     };
 
@@ -699,15 +706,15 @@ const MonthlyExceptionReport = () => {
             <div className="p-8  mx-auto">
                 {/* ── Page Header ── */}
                 <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-xl mb-8 overflow-hidden">
-                    <div className="bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] p-8">
+                    <div className="bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] p-6">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-4">
                                 <button
                                     onClick={() => navigate('/reports')}
-                                    className="flex items-center gap-2 text-[var(--color-text-white)] transition-colors bg-[var(--color-bg-secondary-20)] hover:bg-[var(--color-bg-secondary-30)] px-4 py-2 rounded-lg backdrop-blur-sm"
+                                    className="flex items-center gap-2 text-[var(--color-text-white)] transition-colors bg-[var(--color-bg-secondary-20)] hover:bg-[var(--color-bg-secondary-30)] px-2 py-2 rounded-lg backdrop-blur-sm"
                                 >
                                     <ArrowLeft size={18} />
-                                    Back
+
                                 </button>
                                 <div>
                                     <h1 className="text-2xl font-bold text-[var(--color-text-white)]">Monthly Exception Report</h1>
@@ -757,7 +764,7 @@ const MonthlyExceptionReport = () => {
                 </div>
 
                 {/* ── Filters Card ── */}
-                <div className="bg-[var(--color-bg-secondary)] rounded-xl shadow-sm border border-[var(--color-border-secondary)] p-5 md:p-8 mb-6">
+                {/* <div className="bg-[var(--color-bg-secondary)] rounded-xl shadow-sm border border-[var(--color-border-secondary)] p-5 md:p-8 mb-6">
                     <div className="flex items-center gap-3 mb-5">
                         <div className="p-2 bg-[var(--color-primary-lightest)] rounded-lg">
                             <Filter className="h-5 w-5 text-[var(--color-primary-dark)]" />
@@ -780,7 +787,7 @@ const MonthlyExceptionReport = () => {
                     )}
 
                     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
-                        {/* Month Year */}
+                  
                         <div className="flex flex-col">
                             <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-2">
                                 <Calendar className="inline h-4 w-4 mr-1" />
@@ -806,75 +813,89 @@ const MonthlyExceptionReport = () => {
                             />
                         </div>
 
-                        {/* Branch */}
                         <div className="flex flex-col">
                             <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-2">
                                 <Building className="inline h-4 w-4 mr-1" />
                                 Branch
                             </label>
-                            <select
+                          
+                            <CustomSelect
+                                name="branch_id"
                                 value={filters.branch_id}
                                 onChange={(e) => handleFilterChange('branch_id', e.target.value)}
-                                className="w-full px-3 py-2 bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] text-[var(--color-text-primary)]"
+                                options={branches.map((b) => ({
+                                    value: b.id,
+                                    label: b.name,
+                                }))}
+                                placeholder="All Branches"
+                                searchable={true}
                                 disabled={dropdownLoading}
-                            >
-                                <option value="">All Branches</option>
-                                {branches.map((b) => <option key={b.id} value={b.id}>{b.name}</option>)}
-                            </select>
+                            />
                         </div>
 
-                        {/* Department */}
+                     
                         <div className="flex flex-col">
                             <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-2">
                                 <Users className="inline h-4 w-4 mr-1" />
                                 Department
                             </label>
-                            <select
+                        
+                            <CustomSelect
+                                name="department_id"
                                 value={filters.department_id}
                                 onChange={(e) => handleFilterChange('department_id', e.target.value)}
-                                className="w-full px-3 py-2 bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] text-[var(--color-text-primary)]"
+                                options={departments.map((d) => ({
+                                    value: d.id,
+                                    label: d.name,
+                                }))}
+                                placeholder="All Departments"
+                                searchable={true}
                                 disabled={dropdownLoading}
-                            >
-                                <option value="">All Departments</option>
-                                {departments.map((d) => <option key={d.id} value={d.id}>{d.name}</option>)}
-                            </select>
+                            />
                         </div>
 
-                        {/* Designation */}
                         <div className="flex flex-col">
                             <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-2">
                                 <Award className="inline h-4 w-4 mr-1" />
                                 Designation
                             </label>
-                            <select
+                         
+                            <CustomSelect
+                                name="designation_id"
                                 value={filters.designation_id}
                                 onChange={(e) => handleFilterChange('designation_id', e.target.value)}
-                                className="w-full px-3 py-2 bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] text-[var(--color-text-primary)]"
+                                options={designations.map((d) => ({
+                                    value: d.id,
+                                    label: d.name,
+                                }))}
+                                placeholder="All Designations"
+                                searchable={true}
                                 disabled={dropdownLoading}
-                            >
-                                <option value="">All Designations</option>
-                                {designations.map((d) => <option key={d.id} value={d.id}>{d.name}</option>)}
-                            </select>
+                            />
                         </div>
 
-                        {/* Employee */}
+
                         <div className="flex flex-col">
                             <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-2">
                                 <User className="inline h-4 w-4 mr-1" />
                                 Employee <span className="text-[var(--color-text-secondary)] font-normal">(optional)</span>
                             </label>
-                            <SearchableDropdown
-                                options={employees}
+                       
+                            <CustomSelect
+                                name="employee_id"
                                 value={filters.employee_id}
-                                onChange={(value) => handleFilterChange('employee_id', value)}
+                                onChange={(e) => handleFilterChange('employee_id', e.target.value)}
+                                options={employees.map(emp => ({
+                                    value: emp.id,
+                                    label: emp.name,
+                                }))}
                                 placeholder="Search and select employee..."
+                                searchable={true}
                                 disabled={dropdownLoading}
-                                displayKey="name"
-                                valueKey="id"
                             />
                         </div>
 
-                        {/* Generate button */}
+                      
                         <div className="flex flex-col">
                             <label className="block text-sm font-medium text-transparent mb-2">Generate</label>
                             <button
@@ -899,7 +920,7 @@ const MonthlyExceptionReport = () => {
                             </button>
                         </div>
                     </div>
-                </div>
+                </div> */}
 
                 {/* ── Not-yet-generated state ── */}
                 {!hasGenerated && !loading && (
@@ -947,12 +968,12 @@ const MonthlyExceptionReport = () => {
                         <div className="bg-[var(--color-bg-secondary)] rounded-lg border border-[var(--color-primary-dark)] overflow-hidden shadow-sm">
 
                             {/* Table toolbar */}
-                            <div className="px-6 py-4 border-b border-[var(--color-primary-light)] bg-[var(--color-primary-dark)]">
+                            <div className="px-6 py-4 border-b border-[var(--color-primary-light)] bg-[var(--color-primary-lighter)]">
                                 <div className="flex justify-between items-center flex-wrap gap-3">
                                     <div className="flex items-center gap-2">
-                                        {currentTab && <currentTab.icon className="h-5 w-5 text-white" />}
-                                        <h3 className="text-lg font-medium text-[var(--color-text-white)]">{currentTab?.label}</h3>
-                                        <span className="px-2 py-0.5 bg-white/20 rounded-full text-xs text-white font-medium">
+                                        {currentTab && <currentTab.icon className="h-5 w-5 text-[var(--color-primary-darker)]" />}
+                                        <h3 className="text-lg font-medium text-[var(--color-primary-darker)]">{currentTab?.label}</h3>
+                                        <span className="px-2 py-0.5 bg-white/20 rounded-full text-xs text-[var(--color-primary-darker)] font-medium">
                                             {activeData.length} record{activeData.length !== 1 ? 's' : ''}
                                         </span>
                                     </div>
@@ -995,7 +1016,7 @@ const MonthlyExceptionReport = () => {
                                                     <div className="fixed inset-0 z-[100] bg-black/40" onClick={() => setFilterDropdown(false)} />
                                                     {/* Desktop */}
                                                     <div
-                                                        className="hidden sm:flex flex-col absolute z-[110] bg-[var(--color-bg-secondary)] rounded-lg shadow-2xl border border-[var(--color-border-secondary)] max-h-[80vh] overflow-hidden"
+                                                        className="hidden sm:flex flex-col absolute z-[110] bg-[var(--color-bg-secondary)] rounded-lg shadow-2xl border border-[var(--color-border-secondary)] max-h-[80vh] overflow-visible"
                                                         style={{ position: 'absolute', top: filterPos.ready ? filterPos.top : -9999, left: filterPos.ready ? Math.max(12, filterPos.left) : -9999, width: Math.max(420, filterPos.width), minWidth: 420 }}
                                                     >
                                                         <div className="flex items-center justify-between p-4 border-b border-[var(--color-border-secondary)]">
@@ -1004,11 +1025,66 @@ const MonthlyExceptionReport = () => {
                                                                 <X className="h-4 w-4" />
                                                             </button>
                                                         </div>
-                                                        <div className="flex-1 overflow-y-auto p-4">
+                                                        <div className="flex-1 overflow-visible p-4">
                                                             <div className="grid grid-cols-2 gap-4">
+
                                                                 <FilterSelect label="Branch" icon={Building} value={filters.branch_id} onChange={(v) => handleFilterChange('branch_id', v)} options={branches} disabled={dropdownLoading} placeholder="All Branches" />
                                                                 <FilterSelect label="Department" icon={Users} value={filters.department_id} onChange={(v) => handleFilterChange('department_id', v)} options={departments} disabled={dropdownLoading} placeholder="All Departments" />
                                                                 <FilterSelect label="Designation" icon={Award} value={filters.designation_id} onChange={(v) => handleFilterChange('designation_id', v)} options={designations} disabled={dropdownLoading} placeholder="All Designations" />
+
+
+
+
+                                                                <div>
+                                                                    <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                                        <Calendar className="inline h-4 w-4 mr-1" />
+                                                                        Month & Year <span className="text-red-500">*</span>
+                                                                    </label>
+
+                                                                    <DatePicker
+                                                                        selected={monthYear ? new Date(`${monthYear}-01`) : null}
+                                                                        onChange={(date) => {
+                                                                            const iso = date
+                                                                                ? `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`
+                                                                                : '';
+
+                                                                            setMonthYear(iso);
+                                                                            setHasGenerated(false);
+                                                                            setRawData([]);
+                                                                        }}
+                                                                        dateFormat="MMMM yyyy"
+                                                                        showMonthYearPicker
+                                                                        showFullMonthYearPicker
+                                                                        className="w-full px-3 py-2 rounded-lg border border-[var(--color-border-secondary)] bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)]"
+                                                                        placeholderText="Select month and year"
+                                                                        maxDate={new Date()}
+                                                                        showPopperArrow={false}
+                                                                    />
+
+                                                                </div>
+
+                                                                <div>
+                                                                    <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                                        <User className="inline h-4 w-4 mr-1" />
+                                                                        Employee <span className="text-[var(--color-text-muted)] font-normal">(optional)</span>
+                                                                    </label>
+
+                                                                    <CustomSelect
+                                                                        name="employee_id"
+                                                                        value={filters.employee_id}
+                                                                        onChange={(e) => handleFilterChange('employee_id', e.target.value)}
+                                                                        options={employees.map((emp) => ({
+                                                                            value: emp.id,
+                                                                            label: emp.name,
+                                                                        }))}
+                                                                        placeholder="Search and select employee..."
+                                                                        searchable={true}
+                                                                        disabled={dropdownLoading}
+                                                                    />
+                                                                </div>
+
+
+
                                                             </div>
                                                         </div>
                                                         <div className="flex gap-2 p-4 border-t border-[var(--color-border-secondary)]">
@@ -1056,7 +1132,7 @@ const MonthlyExceptionReport = () => {
                             </div>
 
                             {/* ── Tab strip ── */}
-                            <div className="flex border-b border-[var(--color-border-secondary)] bg-[var(--color-bg-primary)] overflow-x-auto">
+                            <div className="flex border-b border-[var(--color-border-secondary)]  overflow-x-auto">
                                 {TABS.map((tab) => {
                                     const Icon = tab.icon;
                                     const isActive = activeTab === tab.key;
@@ -1065,7 +1141,7 @@ const MonthlyExceptionReport = () => {
                                             key={tab.key}
                                             type="button"
                                             onClick={() => setActiveTab(tab.key)}
-                                            className={`flex items-center gap-2 px-5 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition-all ${isActive ? `border-[var(--color-primary-dark)] text-[var(--color-primary-dark)]` : 'border-transparent text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)]'}`}
+                                            className={`flex items-center gap-2 px-5 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition-all ${isActive ? `border-[var(--color-primary-dark)] text-[var(--color-primary-darker)]` : 'border-transparent text-[var(--color-primary-darker)] '}`}
                                         >
                                             <Icon className={`h-4 w-4 ${isActive ? tab.color : ''}`} />
                                             {tab.label}
@@ -1100,27 +1176,27 @@ const MonthlyExceptionReport = () => {
                                     </div>
                                 ) : (
                                     <>
-                                        <table className="w-full min-w-[900px]">
-                                            <thead className="bg-[var(--color-bg-gray-light)] border-b border-[var(--color-border-secondary)]">
-                                                <tr>
+                                        <Table className="w-full min-w-[900px]">
+                                            <TableHeader className="bg-[var(--color-primary-dark)] border-b border-[var(--color-border-secondary)]">
+                                                <TableHeaderRow>
                                                     {renderTableHead().map((col) => (
-                                                        <th key={col.key} className="px-4 py-3 text-center text-xs font-medium text-[var(--color-text-muted)] uppercase tracking-wider">
+                                                        <Th key={col.key} className="text-center font-medium text-white uppercase tracking-wider">
                                                             {col.label}
-                                                        </th>
+                                                        </Th>
                                                     ))}
-                                                </tr>
-                                            </thead>
-                                            <tbody className="bg-[var(--color-bg-secondary)] divide-y divide-[var(--color-border-secondary)]">
+                                                </TableHeaderRow>
+                                            </TableHeader>
+                                            <TableBody className="bg-[var(--color-bg-secondary)] divide-y divide-[var(--color-border-secondary)]">
                                                 {paginatedData.map((emp, idx) => renderTableRow(emp, idx))}
                                                 {Array.from({ length: emptyRowCount }).map((_, i) => (
-                                                    <tr key={`empty-${i}`} className="hover:bg-[var(--color-bg-hover)] transition-colors">
+                                                    <TableRow key={`empty-${i}`} className="hover:bg-[var(--color-bg-hover)] transition-colors">
                                                         {renderTableHead().map((col) => (
-                                                            <td key={col.key} className="px-4 py-6 text-center text-sm text-transparent">—</td>
+                                                            <Td key={col.key} className="text-center text-sm text-transparent">—</Td>
                                                         ))}
-                                                    </tr>
+                                                    </TableRow>
                                                 ))}
-                                            </tbody>
-                                        </table>
+                                            </TableBody>
+                                        </Table>
 
                                         <Pagination
                                             currentPage={currentPage}
@@ -1158,7 +1234,7 @@ const FilterSelect = ({ label, icon: Icon, value, onChange, options, disabled, p
             <Icon className="inline h-4 w-4 mr-1" />
             {label}
         </label>
-        <select
+        {/* <select
             value={value}
             onChange={(e) => onChange(e.target.value)}
             className="w-full px-3 py-2 bg-[var(--color-bg-primary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent text-[var(--color-text-primary)] text-sm"
@@ -1168,7 +1244,18 @@ const FilterSelect = ({ label, icon: Icon, value, onChange, options, disabled, p
             {options.map((o) => (
                 <option key={o.id} value={o.id}>{o.name}</option>
             ))}
-        </select>
+        </select> */}
+        <CustomSelect
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            options={options.map((o) => ({
+                value: o.id,
+                label: o.name,
+            }))}
+            placeholder={placeholder}
+            searchable={true}
+            disabled={disabled}
+        />
     </div>
 );
 

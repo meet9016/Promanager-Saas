@@ -1042,7 +1042,7 @@ const AddEmployee = () => {
                 {/* Form */}
                 <form onSubmit={handleSubmit} className="space-y-6">
                     {sections.map((section) => (
-                        <div key={section.key} className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-lg border border-[var(--color-border-primary)] overflow-hidden" data-section={section.key}>
+                        <div key={section.key} className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-lg border border-[var(--color-border-primary)] " data-section={section.key}>
                             <button
                                 type="button"
                                 onClick={() => toggleSection(section.key)}
@@ -1079,7 +1079,6 @@ const AddEmployee = () => {
                                                     clearable={true}
                                                 />
                                             </div>
-                                            
                                             <div className="space-y-2">
                                                 <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Full Name <span className="text-[var(--color-error)]">*</span></label>
                                                 <CustomInput
@@ -1138,7 +1137,7 @@ const AddEmployee = () => {
                                             </div>
                                             <div className="space-y-2">
                                                 <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Gender</label>
-                                                <select
+                                                {/* <select
                                                     name="gender"
                                                     value={formData.gender}
                                                     onChange={handleInputChange}
@@ -1148,7 +1147,16 @@ const AddEmployee = () => {
                                                     {dropdownOptions.genderOptions.map(option => (
                                                         <option key={option.value} value={option.value}>{option.label}</option>
                                                     ))}
-                                                </select>
+                                                </select> */}
+                                                <CustomSelect
+                                                    name="gender"
+                                                    value={formData.gender}
+                                                    onChange={handleInputChange}
+                                                    options={dropdownOptions.genderOptions}
+                                                    placeholder="Select gender"
+                                                    required
+                                                    searchable={true}
+                                                />
                                             </div>
                                             <div className="space-y-2">
                                                 <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Branch <span className="text-[var(--color-error)]">*</span></label>
@@ -1164,7 +1172,7 @@ const AddEmployee = () => {
                                             </div>
                                             <div className="space-y-2">
                                                 <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Department <span className="text-[var(--color-error)]">*</span></label>
-                                                <select
+                                                {/* <select
                                                     name="department"
                                                     value={formData.department}
                                                     onChange={handleInputChange}
@@ -1175,7 +1183,16 @@ const AddEmployee = () => {
                                                     {dropdownOptions.departmentOptions.map(option => (
                                                         <option key={option.value} value={option.value}>{option.label}</option>
                                                     ))}
-                                                </select>
+                                                </select> */}
+                                                <CustomSelect
+                                                    name="department"
+                                                    value={formData.department}
+                                                    onChange={handleInputChange}
+                                                    options={dropdownOptions.departmentOptions}
+                                                    placeholder="Select department"
+                                                    required
+                                                    searchable={true}
+                                                />
                                             </div>
                                             <div className="space-y-2">
                                                 <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Date of Birth</label>
@@ -1187,7 +1204,7 @@ const AddEmployee = () => {
                                                     maxDate={new Date()}
                                                     clearable={true}
                                                 />
-                                            </div>
+                                            </div> 
                                             <div className="space-y-2">
                                                 <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Date of Joining <span className="text-[var(--color-error)]">*</span></label>
                                                 <CustomDatePicker
@@ -1202,7 +1219,7 @@ const AddEmployee = () => {
                                             </div>
                                             <div className="space-y-2">
                                                 <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Designation</label>
-                                                <select
+                                                {/* <select
                                                     name="designation"
                                                     value={formData.designation}
                                                     onChange={handleInputChange}
@@ -1212,11 +1229,20 @@ const AddEmployee = () => {
                                                     {dropdownOptions.designationOptions.map(option => (
                                                         <option key={option.value} value={option.value}>{option.label}</option>
                                                     ))}
-                                                </select>
+                                                </select> */}
+                                                <CustomSelect
+                                                    name="designation"
+                                                    value={formData.designation}
+                                                    onChange={handleInputChange}
+                                                    options={dropdownOptions.designationOptions}
+                                                    placeholder="Select designation"
+                                                    required
+                                                    searchable={true}
+                                                />
                                             </div>
                                             <div className="space-y-2">
                                                 <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Company</label>
-                                                <select
+                                                {/* <select
                                                     name="company"
                                                     value={formData.company}
                                                     onChange={handleInputChange}
@@ -1226,21 +1252,28 @@ const AddEmployee = () => {
                                                     {dropdownOptions.companyOptions.map(option => (
                                                         <option key={option.value} value={option.value}>{option.label}</option>
                                                     ))}
-                                                </select>
+                                                </select> */}
+                                                <CustomSelect
+                                                    name="company"
+                                                    value={formData.company}
+                                                    onChange={handleInputChange}
+                                                    options={dropdownOptions.companyOptions}
+                                                    placeholder="Select company"
+                                                    required
+                                                    searchable={true}
+                                                />
                                             </div>
                                             <div className="space-y-2">
                                                 <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Employment Type</label>
-                                                <select
+                                                <CustomSelect
                                                     name="employmentType"
                                                     value={formData.employmentType}
                                                     onChange={handleInputChange}
-                                                    className="w-full px-4 py-3 border border-[var(--color-border-primary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition-all"
-                                                >
-                                                    <option value="">Select Employment Type</option>
-                                                    {dropdownOptions.employmentTypeOptions.map(option => (
-                                                        <option key={option.value} value={option.value}>{option.label}</option>
-                                                    ))}
-                                                </select>
+                                                    options={dropdownOptions.employmentTypeOptions}
+                                                    placeholder="Select Branch"
+                                                    required
+                                                    searchable={true}
+                                                />
                                             </div>
                                             <div className="space-y-2 md:col-span-2">
                                                 <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Address</label>
@@ -1261,7 +1294,7 @@ const AddEmployee = () => {
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                                 <div className="space-y-2">
                                                     <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Salary Type</label>
-                                                    <select
+                                                    {/* <select
                                                         name="salaryType"
                                                         value={formData.salaryType}
                                                         onChange={handleInputChange}
@@ -1271,7 +1304,16 @@ const AddEmployee = () => {
                                                         {dropdownOptions.salaryTypeOptions.map(option => (
                                                             <option key={option.value} value={option.value}>{option.label}</option>
                                                         ))}
-                                                    </select>
+                                                    </select> */}
+                                                    <CustomSelect
+                                                        name="salaryType"
+                                                        value={formData.salaryType}
+                                                        onChange={handleInputChange}
+                                                        options={dropdownOptions.salaryTypeOptions}
+                                                        placeholder="Select salaryType"
+                                                        required
+                                                        searchable={true}
+                                                    />
                                                 </div>
                                                 <div className="space-y-2">
                                                     <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Base Salary</label>
@@ -1508,7 +1550,7 @@ const AddEmployee = () => {
                                             <div className="space-y-2 mb-6">
                                                 <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Document Type</label>
                                                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
-                                                    <select
+                                                    {/* <select
                                                         name="documentOption"
                                                         className="flex-1 w-full px-4 py-3 border border-[var(--color-border-primary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
                                                         onChange={handleDocumentTypeChange}
@@ -1518,7 +1560,16 @@ const AddEmployee = () => {
                                                         {dropdownOptions?.documentOptions.map(option => (
                                                             <option key={option.value} value={option.value}>{option.label}</option>
                                                         ))}
-                                                    </select>
+                                                    </select> */}
+                                                    <CustomSelect
+                                                        name="documentOption"
+                                                        value={formData.documentOption}
+                                                        onChange={handleInputChange}
+                                                        options={dropdownOptions.documentOptions}
+                                                        placeholder="Select documentOption"
+                                                        required
+                                                        searchable={true}
+                                                    />
                                                     <button
                                                         type="button"
                                                         className="flex items-center justify-center gap-2 px-4 py-3 w-full sm:w-auto whitespace-nowrap text-[var(--color-primary-dark)] font-medium rounded-lg bg-[var(--color-primary-lighter)]"
@@ -1607,7 +1658,7 @@ const AddEmployee = () => {
                                             </div>
                                             <div className="space-y-2">
                                                 <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Relation</label>
-                                                <select
+                                                {/* <select
                                                     name="relation"
                                                     value={formData.relation}
                                                     onChange={handleInputChange}
@@ -1617,7 +1668,16 @@ const AddEmployee = () => {
                                                     {dropdownOptions.relationOptions.map(option => (
                                                         <option key={option.value} value={option.value}>{option.label}</option>
                                                     ))}
-                                                </select>
+                                                </select> */}
+                                                <CustomSelect
+                                                    name="relation"
+                                                    value={formData.relation}
+                                                    onChange={handleInputChange}
+                                                    options={dropdownOptions.relationOptions}
+                                                    placeholder="Select relation"
+                                                    required
+                                                    searchable={true}
+                                                />
                                             </div>
                                             <div className="space-y-2 md:col-span-2">
                                                 <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Emergency Address</label>

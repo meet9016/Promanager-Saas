@@ -35,6 +35,9 @@ import 'react-datepicker/dist/react-datepicker.css';
 // ⬇️ ADD THIS: adjust the import path to where your Pagination component lives
 // e.g. '../../Components/common/Pagination' or '../Pagination'
 import Pagination from '../../Components/Pagination';
+import { Table, TableHeader, TableBody, TableRow, TableHeaderRow, Th, Td } from '../../Components/ui/Table';
+import CustomDatePicker from '../../Components/comman/CustomDatePicker';
+import CustomSelect from '../../Components/comman/CustomSelect';
 
 /** ---------- Floating Anchors: robust positioning utilities ---------- **/
 const getScrollParents = (node) => {
@@ -643,23 +646,13 @@ const DailyReport = () => {
                         <div className="flex justify-between items-center">
                             <div className="flex items-center">
                                 <Activity className="h-6 w-6 text-[var(--color-primary-darker)] mr-2" />
-                                <h3 className="text-lg font-medium text-[var(--color-primary-darker)]">Daily Attendance Details</h3>
+                                <h3 className="text-lg font-medium text-[var(--color-primary-darker)]">Daily Attendance Report</h3>
                             </div>
 
                             <div className="flex items-center gap-3">
                                 {/* Export */}
 
-                                <div className="relative flex items-center z-[40] min-w-[140px] sm:min-w-[160px]">
-                                    <Calendar className="absolute left-3 w-4 h-4 text-[var(--color-primary)] pointer-events-none z-10" />
 
-                                    <DatePicker
-                                        selected={selectedDate}
-                                        onChange={handleDateChange}
-                                        dateFormat="dd-MM-yyyy"
-                                        placeholderText="DD-MM-YYYY"
-                                        className="w-full bg-[var(--color-bg-primary)] hover:bg-[var(--color-bg-hover)] border border-[var(--color-border-secondary)] rounded-xl pl-9 pr-3 py-1.5 sm:py-2 text-xs sm:text-sm text-[var(--color-text-primary)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent transition-all duration-200 cursor-pointer font-medium shadow-sm"
-                                    />
-                                </div>
 
                                 <div className="relative w-full sm:w-64">
                                     <input
@@ -678,6 +671,17 @@ const DailyReport = () => {
                                             <XCircle className="h-4 w-4" />
                                         </button>
                                     )}
+                                </div>
+                                <div className="relative flex items-center z-[40] min-w-[140px] sm:min-w-[160px] h-[40px]">
+                                    <CustomDatePicker
+                                        name="dateOfBirth"
+                                        value={selectedDate}
+                                        onChange={(e) => handleDateChange(new Date(e.target.value))}
+                                        placeholder="DD-MM-YYYY"
+                                        maxDate={new Date()}
+                                        clearable={true}
+                                       
+                                    />
                                 </div>
 
                                 <div className="relative">
@@ -702,7 +706,7 @@ const DailyReport = () => {
                                                 <div className="fixed inset-0 z-[100] bg-black/40" onClick={() => setFilterDropdown(false)} />
 
                                                 <div
-                                                    className="hidden sm:block absolute z-[110] bg-[var(--color-bg-secondary)] rounded-lg shadow-2xl border border-[var(--color-border-secondary)] max-h-[80vh] overflow-hidden flex flex-col"
+                                                    className="hidden sm:block absolute z-[110] bg-[var(--color-bg-secondary)] rounded-lg shadow-2xl border border-[var(--color-border-secondary)] max-h-[80vh] overflow-visible flex flex-col"
                                                     style={{
                                                         position: 'absolute',
                                                         top: filterPos.ready ? filterPos.top : -9999,
@@ -728,14 +732,14 @@ const DailyReport = () => {
                                                         </div>
                                                     )}
 
-                                                    <div className="flex-1 overflow-y-auto p-4">
+                                                    <div className="flex-1 overflow-visible p-4">
                                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                                             <div>
                                                                 <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
                                                                     <CheckCircle className="inline h-4 w-4 mr-1" />
                                                                     Attendance Status
                                                                 </label>
-                                                                <select
+                                                                {/* <select
                                                                     value={filters.attendance_status_id}
                                                                     onChange={(e) => handleFilterChange('attendance_status_id', e.target.value)}
                                                                     className="w-full px-3 py-2 bg-[var(--color-bg-primary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent text-[var(--color-text-primary)] text-sm"
@@ -747,7 +751,26 @@ const DailyReport = () => {
                                                                             {s.name}
                                                                         </option>
                                                                     ))}
-                                                                </select>
+                                                                </select> */}
+                                                                <CustomSelect
+                                                                    name="attendance_status_id"
+                                                                    value={filters.attendance_status_id}
+                                                                    onChange={(e) =>
+                                                                        handleFilterChange(
+                                                                            'attendance_status_id',
+                                                                            e.target.value
+                                                                        )
+                                                                    }
+                                                                    options={attendanceStatuses.map((s) => ({
+                                                                        value: s.id,
+                                                                        label: s.name,
+                                                                    }))}
+                                                                    placeholder="All Status"
+                                                                    searchable={true}
+                                                                    disabled={dropdownLoading}
+                                                                />
+
+
                                                             </div>
 
                                                             <div>
@@ -755,7 +778,7 @@ const DailyReport = () => {
                                                                     <Building className="inline h-4 w-4 mr-1" />
                                                                     Branch
                                                                 </label>
-                                                                <select
+                                                                {/* <select
                                                                     value={filters.branch_id}
                                                                     onChange={(e) => handleFilterChange('branch_id', e.target.value)}
                                                                     className="w-full px-3 py-2 bg-[var(--color-bg-primary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent text-[var(--color-text-primary)] text-sm"
@@ -767,7 +790,24 @@ const DailyReport = () => {
                                                                             {b.name}
                                                                         </option>
                                                                     ))}
-                                                                </select>
+                                                                </select> */}
+                                                                <CustomSelect
+                                                                    name="branch_id"
+                                                                    value={filters.branch_id}
+                                                                    onChange={(e) =>
+                                                                        handleFilterChange(
+                                                                            'branch_id',
+                                                                            e.target.value
+                                                                        )
+                                                                    }
+                                                                    options={branches.map((b) => ({
+                                                                        value: b.id,
+                                                                        label: b.name,
+                                                                    }))}
+                                                                    placeholder="All Branches"
+                                                                    searchable={true}
+                                                                    disabled={dropdownLoading}
+                                                                />
                                                             </div>
 
                                                             <div>
@@ -775,7 +815,7 @@ const DailyReport = () => {
                                                                     <Users className="inline h-4 w-4 mr-1" />
                                                                     Department
                                                                 </label>
-                                                                <select
+                                                                {/* <select
                                                                     value={filters.department_id}
                                                                     onChange={(e) => handleFilterChange('department_id', e.target.value)}
                                                                     className="w-full px-3 py-2 bg-[var(--color-bg-primary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent text-[var(--color-text-primary)] text-sm"
@@ -787,7 +827,24 @@ const DailyReport = () => {
                                                                             {d.name}
                                                                         </option>
                                                                     ))}
-                                                                </select>
+                                                                </select> */}
+                                                                <CustomSelect
+                                                                    name="department_id"
+                                                                    value={filters.department_id}
+                                                                    onChange={(e) =>
+                                                                        handleFilterChange(
+                                                                            'department_id',
+                                                                            e.target.value
+                                                                        )
+                                                                    }
+                                                                    options={departments.map((d) => ({
+                                                                        value: d.id,
+                                                                        label: d.name,
+                                                                    }))}
+                                                                    placeholder="All Departments"
+                                                                    searchable={true}
+                                                                    disabled={dropdownLoading}
+                                                                />
                                                             </div>
 
                                                             <div>
@@ -795,7 +852,7 @@ const DailyReport = () => {
                                                                     <Award className="inline h-4 w-4 mr-1" />
                                                                     Designation
                                                                 </label>
-                                                                <select
+                                                                {/* <select
                                                                     value={filters.designation_id}
                                                                     onChange={(e) => handleFilterChange('designation_id', e.target.value)}
                                                                     className="w-full px-3 py-2 bg-[var(--color-bg-primary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent text-[var(--color-text-primary)] text-sm"
@@ -807,7 +864,24 @@ const DailyReport = () => {
                                                                             {d.name}
                                                                         </option>
                                                                     ))}
-                                                                </select>
+                                                                </select> */}
+                                                                <CustomSelect
+                                                                    name="designation_id"
+                                                                    value={filters.designation_id}
+                                                                    onChange={(e) =>
+                                                                        handleFilterChange(
+                                                                            'designation_id',
+                                                                            e.target.value
+                                                                        )
+                                                                    }
+                                                                    options={designations.map((d) => ({
+                                                                        value: d.id,
+                                                                        label: d.name,
+                                                                    }))}
+                                                                    placeholder="All Designations"
+                                                                    searchable={true}
+                                                                    disabled={dropdownLoading}
+                                                                />
                                                             </div>
 
                                                             <div>
@@ -815,7 +889,7 @@ const DailyReport = () => {
                                                                     <Timer className="inline h-4 w-4 mr-1" />
                                                                     Shift
                                                                 </label>
-                                                                <select
+                                                                {/* <select
                                                                     value={filters.shift_id}
                                                                     onChange={(e) => handleFilterChange('shift_id', e.target.value)}
                                                                     className="w-full px-3 py-2 bg-[var(--color-bg-primary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent text-[var(--color-text-primary)] text-sm"
@@ -827,7 +901,24 @@ const DailyReport = () => {
                                                                             {s.name}
                                                                         </option>
                                                                     ))}
-                                                                </select>
+                                                                </select> */}
+                                                                <CustomSelect
+                                                                    name="shift_id"
+                                                                    value={filters.shift_id}
+                                                                    onChange={(e) =>
+                                                                        handleFilterChange(
+                                                                            'shift_id',
+                                                                            e.target.value
+                                                                        )
+                                                                    }
+                                                                    options={shifts.map((s) => ({
+                                                                        value: s.id,
+                                                                        label: s.name,
+                                                                    }))}
+                                                                    placeholder="All Shifts"
+                                                                    searchable={true}
+                                                                    disabled={dropdownLoading}
+                                                                />
                                                             </div>
                                                         </div>
                                                     </div>
@@ -1056,44 +1147,44 @@ const DailyReport = () => {
                             <div className="p-8 text-center text-[var(--color-text-secondary)]">No records found</div>
                         ) : (
                             <>
-                                <table className="w-full min-w-[1200px]">
-                                    <thead className="bg-[var(--color-primary-dark)] border-b border-[var(--color-border-secondary)]">
-                                        <tr>
-                                            <th className="px-6 py-3 text-center text-xs font-medium text-[var(--color-text-white)] uppercase tracking-wider">
+                                <Table className="w-full min-w-[1200px] border-separate border-spacing-0">
+                                    <TableHeader className="sticky top-0 z-10 bg-[var(--color-primary-dark)] backdrop-blur supports-[backdrop-filter]:bg-[var(--color-bg-gray-light)]/60">
+                                        <TableHeaderRow>
+                                            <Th className="text-center font-medium">
                                                 Employee
-                                            </th>
-                                            <th className="px-6 py-3 text-center text-xs font-medium text-[var(--color-text-white)] uppercase tracking-wider">
+                                            </Th>
+                                            <Th className="text-center font-medium">
                                                 Shift
-                                            </th>
-                                            <th className="px-6 py-3 text-center text-xs font-medium text-[var(--color-text-white)] uppercase tracking-wider">
+                                            </Th>
+                                            <Th className="text-center font-medium">
                                                 Shift Time
-                                            </th>
-                                            <th className="px-6 py-3 text-center text-xs font-medium text-[var(--color-text-white)] uppercase tracking-wider">
+                                            </Th>
+                                            <Th className="text-center font-medium">
                                                 Clock In
-                                            </th>
-                                            <th className="px-6 py-3 text-center text-xs font-medium text-[var(--color-text-white)] uppercase tracking-wider">
+                                            </Th>
+                                            <Th className="text-center font-medium">
                                                 Clock Out
-                                            </th>
-                                            <th className="px-6 py-3 text-center text-xs font-medium text-[var(--color-text-white)] uppercase tracking-wider">
+                                            </Th>
+                                            <Th className="text-center font-medium">
                                                 Working Hours
-                                            </th>
-                                            <th className="px-6 py-3 text-center text-xs font-medium text-[var(--color-text-white)] uppercase tracking-wider">
+                                            </Th>
+                                            <Th className="text-center font-medium">
                                                 Attendance Hours
-                                            </th>
-                                            <th className="px-6 py-3 text-center text-xs font-medium text-[var(--color-text-white)] uppercase tracking-wider">
+                                            </Th>
+                                            <Th className="text-center font-medium">
                                                 Status
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="bg-[var(--color-bg-secondary)] divide-y divide-[var(--color-border-secondary)]">
+                                            </Th>
+                                        </TableHeaderRow>
+                                    </TableHeader>
+                                    <TableBody className="bg-[var(--color-bg-secondary)] divide-y divide-[var(--color-border-secondary)]">
                                         {paginatedData.map((emp, idx) => {
                                             const timeColorClass = getTimeColor(emp);
                                             return (
-                                                <tr
+                                                <TableRow
                                                     key={emp.employee_id || emp.employee_code || idx}
                                                     className={`hover:bg-[var(--color-bg-hover)] transition-colors ${getRowStyling(emp.status)}`}
                                                 >
-                                                    <td className="bg-inherit">
+                                                    <Td className="bg-inherit">
                                                         <div className="flex flex-col text-center items-start px-6">
                                                             {/* Employee Name with truncate */}
                                                             <span
@@ -1111,27 +1202,27 @@ const DailyReport = () => {
                                                                 {truncateText(emp.employee_code, 15)}
                                                             </span>
                                                         </div>
-                                                    </td>
+                                                    </Td>
 
-                                                    <td className="px-6 py-4 text-center text-sm text-[var(--color-text-primary)]">
+                                                    <Td className="px-6 py-4 text-center text-sm text-[var(--color-text-primary)]">
                                                         {emp.shift_name || '--'}
-                                                    </td>
-                                                    <td className="px-6 py-4 text-center text-sm text-[var(--color-text-primary)]">
+                                                    </Td>
+                                                    <Td className="px-6 py-4 text-center text-sm text-[var(--color-text-primary)]">
                                                         {emp.shift_from_time && emp.shift_to_time ? `${emp.shift_from_time} - ${emp.shift_to_time}` : '--'}
-                                                    </td>
-                                                    <td className={`px-6 py-4 text-center text-sm ${timeColorClass}`}>
+                                                    </Td>
+                                                    <Td className={`px-6 py-4 text-center text-sm ${timeColorClass}`}>
                                                         {emp.attandance_first_clock_in || '--'}
-                                                    </td>
-                                                    <td className={`px-6 py-4 text-center text-sm ${timeColorClass}`}>
+                                                    </Td>
+                                                    <Td className={`px-6 py-4 text-center text-sm ${timeColorClass}`}>
                                                         {emp.attandance_last_clock_out || '--'}
-                                                    </td>
-                                                    <td className="px-6 py-4 text-center text-sm text-[var(--color-text-primary)]">
+                                                    </Td>
+                                                    <Td className="px-6 py-4 text-center text-sm text-[var(--color-text-primary)]">
                                                         {emp.shift_working_hours ? `${emp.shift_working_hours}` : '--'}
-                                                    </td>
-                                                    <td className="px-6 py-4 text-center text-sm text-[var(--color-text-primary)]">
+                                                    </Td>
+                                                    <Td className="px-6 py-4 text-center text-sm text-[var(--color-text-primary)]">
                                                         {emp.attandance_hours ? `${emp.attandance_hours}` : '--'}
-                                                    </td>
-                                                    <td className="px-6 py-4 text-center text-sm">
+                                                    </Td>
+                                                    <Td className="px-6 py-4 text-center text-sm">
                                                         <span
                                                             className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${emp.status === 'Present'
                                                                 ? 'bg-green-100 text-green-800'
@@ -1152,26 +1243,26 @@ const DailyReport = () => {
                                                         >
                                                             {emp.status || '--'}
                                                         </span>
-                                                    </td>
-                                                </tr>
+                                                    </Td>
+                                                </TableRow>
                                             );
                                         })}
 
                                         {/* ⬇️ Filler rows to keep 10 rows visible */}
                                         {Array.from({ length: emptyRowCount }).map((_, i) => (
-                                            <tr key={`empty-${i}`} className="hover:bg-[var(--color-bg-hover)] transition-colors">
-                                                <td className="px-6 py-6 text-center text-sm text-transparent">—</td>
-                                                <td className="px-6 py-6 text-center text-sm text-transparent">—</td>
-                                                <td className="px-6 py-6 text-center text-sm text-transparent">—</td>
-                                                <td className="px-6 py-6 text-center text-sm text-transparent">—</td>
-                                                <td className="px-6 py-6 text-center text-sm text-transparent">—</td>
-                                                <td className="px-6 py-6 text-center text-sm text-transparent">—</td>
-                                                <td className="px-6 py-6 text-center text-sm text-transparent">—</td>
-                                                <td className="px-6 py-6 text-center text-sm text-transparent">—</td>
-                                            </tr>
+                                            <TableRow key={`empty-${i}`} className="hover:bg-[var(--color-bg-hover)] transition-colors">
+                                                <Td className="px-6 py-6 text-center text-sm text-transparent">—</Td>
+                                                <Td className="px-6 py-6 text-center text-sm text-transparent">—</Td>
+                                                <Td className="px-6 py-6 text-center text-sm text-transparent">—</Td>
+                                                <Td className="px-6 py-6 text-center text-sm text-transparent">—</Td>
+                                                <Td className="px-6 py-6 text-center text-sm text-transparent">—</Td>
+                                                <Td className="px-6 py-6 text-center text-sm text-transparent">—</Td>
+                                                <Td className="px-6 py-6 text-center text-sm text-transparent">—</Td>
+                                                <Td className="px-6 py-6 text-center text-sm text-transparent">—</Td>
+                                            </TableRow>
                                         ))}
-                                    </tbody>
-                                </table>
+                                    </TableBody>
+                                </Table>
 
                                 {/* ⬇️ Pagination controls */}
                                 <Pagination

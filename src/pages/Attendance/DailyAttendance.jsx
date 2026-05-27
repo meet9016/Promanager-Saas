@@ -34,20 +34,10 @@ import { Toast } from '../../Components/ui/Toast';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Pagination from '../../Components/Pagination';
+import { Table, TableHeader, TableBody, TableRow, TableHeaderRow, Th, Td } from '../../Components/ui/Table';
+import CustomDatePicker from '../../Components/comman/CustomDatePicker';
 
 
-/** ---------- Small building blocks ---------- **/
-const Th = ({ children, small, className = '' }) => (
-  <th className={`px-2 sm:px-4 py-3 text-center ${small ? 'text-[11px]' : 'text-xs'} font-semibold text-white uppercase tracking-wider ${className}`}>
-    {children}
-  </th>
-);
-
-const Td = ({ children, small, className = '', colSpan }) => (
-  <td className={`px-2 sm:px-4 py-3 text-center ${small ? 'text-xs' : 'text-sm'} text-[var(--color-text-primary)] ${className}`} colSpan={colSpan}>
-    {children}
-  </td>
-);
 
 const SummaryCard = ({ label, value, icon: Icon, tone = 'text-[var(--color-text-primary)]', onClick, isActive = false }) => {
   // Map tone classes to a rich color scheme
@@ -995,13 +985,13 @@ const DailyAttendance = () => {
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
               <div className="flex items-center">
                 <Activity className="h-5 w-5 sm:h-6 sm:w-6 text-[var(--color-primary-darker)] mr-2" />
-                <h3 className="text-sm sm:text-lg font-medium text-[var(--color-primary-darker)]">Daily Attendance Details</h3>
+                <h3 className="text-sm sm:text-lg font-medium text-[var(--color-primary-darker)]">Daily Attendance</h3>
               </div>
 
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3">
                 {/* Date */}
                 <div className="relative flex items-center z-[40] min-w-[140px] sm:min-w-[160px]">
-                  <Calendar className="absolute left-3 w-4 h-4 text-[var(--color-primary)] pointer-events-none z-10" />
+                  {/* <Calendar className="absolute left-3 w-4 h-4 text-[var(--color-primary)] pointer-events-none z-10" />
 
                   <DatePicker
                     selected={selectedDate}
@@ -1009,6 +999,15 @@ const DailyAttendance = () => {
                     dateFormat="dd-MM-yyyy"
                     placeholderText="DD-MM-YYYY"
                     className="w-full bg-[var(--color-bg-primary)] hover:bg-[var(--color-bg-hover)] border border-[var(--color-border-secondary)] rounded-xl pl-9 pr-3 py-1.5 sm:py-2 text-xs sm:text-sm text-[var(--color-text-primary)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent transition-all duration-200 cursor-pointer font-medium shadow-sm"
+                  /> */}
+
+                  <CustomDatePicker
+                    name="selected_date"
+                    value={selectedDate}
+                    onChange={(e) => setSelectedDate(new Date(e.target.value))}
+                    placeholder="DD-MM-YYYY"
+                    maxDate={new Date()}
+                    clearable={true}
                   />
                 </div>
 
@@ -1081,9 +1080,9 @@ const DailyAttendance = () => {
                 <div className="p-8 text-center text-[var(--color-text-secondary)]">No records found</div>
               ) : (
                 <>
-                  <table className="w-full min-w-[1200px] border-separate border-spacing-0">
-                    <thead className="sticky top-0 z-10 bg-[var(--color-primary-dark)]">
-                      <tr className="border-b border-[var(--color-primary-light)]">
+                  <Table className="min-w-[1200px]">
+                    <TableHeader>
+                      <TableHeaderRow>
                         <Th>Employee</Th>
                         <Th>Shift</Th>
                         <Th>Clock In</Th>
@@ -1096,16 +1095,16 @@ const DailyAttendance = () => {
                         <Th>Early Going</Th>
                         <Th>Status</Th>
                         <Th>Actions</Th>
-                      </tr>
-                    </thead>
+                      </TableHeaderRow>
+                    </TableHeader>
 
-                    <tbody className="divide-y divide-[var(--color-border-secondary)]">
+                    <TableBody>
                       {paginatedData.map((emp, idx) => {
                         const timeColorClass = getTimeColor(emp);
                         return (
-                          <tr
+                          <TableRow
                             key={emp.employee_code || idx}
-                            className={`hover:bg-[var(--color-bg-hover)] transition-colors ${getRowStyling(emp.status, emp.edit_reason)}`}
+                            className={`hover:bg-[var(--color-bg-hover)] ${getRowStyling(emp.status, emp.edit_reason)}`}
                           >
                             {/* Employee */}
                             <Td className="bg-inherit text-left">
@@ -1229,20 +1228,20 @@ const DailyAttendance = () => {
                                 )}
                               </div>
                             </Td>
-                          </tr>
+                          </TableRow>
                         );
                       })}
 
                       {/* Filler rows — 13 columns now */}
                       {Array.from({ length: emptyRowCount }).map((_, i) => (
-                        <tr key={`empty-${i}`} className="transition-colors">
+                        <TableRow key={`empty-${i}`}>
                           {Array.from({ length: 12 }).map((__, j) => (
                             <Td key={j} className="text-transparent">—</Td>
                           ))}
-                        </tr>
+                        </TableRow>
                       ))}
-                    </tbody>
-                  </table>
+                    </TableBody>
+                  </Table>
 
                   {/* Pagination */}
                   <Pagination

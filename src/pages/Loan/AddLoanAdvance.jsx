@@ -5,6 +5,9 @@ import { useAuth } from '../../context/AuthContext'; // Adjust path as needed
 import api from '../../api/axiosInstance'; // Adjust path as needed
 import { Toast } from '../../Components/ui/Toast';
 import { useSelector } from 'react-redux';
+import CustomInput from '../../Components/comman/CustomInput';
+import CustomDatePicker from '../../Components/comman/CustomDatePicker';
+import CustomSelect from '../../Components/comman/CustomSelect';
 
 const AddLoanAdvance = ({
     existingLoan = null,
@@ -478,7 +481,7 @@ const AddLoanAdvance = ({
                                 title="Go Back"
                             >
                                 <ArrowLeft size={18} />
-                              
+
                             </button>
                             <div className="flex items-center gap-3">
                                 <div>
@@ -527,7 +530,7 @@ const AddLoanAdvance = ({
                                         Select Employee
                                     </label>
                                     <div className="relative">
-                                        <input
+                                        {/* <input
                                             type="text"
                                             placeholder="Search employee by name or ID..."
                                             value={searchTerm}
@@ -546,6 +549,67 @@ const AddLoanAdvance = ({
                                             onFocus={() => setIsDropdownOpen(true)}
                                             className="w-full px-3 py-2 border border-[var(--color-border-secondary)] rounded-lg focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)]"
                                             disabled={loading}
+                                        /> */}
+
+                                        {/* <CustomInput
+                                            type="text"
+                                            name="employeeSearch"
+                                            placeholder="Search employee by name or ID..."
+                                            value={searchTerm}
+                                            onChange={(e) => {
+                                                setSearchTerm(e.target.value);
+                                                setIsDropdownOpen(true);
+
+                                                if (!e.target.value) {
+                                                    setSelectedEmployee('');
+                                                    setFormData((prev) => ({
+                                                        ...prev,
+                                                        employeeName: '',
+                                                        employeeId: '',
+                                                    }));
+                                                }
+                                            }}
+                                            onFocus={() => setIsDropdownOpen(true)}
+                                            disabled={loading}
+                                        /> */}
+
+                                        <CustomSelect
+                                            name="employeeSearch"
+                                            value={selectedEmployee}
+                                            placeholder="Search employee by name or ID..."
+                                            searchable={true}
+                                            disabled={loading}
+                                            options={employees.map((emp) => ({
+                                                value: emp.employee_id,
+                                                label: `${emp.full_name} (${emp.employee_id})`,
+                                            }))}
+                                            onChange={(e) => {
+
+                                                const selectedEmp = employees.find(
+                                                    (emp) => String(emp.employee_id) === String(e.target.value)
+                                                );
+
+                                                setSelectedEmployee(e.target.value);
+
+                                                setFormData((prev) => ({
+                                                    ...prev,
+                                                    employeeName: selectedEmp?.full_name || '',
+                                                    employeeId: selectedEmp?.employee_id || '',
+                                                }));
+
+                                                setSearchTerm(selectedEmp?.full_name || '');
+
+                                                if (!e.target.value) {
+                                                    setSelectedEmployee('');
+
+                                                    setFormData((prev) => ({
+                                                        ...prev,
+                                                        employeeName: '',
+                                                        employeeId: '',
+                                                    }));
+                                                }
+                                            }}
+                                            className="w-full"
                                         />
 
                                         {isDropdownOpen && filteredEmployees.length > 0 && (
@@ -576,7 +640,7 @@ const AddLoanAdvance = ({
                     </div>
 
                     {/* Enhanced Loan Details */}
-                    <div className="bg-[var(--color-bg-secondary)] backdrop-blur-sm rounded-2xl border border-slate-200 shadow-lg relative z-10">
+                    <div className="bg-[var(--color-bg-secondary)] backdrop-blur-sm rounded-2xl border border-slate-200 shadow-lg relative z-[9999] overflow-visible">
                         <div className="px-8 py-6 border-b border-slate-200 bg-gradient-to-r from-[var(--color-bg-primary)] to-[var(--color-bg-secondary)] rounded-t-2xl">
                             <div className="flex items-center gap-3">
                                 <div className="w-10 h-10 bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-dark)] rounded-xl flex items-center justify-center">
@@ -593,7 +657,7 @@ const AddLoanAdvance = ({
                                     <label className="block text-sm font-semibold text-[var(--color-text-secondary)] mb-3">
                                         Type <span className="text-[var(--color-error)]">*</span>
                                     </label>
-                                    <select
+                                    {/* <select
                                         value={formData.loanTypeId}
                                         onChange={handleLoanTypeSelect}
                                         className={`w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-all duration-200 shadow-sm bg-[var(--color-bg-secondary)] ${errors.loanType ? 'border-red-500' : ''}`}
@@ -607,7 +671,20 @@ const AddLoanAdvance = ({
                                                 {loanType.name}
                                             </option>
                                         ))}
-                                    </select>
+                                    </select> */}
+                                    <CustomSelect
+                                        name="loanTypeId"
+                                        value={formData.loanTypeId}
+                                        onChange={handleLoanTypeSelect}
+                                        options={loanTypes.map((loanType) => ({
+                                            value: loanType.loan_type_id,
+                                            label: loanType.name,
+                                        }))}
+                                        placeholder={loading ? 'Loading...' : 'Select loan type'}
+                                        searchable={true}
+                                        disabled={loading}
+                                    />
+
                                     {errors.loanType && (
                                         <p className="text-[var(--color-error)] text-xs mt-2">{errors.loanType}</p>
                                     )}
@@ -616,12 +693,21 @@ const AddLoanAdvance = ({
                                     <label className="block text-sm font-semibold text-[var(--color-text-secondary)] mb-3">
                                         Amount <span className="text-[var(--color-error)]">*</span>
                                     </label>
-                                    <input
+                                    {/* <input
                                         type="number"
                                         name="amount"
                                         value={formData.amount}
                                         onChange={handleInputChange}
                                         className={`w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-all duration-200 shadow-sm bg-[var(--color-bg-secondary)] ${errors.amount ? 'border-red-500' : ''}`}
+                                        min="0"
+                                        step="0.01"
+                                        placeholder="Enter amount"
+                                    /> */}
+                                    <CustomInput
+                                        type="number"
+                                        name="amount"
+                                        value={formData.amount}
+                                        onChange={handleInputChange}
                                         min="0"
                                         step="0.01"
                                         placeholder="Enter amount"
@@ -634,7 +720,7 @@ const AddLoanAdvance = ({
                                     <label className="block text-sm font-semibold text-[var(--color-text-secondary)] mb-3">
                                         Priority <span className="text-[var(--color-error)]">*</span>
                                     </label>
-                                    <select
+                                    {/* <select
                                         value={formData.priorityId}
                                         onChange={handlePrioritySelect}
                                         className={`w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-all duration-200 shadow-sm bg-[var(--color-bg-secondary)] ${errors.priority ? 'border-red-500' : ''}`}
@@ -648,7 +734,19 @@ const AddLoanAdvance = ({
                                                 {priority.name}
                                             </option>
                                         ))}
-                                    </select>
+                                    </select> */}
+                                    <CustomSelect
+                                        name="priorityId"
+                                        value={formData.priorityId}
+                                        onChange={handlePrioritySelect}
+                                        options={priorities.map((priority) => ({
+                                            value: priority.loan_priority_id,
+                                            label: priority.name,
+                                        }))}
+                                        placeholder={loading ? 'Loading...' : 'Select priority'}
+                                        searchable={true}
+                                        disabled={loading}
+                                    />
                                     {errors.priority && (
                                         <p className="text-[var(--color-error)] text-xs mt-2">{errors.priority}</p>
                                     )}
@@ -715,7 +813,7 @@ const AddLoanAdvance = ({
                     </div>
 
                     {/* Enhanced Dates and Status */}
-                    <div className="bg-[var(--color-bg-secondary)] backdrop-blur-sm rounded-2xl border border-slate-200 shadow-lg">
+                    <div className="bg-[var(--color-bg-secondary)] backdrop-blur-sm rounded-2xl border border-slate-200 shadow-lg relative z-10">
                         <div className="px-8 py-6 border-b border-slate-200 bg-gradient-to-r from-[var(--color-bg-primary)] to-[var(--color-bg-secondary)] rounded-t-2xl">
                             <div className="flex items-center gap-3">
                                 <div className="w-10 h-10 bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-dark)] rounded-xl flex items-center justify-center">
@@ -732,7 +830,7 @@ const AddLoanAdvance = ({
                                     <label className="block text-sm font-semibold text-[var(--color-text-secondary)] mb-3">
                                         Approval Status <span className="text-[var(--color-error)]">*</span>
                                     </label>
-                                    <select
+                                    {/* <select
                                         value={formData.approvalStatusId}
                                         onChange={handleStatusSelect}
                                         className={`w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-all duration-200 shadow-sm bg-[var(--color-bg-secondary)] ${errors.approvalStatus ? 'border-red-500' : ''}`}
@@ -746,7 +844,19 @@ const AddLoanAdvance = ({
                                                 {status.name}
                                             </option>
                                         ))}
-                                    </select>
+                                    </select> */}
+                                    <CustomSelect
+                                        name="approvalStatusId"
+                                        value={formData.approvalStatusId}
+                                        onChange={handleStatusSelect}
+                                        options={statuses.map((status) => ({
+                                            value: status.status_id,
+                                            label: status.name,
+                                        }))}
+                                        placeholder={loading ? 'Loading...' : 'Select status'}
+                                        searchable={true}
+                                        disabled={loading}
+                                    />
                                     {errors.approvalStatus && (
                                         <p className="text-[var(--color-error)] text-xs mt-2">{errors.approvalStatus}</p>
                                     )}
@@ -755,24 +865,22 @@ const AddLoanAdvance = ({
                                     <label className="block text-sm font-semibold text-[var(--color-text-secondary)] mb-3">
                                         Disbursement Date
                                     </label>
-                                    <input
-                                        type="date"
+                                    <CustomDatePicker
                                         name="disbursementDate"
                                         value={formData.disbursementDate}
                                         onChange={handleInputChange}
-                                        className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-all duration-200 shadow-sm bg-[var(--color-bg-secondary)]"
+                                        placeholder="DD-MM-YYYY"
                                     />
                                 </div>
                                 <div>
                                     <label className="block text-sm font-semibold text-[var(--color-text-secondary)] mb-3">
                                         Repayment Start Date
                                     </label>
-                                    <input
-                                        type="date"
+                                    <CustomDatePicker
                                         name="repaymentStartDate"
                                         value={formData.repaymentStartDate}
                                         onChange={handleInputChange}
-                                        className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-all duration-200 shadow-sm bg-[var(--color-bg-secondary)]"
+                                        placeholder="DD-MM-YYYY"
                                     />
                                 </div>
                             </div>
@@ -797,12 +905,19 @@ const AddLoanAdvance = ({
                                     <label className="block text-sm font-semibold text-[var(--color-text-secondary)] mb-3">
                                         Guarantor Name
                                     </label>
-                                    <input
+                                    {/* <input
                                         type="text"
                                         name="guarantorName"
                                         value={formData.guarantorName}
                                         onChange={handleInputChange}
                                         className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-all duration-200 shadow-sm bg-[var(--color-bg-secondary)]"
+                                        placeholder="Enter guarantor name"
+                                    /> */}
+                                    <CustomInput
+                                        type="text"
+                                        name="guarantorName"
+                                        value={formData.guarantorName}
+                                        onChange={handleInputChange}
                                         placeholder="Enter guarantor name"
                                     />
                                 </div>
@@ -810,12 +925,19 @@ const AddLoanAdvance = ({
                                     <label className="block text-sm font-semibold text-[var(--color-text-secondary)] mb-3">
                                         Guarantor Contact
                                     </label>
-                                    <input
+                                    {/* <input
                                         type="text"
                                         name="guarantorContact"
                                         value={formData.guarantorContact}
                                         onChange={handleInputChange}
                                         className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-all duration-200 shadow-sm bg-[var(--color-bg-secondary)]"
+                                        placeholder="Enter contact number/email"
+                                    /> */}
+                                    <CustomInput
+                                        type="text"
+                                        name="guarantorContact"
+                                        value={formData.guarantorContact}
+                                        onChange={handleInputChange}
                                         placeholder="Enter contact number/email"
                                     />
                                 </div>

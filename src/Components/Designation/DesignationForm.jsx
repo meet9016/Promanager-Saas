@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Plus, Briefcase } from "lucide-react";
+import CustomInput from "../comman/CustomInput";
 
 const DesignationForm = ({ onSubmit, loading = false, showToast }) => {
     const [name, setName] = useState("");
@@ -47,7 +48,7 @@ const DesignationForm = ({ onSubmit, loading = false, showToast }) => {
                         <label htmlFor="designationName" className=" text-sm font-medium text-[var(--color-text-secondary)] mb-2 ">
                             Add New Designation <span className="text-[var(--color-error)]">*</span>
                         </label>
-                        <input
+                        {/* <input
                             id="designationName"
                             type="text"
                             placeholder="Enter designation name"
@@ -60,7 +61,19 @@ const DesignationForm = ({ onSubmit, loading = false, showToast }) => {
                                     handleSubmit(e);
                                 }
                             }}
-                        />
+                        /> */}
+                        <div className="w-[500px]">
+                            <CustomInput
+                                type="text"
+                                name="name"
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                                // onBlur={handleFieldBlur}
+                                placeholder="Enter designation name"
+                                required
+                                clearable={true}
+                            />
+                        </div>
                     </div>
 
                     <button

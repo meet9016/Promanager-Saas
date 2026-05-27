@@ -30,70 +30,11 @@ import { useNavigate } from 'react-router-dom';
    =========================== */
 const SettingsPage = () => {
     const navigate = useNavigate();
-    const [tab, setTab] = useState('subscription'); // 'time' | 'subscription' | 'profile'
-    const { user, isAuthenticated } = useAuth();
-    const [toast, setToast] = useState(null);
-    const [subscriptions, setSubscriptions] = useState([]);
-
-
-    useEffect(() => {
-
-        const fetchInvoiceList = async () => {
-            try {
-                // Check if user is authenticated and has user_id
-                if (!isAuthenticated() || !user?.user_id) {
-                    setToast({
-                        message: 'User authentication required. Please login again.',
-                        type: 'error'
-                    });
-                    return;
-                }
-                const formData = new FormData();
-
-                const response = await api.post('/subscription_list', formData, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data'
-                    }
-                });
-                if (response.data.success) {
-
-                    setSubscriptions(response.data.data);
-                } else {
-                    setToast({
-                        message: response.data.message || 'Failed to load employee dropdown options.',
-                        type: 'error'
-                    });
-                }
-            } catch (error) {
-                console.error('Error fetching employee dropdown data:', error);
-                setToast({
-                    message: 'Failed to load employee dropdown options. Please refresh the page.',
-                    type: 'error'
-                });
-            } finally {
-            }
-        };
-
-        fetchInvoiceList();
-    }, [user, isAuthenticated]);
-
-
-    const TabButton = ({ id, children }) => (
-        <button
-            onClick={() => setTab(id)}
-            className={`px-4 py-2 text-sm font-medium transition-colors rounded-md
-        ${tab === id
-                    ? 'bg-[var(--color-primary-dark)] text-white'
-                    : 'text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-gradient-start)]'
-                }`}
-        >
-            {children}
-        </button>
-    );
+    const { user } = useAuth();
 
     return (
         <div className="min-h-screen bg-[var(--color-bg-primary)]">
-            <div className="p-8  mx-auto space-y-6">
+            <div className="p-8 mx-auto space-y-6">
                 {/* Header */}
                 <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-xl overflow-hidden">
                     <div className="bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] p-8">
@@ -113,21 +54,9 @@ const SettingsPage = () => {
                             </div>
                         </div>
                     </div>
-
-                    {/* Tabs */}
-                    <div className="px-4 py-4">
-                        <div className="flex gap-2 bg-[var(--color-bg-primary)] border border-[var(--color-border-primary)] rounded-xl p-2 w-fit">
-                            {/* <TabButton id="time">Time & Attendance</TabButton> */}
-                            <TabButton id="subscription">Subscription</TabButton>
-                            <TabButton id="profile">Profile & Info</TabButton>
-                        </div>
-                    </div>
                 </div>
 
-                {/* Tab Content */}
-                {/* {tab === 'time' && <TimeConfigurationTab />} */}
-                {tab === 'subscription' && <SubscriptionTab subscriptions={subscriptions} />}
-                {tab === 'profile' && <ProfileInfoTab />}
+                <ProfileInfoTab />
             </div>
         </div>
     );
@@ -367,193 +296,6 @@ const SettingsPage = () => {
 //     </div>
 // );
 
-
-/* ========================
-   SUBSCRIPTION (PRICING) TAB
-   ======================== */
-const SubscriptionTab = ({ subscriptions = [] }) => {
-    const { user } = useAuth();
-
-    const subscriptionDays = parseInt(user?.subscriptions_days) || 0;
-    const subscriptionStatus = parseInt(user?.subscriptions_status) || 0;
-
-    const expirationDate = new Date();
-    expirationDate.setTime(expirationDate.getTime() + (subscriptionDays * 24 * 60 * 60 * 1000));
-
-    const getUserInitials = (name) => {
-        if (!name || name === 'Unknown User') return 'U';
-        return name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
-    };
-
-    const getStatusInfo = (status, days) => {
-        if (status === 1) {
-            if (days <= 0) return { text: 'Expired', bgColor: 'bg-red-100', textColor: 'text-red-800', isActive: false, isExpired: true, isExpiringSoon: false };
-            if (days <= 7) return { text: 'Expiring Soon', bgColor: 'bg-yellow-100', textColor: 'text-yellow-800', isActive: true, isExpired: false, isExpiringSoon: true };
-            return { text: 'Active', bgColor: 'bg-green-100', textColor: 'text-green-800', isActive: true, isExpired: false, isExpiringSoon: false };
-        }
-        return { text: 'Inactive', bgColor: 'bg-gray-100', textColor: 'text-gray-800', isActive: false, isExpired: false, isExpiringSoon: false };
-    };
-
-    const statusInfo = getStatusInfo(subscriptionStatus, subscriptionDays);
-
-    const getBannerConfig = () => {
-        if (statusInfo.isExpired) {
-            return { bgClass: 'bg-gradient-to-r from-red-600 to-red-700', icon: AlertTriangle, title: 'Subscription Expired!', description: 'Renew now to continue using our services', textColorClass: 'text-red-100' };
-        } else if (statusInfo.isExpiringSoon) {
-            return { bgClass: 'bg-gradient-to-r from-yellow-600 to-orange-600', icon: Gift, title: 'Subscription Expiring Soon!', description: 'Renew before expiration to avoid interruption', textColorClass: 'text-yellow-100' };
-        } else if (statusInfo.isActive) {
-            return { bgClass: 'bg-gradient-to-r from-green-600 to-green-700', icon: Gift, title: 'Active Subscription', description: 'Your subscription is active and running smoothly', textColorClass: 'text-green-100' };
-        }
-        return { bgClass: 'bg-gradient-to-r from-gray-600 to-gray-700', icon: AlertTriangle, title: 'Inactive Subscription', description: 'Activate your subscription to access all features', textColorClass: 'text-gray-100' };
-    };
-
-    const bannerConfig = getBannerConfig();
-    const BannerIcon = bannerConfig.icon;
-
-    const getDaysColor = () => {
-        if (subscriptionDays <= 0) return 'text-red-400';
-        if (subscriptionDays <= 7) return 'text-yellow-400';
-        return 'text-green-400';
-    };
-
-    return (
-        <div className="space-y-8">
-            {/* Banner */}
-            <div className={`${bannerConfig.bgClass} text-[var(--color-text-white)] py-6 rounded-2xl`}>
-                <div className="max-w-6xl mx-auto px-6">
-                    <div className="flex items-center justify-center">
-                        <div className="flex items-center">
-                            <BannerIcon className="w-6 h-6 mr-3" />
-                            <div className="text-center">
-                                <h3 className="font-bold text-lg">{bannerConfig.title}</h3>
-                                <p className={`${bannerConfig.textColorClass} text-sm`}>{bannerConfig.description}</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {/* Card */}
-            <SectionCard tight titleIcon={
-                <Gift className="w-6 h-6 text-[var(--color-primary-darker)]" />
-            } title="Subscription">
-                <div className="flex items-start justify-between gap-4 flex-wrap mb-6">
-                    <span className={`px-4 py-2 rounded-full text-sm font-medium ${statusInfo.bgColor} ${statusInfo.textColor}`}>
-                        {statusInfo.text} Status
-                    </span>
-                    <span className="px-3 py-1 bg-primary-500 text-[var(--color-text-white)] rounded-full text-sm font-bold">
-                        Current Plan
-                    </span>
-                </div>
-
-                <div className="flex items-center space-x-4 mb-8">
-                    <div className="w-16 h-16 bg-[var(--color-primary)] rounded-full flex items-center justify-center text-[var(--color-text-white)] text-xl font-bold">
-                        {getUserInitials(user?.full_name)}
-                    </div>
-                    <div>
-                        <h2 className="text-2xl font-bold text-[var(--color-text-primary)]">{user?.full_name || user?.name || user?.username || 'User'}</h2>
-                        <p className="text-[var(--color-text-secondary)]">{user?.email || user?.username || user?.number || '--'}</p>
-                    </div>
-                </div>
-
-                <div className="grid md:grid-cols-3 gap-4 mb-8">
-                    <InfoTile label="Status">
-                        <span className={`px-3 py-1 rounded-full text-xs font-medium ${statusInfo.bgColor} ${statusInfo.textColor}`}>{statusInfo.text}</span>
-                    </InfoTile>
-                    <InfoTile label="Days Remaining">
-                        <span className={`font-mono font-bold text-lg ${getDaysColor()}`}>{subscriptionDays} days</span>
-                    </InfoTile>
-                    <InfoTile label="Expires On">
-                        <span className="font-mono">{expirationDate.toLocaleDateString('en-GB')}</span>
-                    </InfoTile>
-                </div>
-
-                <div className="flex flex-col sm:flex-row gap-4">
-                    {statusInfo.isExpired ? (
-                        <button className="flex-1 bg-red-600 hover:bg-red-700 text-white py-3 px-6 rounded-lg font-semibold transition-colors">Renew Subscription</button>
-                    ) : statusInfo.isExpiringSoon ? (
-                        <button className="flex-1 bg-yellow-600 hover:bg-yellow-700 text-white py-3 px-6 rounded-lg font-semibold transition-colors">Extend Subscription</button>
-                    ) : statusInfo.isActive ? (
-                        <button className="flex-1 bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white py-3 px-6 rounded-lg font-semibold transition-colors">Manage Subscription</button>
-                    ) : (
-                        <button className="flex-1 bg-primary-600 hover:bg-primary-700 text-white py-3 px-6 rounded-lg font-semibold transition-colors">Activate Subscription</button>
-                    )}
-                    <button className="flex-1 bg-gray-600 hover:bg-gray-700 text-white py-3 px-6 rounded-lg font-semibold transition-colors">View Usage Details</button>
-                    <button onClick={() => window.location.href = '/renew'} className={`flex-1  py-3 px-6 rounded-lg font-semibold transition-colors ${statusInfo.bgColor} ${statusInfo.textColor}`}>Renew Now</button>
-
-                </div>
-            </SectionCard>
-
-            {/* Subscription List Table */}
-            <SectionCard
-                titleIcon={<UsersIcon className="w-6 h-6 text-[var(--color-primary-darker)]" />}
-                title="Subscription History"
-            >
-                {subscriptions.length === 0 ? (
-                    <div className="text-center py-10 text-[var(--color-text-secondary)]">
-                        No subscription records found
-                    </div>
-                ) : (
-                    <div className="overflow-hidden">
-                        <table className="w-full">
-                            <thead className="bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)]">
-                                <tr>
-                                    {[
-                                        'Invoice',
-                                        'Plan',
-                                        'Price',
-                                        'Employees',
-                                        'Amount',
-                                        'Start Date',
-                                        'End Date',
-                                        'Status',
-                                        'PDF'
-                                    ].map((label) => (
-                                        <th key={label} className="px-3 py-3 text-xs text-center text-white uppercase">
-                                            {label}
-                                        </th>
-                                    ))}
-                                </tr>
-                            </thead>
-
-                            <tbody className="divide-y divide-[var(--color-border-divider)]">
-                                {subscriptions.map((item, index) => (
-                                    <tr key={index} className="hover:bg-[var(--color-primary-lightest)] text-center">
-                                        <td className="py-3">{item.invoice_no}</td>
-                                        <td>{item.plan_name}</td>
-                                        <td>₹{item.plan_price}</td>
-                                        <td>{item.total_employee}</td>
-                                        <td className="font-semibold">₹{item.amount}</td>
-                                        <td>{item.starting_date}</td>
-                                        <td>{item.ending_date}</td>
-                                        <td>
-                                            <span className="px-2 py-1 text-xs rounded-full bg-green-100 text-green-700">
-                                                {item.status_label}
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <a
-                                                href={item.pdf_link}
-                                                target="_blank"
-                                                rel="noreferrer"
-                                                className="text-[var(--color-primary-dark)] hover:underline"
-                                            >
-                                                View
-                                            </a>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                )}
-            </SectionCard>
-        </div>
-
-    );
-
-
-};
 
 
 

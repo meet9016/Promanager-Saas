@@ -1,4 +1,5 @@
-import { useEffect, useState, useCallback, useMemo } from 'react';
+import { useEffect, useState, useCallback, useMemo, useRef, useLayoutEffect } from 'react';
+import { createPortal } from 'react-dom';
 import {
     Edit,
     ChevronDown,
@@ -19,15 +20,26 @@ import {
     DollarSign,
     UserCircle,
     CheckCircle,
-    Home
+    Home,
+    X
 } from 'lucide-react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import api from '../../api/axiosInstance';
 import { useSelector } from 'react-redux';
-import Pagination from '../../Components/Pagination'; // Adjust path as needed
+import Pagination from '../../Components/Pagination';
 import LoadingSpinner from '../../Components/Loader/LoadingSpinner';
-import { Toast } from '../../Components/ui/Toast'; // Import your toast component
+import { Toast } from '../../Components/ui/Toast';
+import {
+    Table,
+    TableHeader,
+    TableBody,
+    TableRow,
+    TableHeaderRow,
+    Th,
+    Td
+} from '../../Components/ui/Table';
+import CustomSelect from '../../Components/comman/CustomSelect';
 
 const SORT_DIRECTIONS = {
     ASCENDING: 'ascending',
@@ -62,6 +74,72 @@ const LOCATION_TYPES = {
 
 const ITEMS_PER_PAGE = 10;
 
+// ─── Floating anchor helpers ──────────────────────────────────────────────────
+const getScrollParents = (node) => {
+    const parents = [];
+    if (!node) return parents;
+    let parent = node.parentNode;
+    const scrollRegex = /(auto|scroll|overlay)/;
+    while (parent && parent.nodeType === 1) {
+        const style = window.getComputedStyle(parent);
+        const overflow = `${style.overflow}${style.overflowY}${style.overflowX}`;
+        if (scrollRegex.test(overflow)) parents.push(parent);
+        parent = parent.parentNode;
+    }
+    parents.push(window);
+    return parents;
+};
+
+const useAnchoredPosition = (anchorRef, isOpen, opts = {}) => {
+    const { placement = 'bottom-end', offset = 10, minWidth = 192 } = opts;
+    const [pos, setPos] = useState({ top: -9999, left: -9999, width: 0, ready: false });
+    const cleanupRef = useRef([]);
+
+    const compute = useCallback(() => {
+        const el = anchorRef.current;
+        if (!el) return;
+        const rect = el.getBoundingClientRect();
+        const scrollX = window.scrollX || window.pageXOffset;
+        const scrollY = window.scrollY || window.pageYOffset;
+        let top = rect.bottom + scrollY + offset;
+        let left;
+        if (placement === 'bottom-start') left = rect.left + scrollX;
+        else if (placement === 'bottom-center') left = rect.left + scrollX + rect.width / 2 - minWidth / 2;
+        else left = rect.left + scrollX + rect.width - minWidth;
+        setPos({ top, left, width: rect.width, ready: true });
+    }, [anchorRef, offset, placement, minWidth]);
+
+    useLayoutEffect(() => {
+        if (!isOpen) {
+            cleanupRef.current.forEach((fn) => fn && fn());
+            cleanupRef.current = [];
+            setPos((p) => ({ ...p, ready: false }));
+            return;
+        }
+        compute();
+        const parents = getScrollParents(anchorRef.current);
+        const rafThrottle = (fn) => {
+            let ticking = false;
+            return () => {
+                if (ticking) return;
+                ticking = true;
+                requestAnimationFrame(() => { fn(); ticking = false; });
+            };
+        };
+        const handler = rafThrottle(() => compute());
+        parents.forEach((p) => p.addEventListener('scroll', handler, { passive: true }));
+        window.addEventListener('resize', handler, { passive: true });
+        const remove = () => {
+            parents.forEach((p) => p.removeEventListener('scroll', handler));
+            window.removeEventListener('resize', handler);
+        };
+        cleanupRef.current.push(remove);
+        return () => { remove(); cleanupRef.current = []; };
+    }, [isOpen, compute, anchorRef]);
+
+    return pos;
+};
+
 export default function Employee() {
     const [employees, setEmployees] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -86,9 +164,14 @@ export default function Employee() {
     // Toast state
     const [toast, setToast] = useState(null);
 
-    // Filter states
-    const [showFilters, setShowFilters] = useState(false);
-    const [filters, setFilters] = useState({
+    // Filter popup states
+    const [filterDropdown, setFilterDropdown] = useState(false);
+    const filterBtnRef = useRef(null);
+    const filterPos = useAnchoredPosition(filterBtnRef, filterDropdown, { placement: 'bottom-end', offset: 10, minWidth: 420 });
+
+    // ===== FILTER STATE FIX =====
+    // appliedFilters: jo actually API call me jata hai
+    const [appliedFilters, setAppliedFilters] = useState({
         branch_id: '',
         department_id: '',
         designation_id: '',
@@ -97,6 +180,19 @@ export default function Employee() {
         gender_id: '',
         status_id: '1'
     });
+
+    // tempFilters: jo dropdown me dikhata hai aur select karte waqt update hota hai
+    const [tempFilters, setTempFilters] = useState({
+        branch_id: '',
+        department_id: '',
+        designation_id: '',
+        employee_type_id: '',
+        salary_type_id: '',
+        gender_id: '',
+        status_id: '1'
+    });
+    // ============================
+
     const [branches, setBranches] = useState([]);
     const [departments, setDepartments] = useState([]);
     const [designations, setDesignations] = useState([]);
@@ -179,28 +275,29 @@ export default function Employee() {
                 formData.append('search', search.trim());
             }
 
-            // Add filter parameters
-            if (filters.branch_id) {
-                formData.append('branch_id', filters.branch_id);
+            // ===== USE appliedFilters INSTEAD OF filters =====
+            if (appliedFilters.branch_id) {
+                formData.append('branch_id', appliedFilters.branch_id);
             }
-            if (filters.department_id) {
-                formData.append('department_id', filters.department_id);
+            if (appliedFilters.department_id) {
+                formData.append('department_id', appliedFilters.department_id);
             }
-            if (filters.designation_id) {
-                formData.append('designation_id', filters.designation_id);
+            if (appliedFilters.designation_id) {
+                formData.append('designation_id', appliedFilters.designation_id);
             }
-            if (filters.employee_type_id) {
-                formData.append('employee_type_id', filters.employee_type_id);
+            if (appliedFilters.employee_type_id) {
+                formData.append('employee_type_id', appliedFilters.employee_type_id);
             }
-            if (filters.salary_type_id) {
-                formData.append('salary_type_id', filters.salary_type_id);
+            if (appliedFilters.salary_type_id) {
+                formData.append('salary_type_id', appliedFilters.salary_type_id);
             }
-            if (filters.gender_id) {
-                formData.append('gender_id', filters.gender_id);
+            if (appliedFilters.gender_id) {
+                formData.append('gender_id', appliedFilters.gender_id);
             }
-            if (filters.status_id) {
-                formData.append('status_id', filters.status_id);
+            if (appliedFilters.status_id) {
+                formData.append('status_id', appliedFilters.status_id);
             }
+            // ================================================
 
             const response = await api.post('employee_list', formData);
 
@@ -211,16 +308,13 @@ export default function Employee() {
                 // Calculate total pages based on response
                 const itemsCount = newEmployees.length;
                 if (itemsCount < ITEMS_PER_PAGE && page === 1) {
-                    // If we get less than 10 items on first page, that's all we have
                     setTotalPages(1);
                     setTotalEmployees(itemsCount);
                 } else if (itemsCount < ITEMS_PER_PAGE && page > 1) {
-                    // If we get less than 10 items on subsequent pages, this is the last page
                     setTotalPages(page);
                     setTotalEmployees((page - 1) * ITEMS_PER_PAGE + itemsCount);
                 } else {
-                    // If we get exactly 10 items, there might be more pages
-                    setTotalPages(page + 1); // We'll update this when we hit the last page
+                    setTotalPages(page + 1);
                     setTotalEmployees(page * ITEMS_PER_PAGE);
                 }
 
@@ -248,11 +342,11 @@ export default function Employee() {
             setPaginationLoading(false);
             setSearchLoading(false);
         }
-    }, [user, logout, searchQuery, filters]);
+    }, [user, logout, searchQuery, appliedFilters]);
 
-    // Handle filter changes
+    // Handle filter changes - ONLY updates tempFilters, NOT appliedFilters
     const handleFilterChange = useCallback((key, value) => {
-        setFilters(prev => {
+        setTempFilters(prev => {
             const next = { ...prev, [key]: value };
             // Reset dependent filters when parent filter changes
             if (key === 'branch_id') {
@@ -265,9 +359,16 @@ export default function Employee() {
         });
     }, []);
 
-    // Reset filters
+    // Apply filters - copies tempFilters to appliedFilters and closes popup
+    const applyFilters = useCallback(() => {
+        setAppliedFilters({ ...tempFilters });
+        setCurrentPage(1);
+        setFilterDropdown(false);
+    }, [tempFilters]);
+
+    // Reset filters - resets BOTH tempFilters and appliedFilters
     const resetFilters = useCallback(() => {
-        setFilters({
+        const emptyFilters = {
             branch_id: '',
             department_id: '',
             designation_id: '',
@@ -275,15 +376,26 @@ export default function Employee() {
             salary_type_id: '',
             gender_id: '',
             status_id: ''
-        });
+        };
+        setTempFilters(emptyFilters);
+        setAppliedFilters(emptyFilters);
         setCurrentPage(1);
     }, []);
+
+    // Open filter popup - sync tempFilters with appliedFilters
+    const openFilterDropdown = useCallback(() => {
+        setTempFilters({ ...appliedFilters });
+        setFilterDropdown(true);
+    }, [appliedFilters]);
+
+    const getActiveFiltersCount = useCallback(() => {
+        return Object.values(appliedFilters).filter((v) => v !== '').length;
+    }, [appliedFilters]);
 
     // Handle attendance type change
     const handleAttendanceTypeChange = useCallback(async (employeeId, newAttendanceType, attendanceTypeStatus) => {
         try {
             setAttendanceChangingIds(prev => new Set(prev.add(employeeId)));
-
 
             const formData = new FormData();
             formData.append('employee_id', employeeId.toString());
@@ -292,7 +404,6 @@ export default function Employee() {
                 'attendance_type_status',
                 attendanceTypeStatus.toString()
             );
-
 
             if (newAttendanceType === ATTENDANCE_TYPES.MOBILE) {
                 const employee = employees.find(emp => emp.employee_id === employeeId);
@@ -303,7 +414,6 @@ export default function Employee() {
             const response = await api.post('attendance_type_change', formData);
 
             if (response.data?.success) {
-                // Update the employee's attendance type in local state
                 setEmployees(prevEmployees =>
                     prevEmployees.map(emp =>
                         emp.employee_id === employeeId
@@ -312,7 +422,6 @@ export default function Employee() {
                     )
                 );
 
-                // Show success toast
                 const attendanceTypeText = newAttendanceType === ATTENDANCE_TYPES.BIOMETRIC ? 'Biometric' : 'Mobile';
                 showToast(`Attendance type updated to ${attendanceTypeText} successfully!`, 'success');
             } else {
@@ -322,8 +431,6 @@ export default function Employee() {
         } catch (error) {
             console.error("Attendance type change error:", error);
             const errorMessage = error.response?.data?.message || error.message || "Failed to update attendance type";
-
-            // Show error toast instead of alert
             showToast(errorMessage, 'error');
         } finally {
             setAttendanceChangingIds(prev => {
@@ -334,16 +441,22 @@ export default function Employee() {
         }
     }, [showToast, employees]);
 
-    // Debounced search functionality
+    // Debounced search functionality - ONLY depends on searchQuery, NOT on filters
     useEffect(() => {
         const delayDebounce = setTimeout(() => {
-            // Reset to page 1 when searching
             setCurrentPage(1);
             fetchEmployees(1, searchQuery);
-        }, 500); // Increased debounce time for API calls
+        }, 500);
 
         return () => clearTimeout(delayDebounce);
-    }, [searchQuery, filters]); // Added filters as dependency
+    }, [searchQuery]); // REMOVED filters from dependency
+
+    // Effect to fetch when appliedFilters change
+    useEffect(() => {
+        if (isAuthenticated() && user?.user_id) {
+            fetchEmployees(1, searchQuery, true);
+        }
+    }, [appliedFilters]); // Fetch when appliedFilters change
 
     // Initial load and fetch dropdown data
     useEffect(() => {
@@ -421,11 +534,9 @@ export default function Employee() {
         const isMobile = currentType === ATTENDANCE_TYPES.MOBILE;
         const isBiometric = currentType === ATTENDANCE_TYPES.BIOMETRIC;
 
-        // Check if user has permission to change attendance type
         const hasPermission = permissions['attendance_type_change'];
 
         if (!hasPermission) {
-            // Read-only display - show only active type
             return (
                 <div className="flex items-center justify-center">
                     {isMobile ? (
@@ -443,7 +554,6 @@ export default function Employee() {
             );
         }
         const isInactive = employee.status === 2 || employee.status === '2';
-        // Interactive toggle for users with permission
         return (
             <div className="flex items-center justify-center relative">
                 <div className="flex items-center">
@@ -471,7 +581,6 @@ export default function Employee() {
                             }`}
                         title={isInactive ? 'Attendance type cannot be changed for inactive employees' : ''}
                     >
-                        {/* Toggle Circle with Icon */}
                         <span
                             className={`inline-block h-6 w-6 rounded-full bg-[var(--color-bg-secondary)] shadow-lg transform transition-all duration-300 ease-in-out flex items-center justify-center ${isBiometric ? 'translate-x-7' : 'translate-x-0.5'
                                 }`}
@@ -484,7 +593,6 @@ export default function Employee() {
                         </span>
                     </label>
 
-                    {/* Active Type Label */}
                     <div className="ml-3 flex items-center">
                         <span className={`text-sm font-medium ${isBiometric ? 'text-[var(--color-text-success)]' : 'text-[var(--color-text-primary)]'
                             }`}>
@@ -493,7 +601,6 @@ export default function Employee() {
                     </div>
                 </div>
 
-                {/* Loading overlay */}
                 {isChanging && (
                     <div className="absolute inset-0 flex items-center justify-center bg-[var(--color-bg-secondary)]/80 rounded-lg">
                         <RefreshCw className="w-4 h-4 animate-spin text-[var(--color-primary-dark)]" />
@@ -530,7 +637,6 @@ export default function Employee() {
             }
         } catch (error) {
             console.error("Location type change error:", error);
-            // Even if API fails, we update local state for UI demonstration if it's just "design"
             setEmployees(prevEmployees =>
                 prevEmployees.map(emp =>
                     emp.employee_id === employeeId
@@ -558,7 +664,7 @@ export default function Employee() {
 
         const isMobile = attendanceType === ATTENDANCE_TYPES.MOBILE;
         const isInactive = employee.status === 2 || employee.status === '2';
-        const hasPermission = permissions['attendance_type_change']; // Reuse this permission for now
+        const hasPermission = permissions['attendance_type_change'];
 
         if (!hasPermission) {
             return (
@@ -658,155 +764,12 @@ export default function Employee() {
                 />
             )}
 
-            <div className="p-8  mx-auto ">
-
-
-                {/* Filters - Collapsible */}
-                {showFilters && (
-                    <div className="bg-[var(--color-bg-card)] rounded-lg shadow-[var(--color-shadow-light)] border border-[var(--color-border-secondary)] p-5 mb-6">
-                        <div className="flex items-center justify-between mb-4">
-                            <div className="flex items-center gap-3">
-                                <div className="p-2 bg-[var(--color-primary-lightest)] rounded-lg">
-                                    <Filter className="h-5 w-5 text-[var(--color-primary)]" />
-                                </div>
-                                <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">Filters</h2>
-                            </div>
-                            <button
-                                onClick={resetFilters}
-                                className="flex items-center gap-2 px-4 py-2 bg-[var(--color-bg-secondary)] text-[var(--color-text-secondary)] rounded-lg hover:bg-[var(--color-bg-hover)] transition-colors duration-200"
-                            >
-                                <RefreshCw className="h-4 w-4" />
-                                Reset
-                            </button>
-                        </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
-                            {/* Branch */}
-                            <div className="flex flex-col">
-                                <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
-                                    <Building className="inline h-4 w-4 mr-1" />
-                                    Branch
-                                </label>
-                                <select
-                                    value={filters.branch_id}
-                                    onChange={(e) => handleFilterChange('branch_id', e.target.value)}
-                                    className="w-full px-3 py-2 bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent text-[var(--color-text-primary)]"
-                                    disabled={dropdownLoading}
-                                >
-                                    <option value="">All Branches</option>
-                                    {branches.map(b => <option key={b.id} value={b.id}>{b.name}</option>)}
-                                </select>
-                            </div>
-
-                            {/* Department */}
-                            <div className="flex flex-col">
-                                <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
-                                    <Users className="inline h-4 w-4 mr-1" />
-                                    Department
-                                </label>
-                                <select
-                                    value={filters.department_id}
-                                    onChange={(e) => handleFilterChange('department_id', e.target.value)}
-                                    className="w-full px-3 py-2 bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent text-[var(--color-text-primary)]"
-                                    disabled={dropdownLoading}
-                                >
-                                    <option value="">All Departments</option>
-                                    {departments.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
-                                </select>
-                            </div>
-
-                            {/* Designation */}
-                            <div className="flex flex-col">
-                                <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
-                                    <Award className="inline h-4 w-4 mr-1" />
-                                    Designation
-                                </label>
-                                <select
-                                    value={filters.designation_id}
-                                    onChange={(e) => handleFilterChange('designation_id', e.target.value)}
-                                    className="w-full px-3 py-2 bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent text-[var(--color-text-primary)]"
-                                    disabled={dropdownLoading}
-                                >
-                                    <option value="">All Designations</option>
-                                    {designations.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
-                                </select>
-                            </div>
-
-                            {/* Employee Type */}
-                            <div className="flex flex-col">
-                                <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
-                                    <UserCheck className="inline h-4 w-4 mr-1" />
-                                    Employee Type
-                                </label>
-                                <select
-                                    value={filters.employee_type_id}
-                                    onChange={(e) => handleFilterChange('employee_type_id', e.target.value)}
-                                    className="w-full px-3 py-2 bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent text-[var(--color-text-primary)]"
-                                    disabled={dropdownLoading}
-                                >
-                                    <option value="">All Employee Types</option>
-                                    {employeeTypes.map(et => <option key={et.id} value={et.id}>{et.name}</option>)}
-                                </select>
-                            </div>
-
-                            {/* Salary Type */}
-                            <div className="flex flex-col">
-                                <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
-                                    <DollarSign className="inline h-4 w-4 mr-1" />
-                                    Salary Type
-                                </label>
-                                <select
-                                    value={filters.salary_type_id}
-                                    onChange={(e) => handleFilterChange('salary_type_id', e.target.value)}
-                                    className="w-full px-3 py-2 bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent text-[var(--color-text-primary)]"
-                                    disabled={dropdownLoading}
-                                >
-                                    <option value="">All Salary Types</option>
-                                    {salaryTypes.map(st => <option key={st.id} value={st.id}>{st.name}</option>)}
-                                </select>
-                            </div>
-
-                            {/* Gender */}
-                            <div className="flex flex-col">
-                                <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
-                                    <UserCircle className="inline h-4 w-4 mr-1" />
-                                    Gender
-                                </label>
-                                <select
-                                    value={filters.gender_id}
-                                    onChange={(e) => handleFilterChange('gender_id', e.target.value)}
-                                    className="w-full px-3 py-2 bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent text-[var(--color-text-primary)]"
-                                    disabled={dropdownLoading}
-                                >
-                                    <option value="">All Genders</option>
-                                    {genders.map(g => <option key={g.id} value={g.id}>{g.name}</option>)}
-                                </select>
-                            </div>
-
-                            {/* Status */}
-                            <div className="flex flex-col">
-                                <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
-                                    <CheckCircle className="inline h-4 w-4 mr-1" />
-                                    Status
-                                </label>
-                                <select
-                                    value={filters.status_id}
-                                    onChange={(e) => handleFilterChange('status_id', e.target.value)}
-                                    className="w-full px-3 py-2 bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent text-[var(--color-text-primary)]"
-                                    disabled={dropdownLoading}
-                                >
-                                    <option value="">All Status</option>
-                                    {status.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                )}
+            <div className="p-8 mx-auto">
 
                 <div className="bg-[var(--color-bg-secondary)] rounded-lg border border-[var(--color-primary-dark)] overflow-hidden shadow-sm">
                     {/* Header section */}
-                    <div className="px-6 py-4 border-b border-[var(--color-primary-light)] bg-[var(--color-primary-lighter)] ">
-                        <div className="flex justify-between items-center">
+                    <div className="px-6 py-4 border-b border-[var(--color-primary-light)] bg-[var(--color-primary-lighter)]">
+                        <div className="flex justify-between items-center flex-wrap gap-3">
                             <div className="flex items-center">
                                 <Users className="h-6 w-6 text-[var(--color-primary-darker)] mr-2" />
                                 <h3 className="text-lg font-medium text-[var(--color-primary-darker)]">
@@ -814,7 +777,7 @@ export default function Employee() {
                                 </h3>
                             </div>
 
-                            <div className="flex items-center gap-3">
+                            <div className="flex items-center gap-3 flex-wrap">
                                 <div className="relative w-full sm:w-64">
                                     <input
                                         type="text"
@@ -834,13 +797,410 @@ export default function Employee() {
                                     )}
                                 </div>
 
-                                <button
-                                    onClick={() => setShowFilters(!showFilters)}
-                                    className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-md text-sm font-medium transition-colors"
-                                >
-                                    <Filter className="h-4 w-4" />
-                                    Filters
-                                </button>
+                                {/* Filter button with popup */}
+                                <div className="relative">
+                                    <button
+                                        ref={filterBtnRef}
+                                        onClick={() => {
+                                            if (!filterDropdown) {
+                                                openFilterDropdown();
+                                            } else {
+                                                setFilterDropdown(false);
+                                            }
+                                        }}
+                                        className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-md text-sm font-medium transition-colors"
+                                    >
+                                        <Filter className="h-4 w-4" />
+                                        Filters
+                                        {getActiveFiltersCount() > 0 && (
+                                            <span className="bg-[var(--color-primary-dark)] text-white text-xs rounded-full px-2 py-0.5">
+                                                {getActiveFiltersCount()}
+                                            </span>
+                                        )}
+                                        <ChevronDown className="h-4 w-4" />
+                                    </button>
+
+                                    {filterDropdown && createPortal(
+                                        <>
+                                            {/* Overlay backdrop */}
+                                            <div
+                                                className="fixed inset-0 z-[100] bg-black/40"
+                                                onClick={() => setFilterDropdown(false)}
+                                            />
+                                            {/* Desktop popup */}
+                                            <div
+                                                className="hidden sm:flex flex-col absolute z-[110] bg-[var(--color-bg-secondary)] rounded-lg shadow-2xl border border-[var(--color-border-secondary)] max-h-[80vh]"
+                                                style={{
+                                                    position: 'absolute',
+                                                    top: filterPos.ready ? filterPos.top : -9999,
+                                                    left: filterPos.ready ? Math.max(12, filterPos.left) : -9999,
+                                                    width: Math.max(520, filterPos.width),
+                                                    minWidth: 520
+                                                }}
+                                            >
+                                                {/* Popup header */}
+                                                <div className="flex items-center justify-between p-4 border-b border-[var(--color-border-secondary)]">
+                                                    <div className="flex items-center gap-3">
+                                                        <div className="p-2 bg-[var(--color-primary-lightest)] rounded-lg">
+                                                            <Filter className="h-5 w-5 text-[var(--color-primary)]" />
+                                                        </div>
+                                                        <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">Filters</h2>
+                                                    </div>
+                                                    <button
+                                                        onClick={() => setFilterDropdown(false)}
+                                                        className="text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] p-1 rounded-lg hover:bg-[var(--color-bg-hover)]"
+                                                    >
+                                                        <X className="h-4 w-4" />
+                                                    </button>
+                                                </div>
+
+                                                {/* Popup body */}
+                                                <div className="flex-1 overflow-y-auto p-4">
+                                                    {dropdownLoading && (
+                                                        <div className="flex items-center gap-2 mb-4 text-[var(--color-text-secondary)]">
+                                                            <RefreshCw className="h-4 w-4 animate-spin" />
+                                                            <span className="text-sm">Loading filter options...</span>
+                                                        </div>
+                                                    )}
+
+                                                    <div className="grid grid-cols-2 gap-4">
+                                                        {/* Branch */}
+                                                        <div>
+                                                            <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                                <Building className="inline h-4 w-4 mr-1" />
+                                                                Branch
+                                                            </label>
+                                                            <CustomSelect
+                                                                name="branch_id"
+                                                                value={tempFilters.branch_id}
+                                                                onChange={(e) => handleFilterChange('branch_id', e.target.value)}
+                                                                options={branches.map((b) => ({
+                                                                    value: b.id,
+                                                                    label: b.name,
+                                                                }))}
+                                                                placeholder="All Branches"
+                                                                searchable={true}
+                                                                disabled={dropdownLoading}
+                                                            />
+                                                        </div>
+
+                                                        {/* Department */}
+                                                        <div>
+                                                            <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                                <Users className="inline h-4 w-4 mr-1" />
+                                                                Department
+                                                            </label>
+                                                            <CustomSelect
+                                                                name="department_id"
+                                                                value={tempFilters.department_id}
+                                                                onChange={(e) => handleFilterChange('department_id', e.target.value)}
+                                                                options={departments.map((d) => ({
+                                                                    value: d.id,
+                                                                    label: d.name,
+                                                                }))}
+                                                                placeholder="All Departments"
+                                                                searchable={true}
+                                                                disabled={dropdownLoading}
+                                                            />
+                                                        </div>
+
+                                                        {/* Designation */}
+                                                        <div>
+                                                            <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                                <Award className="inline h-4 w-4 mr-1" />
+                                                                Designation
+                                                            </label>
+                                                            <CustomSelect
+                                                                name="designation_id"
+                                                                value={tempFilters.designation_id}
+                                                                onChange={(e) => handleFilterChange('designation_id', e.target.value)}
+                                                                options={designations.map((d) => ({
+                                                                    value: d.id,
+                                                                    label: d.name,
+                                                                }))}
+                                                                placeholder="All Designations"
+                                                                searchable={true}
+                                                                disabled={dropdownLoading}
+                                                            />
+                                                        </div>
+
+                                                        {/* Employee Type */}
+                                                        <div>
+                                                            <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                                <UserCheck className="inline h-4 w-4 mr-1" />
+                                                                Employee Type
+                                                            </label>
+                                                            <CustomSelect
+                                                                name="employee_type_id"
+                                                                value={tempFilters.employee_type_id}
+                                                                onChange={(e) => handleFilterChange('employee_type_id', e.target.value)}
+                                                                options={employeeTypes.map((et) => ({
+                                                                    value: et.id,
+                                                                    label: et.name,
+                                                                }))}
+                                                                placeholder="All Employee Types"
+                                                                searchable={true}
+                                                                disabled={dropdownLoading}
+                                                            />
+                                                        </div>
+
+                                                        {/* Salary Type */}
+                                                        <div>
+                                                            <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                                <DollarSign className="inline h-4 w-4 mr-1" />
+                                                                Salary Type
+                                                            </label>
+                                                            <CustomSelect
+                                                                name="salary_type_id"
+                                                                value={tempFilters.salary_type_id}
+                                                                onChange={(e) => handleFilterChange('salary_type_id', e.target.value)}
+                                                                options={salaryTypes.map((st) => ({
+                                                                    value: st.id,
+                                                                    label: st.name,
+                                                                }))}
+                                                                placeholder="All Salary Types"
+                                                                searchable={true}
+                                                                disabled={dropdownLoading}
+                                                            />
+                                                        </div>
+
+                                                        {/* Gender */}
+                                                        <div>
+                                                            <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                                <UserCircle className="inline h-4 w-4 mr-1" />
+                                                                Gender
+                                                            </label>
+                                                            <CustomSelect
+                                                                name="gender_id"
+                                                                value={tempFilters.gender_id}
+                                                                onChange={(e) => handleFilterChange('gender_id', e.target.value)}
+                                                                options={genders.map((g) => ({
+                                                                    value: g.id,
+                                                                    label: g.name,
+                                                                }))}
+                                                                placeholder="All Genders"
+                                                                searchable={true}
+                                                                disabled={dropdownLoading}
+                                                            />
+                                                        </div>
+
+                                                        {/* Status */}
+                                                        <div className="col-span-2">
+                                                            <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                                <CheckCircle className="inline h-4 w-4 mr-1" />
+                                                                Status
+                                                            </label>
+                                                            <CustomSelect
+                                                                name="status_id"
+                                                                value={tempFilters.status_id}
+                                                                onChange={(e) => handleFilterChange('status_id', e.target.value)}
+                                                                options={status.map((s) => ({
+                                                                    value: s.id,
+                                                                    label: s.name,
+                                                                }))}
+                                                                placeholder="All Status"
+                                                                searchable={true}
+                                                                disabled={dropdownLoading}
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                {/* Popup footer */}
+                                                <div className="flex gap-2 p-4 border-t border-[var(--color-border-secondary)]">
+                                                    <button
+                                                        onClick={applyFilters}
+                                                        className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-[var(--color-primary-dark)] text-[var(--color-text-white)] rounded-lg hover:bg-[var(--color-primary-darker)] transition-colors text-sm font-medium"
+                                                    >
+                                                        <Filter className="h-4 w-4" /> Apply Filters
+                                                    </button>
+                                                    <button
+                                                        onClick={() => { resetFilters(); setFilterDropdown(false); }}
+                                                        className="flex items-center justify-center gap-2 px-4 py-2 bg-[var(--color-bg-gray-light)] text-[var(--color-text-secondary)] rounded-lg hover:bg-[var(--color-bg-hover)] transition-colors text-sm font-medium min-w-[90px]"
+                                                    >
+                                                        <RefreshCw className="h-4 w-4" /> Reset
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                            {/* Mobile popup */}
+                                            <div className="sm:hidden fixed inset-0 z-[110] flex">
+                                                <div className="ml-auto h-full w-full bg-[var(--color-bg-secondary)] flex flex-col">
+                                                    <div className="flex items-center justify-between p-4 border-b border-[var(--color-border-secondary)]">
+                                                        <div className="flex items-center gap-3">
+                                                            <div className="p-2 bg-[var(--color-primary-lightest)] rounded-lg">
+                                                                <Filter className="h-5 w-5 text-[var(--color-primary)]" />
+                                                            </div>
+                                                            <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">Filters</h2>
+                                                        </div>
+                                                        <button
+                                                            onClick={() => setFilterDropdown(false)}
+                                                            className="text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] p-1 rounded-lg hover:bg-[var(--color-bg-hover)]"
+                                                        >
+                                                            <X className="h-5 w-5" />
+                                                        </button>
+                                                    </div>
+                                                    <div className="flex-1 overflow-y-auto p-4 grid grid-cols-1 gap-4">
+                                                        {/* Branch */}
+                                                        <div>
+                                                            <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                                <Building className="inline h-4 w-4 mr-1" />
+                                                                Branch
+                                                            </label>
+                                                            <CustomSelect
+                                                                name="branch_id"
+                                                                value={tempFilters.branch_id}
+                                                                onChange={(e) => handleFilterChange('branch_id', e.target.value)}
+                                                                options={branches.map((b) => ({
+                                                                    value: b.id,
+                                                                    label: b.name,
+                                                                }))}
+                                                                placeholder="All Branches"
+                                                                searchable={true}
+                                                                disabled={dropdownLoading}
+                                                            />
+                                                        </div>
+
+                                                        {/* Department */}
+                                                        <div>
+                                                            <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                                <Users className="inline h-4 w-4 mr-1" />
+                                                                Department
+                                                            </label>
+                                                            <CustomSelect
+                                                                name="department_id"
+                                                                value={tempFilters.department_id}
+                                                                onChange={(e) => handleFilterChange('department_id', e.target.value)}
+                                                                options={departments.map((d) => ({
+                                                                    value: d.id,
+                                                                    label: d.name,
+                                                                }))}
+                                                                placeholder="All Departments"
+                                                                searchable={true}
+                                                                disabled={dropdownLoading}
+                                                            />
+                                                        </div>
+
+                                                        {/* Designation */}
+                                                        <div>
+                                                            <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                                <Award className="inline h-4 w-4 mr-1" />
+                                                                Designation
+                                                            </label>
+                                                            <CustomSelect
+                                                                name="designation_id"
+                                                                value={tempFilters.designation_id}
+                                                                onChange={(e) => handleFilterChange('designation_id', e.target.value)}
+                                                                options={designations.map((d) => ({
+                                                                    value: d.id,
+                                                                    label: d.name,
+                                                                }))}
+                                                                placeholder="All Designations"
+                                                                searchable={true}
+                                                                disabled={dropdownLoading}
+                                                            />
+                                                        </div>
+
+                                                        {/* Employee Type */}
+                                                        <div>
+                                                            <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                                <UserCheck className="inline h-4 w-4 mr-1" />
+                                                                Employee Type
+                                                            </label>
+                                                            <CustomSelect
+                                                                name="employee_type_id"
+                                                                value={tempFilters.employee_type_id}
+                                                                onChange={(e) => handleFilterChange('employee_type_id', e.target.value)}
+                                                                options={employeeTypes.map((et) => ({
+                                                                    value: et.id,
+                                                                    label: et.name,
+                                                                }))}
+                                                                placeholder="All Employee Types"
+                                                                searchable={true}
+                                                                disabled={dropdownLoading}
+                                                            />
+                                                        </div>
+
+                                                        {/* Salary Type */}
+                                                        <div>
+                                                            <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                                <DollarSign className="inline h-4 w-4 mr-1" />
+                                                                Salary Type
+                                                            </label>
+                                                            <CustomSelect
+                                                                name="salary_type_id"
+                                                                value={tempFilters.salary_type_id}
+                                                                onChange={(e) => handleFilterChange('salary_type_id', e.target.value)}
+                                                                options={salaryTypes.map((st) => ({
+                                                                    value: st.id,
+                                                                    label: st.name,
+                                                                }))}
+                                                                placeholder="All Salary Types"
+                                                                searchable={true}
+                                                                disabled={dropdownLoading}
+                                                            />
+                                                        </div>
+
+                                                        {/* Gender */}
+                                                        <div>
+                                                            <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                                <UserCircle className="inline h-4 w-4 mr-1" />
+                                                                Gender
+                                                            </label>
+                                                            <CustomSelect
+                                                                name="gender_id"
+                                                                value={tempFilters.gender_id}
+                                                                onChange={(e) => handleFilterChange('gender_id', e.target.value)}
+                                                                options={genders.map((g) => ({
+                                                                    value: g.id,
+                                                                    label: g.name,
+                                                                }))}
+                                                                placeholder="All Genders"
+                                                                searchable={true}
+                                                                disabled={dropdownLoading}
+                                                            />
+                                                        </div>
+
+                                                        {/* Status */}
+                                                        <div>
+                                                            <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                                <CheckCircle className="inline h-4 w-4 mr-1" />
+                                                                Status
+                                                            </label>
+                                                            <CustomSelect
+                                                                name="status_id"
+                                                                value={tempFilters.status_id}
+                                                                onChange={(e) => handleFilterChange('status_id', e.target.value)}
+                                                                options={status.map((s) => ({
+                                                                    value: s.id,
+                                                                    label: s.name,
+                                                                }))}
+                                                                placeholder="All Status"
+                                                                searchable={true}
+                                                                disabled={dropdownLoading}
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                    <div className="p-4 border-t border-[var(--color-border-secondary)] grid grid-cols-1 gap-2">
+                                                        <button
+                                                            onClick={applyFilters}
+                                                            className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-[var(--color-primary-dark)] text-[var(--color-text-white)] rounded-lg hover:bg-[var(--color-primary-darker)] transition-colors text-sm font-medium"
+                                                        >
+                                                            <Filter className="h-4 w-4" /> Apply Filters
+                                                        </button>
+                                                        <button
+                                                            onClick={() => { resetFilters(); setFilterDropdown(false); }}
+                                                            className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-[var(--color-bg-gray-light)] text-[var(--color-text-secondary)] rounded-lg hover:bg-[var(--color-bg-hover)] transition-colors text-sm font-medium"
+                                                        >
+                                                            Reset
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </>,
+                                        document.body
+                                    )}
+                                </div>
 
                                 {permissions['employee_create'] && (
                                     <button
@@ -915,54 +1275,58 @@ export default function Employee() {
                         <>
                             {/* Table */}
                             <div className="overflow-hidden">
-                                <table className="w-full">
-                                    <thead className="bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)]">
-                                        <tr>
+                                <Table>
+                                    <TableHeader>
+                                        <TableHeaderRow>
                                             {[
                                                 { key: COLUMN_KEYS.NAME, label: 'Full Name', width: 'w-[14%]' },
                                                 { key: COLUMN_KEYS.ID, label: 'Employee ID', width: 'w-[8%]' },
                                                 { key: COLUMN_KEYS.DEPARTMENT, label: 'Department', width: 'w-[9%]' },
                                                 { key: COLUMN_KEYS.DESIGNATION, label: 'Designation', width: 'w-[9%]' },
                                             ].map(({ key, label, width }) => (
-                                                <th key={`header-${key}`} className={`${width} px-3 py-4 text-center`}>
-                                                    <button
-                                                        className="flex items-center justify-center w-full text-xs font-semibold text-white uppercase tracking-wider hover:text-gray-200 transition-colors"
-                                                        onClick={() => requestSort(key)}
-                                                    >
+                                                <Th
+                                                    key={`header-${key}`}
+                                                    className={`${width} text-center`}
+                                                    onClick={() => requestSort(key)}
+                                                >
+                                                    <div className="flex items-center justify-center w-full">
                                                         {label}
                                                         {renderSortIcon(key)}
-                                                    </button>
-                                                </th>
+                                                    </div>
+                                                </Th>
                                             ))}
-                                            <th className="w-[15%] px-3 py-4 text-center text-xs font-semibold text-white uppercase tracking-wider">
+
+                                            <Th className="w-[15%] text-center">
                                                 Email
-                                            </th>
-                                            <th className="w-[10%] px-3 py-4 text-center text-xs font-semibold text-white uppercase tracking-wider">
+                                            </Th>
+
+                                            <Th className="w-[10%] text-center">
                                                 Mobile
-                                            </th>
-                                            {/* Attendance Permission Column */}
-                                            <th className="w-[15%] px-3 py-4 text-center">
-                                                <button
-                                                    className="flex items-center justify-center w-full text-xs font-semibold text-white uppercase tracking-wider hover:text-gray-200 transition-colors"
-                                                    onClick={() => requestSort(COLUMN_KEYS.ATTENDANCE_TYPE)}
-                                                >
+                                            </Th>
+
+                                            <Th
+                                                className="w-[15%] text-center"
+                                                onClick={() => requestSort(COLUMN_KEYS.ATTENDANCE_TYPE)}
+                                            >
+                                                <div className="flex items-center justify-center w-full">
                                                     Attendance Permission
                                                     {renderSortIcon(COLUMN_KEYS.ATTENDANCE_TYPE)}
-                                                </button>
-                                            </th>
-                                            {/* Location Permission Column */}
-                                            <th className="w-[15%] px-3 py-4 text-center text-xs font-semibold text-white uppercase tracking-wider">
+                                                </div>
+                                            </Th>
+
+                                            <Th className="w-[15%] text-center">
                                                 Location Permission
-                                            </th>
+                                            </Th>
+
                                             {(permissions?.employee_edit || permissions?.employee_view) && (
-                                                <th className="w-[5%] px-3 py-4 text-center text-xs font-semibold text-white uppercase tracking-wider">
+                                                <Th className="w-[5%] text-center">
                                                     Actions
-                                                </th>
+                                                </Th>
                                             )}
-                                        </tr>
-                                    </thead>
-                                    <tbody className="bg-[var(--color-bg-secondary)] divide-y divide-[var(--color-border-divider)]">
-                                        {/* Render actual employee rows */}
+                                        </TableHeaderRow>
+                                    </TableHeader>
+
+                                    <TableBody>
                                         {sortedEmployees.map((employee, index) => {
                                             const employeeId = employee.employee_id || `employee-${index}`;
                                             const truncatedName = truncateText(employee.full_name, 15);
@@ -970,20 +1334,23 @@ export default function Employee() {
                                             const truncatedDesignation = truncateText(employee.designation_name, 10);
 
                                             return (
-                                                <tr
+                                                <TableRow
                                                     key={`emp-${employeeId}`}
-                                                    className={`h-[60px] hover:bg-[var(--color-primary-lightest)] transition-colors border-b border-[var(--color-border-divider)] ${(paginationLoading || searchLoading) ? 'opacity-50' : ''}`}
+                                                    className={`${(paginationLoading || searchLoading)
+                                                        ? 'opacity-50'
+                                                        : ''
+                                                        }`}
                                                 >
-
                                                     {/* Full Name */}
-                                                    <td className="px-3 py-4 text-center">
+                                                    <Td className="text-center">
                                                         <div className="flex items-center justify-start gap-3">
                                                             <div className="flex-shrink-0 h-10 w-10 relative">
                                                                 <div className="h-10 w-10 rounded-full bg-[var(--color-primary-dark)] flex items-center justify-center">
-                                                                    <span className="text-sm font-medium text-[var(--color-text-white)]">
+                                                                    <span className="text-sm font-medium text-white">
                                                                         {employee.full_name?.charAt(0) || 'N'}
                                                                     </span>
                                                                 </div>
+
                                                                 <div
                                                                     className={`absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-white ${employee.status_id === 1 || employee.status_id === '1'
                                                                         ? 'bg-green-500'
@@ -991,123 +1358,101 @@ export default function Employee() {
                                                                             ? 'bg-red-500'
                                                                             : 'bg-green-400'
                                                                         }`}
-                                                                    title={
-                                                                        employee.status === 1 || employee.status === '1'
-                                                                            ? 'Active'
-                                                                            : employee.status === 2 || employee.status === '2'
-                                                                                ? 'Inactive'
-                                                                                : 'Unknown'
-                                                                    }
                                                                 />
                                                             </div>
+
                                                             <div
-                                                                className="text-sm font-medium text-[var(--color-text-primary)] cursor-help truncate max-w-[120px]"
+                                                                className="text-sm font-medium cursor-help truncate max-w-[120px]"
                                                                 title={employee.full_name}
                                                             >
                                                                 {truncatedName || '--'}
                                                             </div>
                                                         </div>
-                                                    </td>
+                                                    </Td>
 
-                                                    <td className="px-3 py-4 text-center">
-                                                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium text-[var(--color-text-primary)]">
+                                                    {/* Employee ID */}
+                                                    <Td className="text-center">
+                                                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium">
                                                             {employee.employee_code || '-'}
                                                         </span>
-                                                    </td>
+                                                    </Td>
 
                                                     {/* Department */}
-                                                    <td className="px-3 py-4 text-center">
-                                                        <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium  text-[var(--color-text-success)] max-w-[90px] truncate">
+                                                    <Td className="text-center">
+                                                        <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium max-w-[90px] truncate">
                                                             {truncatedDepartment}
                                                         </span>
-                                                    </td>
+                                                    </Td>
 
                                                     {/* Designation */}
-                                                    <td className="px-3 py-4 text-center">
-                                                        <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium text-[var(--color-text-primary)] max-w-[90px] truncate">
+                                                    <Td className="text-center">
+                                                        <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium max-w-[90px] truncate">
                                                             {truncatedDesignation}
                                                         </span>
-                                                    </td>
+                                                    </Td>
 
                                                     {/* Email */}
-                                                    <td className="px-3 py-4 text-center">
-                                                        <div className="text-sm text-[var(--color-text-secondary)] truncate max-w-[160px] mx-auto" title={employee.email}>
+                                                    <Td className="text-center">
+                                                        <div
+                                                            className="text-sm truncate max-w-[160px] mx-auto"
+                                                            title={employee.email}
+                                                        >
                                                             {employee.email || '--'}
                                                         </div>
-                                                    </td>
+                                                    </Td>
 
                                                     {/* Mobile */}
-                                                    <td className="px-3 py-4 text-center">
-                                                        <div className="text-sm font-mono text-[var(--color-text-primary)]">
+                                                    <Td className="text-center">
+                                                        <div className="text-sm font-mono">
                                                             {employee.mobile_number || '--'}
                                                         </div>
-                                                    </td>
+                                                    </Td>
 
-                                                    {/* Attendance Permission */}
-                                                    <td className="px-2 py-4 text-center">
+                                                    {/* Attendance */}
+                                                    <Td className="text-center">
                                                         {renderAttendanceTypeDisplay(employee)}
-                                                    </td>
+                                                    </Td>
 
-                                                    {/* Location Permission */}
-                                                    <td className="px-2 py-4 text-center">
+                                                    {/* Location */}
+                                                    <Td className="text-center">
                                                         {renderLocationPermissionDisplay(employee)}
-                                                    </td>
+                                                    </Td>
 
                                                     {/* Actions */}
                                                     {(permissions?.employee_edit || permissions?.employee_view) && (
-                                                        <td className="px-3 py-4 text-center">
+                                                        <Td className="text-center">
                                                             <div className="flex justify-center space-x-1">
+
                                                                 {permissions['employee_edit'] && (
                                                                     <button
                                                                         onClick={() => handleEditEmployee(employee.employee_id)}
                                                                         disabled={paginationLoading || searchLoading}
                                                                         className="w-9 h-9 flex items-center justify-center rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-100 hover:scale-110 hover:shadow-md transition-all duration-200 disabled:opacity-50"
-                                                                        title="Edit Employee"
                                                                     >
                                                                         <Edit className="w-4 h-4" strokeWidth={2.5} />
                                                                     </button>
                                                                 )}
+
                                                                 {permissions['employee_view'] && (
                                                                     <button
                                                                         onClick={() => handleViewDetails(employee.employee_id)}
                                                                         disabled={paginationLoading || searchLoading}
                                                                         className="w-9 h-9 flex items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 hover:bg-emerald-100 hover:scale-110 hover:shadow-md transition-all duration-200 disabled:opacity-50"
-                                                                        title="View Details"
                                                                     >
                                                                         <Eye className="w-4 h-4" strokeWidth={2.5} />
                                                                     </button>
                                                                 )}
+
                                                             </div>
-                                                        </td>
+                                                        </Td>
                                                     )}
-                                                </tr>
+
+                                                </TableRow>
                                             );
                                         })}
 
-                                        {/* Fill empty rows to maintain consistent height for 10 rows */}
-                                        {Array.from({ length: Math.max(0, ITEMS_PER_PAGE - sortedEmployees.length) }).map((_, index) => (
-                                            <tr key={`empty-${index}`} className="h-[60px] border-b border-[var(--color-border-divider)]">
-                                                <td className="px-3 py-4 text-center">&nbsp;</td>
-                                                <td className="px-3 py-4 text-center">&nbsp;</td>
-                                                <td className="px-3 py-4 text-center">&nbsp;</td>
-                                                <td className="px-3 py-4 text-center">&nbsp;</td>
-                                                <td className="px-3 py-4 text-center">&nbsp;</td>
-                                                <td className="px-3 py-4 text-center">&nbsp;</td>
-                                                <td className="px-3 py-4 text-center">&nbsp;</td>
-                                                <td className="px-3 py-4 text-center">&nbsp;</td>
-                                                <td className="px-3 py-4 text-center">&nbsp;</td>
-                                                <td className="px-3 py-4 text-center">&nbsp;</td>
-                                                <td className="px-3 py-4 text-center">&nbsp;</td>
-                                                <td className="px-3 py-4 text-center">&nbsp;</td>
-                                                <td className="px-3 py-4 text-center">&nbsp;</td>
-                                                <td className="px-3 py-4 text-center">&nbsp;</td>
-                                                {(permissions?.employee_edit || permissions?.employee_view) && (
-                                                    <td className="px-3 py-4 text-center">&nbsp;</td>
-                                                )}
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
+                                    </TableBody>
+                                </Table>
                             </div>
 
                             {/* Pagination Component */}

@@ -15,6 +15,7 @@ import Pagination from '../../Components/Pagination';
 import { Toast } from '../../Components/ui/Toast';
 import { exportPaySalaryToPDF } from '../../utils/exportUtils/salary/pdfExportPayMonthlySalary';
 import { exportPaySalaryToExcel } from '../../utils/exportUtils/salary/excelExportPayMonthlySalary';
+import CustomSelect from '../../Components/comman/CustomSelect';
 
 /** ─── Anchored position helpers ─────────────────────────────────────────── **/
 const getScrollParents = (node) => {
@@ -447,15 +448,15 @@ const PayMonthlySalaryReport = () => {
             <div className="p-8  mx-auto">
                 {/* Header */}
                 <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-xl mb-8 overflow-hidden">
-                    <div className="bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] p-8">
+                    <div className="bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] p-6">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-4">
-                                <button onClick={() => navigate('/reports')} className="flex items-center gap-2 text-[var(--color-text-white)] transition-colors bg-[var(--color-bg-secondary-20)] hover:bg-[var(--color-bg-secondary-30)] px-4 py-2 rounded-lg backdrop-blur-sm">
-                                    <ArrowLeft size={18} /> Back
+                                <button onClick={() => navigate('/reports')} className="flex items-center gap-2 text-[var(--color-text-white)] transition-colors bg-[var(--color-bg-secondary-20)] hover:bg-[var(--color-bg-secondary-30)] px-2 py-2 rounded-lg backdrop-blur-sm">
+                                    <ArrowLeft size={18} />
                                 </button>
                                 <div>
                                     <h1 className="text-2xl font-bold text-[var(--color-text-white)]">Paid Salary Report</h1>
-                                    <p className="text-sm text-white/70 mt-0.5">Detailed salary breakdown with allowances, deductions, loans & payments</p>
+                                    {/* <p className="text-sm text-white/70 mt-0.5">Detailed salary breakdown with allowances, deductions, loans & payments</p> */}
                                 </div>
                             </div>
                             <div className="relative">
@@ -512,35 +513,83 @@ const PayMonthlySalaryReport = () => {
                         </div>
                         <div className="flex flex-col">
                             <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-2"><Building className="inline h-4 w-4 mr-1" />Branch</label>
-                            <select value={filters.branch_id} onChange={e => handleFilterChange('branch_id', e.target.value)} disabled={dropdownLoading}
+                            {/* <select value={filters.branch_id} onChange={e => handleFilterChange('branch_id', e.target.value)} disabled={dropdownLoading}
                                 className="w-full px-3 py-2 bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-border-focus)] focus:border-transparent text-[var(--color-text-primary)]">
                                 <option value="">All Branches</option>
                                 {branches.map(b => <option key={b.id} value={b.id}>{b.name}</option>)}
-                            </select>
+                            </select> */}
+                            <CustomSelect
+                                name="branch_id"
+                                value={filters.branch_id}
+                                onChange={(e) => handleFilterChange('branch_id', e.target.value)}
+                                options={branches.map((b) => ({
+                                    value: b.id,
+                                    label: b.name,
+                                }))}
+                                placeholder="All Branches"
+                                searchable={true}
+                                disabled={dropdownLoading}
+                            />
                         </div>
                         <div className="flex flex-col">
                             <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-2"><Users className="inline h-4 w-4 mr-1" />Department</label>
-                            <select value={filters.department_id} onChange={e => handleFilterChange('department_id', e.target.value)} disabled={dropdownLoading}
+                            {/* <select value={filters.department_id} onChange={e => handleFilterChange('department_id', e.target.value)} disabled={dropdownLoading}
                                 className="w-full px-3 py-2 bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-border-focus)] focus:border-transparent text-[var(--color-text-primary)]">
                                 <option value="">All Departments</option>
                                 {departments.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
-                            </select>
+                            </select> */}
+                            <CustomSelect
+                                name="department_id"
+                                value={filters.department_id}
+                                onChange={(e) => handleFilterChange('department_id', e.target.value)}
+                                options={departments.map((d) => ({
+                                    value: d.id,
+                                    label: d.name,
+                                }))}
+                                placeholder="All Departments"
+                                searchable={true}
+                                disabled={dropdownLoading}
+                            />
                         </div>
                         <div className="flex flex-col">
                             <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-2"><Award className="inline h-4 w-4 mr-1" />Designation</label>
-                            <select value={filters.designation_id} onChange={e => handleFilterChange('designation_id', e.target.value)} disabled={dropdownLoading}
+                            {/* <select value={filters.designation_id} onChange={e => handleFilterChange('designation_id', e.target.value)} disabled={dropdownLoading}
                                 className="w-full px-3 py-2 bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-border-focus)] focus:border-transparent text-[var(--color-text-primary)]">
                                 <option value="">All Designations</option>
                                 {designations.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
-                            </select>
+                            </select> */}
+                            <CustomSelect
+                                name="designation_id"
+                                value={filters.designation_id}
+                                onChange={(e) => handleFilterChange('designation_id', e.target.value)}
+                                options={designations.map((d) => ({
+                                    value: d.id,
+                                    label: d.name,
+                                }))}
+                                placeholder="All Designations"
+                                searchable={true}
+                                disabled={dropdownLoading}
+                            />
                         </div>
                         <div className="flex flex-col">
                             <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-2"><User className="inline h-4 w-4 mr-1" />Employee (optional)</label>
-                            <select value={filters.employee_id} onChange={e => handleFilterChange('employee_id', e.target.value)} disabled={dropdownLoading}
+                            {/* <select value={filters.employee_id} onChange={e => handleFilterChange('employee_id', e.target.value)} disabled={dropdownLoading}
                                 className="w-full px-3 py-2 bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-border-focus)] focus:border-transparent text-[var(--color-text-primary)]">
                                 <option value="">All Employees</option>
                                 {employees.map(e => <option key={e.id} value={e.id}>{e.name}</option>)}
-                            </select>
+                            </select> */}
+                            <CustomSelect
+                                name="employee_id"
+                                value={filters.employee_id}
+                                onChange={(e) => handleFilterChange('employee_id', e.target.value)}
+                                options={employees.map((e) => ({
+                                    value: e.id,
+                                    label: e.name,
+                                }))}
+                                placeholder="All Employees"
+                                searchable={true}
+                                disabled={dropdownLoading}
+                            />
                         </div>
                         <div className="flex flex-col">
                             <label className="block text-sm font-medium text-transparent mb-2">Generate</label>
@@ -579,18 +628,18 @@ const PayMonthlySalaryReport = () => {
                 {/* Table */}
                 {reportData && (
                     <div className="bg-[var(--color-bg-secondary)] rounded-xl shadow-lg border border-[var(--color-border-primary)] overflow-hidden">
-                        <div className="px-6 py-5 border-b border-[var(--color-border-primary)] bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)]">
+                        <div className="px-6 py-5 border-b border-[var(--color-border-primary)] bg-[var(--color-primary-lighter)]">
                             <div className="flex justify-between items-center">
                                 <div className="flex items-center">
-                                    <div className="p-2 bg-[var(--color-bg-secondary-20)] rounded-lg mr-3"><IndianRupee className="h-6 w-6 text-white" /></div>
+                                    <div className="p-2 bg-[var(--color-bg-secondary-20)] rounded-lg mr-3"><IndianRupee className="h-6 w-6 text-[var(--color-primary-darker)]" /></div>
                                     <div>
-                                        <h3 className="text-xl font-bold text-white">Paid Salary Report</h3>
-                                        <p className="text-sm text-white/80">{getMonthYearDisplay(filters.month_year)} · Click <ChevronRight className="inline h-3 w-3" /> to expand breakdown</p>
+                                        <h3 className="text-xl font-bold text-[var(--color-primary-darker)]">Paid Salary Report</h3>
+                                        <p className="text-sm text-[var(--color-primary-darker)]">{getMonthYearDisplay(filters.month_year)} · Click <ChevronRight className="inline h-3 w-3" /> to expand breakdown</p>
                                     </div>
                                 </div>
                                 <div className="text-right">
-                                    <div className="text-sm text-white/80">Total Records</div>
-                                    <div className="text-2xl font-bold text-white">{reportData.length}</div>
+                                    <div className="text-sm text-[var(--color-primary-darker)]">Total Records</div>
+                                    <div className="text-2xl font-bold text-[var(--color-primary-darker)]">{reportData.length}</div>
                                 </div>
                             </div>
                         </div>
@@ -598,18 +647,18 @@ const PayMonthlySalaryReport = () => {
                         <div className="overflow-x-auto">
                             <table className="w-full">
                                 <thead>
-                                    <tr className="bg-[var(--color-bg-primary)] border-b border-[var(--color-border-primary)]">
-                                        <th className="px-4 py-4 text-center text-sm font-semibold text-[var(--color-text-primary)] w-10">#</th>
-                                        <th className="px-4 py-4 text-left text-sm font-semibold text-[var(--color-text-primary)]">Employee</th>
-                                        <th className="px-4 py-4 text-center text-sm font-semibold text-[var(--color-text-primary)]">Monthly Salary</th>
-                                        <th className="px-4 py-4 text-center text-sm font-semibold text-[var(--color-text-primary)]">Att. Salary</th>
-                                        <th className="px-4 py-4 text-center text-sm font-semibold text-[var(--color-text-primary)] text-green-600">+ Allowance</th>
-                                        <th className="px-4 py-4 text-center text-sm font-semibold text-[var(--color-text-primary)] text-red-500">− Deduction</th>
-                                        <th className="px-4 py-4 text-center text-sm font-semibold text-[var(--color-text-primary)] text-orange-500">− Loan</th>
-                                        <th className="px-4 py-4 text-center text-sm font-semibold text-[var(--color-text-primary)] text-yellow-600">− Advance</th>
-                                        <th className="px-4 py-4 text-center text-sm font-semibold text-[var(--color-text-primary)]">Net Payable</th>
-                                        <th className="px-4 py-4 text-center text-sm font-semibold text-[var(--color-text-primary)]">Total Paid</th>
-                                        <th className="px-4 py-4 text-center text-sm font-semibold text-[var(--color-text-primary)]">Status</th>
+                                    <tr className="bg-[var(--color-primary-dark)] border-b border-[var(--color-border-primary)]">
+                                        <th className="px-4 py-4 text-center text-sm font-semibold text-white w-10">#</th>
+                                        <th className="px-4 py-4 text-left text-sm font-semibold text-white">Employee</th>
+                                        <th className="px-4 py-4 text-center text-sm font-semibold text-white">Monthly Salary</th>
+                                        <th className="px-4 py-4 text-center text-sm font-semibold text-white">Att. Salary</th>
+                                        <th className="px-4 py-4 text-center text-sm font-semibold text-white text-green-600">+ Allowance</th>
+                                        <th className="px-4 py-4 text-center text-sm font-semibold text-white text-red-500">− Deduction</th>
+                                        <th className="px-4 py-4 text-center text-sm font-semibold text-white text-orange-500">− Loan</th>
+                                        <th className="px-4 py-4 text-center text-sm font-semibold text-white text-white">− Advance</th>
+                                        <th className="px-4 py-4 text-center text-sm font-semibold text-white">Net Payable</th>
+                                        <th className="px-4 py-4 text-center text-sm font-semibold text-white">Total Paid</th>
+                                        <th className="px-4 py-4 text-center text-sm font-semibold text-white">Status</th>
                                         <th className="px-4 py-4 w-10"></th>
                                     </tr>
                                 </thead>

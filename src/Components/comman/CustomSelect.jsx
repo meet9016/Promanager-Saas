@@ -162,7 +162,7 @@ const CustomSelect = ({
             {isOpen && (
                 <div
                     className="
-                        absolute z-50 w-full mt-1
+                        absolute z-[9999] w-full mt-1
                         bg-[var(--color-bg-secondary)]
                         border border-[var(--color-border-primary)]
                         rounded-xl shadow-xl
@@ -206,7 +206,7 @@ const CustomSelect = ({
                     {/* Options List */}
                     <div
                         ref={listRef}
-                        className="overflow-y-auto custom-scrollbar"
+                        className="overflow-y-auto overflow-x-hidden custom-scrollbar"
                         style={{ maxHeight: searchable ? '210px' : '260px' }}
                         role="listbox"
                     >

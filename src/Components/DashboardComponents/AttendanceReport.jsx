@@ -11,7 +11,8 @@ import { useDashboardData } from '../../context/DashboardContext';
 import { StatusBadge } from '../../Components/Report/ReportComponents';
 import { useAuth } from '../../context/AuthContext';
 import api from '../../api/axiosInstance';
-import {Toast} from '../ui/Toast';
+import { Toast } from '../ui/Toast';
+import CustomSelect from '../comman/CustomSelect';
 
 const SORT_DIRECTIONS = {
     ASCENDING: 'ascending',
@@ -536,7 +537,7 @@ const AttendanceReport = () => {
                                         )}
                                     </div>
 
-                                    <select
+                                    {/* <select
                                         value={statusFilter}
                                         onChange={(e) => handleFilterChange(e.target.value)}
                                         className="px-3 py-2 border border-[var(--color-border-secondary)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-light)] focus:border-transparent bg-[var(--color-bg-primary)]"
@@ -546,7 +547,21 @@ const AttendanceReport = () => {
                                                 {option.label}
                                             </option>
                                         ))}
-                                    </select>
+                                    </select> */}
+
+                                        <CustomSelect
+                                            name="statusFilter"
+                                            value={statusFilter}
+                                            onChange={(e) => handleFilterChange(e.target.value)}
+                                            options={statusOptions.map((option) => ({
+                                                value: option.value,
+                                                label: option.label,
+                                            }))}
+                                            placeholder="Select status"
+                                            searchable={true}
+                                        />
+                                   
+
 
                                     {(searchQuery || statusFilter !== 'all') && (
                                         <button

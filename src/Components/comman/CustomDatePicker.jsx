@@ -194,7 +194,7 @@ const CustomDatePicker = ({
                 disabled={disabled}
                 className={`
                     w-full flex items-center justify-between
-                    px-4 py-3 text-sm text-left
+                    px-4 py-3 text-sm h-[42px] text-left
                     bg-[var(--color-bg-secondary)]
                     border rounded-lg
                     transition-all duration-200

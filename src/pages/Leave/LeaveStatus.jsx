@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 import api from '../../api/axiosInstance';
 import { Toast } from '../../Components/ui/Toast';
 import LoadingSpinner from "../../Components/Loader/LoadingSpinner"
+import { Table, TableHeader, TableBody, TableRow, TableHeaderRow, Th, Td } from '../../Components/ui/Table';
 
 // Lucide React Icons
 import {
@@ -402,7 +403,7 @@ const LeaveManagement = () => {
                                 {permissions['leave_create'] && (
                                     <button
                                         onClick={() => navigate('/leaveapplication')}
-                                        className="flex items-center gap-2 bg-[var(--color-primary)] text-[var(--color-text-white)] hover:bg-[var(--color-primary-dark)] px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm"
+                                        className="flex items-center gap-2 bg-white text-[var(--color-primary-darker)] px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm"
                                     >
                                         <Plus className="h-4 w-4" />
                                         Add Leave
@@ -468,9 +469,9 @@ const LeaveManagement = () => {
                         </div>
                     ) : (
                         <div className="overflow-x-auto">
-                            <table className="min-w-full divide-y divide-[var(--color-border-divider)]">
-                                <thead className="bg-[var(--color-primary-dark)] ">
-                                    <tr>
+                            <Table className="min-w-full divide-y divide-[var(--color-border-divider)]">
+                                <TableHeader className="bg-[var(--color-primary-dark)]">
+                                    <TableHeaderRow>
                                         {[
                                             { key: COLUMN_KEYS.NAME, label: 'Employee Name' },
                                             { key: COLUMN_KEYS.LEAVE_TYPE, label: 'Leave Type' },
@@ -479,71 +480,71 @@ const LeaveManagement = () => {
                                             { key: COLUMN_KEYS.TOTAL_DAYS, label: 'Total Days' },
                                             { key: COLUMN_KEYS.STATUS, label: 'Status' }
                                         ].map(({ key, label }) => (
-                                            <th key={`header-${key}`} className="px-6 py-3 text-left">
+                                            <Th key={`header-${key}`} className="px-6 py-3 text-left">
                                                 <button
-                                                    className="flex items-center text-xs font-semibold text-white uppercase tracking-wider hover:text-[var(--color-text-primary)] transition-colors"
+                                                    className="flex items-center font-semibold  transition-colors"
                                                     onClick={() => requestSort(key)}
                                                 >
                                                     {label}
                                                     {renderSortIcon(key)}
                                                 </button>
-                                            </th>
+                                            </Th>
                                         ))}
-                                        <th className="px-6 py-3 text-left text-xs font-semibold text-[var(--color-text-secondary)] uppercase tracking-wider">
+                                        <Th className="px-6 py-3 text-left font-semibold">
                                             Actions
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody className="bg-[var(--color-bg-secondary)] divide-y divide-[var(--color-border-divider)]">
+                                        </Th>
+                                    </TableHeaderRow>
+                                </TableHeader>
+                                <TableBody className="bg-[var(--color-bg-secondary)] divide-y divide-[var(--color-border-divider)]">
                                     {!sortedLeaveRequests || sortedLeaveRequests.length === 0 ? (
-                                        <tr>
-                                            <td colSpan="8" className="px-6 py-8 text-center text-[var(--color-text-secondary)]">
+                                        <TableRow>
+                                            <Td colSpan="8" className="px-6 py-8 text-center text-[var(--color-text-secondary)]">
                                                 <FileText className="h-12 w-12 mx-auto mb-4 text-[var(--color-text-muted)]" />
                                                 <p className="text-lg font-semibold">No leave requests found</p>
                                                 <p className="text-sm">Try adjusting your search or filters</p>
-                                            </td>
-                                        </tr>
+                                            </Td>
+                                        </TableRow>
                                     ) : (
                                         sortedLeaveRequests.map((leave, index) => {
                                             const leaveId = leave.leave_id || `leave-${index}`;
                                             return (
-                                                <tr
+                                                <TableRow
                                                     key={`leave-${leaveId}`}
                                                     className="hover:bg-[var(--color-bg-hover)] transition-colors"
                                                 >
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--color-text-primary)]">
+                                                    <Td className="px-6 py-4 text-left whitespace-nowrap text-[var(--color-text-primary)]">
                                                         <div className="flex items-center space-x-3">
                                                             <div className="w-8 h-8 bg-[var(--color-primary-lighter)] rounded-full flex items-center justify-center">
                                                                 <Users className="w-4 h-4 text-[var(--color-primary-dark)]" />
                                                             </div>
-                                                            <span className="font-medium">{leave.full_name || 'Unknown Employee'}</span>
+                                                            <span className="font-medium text-sm">{leave.full_name || 'Unknown Employee'}</span>
                                                         </div>
-                                                    </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--color-text-secondary)]">
+                                                    </Td>
+                                                    <Td className="px-6 py-4 text-left whitespace-nowrap text-sm text-[var(--color-text-secondary)]">
                                                         <span className="px-2 py-1 bg-[var(--color-bg-primary)] rounded-md text-xs font-medium">
                                                             {leave.leave_type || '--'}
                                                         </span>
-                                                    </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--color-text-secondary)]">
+                                                    </Td>
+                                                    <Td className="px-6 py-4 text-left whitespace-nowrap text-sm text-[var(--color-text-secondary)]">
                                                         <div className="flex items-center">
                                                             <Calendar className="w-4 h-4 mr-2 text-[var(--color-text-muted)]" />
                                                             {formatDate(leave.start_date)}
                                                         </div>
-                                                    </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--color-text-secondary)]">
+                                                    </Td>
+                                                    <Td className="px-6 py-4 text-left whitespace-nowrap text-sm text-[var(--color-text-secondary)]">
                                                         <div className="flex items-center">
                                                             <Calendar className="w-4 h-4 mr-2 text-[var(--color-text-muted)]" />
                                                             {formatDate(leave.end_date)}
                                                         </div>
-                                                    </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--color-text-primary)]">
+                                                    </Td>
+                                                    <Td className="px-6 py-4 text-left whitespace-nowrap text-sm text-[var(--color-text-primary)]">
                                                         <span className="font-semibold">{leave.total_days || 0}</span>
                                                         <span className="text-[var(--color-text-muted)] ml-1 text-xs">days</span>
-                                                    </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--color-text-secondary)]">
+                                                    </Td>
+                                                    <Td className="px-6 py-4 text-left whitespace-nowrap text-[var(--color-text-secondary)]">
                                                         <StatusChip status={leave.status} />
-                                                    </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                                    </Td>
+                                                    <Td className="px-6 py-4 text-left whitespace-nowrap font-medium">
                                                         <div className="flex space-x-2">
                                                             <button
                                                                 onClick={() => handleView(leave)}
@@ -576,13 +577,13 @@ const LeaveManagement = () => {
                                                                 </>
                                                             )}
                                                         </div>
-                                                    </td>
-                                                </tr>
+                                                    </Td>
+                                                </TableRow>
                                             );
                                         })
                                     )}
-                                </tbody>
-                            </table>
+                                </TableBody>
+                            </Table>
                         </div>
                     )}
                 </div>

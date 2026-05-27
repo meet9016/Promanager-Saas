@@ -14,6 +14,9 @@ import Pagination from '../../Components/Pagination';
 import { Toast } from '../../Components/ui/Toast';
 import { exportSalaryStatusToPDF } from '../../utils/exportUtils/salary/pdfExportSalaryGenerationStatus';
 import { exportSalaryStatusToExcel } from '../../utils/exportUtils/salary/excelExportSalaryGenerationStatus';
+import CustomSelect from '../../Components/comman/CustomSelect';
+import { Table, TableHeader, TableBody, TableRow, TableHeaderRow, Th, Td } from '../../Components/ui/Table';
+import CustomDatePicker from '../../Components/comman/CustomDatePicker';
 
 /** ─── Anchored position helpers ─────────────────────────────────────────── **/
 const getScrollParents = (node) => {
@@ -238,15 +241,15 @@ const SalaryGenerationStatusReport = () => {
             <div className="p-8  mx-auto">
                 {/* Header */}
                 <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-xl mb-8 overflow-hidden">
-                    <div className="bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] p-8">
+                    <div className="bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] p-6">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-4">
-                                <button onClick={() => navigate('/reports')} className="flex items-center gap-2 text-[var(--color-text-white)] transition-colors bg-[var(--color-bg-secondary-20)] hover:bg-[var(--color-bg-secondary-30)] px-4 py-2 rounded-lg backdrop-blur-sm">
-                                    <ArrowLeft size={18} /> Back
+                                <button onClick={() => navigate('/reports')} className="flex items-center gap-2 text-[var(--color-text-white)] transition-colors bg-[var(--color-bg-secondary-20)] hover:bg-[var(--color-bg-secondary-30)] px-2 py-2 rounded-lg backdrop-blur-sm">
+                                    <ArrowLeft size={18} />
                                 </button>
                                 <div>
                                     <h1 className="text-2xl font-bold text-[var(--color-text-white)]">Salary Generation Status</h1>
-                                    <p className="text-sm text-white/70 mt-0.5">Generation & payment overview per employee</p>
+                                    {/* <p className="text-sm text-white/70 mt-0.5">Generation & payment overview per employee</p> */}
                                 </div>
                             </div>
                             <div className="relative">
@@ -299,38 +302,89 @@ const SalaryGenerationStatusReport = () => {
                                 className="w-full px-3 py-2 rounded-lg border border-[var(--color-border-secondary)] bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-border-focus)] focus:border-transparent"
                                 placeholderText="Select month and year" maxDate={new Date()} showPopperArrow={false}
                             />
+
+                           
+
                         </div>
                         <div className="flex flex-col">
                             <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-2"><Building className="inline h-4 w-4 mr-1" />Branch</label>
-                            <select value={filters.branch_id} onChange={e => handleFilterChange('branch_id', e.target.value)} disabled={dropdownLoading}
+                            {/* <select value={filters.branch_id} onChange={e => handleFilterChange('branch_id', e.target.value)} disabled={dropdownLoading}
                                 className="w-full px-3 py-2 bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-border-focus)] focus:border-transparent text-[var(--color-text-primary)]">
                                 <option value="">All Branches</option>
                                 {branches.map(b => <option key={b.id} value={b.id}>{b.name}</option>)}
-                            </select>
+                            </select> */}
+                            <CustomSelect
+                                name="branch_id"
+                                value={filters.branch_id}
+                                onChange={(e) => handleFilterChange('branch_id', e.target.value)}
+                                options={branches.map((b) => ({
+                                    value: b.id,
+                                    label: b.name,
+                                }))}
+                                placeholder="All Branches"
+                                searchable={true}
+                                disabled={dropdownLoading}
+                            />
                         </div>
                         <div className="flex flex-col">
                             <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-2"><Users className="inline h-4 w-4 mr-1" />Department</label>
-                            <select value={filters.department_id} onChange={e => handleFilterChange('department_id', e.target.value)} disabled={dropdownLoading}
+                            {/* <select value={filters.department_id} onChange={e => handleFilterChange('department_id', e.target.value)} disabled={dropdownLoading}
                                 className="w-full px-3 py-2 bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-border-focus)] focus:border-transparent text-[var(--color-text-primary)]">
                                 <option value="">All Departments</option>
                                 {departments.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
-                            </select>
+                            </select> */}
+                            <CustomSelect
+                                name="department_id"
+                                value={filters.department_id}
+                                onChange={(e) => handleFilterChange('department_id', e.target.value)}
+                                options={departments.map((d) => ({
+                                    value: d.id,
+                                    label: d.name,
+                                }))}
+                                placeholder="All Departments"
+                                searchable={true}
+                                disabled={dropdownLoading}
+                            />
                         </div>
                         <div className="flex flex-col">
                             <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-2"><Award className="inline h-4 w-4 mr-1" />Designation</label>
-                            <select value={filters.designation_id} onChange={e => handleFilterChange('designation_id', e.target.value)} disabled={dropdownLoading}
+                            {/* <select value={filters.designation_id} onChange={e => handleFilterChange('designation_id', e.target.value)} disabled={dropdownLoading}
                                 className="w-full px-3 py-2 bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-border-focus)] focus:border-transparent text-[var(--color-text-primary)]">
                                 <option value="">All Designations</option>
                                 {designations.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
-                            </select>
+                            </select> */}
+                            <CustomSelect
+                                name="designation_id"
+                                value={filters.designation_id}
+                                onChange={(e) => handleFilterChange('designation_id', e.target.value)}
+                                options={designations.map((d) => ({
+                                    value: d.id,
+                                    label: d.name,
+                                }))}
+                                placeholder="All Designations"
+                                searchable={true}
+                                disabled={dropdownLoading}
+                            />
                         </div>
                         <div className="flex flex-col">
                             <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-2"><User className="inline h-4 w-4 mr-1" />Employee (optional)</label>
-                            <select value={filters.employee_id} onChange={e => handleFilterChange('employee_id', e.target.value)} disabled={dropdownLoading}
+                            {/* <select value={filters.employee_id} onChange={e => handleFilterChange('employee_id', e.target.value)} disabled={dropdownLoading}
                                 className="w-full px-3 py-2 bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-border-focus)] focus:border-transparent text-[var(--color-text-primary)]">
                                 <option value="">All Employees</option>
                                 {employees.map(e => <option key={e.id} value={e.id}>{e.name}</option>)}
-                            </select>
+                            </select> */}
+                            <CustomSelect
+                                name="employee_id"
+                                value={filters.employee_id}
+                                onChange={(e) => handleFilterChange('employee_id', e.target.value)}
+                                options={employees.map((e) => ({
+                                    value: e.id,
+                                    label: e.name,
+                                }))}
+                                placeholder="All Employees"
+                                searchable={true}
+                                disabled={dropdownLoading}
+                            />
                         </div>
                         <div className="flex flex-col">
                             <label className="block text-sm font-medium text-transparent mb-2">Generate</label>
@@ -367,94 +421,94 @@ const SalaryGenerationStatusReport = () => {
                 {/* Table */}
                 {reportData && (
                     <div className="bg-[var(--color-bg-secondary)] rounded-xl shadow-lg border border-[var(--color-border-primary)] overflow-hidden">
-                        <div className="px-6 py-5 border-b border-[var(--color-border-primary)] bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)]">
+                        <div className="px-6 py-5 border-b border-[var(--color-border-primary)]  bg-[var(--color-primary-lighter)]">
                             <div className="flex justify-between items-center">
                                 <div className="flex items-center">
-                                    <div className="p-2 bg-[var(--color-bg-secondary-20)] rounded-lg mr-3"><IndianRupee className="h-6 w-6 text-white" /></div>
+                                    <div className="p-2 bg-[var(--color-bg-secondary-20)] rounded-lg mr-3"><IndianRupee className="h-6 w-6 text-[var(--color-primary-darker)]" /></div>
                                     <div>
-                                        <h3 className="text-xl font-bold text-white">Salary Generation Status</h3>
-                                        <p className="text-sm text-white/80">{getMonthYearDisplay(filters.month_year)}</p>
+                                        <h3 className="text-xl font-bold text-[var(--color-primary-darker)]">Salary Generation Status</h3>
+                                        <p className="text-sm text-[var(--color-primary-darker)]">{getMonthYearDisplay(filters.month_year)}</p>
                                     </div>
                                 </div>
                                 <div className="text-right">
-                                    <div className="text-sm text-white/80">Total Records</div>
-                                    <div className="text-2xl font-bold text-white">{reportData.length}</div>
+                                    <div className="text-sm text-[var(--color-primary-darker)]">Total Records</div>
+                                    <div className="text-2xl font-bold text-[var(--color-primary-darker)]">{reportData.length}</div>
                                 </div>
                             </div>
                         </div>
 
                         <div className="overflow-x-auto">
-                            <table className="w-full">
-                                <thead>
-                                    <tr className="bg-[var(--color-bg-primary)] border-b border-[var(--color-border-primary)]">
-                                        <th className="px-4 py-4 text-left text-sm font-semibold text-[var(--color-text-primary)] w-8">#</th>
-                                        <th className="px-4 py-4 text-left text-sm font-semibold text-[var(--color-text-primary)]">
+                            <Table className="w-full">
+                                <TableHeader>
+                                    <TableHeaderRow className="bg-[var(--color-primary-dark)] border-b border-[var(--color-border-primary)]">
+                                        <Th className="text-left font-semibold text-white w-8">#</Th>
+                                        <Th className="text-left font-semibold text-white">
                                             <div className="flex items-center gap-2"><User className="h-4 w-4" />Employee</div>
-                                        </th>
-                                        <th className="px-4 py-4 text-center text-sm font-semibold text-[var(--color-text-primary)]">Monthly Salary</th>
-                                        <th className="px-4 py-4 text-center text-sm font-semibold text-[var(--color-text-primary)]">Final Salary</th>
-                                        <th className="px-4 py-4 text-center text-sm font-semibold text-[var(--color-text-primary)]">Net Payable</th>
-                                        <th className="px-4 py-4 text-center text-sm font-semibold text-[var(--color-text-primary)]">Total Paid</th>
-                                        <th className="px-4 py-4 text-center text-sm font-semibold text-[var(--color-text-primary)]">Balance Due</th>
-                                        <th className="px-4 py-4 text-center text-sm font-semibold text-[var(--color-text-primary)]">Generated At</th>
-                                        <th className="px-4 py-4 text-center text-sm font-semibold text-[var(--color-text-primary)]">Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="divide-y divide-[var(--color-border-primary)]">
+                                        </Th>
+                                        <Th className="text-center font-semibold text-white">Monthly Salary</Th>
+                                        <Th className="text-center font-semibold text-white">Final Salary</Th>
+                                        <Th className="text-center font-semibold text-white">Net Payable</Th>
+                                        <Th className="text-center font-semibold text-white">Total Paid</Th>
+                                        <Th className="text-center font-semibold text-white">Balance Due</Th>
+                                        <Th className="text-center font-semibold text-white">Generated At</Th>
+                                        <Th className="text-center font-semibold text-white">Status</Th>
+                                    </TableHeaderRow>
+                                </TableHeader>
+                                <TableBody className="divide-y divide-[var(--color-border-primary)]">
                                     {currentItems.map((emp, idx) => {
                                         const isPaid = String(emp.payment_status_label || '').toLowerCase() === 'paid';
                                         const isGenerated = String(emp.salary_generation_status || '').toLowerCase() === 'generated';
                                         const balanceDue = parseFloat(emp.balance_due || 0);
 
                                         return (
-                                            <tr key={emp.employee_id || idx} className="bg-[var(--color-bg-secondary)] hover:bg-[var(--color-bg-primary)] transition-colors">
-                                                <td className="px-4 py-4 text-sm text-[var(--color-text-secondary)]">
+                                            <TableRow key={emp.employee_id || idx} className="bg-[var(--color-bg-secondary)] hover:bg-[var(--color-bg-primary)] transition-colors">
+                                                <Td className="text-sm text-[var(--color-text-secondary)]">
                                                     {(currentPage - 1) * itemsPerPage + idx + 1}
-                                                </td>
-                                                <td className="px-4 py-4">
+                                                </Td>
+                                                <Td>
                                                     <div className="font-semibold text-sm text-[var(--color-text-primary)]">{emp.employee_name || '--'}</div>
                                                     <div className="text-xs text-[var(--color-text-secondary)] bg-[var(--color-bg-primary)] px-2 py-0.5 rounded mt-1 inline-block">{emp.employee_code || '--'}</div>
-                                                </td>
-                                                <td className="px-4 py-4 text-center">
+                                                </Td>
+                                                <Td className="text-center">
                                                     <span className="text-sm font-semibold text-[var(--color-primary-dark)]">{formatCurrency(emp.monthly_salary)}</span>
-                                                </td>
-                                                <td className="px-4 py-4 text-center">
+                                                </Td>
+                                                <Td className="text-center">
                                                     {isGenerated
                                                         ? <span className="text-sm font-semibold text-[var(--color-text-primary)]">{formatCurrency(emp.final_salary)}</span>
                                                         : <span className="text-xs text-[var(--color-text-secondary)]">—</span>}
-                                                </td>
-                                                <td className="px-4 py-4 text-center">
+                                                </Td>
+                                                <Td className="text-center">
                                                     {isGenerated
                                                         ? <span className="text-sm font-bold text-green-600">{formatCurrency(emp.net_payable)}</span>
                                                         : <span className="text-xs text-[var(--color-text-secondary)]">—</span>}
-                                                </td>
-                                                <td className="px-4 py-4 text-center">
+                                                </Td>
+                                                <Td className="text-center">
                                                     {isPaid
                                                         ? <span className="text-sm font-bold text-primary-600">{formatCurrency(emp.total_paid)}</span>
                                                         : <span className="text-xs text-[var(--color-text-secondary)]">—</span>}
-                                                </td>
-                                                <td className="px-4 py-4 text-center">
+                                                </Td>
+                                                <Td className="text-center">
                                                     {isGenerated
                                                         ? <span className={`text-sm font-semibold ${balanceDue > 0 ? 'text-red-500' : 'text-green-600'}`}>
                                                             {balanceDue > 0 ? formatCurrency(balanceDue) : '✓ Cleared'}
                                                         </span>
                                                         : <span className="text-xs text-[var(--color-text-secondary)]">—</span>}
-                                                </td>
-                                                <td className="px-4 py-4 text-center">
+                                                </Td>
+                                                <Td className="text-center">
                                                     <span className="text-xs text-[var(--color-text-secondary)]">
                                                         {emp.generated_at
                                                             ? new Date(emp.generated_at).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })
                                                             : '—'}
                                                     </span>
-                                                </td>
-                                                <td className="px-4 py-4 text-center">
+                                                </Td>
+                                                <Td className="text-center">
                                                     <SalaryStatusBadge genStatus={emp.salary_generation_status} paymentLabel={emp.payment_status_label} />
-                                                </td>
-                                            </tr>
+                                                </Td>
+                                            </TableRow>
                                         );
                                     })}
-                                </tbody>
-                            </table>
+                                </TableBody>
+                            </Table>
                         </div>
 
                         <div className="border-t border-[var(--color-border-primary)] bg-[var(--color-bg-primary)]">

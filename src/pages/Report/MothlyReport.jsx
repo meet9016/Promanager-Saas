@@ -27,6 +27,7 @@ import { exportMonthlyReportToPDF } from '../../utils/exportUtils/MonthlyReport/
 import { exportToExcel } from '../../utils/exportUtils/MonthlyReport/excelExportMonthly';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import CustomSelect from '../../Components/comman/CustomSelect';
 
 /** ------------------- Anchored positioning helpers ------------------- **/
 const getScrollParents = (node) => {
@@ -499,15 +500,15 @@ const MonthlyReport = () => {
 
                 {/* Page Header */}
                 <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-xl mb-8 overflow-hidden">
-                    <div className="bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] p-8">
+                    <div className="bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] p-6">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-4">
                                 <button
                                     onClick={() => navigate('/reports')}
-                                    className="flex items-center gap-2 text-[var(--color-text-white)] hover:text-[var(--color-text-white)] transition-colors bg-[var(--color-bg-secondary-20)] hover:bg-[var(--color-bg-secondary-30)] px-4 py-2 rounded-lg backdrop-blur-sm"
+                                    className="flex items-center gap-2 text-[var(--color-text-white)] hover:text-[var(--color-text-white)] transition-colors bg-[var(--color-bg-secondary-20)] hover:bg-[var(--color-bg-secondary-30)] px-2 py-2 rounded-lg backdrop-blur-sm"
                                 >
                                     <ArrowLeft size={18} />
-                                    Back
+
                                 </button>
                                 <div className="flex items-center gap-3">
                                     <div>
@@ -636,7 +637,7 @@ const MonthlyReport = () => {
                                 <Building className="inline h-4 w-4 mr-1" />
                                 Branch
                             </label>
-                            <select
+                            {/* <select
                                 value={filters.branch_id}
                                 onChange={(e) => handleFilterChange('branch_id', e.target.value)}
                                 className="w-full px-3 py-2 bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] text-[var(--color-text-primary)]"
@@ -646,7 +647,19 @@ const MonthlyReport = () => {
                                 {branches.map((branch) => (
                                     <option key={branch.id} value={branch.id}>{branch.name}</option>
                                 ))}
-                            </select>
+                            </select> */}
+                            <CustomSelect
+                                name="branch_id"
+                                value={filters.branch_id}
+                                onChange={(e) => handleFilterChange('branch_id', e.target.value)}
+                                options={branches.map(branch => ({
+                                    value: branch.id,
+                                    label: branch.name,
+                                }))}
+                                placeholder="All Branches"
+                                searchable={true}
+                                disabled={dropdownLoading}
+                            />
                         </div>
 
                         {/* Department */}
@@ -655,7 +668,7 @@ const MonthlyReport = () => {
                                 <Users className="inline h-4 w-4 mr-1" />
                                 Department
                             </label>
-                            <select
+                            {/* <select
                                 value={filters.department_id}
                                 onChange={(e) => handleFilterChange('department_id', e.target.value)}
                                 className="w-full px-3 py-2 bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] text-[var(--color-text-primary)]"
@@ -665,7 +678,19 @@ const MonthlyReport = () => {
                                 {departments.map((d) => (
                                     <option key={d.id} value={d.id}>{d.name}</option>
                                 ))}
-                            </select>
+                            </select> */}
+                            <CustomSelect
+                                name="department_id"
+                                value={filters.department_id}
+                                onChange={(e) => handleFilterChange('department_id', e.target.value)}
+                                options={departments.map((d) => ({
+                                    value: d.id,
+                                    label: d.name,
+                                }))}
+                                placeholder="All Departments"
+                                searchable={true}
+                                disabled={dropdownLoading}
+                            />
                         </div>
 
                         {/* Designation */}
@@ -674,7 +699,7 @@ const MonthlyReport = () => {
                                 <Award className="inline h-4 w-4 mr-1" />
                                 Designation
                             </label>
-                            <select
+                            {/* <select
                                 value={filters.designation_id}
                                 onChange={(e) => handleFilterChange('designation_id', e.target.value)}
                                 className="w-full px-3 py-2 bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] text-[var(--color-text-primary)]"
@@ -684,7 +709,19 @@ const MonthlyReport = () => {
                                 {designations.map((d) => (
                                     <option key={d.id} value={d.id}>{d.name}</option>
                                 ))}
-                            </select>
+                            </select> */}
+                            <CustomSelect
+                                name="designation_id"
+                                value={filters.designation_id}
+                                onChange={(e) => handleFilterChange('designation_id', e.target.value)}
+                                options={designations.map((d) => ({
+                                    value: d.id,
+                                    label: d.name,
+                                }))}
+                                placeholder="All Designations"
+                                searchable={true}
+                                disabled={dropdownLoading}
+                            />
                         </div>
 
                         {/* Employee (optional) */}
@@ -693,7 +730,7 @@ const MonthlyReport = () => {
                                 <User className="inline h-4 w-4 mr-1" />
                                 Employee <span className="text-[var(--color-text-secondary)]">(optional)</span>
                             </label>
-                            <SearchableDropdown
+                            {/* <SearchableDropdown
                                 options={employees}
                                 value={filters.employee_id}
                                 onChange={(value) => handleFilterChange('employee_id', value)}
@@ -701,6 +738,18 @@ const MonthlyReport = () => {
                                 disabled={dropdownLoading}
                                 displayKey="name"
                                 valueKey="id"
+                            /> */}
+                            <CustomSelect
+                                name="employee_id"
+                                value={filters.employee_id}
+                                onChange={(e) => handleFilterChange('employee_id', e.target.value)}
+                                options={employees.map(emp => ({
+                                    value: emp.id,
+                                    label: emp.name,
+                                }))}
+                                placeholder="Search and select employee..."
+                                searchable={true}
+                                disabled={dropdownLoading}
                             />
                         </div>
 

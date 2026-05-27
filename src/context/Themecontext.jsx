@@ -211,6 +211,55 @@ export const ThemeProvider = ({ children }) => {
             root.style.setProperty(property, value);
         });
 
+        // ── Re-apply dynamic brand color from software_config ──
+        // This ensures the API theme_color wins over the default purple
+        // even after the user switches between light/dark mode.
+        const savedBrandColor = localStorage.getItem('app_theme_color');
+        if (savedBrandColor) {
+            try {
+                // Dynamically import the helper to avoid circular deps
+                // We call it inline here to keep ThemeContext self-contained
+                const hex = savedBrandColor.trim();
+                if (/^#[0-9a-fA-F]{3,6}$/.test(hex)) {
+                    const clean = hex.replace('#', '');
+                    const full = clean.length === 3 ? clean.split('').map(c => c + c).join('') : clean;
+                    const num = parseInt(full, 16);
+                    const r = (num >> 16) & 255, g = (num >> 8) & 255, b = num & 255;
+                    const shift = (ratio) => {
+                        if (ratio > 0) return {
+                            r: Math.round(r + (255 - r) * ratio),
+                            g: Math.round(g + (255 - g) * ratio),
+                            b: Math.round(b + (255 - b) * ratio),
+                        };
+                        return { r: Math.round(r * (1 + ratio)), g: Math.round(g * (1 + ratio)), b: Math.round(b * (1 + ratio)) };
+                    };
+                    const toHex = ({ r, g, b }) => '#' + [r, g, b].map(v => Math.max(0, Math.min(255, v)).toString(16).padStart(2, '0')).join('');
+                    const vars = {
+                        '--color-primary': hex,
+                        '--color-primary-dark': toHex(shift(-0.15)),
+                        '--color-primary-darker': toHex(shift(-0.28)),
+                        '--color-primary-darkest': toHex(shift(-0.42)),
+                        '--color-primary-light': toHex(shift(0.25)),
+                        '--color-primary-lighter': toHex(shift(0.55)),
+                        '--color-primary-lightest': toHex(shift(0.80)),
+                        '--color-primary-alpha-10': `rgba(${r},${g},${b},0.10)`,
+                        '--color-primary-alpha-20': `rgba(${r},${g},${b},0.20)`,
+                        '--color-primary-alpha-30': `rgba(${r},${g},${b},0.30)`,
+                        '--color-border-primary': toHex(shift(0.70)),
+                        '--color-border-secondary': toHex(shift(0.75)),
+                        '--color-border-focus': hex,
+                        '--color-icon-primary-bg': toHex(shift(0.80)),
+                        '--color-bg-hover': toHex(shift(0.85)),
+                        '--color-scrollbar-track': toHex(shift(0.55)),
+                        '--color-scrollbar-thumb': `linear-gradient(45deg, ${hex}, ${toHex(shift(-0.15))})`,
+                    };
+                    Object.entries(vars).forEach(([k, v]) => root.style.setProperty(k, v));
+                }
+            } catch (_) {
+                // ignore
+            }
+        }
+
         // Add or remove dark-theme class on body
         if (newTheme === 'dark') {
             document.body.classList.add('dark-theme');

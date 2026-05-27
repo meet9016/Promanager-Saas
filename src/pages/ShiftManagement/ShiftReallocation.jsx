@@ -1,13 +1,15 @@
 import { useState, useMemo, useEffect, useRef, useCallback } from 'react';
 import { ArrowLeft, Users, Calendar, RefreshCw, X, Building, Filter, CheckCircle2, XCircle, Plus, Search, Eye } from 'lucide-react';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
+import CustomDatePicker from '../../Components/comman/CustomDatePicker';
 import { useAuth } from '../../context/AuthContext';
 import { useSelector } from 'react-redux';
 import api from '../../api/axiosInstance';
 import { useNavigate } from 'react-router-dom';
 import { Toast } from '../../Components/ui/Toast';
 import Pagination from '../../Components/Pagination';
+import CustomSelect from '../../Components/comman/CustomSelect';
+import CustomInput from '../../Components/comman/CustomInput';
+import { Table, TableHeader, TableBody, TableRow, TableHeaderRow, Th, Td } from '../../Components/ui/Table';
 
 const ShiftReallocation = () => {
     const { user } = useAuth();
@@ -596,45 +598,45 @@ const ShiftReallocation = () => {
                             </div>
                         ) : (
                             <>
-                                <div className="overflow-x-auto">
-                                    <table className="min-w-full divide-y divide-[var(--color-border-divider)]">
-                                        <thead className="bg-[var(--color-primary-dark)]">
-                                            <tr>
-                                                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--color-text-white)] uppercase tracking-wider">
+                                <div className="overflow-x-auto rounded-b-lg">
+                                    <Table className="min-w-full divide-y divide-[var(--color-border-divider)]">
+                                        <TableHeader className="bg-[var(--color-primary-dark)]">
+                                            <TableHeaderRow>
+                                                <Th className="px-6 py-3 text-left font-medium">
                                                     From Shift
-                                                </th>
-                                                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--color-text-white)] uppercase tracking-wider">
+                                                </Th>
+                                                <Th className="px-6 py-3 text-left font-medium">
                                                     To Shift
-                                                </th>
-                                                <th className="px-6 py-3 text-left  text-xs font-medium text-[var(--color-text-white)] uppercase tracking-wider">
+                                                </Th>
+                                                <Th className="px-6 py-3 text-left font-medium">
                                                     Reallocation Date
-                                                </th>
-                                                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--color-text-white)] uppercase tracking-wider">
+                                                </Th>
+                                                <Th className="px-6 py-3 text-left font-medium">
                                                     Status
-                                                </th>
-                                                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--color-text-white)] uppercase tracking-wider">
+                                                </Th>
+                                                <Th className="px-6 py-3 text-left font-medium">
                                                     Employees
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody className="bg-[var(--color-bg-secondary)] divide-y divide-[var(--color-border-divider)]">
+                                                </Th>
+                                            </TableHeaderRow>
+                                        </TableHeader>
+                                        <TableBody className="bg-[var(--color-bg-secondary)] divide-y divide-[var(--color-border-divider)]">
                                             {reallocationHistory.map((item, index) => (
-                                                <tr key={item.id || index} className="hover:bg-[var(--color-bg-primary)] transition-colors">
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-[var(--color-text-primary)]">
+                                                <TableRow key={item.id || index} className="hover:bg-[var(--color-bg-primary)] transition-colors">
+                                                    <Td className="px-6 py-4 text-left whitespace-nowrap font-medium text-[var(--color-text-primary)]">
                                                         {item.from_shift_name || 'N/A'}
-                                                    </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-[var(--color-text-primary)]">
+                                                    </Td>
+                                                    <Td className="px-6 py-4 text-left whitespace-nowrap font-medium text-[var(--color-text-primary)]">
                                                         {item.to_shift_name || 'N/A'}
-                                                    </td>
-                                                    <td className="px-12 py-4 text-left whitespace-nowrap text-sm text-[var(--color-text-secondary)]">
+                                                    </Td>
+                                                    <Td className="px-12 py-4 text-left whitespace-nowrap text-[var(--color-text-secondary)]">
                                                         {formatDate(item.change_date || item.reallocation_date)}
-                                                    </td>
-                                                    <td className="px-3 py-4 whitespace-nowrap">
+                                                    </Td>
+                                                    <Td className="px-3 py-4 text-left whitespace-nowrap">
                                                         <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full border ${getStatusBadge(item.executed_name)}`}>
                                                             {item.executed_name || 'Pending'}
                                                         </span>
-                                                    </td>
-                                                    <td className="px-9 py-4 whitespace-nowrap text-sm text-[var(--color-text-secondary)]">
+                                                    </Td>
+                                                    <Td className="px-9 py-4 text-left whitespace-nowrap text-[var(--color-text-secondary)]">
                                                         {permissions['shift_reallocation_view'] && (
                                                             <button
                                                                 onClick={() => setEmployeeModal({
@@ -650,11 +652,11 @@ const ShiftReallocation = () => {
                                                                 <Users className="w-4 h-4" />
                                                             </button>
                                                         )}
-                                                    </td>
-                                                </tr>
+                                                    </Td>
+                                                </TableRow>
                                             ))}
-                                        </tbody>
-                                    </table>
+                                        </TableBody>
+                                    </Table>
                                 </div>
 
                                 {totalPages > 1 && (
@@ -698,7 +700,7 @@ const ShiftReallocation = () => {
                         ) : (
                             <div className="space-y-6">
                                 {/* Shift Selection */}
-                                <div className="bg-[var(--color-bg-secondary)] rounded-lg shadow-sm border border-[var(--color-primary-dark)]">
+                                <div className="bg-[var(--color-bg-secondary)] rounded-lg shadow-sm border border-[var(--color-primary-dark)] ">
                                     <div className="px-6 py-4 border-b border-[var(--color-primary-light)] bg-[var(--color-primary-dark)]">
                                         <h2 className="text-lg font-semibold text-[var(--color-text-white)] flex items-center gap-2">
                                             <Calendar className="w-5 h-5" />
@@ -711,7 +713,7 @@ const ShiftReallocation = () => {
                                                 <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
                                                     From Shift <span className="text-[var(--color-error)]">*</span>
                                                 </label>
-                                                <select
+                                                {/* <select
                                                     value={sourceShift}
                                                     onChange={(e) => handleSourceShiftChange(e.target.value)}
                                                     className="w-full px-3 py-2 border border-[var(--color-border-secondary)] rounded-md focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)]"
@@ -722,14 +724,25 @@ const ShiftReallocation = () => {
                                                             {shift.shift_name}
                                                         </option>
                                                     ))}
-                                                </select>
+                                                </select> */}
+                                                <CustomSelect
+                                                    name="sourceShift"
+                                                    value={sourceShift}
+                                                    onChange={(e) => handleSourceShiftChange(e.target.value)}
+                                                    options={shifts.map((shift) => ({
+                                                        value: shift.shift_id,
+                                                        label: shift.shift_name,
+                                                    }))}
+                                                    placeholder="Select source shift"
+                                                    searchable={true}
+                                                />
                                             </div>
 
                                             <div>
                                                 <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
                                                     To Shift <span className="text-[var(--color-error)]">*</span>
                                                 </label>
-                                                <select
+                                                {/* <select
                                                     value={targetShift}
                                                     onChange={(e) => setTargetShift(e.target.value)}
                                                     disabled={!sourceShift}
@@ -741,21 +754,34 @@ const ShiftReallocation = () => {
                                                             {shift.shift_name}
                                                         </option>
                                                     ))}
-                                                </select>
+                                                </select> */}
+                                                <CustomSelect
+                                                    name="targetShift"
+                                                    value={targetShift}
+                                                    onChange={(e) => setTargetShift(e.target.value)}
+                                                    disabled={!sourceShift}
+                                                    options={shifts
+                                                        .filter(s => s.shift_id !== sourceShift)
+                                                        .map((shift) => ({
+                                                            value: shift.shift_id,
+                                                            label: shift.shift_name,
+                                                        }))}
+                                                    placeholder="Select target shift"
+                                                    searchable={true}
+                                                />
                                             </div>
 
                                             <div>
                                                 <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
                                                     Effective Date <span className="text-[var(--color-error)]">*</span>
                                                 </label>
-                                                <DatePicker
-                                                    selected={effectiveDate}
-                                                    onChange={(date) => setEffectiveDate(date)}
+                                                <CustomDatePicker
+                                                    name="effectiveDate"
+                                                    value={effectiveDate}
+                                                    onChange={(e) => setEffectiveDate(new Date(e.target.value))}
                                                     minDate={minDate}
                                                     disabled={!sourceShift || !targetShift}
-                                                    dateFormat="MMMM d, yyyy"
-                                                    placeholderText="Select date"
-                                                    className="w-full px-3 py-2 border border-[var(--color-border-secondary)] rounded-md focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)] disabled:bg-[var(--color-bg-gray-light)] disabled:cursor-not-allowed"
+                                                    placeholder="Select date"
                                                 />
                                             </div>
                                         </div>
@@ -764,7 +790,7 @@ const ShiftReallocation = () => {
 
                                 {/* Filters */}
                                 {sourceShift && (
-                                    <div className="bg-[var(--color-bg-secondary)] rounded-lg shadow-sm border border-[var(--color-primary-dark)]">
+                                    <div className="bg-[var(--color-bg-secondary)] rounded-lg shadow-sm border border-[var(--color-primary-dark)] overflow-hidden">
                                         <div className="px-6 py-4 border-b border-[var(--color-primary-light)] bg-[var(--color-primary-dark)] flex items-center justify-between">
                                             <h2 className="text-lg font-semibold text-[var(--color-text-white)] flex items-center gap-2">
                                                 <Filter className="w-5 h-5" />
@@ -787,7 +813,7 @@ const ShiftReallocation = () => {
                                                         <Building className="w-4 h-4 inline mr-1" />
                                                         Branch
                                                     </label>
-                                                    <select
+                                                    {/* <select
                                                         value={filters.branch_id}
                                                         onChange={(e) => handleFilterChange('branch_id', e.target.value)}
                                                         disabled={dropdownLoading}
@@ -799,7 +825,19 @@ const ShiftReallocation = () => {
                                                                 {branch.name}
                                                             </option>
                                                         ))}
-                                                    </select>
+                                                    </select> */}
+                                                    <CustomSelect
+                                                        name="branch_id"
+                                                        value={filters.branch_id}
+                                                        onChange={(e) => handleFilterChange('branch_id', e.target.value)}
+                                                        disabled={dropdownLoading}
+                                                        options={branches.map(branch => ({
+                                                            value: branch.id,
+                                                            label: branch.name,
+                                                        }))}
+                                                        placeholder="All Branches"
+                                                        searchable={true}
+                                                    />
                                                 </div>
 
                                                 <div>
@@ -807,7 +845,7 @@ const ShiftReallocation = () => {
                                                         <Users className="w-4 h-4 inline mr-1" />
                                                         Department
                                                     </label>
-                                                    <select
+                                                    {/* <select
                                                         value={filters.department_id}
                                                         onChange={(e) => handleFilterChange('department_id', e.target.value)}
                                                         disabled={dropdownLoading}
@@ -819,19 +857,38 @@ const ShiftReallocation = () => {
                                                                 {dept.name}
                                                             </option>
                                                         ))}
-                                                    </select>
+                                                    </select> */}
+                                                    <CustomSelect
+                                                        name="department_id"
+                                                        value={filters.department_id}
+                                                        onChange={(e) => handleFilterChange('department_id', e.target.value)}
+                                                        disabled={dropdownLoading}
+                                                        options={departments.map(dept => ({
+                                                            value: dept.id,
+                                                            label: dept.name,
+                                                        }))}
+                                                        placeholder="All Departments"
+                                                        searchable={true}
+                                                    />
                                                 </div>
 
                                                 <div>
                                                     <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
                                                         Search Employee
                                                     </label>
-                                                    <input
+                                                    {/* <input
                                                         type="text"
                                                         placeholder="Name..."
                                                         value={searchTerm}
                                                         onChange={(e) => setSearchTerm(e.target.value)}
                                                         className="w-full px-3 py-2 border border-[var(--color-border-secondary)] rounded-md focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)]"
+                                                    /> */}
+                                                    <CustomInput
+                                                        type="text"
+                                                        name="search"
+                                                        placeholder="Name..."
+                                                        value={searchTerm}
+                                                        onChange={(e) => setSearchTerm(e.target.value)}
                                                     />
                                                 </div>
                                             </div>

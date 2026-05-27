@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Plus, Calculator } from "lucide-react";
+import CustomInput from "../comman/CustomInput";
 
 const DeductionForm = ({ onSubmit, loading = false, showToast }) => {
     const [name, setName] = useState("");
@@ -50,7 +51,7 @@ const DeductionForm = ({ onSubmit, loading = false, showToast }) => {
                         <label htmlFor="deductionName" className=" text-sm font-medium text-[var(--color-text-secondary)] mb-2 ">
                             Add New Deduction <span className="text-[var(--color-error)]">*</span>
                         </label>
-                        <input
+                        {/* <input
                             id="deductionName"
                             type="text"
                             placeholder="Enter deduction name"
@@ -63,7 +64,19 @@ const DeductionForm = ({ onSubmit, loading = false, showToast }) => {
                                     handleSubmit(e);
                                 }
                             }}
-                        />
+                        /> */}
+                        <div className="w-[500px]">
+                            <CustomInput
+                                type="text"
+                                name="name"
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                                // onBlur={handleFieldBlur}
+                                placeholder="Enter deduction name"
+                                required
+                                clearable={true}
+                            />
+                        </div>
                     </div>
 
                     <button
