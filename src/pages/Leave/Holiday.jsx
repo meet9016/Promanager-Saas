@@ -370,7 +370,7 @@ export default function HolidayManagement() {
                                 </button>
 
                                 <div className="relative w-full sm:w-auto">
-                                    <select
+                                    {/* <select
                                         className="pl-10 pr-5 py-2.5 border border-[var(--color-border-secondary)] font-medium rounded-lg text-sm focus:ring-2 focus:ring-[var(--color-primary)] bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] appearance-none cursor-pointer min-w-[100px]"
                                         value={filterType}
                                         onChange={(e) => setFilterType(e.target.value)}
@@ -381,8 +381,25 @@ export default function HolidayManagement() {
                                                 {type.holiday_type_name}
                                             </option>
                                         ))}
-                                    </select>
-                                    <Filter className="absolute left-3 top-3 h-4 w-4 text-[var(--color-primary-dark)] pointer-events-none" />
+                                    </select> */}
+                                    <CustomSelect
+                                        name="filterType"
+                                        value={filterType}
+                                        onChange={(e) => setFilterType(e.target.value)}
+                                        options={[
+                                            {
+                                                value: '',
+                                                label: 'All Types',
+                                            },
+                                            ...holidayTypes.map((type) => ({
+                                                value: type.holiday_type_id,
+                                                label: type.holiday_type_name,
+                                            })),
+                                        ]}
+                                        searchable={false}
+                                        className="w-full min-w-[100px] h-[42px]"
+                                    />
+                                    {/* <Filter className="absolute left-3 top-3 h-4 w-4 text-[var(--color-primary-dark)] pointer-events-none" /> */}
                                 </div>
                             </div>
                         </div>
@@ -592,84 +609,84 @@ export default function HolidayManagement() {
                                     />
                                 </div>
                             </div>
-                        <div>
-                            <label className="block text-sm font-semibold text-[var(--color-text-primary)] mb-2">
-                                Select Dates <span className="text-red-500">*</span>
-                            </label>
+                            <div>
+                                <label className="block text-sm font-semibold text-[var(--color-text-primary)] mb-2">
+                                    Select Dates <span className="text-red-500">*</span>
+                                </label>
 
-                            <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
-                                {/* Calendar Left Side */}
-                                <div className="lg:col-span-7 border border-[var(--color-border-secondary)] rounded-xl p-2 bg-[var(--color-bg-primary)] shadow-sm transition-all flex justify-center">
-                                    <DatePickerComponent
-                                        selectedDates={selectedDates}
-                                        setSelectedDates={setSelectedDates}
-                                    />
-                                </div>
-
-                                {/* Selected Dates Right Side */}
-                                <div className="lg:col-span-5 bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] rounded-xl p-4 shadow-sm flex flex-col h-[300px]">
-                                    <div className="flex items-center justify-between pb-3 mb-3 border-b border-[var(--color-border-primary)]">
-                                        <h4 className="text-sm font-semibold text-[var(--color-text-primary)]">
-                                            Selected Dates
-                                        </h4>
-                                        <span className="bg-[var(--color-primary-lighter)] text-[var(--color-primary-dark)] py-0.5 px-2.5 rounded-full text-xs font-bold">
-                                            {selectedDates.length}
-                                        </span>
+                                <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+                                    {/* Calendar Left Side */}
+                                    <div className="lg:col-span-7 border border-[var(--color-border-secondary)] rounded-xl p-2 bg-[var(--color-bg-primary)] shadow-sm transition-all flex justify-center">
+                                        <DatePickerComponent
+                                            selectedDates={selectedDates}
+                                            setSelectedDates={setSelectedDates}
+                                        />
                                     </div>
-                                    
-                                    {selectedDates.length === 0 ? (
-                                        <div className="flex-1 flex flex-col items-center justify-center text-center p-4">
-                                            <div className="w-12 h-12 bg-[var(--color-primary-lightest)] rounded-full flex items-center justify-center mb-3">
-                                                <CalendarDays className="w-6 h-6 text-[var(--color-primary-light)]" />
-                                            </div>
-                                            <p className="text-sm text-[var(--color-text-secondary)] font-medium">No dates selected</p>
-                                            <p className="text-xs text-[var(--color-text-secondary)] mt-1 opacity-70">Click on the calendar to select holidays</p>
+
+                                    {/* Selected Dates Right Side */}
+                                    <div className="lg:col-span-5 bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] rounded-xl p-4 shadow-sm flex flex-col h-[300px]">
+                                        <div className="flex items-center justify-between pb-3 mb-3 border-b border-[var(--color-border-primary)]">
+                                            <h4 className="text-sm font-semibold text-[var(--color-text-primary)]">
+                                                Selected Dates
+                                            </h4>
+                                            <span className="bg-[var(--color-primary-lighter)] text-[var(--color-primary-dark)] py-0.5 px-2.5 rounded-full text-xs font-bold">
+                                                {selectedDates.length}
+                                            </span>
                                         </div>
-                                    ) : (
-                                        <>
-                                            <div className="flex-1 overflow-y-auto pr-1 space-y-2 custom-scrollbar">
-                                                {selectedDates.map((d) => (
-                                                    <div
-                                                        key={d}
-                                                        className="flex items-center justify-between bg-[var(--color-bg-primary)] border border-[var(--color-border-secondary)] hover:border-[var(--color-primary-light)] px-3 py-2.5 rounded-lg text-sm transition-all group shadow-sm hover:shadow"
-                                                    >
-                                                        <div className="flex items-center gap-2.5 text-[var(--color-text-primary)] font-medium">
-                                                            <CalendarDays size={16} className="text-[var(--color-primary)]" />
-                                                            <span>{d}</span>
+
+                                        {selectedDates.length === 0 ? (
+                                            <div className="flex-1 flex flex-col items-center justify-center text-center p-4">
+                                                <div className="w-12 h-12 bg-[var(--color-primary-lightest)] rounded-full flex items-center justify-center mb-3">
+                                                    <CalendarDays className="w-6 h-6 text-[var(--color-primary-light)]" />
+                                                </div>
+                                                <p className="text-sm text-[var(--color-text-secondary)] font-medium">No dates selected</p>
+                                                <p className="text-xs text-[var(--color-text-secondary)] mt-1 opacity-70">Click on the calendar to select holidays</p>
+                                            </div>
+                                        ) : (
+                                            <>
+                                                <div className="flex-1 overflow-y-auto pr-1 space-y-2 custom-scrollbar">
+                                                    {selectedDates.map((d) => (
+                                                        <div
+                                                            key={d}
+                                                            className="flex items-center justify-between bg-[var(--color-bg-primary)] border border-[var(--color-border-secondary)] hover:border-[var(--color-primary-light)] px-3 py-2.5 rounded-lg text-sm transition-all group shadow-sm hover:shadow"
+                                                        >
+                                                            <div className="flex items-center gap-2.5 text-[var(--color-text-primary)] font-medium">
+                                                                <CalendarDays size={16} className="text-[var(--color-primary)]" />
+                                                                <span>{d}</span>
+                                                            </div>
+
+                                                            <button
+                                                                type="button"
+                                                                onClick={() =>
+                                                                    setSelectedDates((prev) =>
+                                                                        prev.filter((x) => x !== d)
+                                                                    )
+                                                                }
+                                                                className="text-[var(--color-text-secondary)] hover:text-red-500 hover:bg-red-50 rounded-full p-1.5 transition-colors opacity-70 hover:opacity-100"
+                                                                title="Remove Date"
+                                                            >
+                                                                <X size={14} />
+                                                            </button>
                                                         </div>
-                                                        
+                                                    ))}
+                                                </div>
+
+                                                {selectedDates.length > 1 && (
+                                                    <div className="pt-3 mt-2 border-t border-[var(--color-border-primary)]">
                                                         <button
                                                             type="button"
-                                                            onClick={() =>
-                                                                setSelectedDates((prev) =>
-                                                                    prev.filter((x) => x !== d)
-                                                                )
-                                                            }
-                                                            className="text-[var(--color-text-secondary)] hover:text-red-500 hover:bg-red-50 rounded-full p-1.5 transition-colors opacity-70 hover:opacity-100"
-                                                            title="Remove Date"
+                                                            onClick={() => setSelectedDates([])}
+                                                            className="w-full text-xs text-red-500 hover:text-red-600 font-medium py-1 transition-colors text-center"
                                                         >
-                                                            <X size={14} />
+                                                            Clear All Dates
                                                         </button>
                                                     </div>
-                                                ))}
-                                            </div>
-                                            
-                                            {selectedDates.length > 1 && (
-                                                <div className="pt-3 mt-2 border-t border-[var(--color-border-primary)]">
-                                                    <button
-                                                        type="button"
-                                                        onClick={() => setSelectedDates([])}
-                                                        className="w-full text-xs text-red-500 hover:text-red-600 font-medium py-1 transition-colors text-center"
-                                                    >
-                                                        Clear All Dates
-                                                    </button>
-                                                </div>
-                                            )}
-                                        </>
-                                    )}
+                                                )}
+                                            </>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
                             <InputField
                                 label="Description"
                                 value={formData.description}
@@ -1102,11 +1119,10 @@ function DatePickerComponent({ selectedDates, setSelectedDates }) {
                             onClick={() => handleDateClick(date)}
                             className={`w-8 h-8 text-xs rounded-md border flex items-center justify-center transition-all font-medium
                             
-                            ${
-                                isSelected
+                            ${isSelected
                                     ? "bg-[var(--color-primary)] text-white border-[var(--color-primary)]"
                                     : "border-[var(--color-border-secondary)] hover:bg-[var(--color-bg-hover)] text-[var(--color-text-primary)]"
-                            }`}
+                                }`}
                         >
                             {date.getDate()}
                         </button>

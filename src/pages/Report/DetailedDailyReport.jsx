@@ -300,7 +300,7 @@ const Filters = ({
 
                         {/* Desktop anchored */}
                         <div
-                            className="hidden sm:block absolute z-[110] bg-[var(--color-bg-secondary)] rounded-lg shadow-2xl border border-[var(--color-border-secondary)] max-h-[80vh] overflow-hidden flex flex-col"
+                            className="hidden sm:block absolute z-[110] bg-[var(--color-bg-secondary)] rounded-lg shadow-2xl border border-[var(--color-border-secondary)] max-h-[80vh] overflow-visible flex flex-col"
                             style={{
                                 position: 'absolute',
                                 top: filterPos.ready ? filterPos.top : -9999,
@@ -326,7 +326,7 @@ const Filters = ({
                                 </div>
                             )}
 
-                            <div className="flex-1 overflow-y-auto p-4">
+                            <div className="flex-1 overflow-visible p-4">
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <FilterSelect
                                         label="Attendance Status"

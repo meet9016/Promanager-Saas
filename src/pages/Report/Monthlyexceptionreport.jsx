@@ -37,6 +37,7 @@ import Pagination from '../../Components/Pagination';
 import { SearchableDropdown } from '../../Components/Report/ReportComponents';
 import CustomSelect from '../../Components/comman/CustomSelect';
 import { Table, TableHeader, TableBody, TableRow, TableHeaderRow, Th, Td } from '../../Components/ui/Table';
+import CustomDatePicker from '../../Components/comman/CustomDatePicker';
 
 // ─── Floating anchor helpers ──────────────────────────────────────────────────
 const getScrollParents = (node) => {
@@ -361,7 +362,7 @@ const MonthlyExceptionReport = () => {
                 const rows = Array.isArray(res.data.data) ? res.data.data : [];
                 setRawData(rows);
                 setHasGenerated(true);
-                showToast('Report generated successfully!', 'success');
+                // showToast('Report generated successfully!', 'success');
             } else {
                 throw new Error(res.data?.message || 'Failed to fetch report');
             }
@@ -374,6 +375,10 @@ const MonthlyExceptionReport = () => {
             setLoading(false);
         }
     };
+
+    useEffect(() => {
+        handleGenerateReport()
+    }, [])
 
     // ── Group raw daily records by employee, then classify exceptions ─────────
     /**
@@ -759,7 +764,7 @@ const MonthlyExceptionReport = () => {
                 </div>
 
                 {/* ── Filters Card ── */}
-                <div className="bg-[var(--color-bg-secondary)] rounded-xl shadow-sm border border-[var(--color-border-secondary)] p-5 md:p-8 mb-6">
+                {/* <div className="bg-[var(--color-bg-secondary)] rounded-xl shadow-sm border border-[var(--color-border-secondary)] p-5 md:p-8 mb-6">
                     <div className="flex items-center gap-3 mb-5">
                         <div className="p-2 bg-[var(--color-primary-lightest)] rounded-lg">
                             <Filter className="h-5 w-5 text-[var(--color-primary-dark)]" />
@@ -782,7 +787,7 @@ const MonthlyExceptionReport = () => {
                     )}
 
                     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
-                        {/* Month Year */}
+                  
                         <div className="flex flex-col">
                             <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-2">
                                 <Calendar className="inline h-4 w-4 mr-1" />
@@ -808,21 +813,12 @@ const MonthlyExceptionReport = () => {
                             />
                         </div>
 
-                        {/* Branch */}
                         <div className="flex flex-col">
                             <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-2">
                                 <Building className="inline h-4 w-4 mr-1" />
                                 Branch
                             </label>
-                            {/* <select
-                                value={filters.branch_id}
-                                onChange={(e) => handleFilterChange('branch_id', e.target.value)}
-                                className="w-full px-3 py-2 bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] text-[var(--color-text-primary)]"
-                                disabled={dropdownLoading}
-                            >
-                                <option value="">All Branches</option>
-                                {branches.map((b) => <option key={b.id} value={b.id}>{b.name}</option>)}
-                            </select> */}
+                          
                             <CustomSelect
                                 name="branch_id"
                                 value={filters.branch_id}
@@ -837,21 +833,13 @@ const MonthlyExceptionReport = () => {
                             />
                         </div>
 
-                        {/* Department */}
+                     
                         <div className="flex flex-col">
                             <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-2">
                                 <Users className="inline h-4 w-4 mr-1" />
                                 Department
                             </label>
-                            {/* <select
-                                value={filters.department_id}
-                                onChange={(e) => handleFilterChange('department_id', e.target.value)}
-                                className="w-full px-3 py-2 bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] text-[var(--color-text-primary)]"
-                                disabled={dropdownLoading}
-                            >
-                                <option value="">All Departments</option>
-                                {departments.map((d) => <option key={d.id} value={d.id}>{d.name}</option>)}
-                            </select> */}
+                        
                             <CustomSelect
                                 name="department_id"
                                 value={filters.department_id}
@@ -866,21 +854,12 @@ const MonthlyExceptionReport = () => {
                             />
                         </div>
 
-                        {/* Designation */}
                         <div className="flex flex-col">
                             <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-2">
                                 <Award className="inline h-4 w-4 mr-1" />
                                 Designation
                             </label>
-                            {/* <select
-                                value={filters.designation_id}
-                                onChange={(e) => handleFilterChange('designation_id', e.target.value)}
-                                className="w-full px-3 py-2 bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] text-[var(--color-text-primary)]"
-                                disabled={dropdownLoading}
-                            >
-                                <option value="">All Designations</option>
-                                {designations.map((d) => <option key={d.id} value={d.id}>{d.name}</option>)}
-                            </select> */}
+                         
                             <CustomSelect
                                 name="designation_id"
                                 value={filters.designation_id}
@@ -895,21 +874,13 @@ const MonthlyExceptionReport = () => {
                             />
                         </div>
 
-                        {/* Employee */}
+
                         <div className="flex flex-col">
                             <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-2">
                                 <User className="inline h-4 w-4 mr-1" />
                                 Employee <span className="text-[var(--color-text-secondary)] font-normal">(optional)</span>
                             </label>
-                            {/* <SearchableDropdown
-                                options={employees}
-                                value={filters.employee_id}
-                                onChange={(value) => handleFilterChange('employee_id', value)}
-                                placeholder="Search and select employee..."
-                                disabled={dropdownLoading}
-                                displayKey="name"
-                                valueKey="id"
-                            /> */}
+                       
                             <CustomSelect
                                 name="employee_id"
                                 value={filters.employee_id}
@@ -924,7 +895,7 @@ const MonthlyExceptionReport = () => {
                             />
                         </div>
 
-                        {/* Generate button */}
+                      
                         <div className="flex flex-col">
                             <label className="block text-sm font-medium text-transparent mb-2">Generate</label>
                             <button
@@ -949,7 +920,7 @@ const MonthlyExceptionReport = () => {
                             </button>
                         </div>
                     </div>
-                </div>
+                </div> */}
 
                 {/* ── Not-yet-generated state ── */}
                 {!hasGenerated && !loading && (
@@ -1045,7 +1016,7 @@ const MonthlyExceptionReport = () => {
                                                     <div className="fixed inset-0 z-[100] bg-black/40" onClick={() => setFilterDropdown(false)} />
                                                     {/* Desktop */}
                                                     <div
-                                                        className="hidden sm:flex flex-col absolute z-[110] bg-[var(--color-bg-secondary)] rounded-lg shadow-2xl border border-[var(--color-border-secondary)] max-h-[80vh] overflow-hidden"
+                                                        className="hidden sm:flex flex-col absolute z-[110] bg-[var(--color-bg-secondary)] rounded-lg shadow-2xl border border-[var(--color-border-secondary)] max-h-[80vh] overflow-visible"
                                                         style={{ position: 'absolute', top: filterPos.ready ? filterPos.top : -9999, left: filterPos.ready ? Math.max(12, filterPos.left) : -9999, width: Math.max(420, filterPos.width), minWidth: 420 }}
                                                     >
                                                         <div className="flex items-center justify-between p-4 border-b border-[var(--color-border-secondary)]">
@@ -1054,11 +1025,66 @@ const MonthlyExceptionReport = () => {
                                                                 <X className="h-4 w-4" />
                                                             </button>
                                                         </div>
-                                                        <div className="flex-1 overflow-y-auto p-4">
+                                                        <div className="flex-1 overflow-visible p-4">
                                                             <div className="grid grid-cols-2 gap-4">
+
                                                                 <FilterSelect label="Branch" icon={Building} value={filters.branch_id} onChange={(v) => handleFilterChange('branch_id', v)} options={branches} disabled={dropdownLoading} placeholder="All Branches" />
                                                                 <FilterSelect label="Department" icon={Users} value={filters.department_id} onChange={(v) => handleFilterChange('department_id', v)} options={departments} disabled={dropdownLoading} placeholder="All Departments" />
                                                                 <FilterSelect label="Designation" icon={Award} value={filters.designation_id} onChange={(v) => handleFilterChange('designation_id', v)} options={designations} disabled={dropdownLoading} placeholder="All Designations" />
+
+
+
+
+                                                                <div>
+                                                                    <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                                        <Calendar className="inline h-4 w-4 mr-1" />
+                                                                        Month & Year <span className="text-red-500">*</span>
+                                                                    </label>
+
+                                                                    <DatePicker
+                                                                        selected={monthYear ? new Date(`${monthYear}-01`) : null}
+                                                                        onChange={(date) => {
+                                                                            const iso = date
+                                                                                ? `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`
+                                                                                : '';
+
+                                                                            setMonthYear(iso);
+                                                                            setHasGenerated(false);
+                                                                            setRawData([]);
+                                                                        }}
+                                                                        dateFormat="MMMM yyyy"
+                                                                        showMonthYearPicker
+                                                                        showFullMonthYearPicker
+                                                                        className="w-full px-3 py-2 rounded-lg border border-[var(--color-border-secondary)] bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)]"
+                                                                        placeholderText="Select month and year"
+                                                                        maxDate={new Date()}
+                                                                        showPopperArrow={false}
+                                                                    />
+
+                                                                </div>
+
+                                                                <div>
+                                                                    <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                                        <User className="inline h-4 w-4 mr-1" />
+                                                                        Employee <span className="text-[var(--color-text-muted)] font-normal">(optional)</span>
+                                                                    </label>
+
+                                                                    <CustomSelect
+                                                                        name="employee_id"
+                                                                        value={filters.employee_id}
+                                                                        onChange={(e) => handleFilterChange('employee_id', e.target.value)}
+                                                                        options={employees.map((emp) => ({
+                                                                            value: emp.id,
+                                                                            label: emp.name,
+                                                                        }))}
+                                                                        placeholder="Search and select employee..."
+                                                                        searchable={true}
+                                                                        disabled={dropdownLoading}
+                                                                    />
+                                                                </div>
+
+
+
                                                             </div>
                                                         </div>
                                                         <div className="flex gap-2 p-4 border-t border-[var(--color-border-secondary)]">

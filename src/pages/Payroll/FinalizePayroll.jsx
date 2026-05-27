@@ -22,6 +22,7 @@ import { Toast } from '../../Components/ui/Toast';
 import { useSelector } from 'react-redux';
 import Pagination from '../../Components/Pagination';
 import LoadingSpinner from "../../Components/Loader/LoadingSpinner"
+import CustomSelect from '../../Components/comman/CustomSelect';
 
 const SORT_DIRECTIONS = {
   ASCENDING: 'ascending',
@@ -503,7 +504,7 @@ export default function FinalizePayroll() {
               <div className="flex items-center gap-3">
                 {/* Month Filter */}
                 <div className="relative">
-                  <select
+                  {/* <select
                     value={selectedMonth}
                     onChange={(e) => setSelectedMonth(e.target.value)}
                     className="appearance-none bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] rounded-md px-4 py-2 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-text-white)] focus:border-[var(--color-border-primary)]"
@@ -513,13 +514,24 @@ export default function FinalizePayroll() {
                         {option.label}
                       </option>
                     ))}
-                  </select>
-                  <ChevronDown className="absolute right-2 top-2.5 h-4 w-4 text-[var(--color-text-muted)] pointer-events-none" />
+                  </select> */}
+                  <CustomSelect
+                    name="selectedMonth"
+                    value={selectedMonth}
+                    onChange={(e) => setSelectedMonth(e.target.value)}
+                    options={monthOptions.map((option) => ({
+                      value: option.value,
+                      label: option.label,
+                    }))}
+                    searchable={false}
+                    className="w-full h-[42px]"
+                  />
+                  {/* <ChevronDown className="absolute right-2 top-2.5 h-4 w-4 text-[var(--color-text-muted)] pointer-events-none" /> */}
                 </div>
 
                 {/* Year Filter */}
                 <div className="relative">
-                  <select
+                  {/* <select
                     value={selectedYear}
                     onChange={(e) => setSelectedYear(e.target.value)}
                     className="appearance-none bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] rounded-md px-4 py-2 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-text-white)] focus:border-[var(--color-border-primary)]"
@@ -530,7 +542,18 @@ export default function FinalizePayroll() {
                       </option>
                     ))}
                   </select>
-                  <ChevronDown className="absolute right-2 top-2.5 h-4 w-4 text-[var(--color-text-muted)] pointer-events-none" />
+                  <ChevronDown className="absolute right-2 top-2.5 h-4 w-4 text-[var(--color-text-muted)] pointer-events-none" /> */}
+                  <CustomSelect
+                    name="selectedYear"
+                    value={selectedYear}
+                    onChange={(e) => setSelectedYear(e.target.value)}
+                    options={yearOptions.map((option) => ({
+                      value: option.value,
+                      label: option.label,
+                    }))}
+                    searchable={false}
+                    className="w-full h-[42px]"
+                  />
                 </div>
 
                 {/* Search */}
@@ -771,7 +794,7 @@ export default function FinalizePayroll() {
                   <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-1">
                     Payment Mode
                   </label>
-                  <select
+                  {/* <select
                     value={paymentData.payment_mode}
                     onChange={(e) => setPaymentData(prev => ({ ...prev, payment_mode: e.target.value }))}
                     className="w-full border border-[var(--color-border-secondary)] rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)]"
@@ -781,7 +804,25 @@ export default function FinalizePayroll() {
                         {label}
                       </option>
                     ))}
-                  </select>
+                  </select> */}
+                  <CustomSelect
+                    name="payment_mode"
+                    value={paymentData.payment_mode}
+                    onChange={(e) =>
+                      setPaymentData((prev) => ({
+                        ...prev,
+                        payment_mode: e.target.value,
+                      }))
+                    }
+                    options={Object.entries(PAYMENT_MODES).map(
+                      ([value, label]) => ({
+                        value,
+                        label,
+                      })
+                    )}
+                    searchable={false}
+                    className="w-full h-[42px]"
+                  />
                 </div>
 
                 <div>

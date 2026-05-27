@@ -858,10 +858,10 @@ const AttendanceExceptionReport = () => {
                                     <CustomDatePicker
                                         name="selected_date"
                                         value={selectedDate}
-                                       onChange={(e) => setSelectedDate(new Date(e.target.value))}
+                                        onChange={(e) => setSelectedDate(new Date(e.target.value))}
                                         placeholder="DD-MM-YYYY"
                                         maxDate={new Date()}
-                                        clearable={true} 
+                                        clearable={true}
                                     />
                                 </div>
 
@@ -884,7 +884,7 @@ const AttendanceExceptionReport = () => {
                                         <>
                                             <div className="fixed inset-0 z-[100] bg-black/40" onClick={() => setFilterDropdown(false)} />
                                             <div
-                                                className="hidden sm:flex flex-col absolute z-[110] bg-[var(--color-bg-secondary)] rounded-lg shadow-2xl border border-[var(--color-border-secondary)] max-h-[80vh] overflow-hidden"
+                                                className="hidden sm:flex flex-col absolute z-[110] bg-[var(--color-bg-secondary)] rounded-lg shadow-2xl border border-[var(--color-border-secondary)] max-h-[80vh] overflow-visible"
                                                 style={{ position: 'absolute', top: filterPos.ready ? filterPos.top : -9999, left: filterPos.ready ? Math.max(12, filterPos.left) : -9999, width: Math.max(420, filterPos.width), minWidth: 420 }}
                                             >
                                                 <div className="flex items-center justify-between p-4 border-b border-[var(--color-border-secondary)]">
@@ -899,7 +899,7 @@ const AttendanceExceptionReport = () => {
                                                         <span className="text-sm">Loading filter options...</span>
                                                     </div>
                                                 )}
-                                                <div className="flex-1 overflow-y-auto p-4">
+                                                <div className="flex-1 overflow-visible p-4">
                                                     <div className="grid grid-cols-2 gap-4">
                                                         <FilterSelect label="Branch" icon={Building} value={filters.branch_id} onChange={(v) => handleFilterChange('branch_id', v)} options={branches} disabled={dropdownLoading} placeholder="All Branches" />
                                                         <FilterSelect label="Department" icon={Users} value={filters.department_id} onChange={(v) => handleFilterChange('department_id', v)} options={departments} disabled={dropdownLoading} placeholder="All Departments" />

@@ -482,7 +482,7 @@ const LeaveManagement = () => {
                                         ].map(({ key, label }) => (
                                             <Th key={`header-${key}`} className="px-6 py-3 text-left">
                                                 <button
-                                                    className="flex items-center font-semibold hover:text-[var(--color-text-primary)] transition-colors"
+                                                    className="flex items-center font-semibold  transition-colors"
                                                     onClick={() => requestSort(key)}
                                                 >
                                                     {label}
