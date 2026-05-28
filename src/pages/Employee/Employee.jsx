@@ -40,6 +40,7 @@ import {
     Td
 } from '../../Components/ui/Table';
 import CustomSelect from '../../Components/comman/CustomSelect';
+import CustomInput from '../../Components/comman/CustomInput';
 
 const SORT_DIRECTIONS = {
     ASCENDING: 'ascending',
@@ -778,7 +779,7 @@ export default function Employee() {
                             </div>
 
                             <div className="flex items-center gap-3 flex-wrap">
-                                <div className="relative w-full sm:w-64">
+                                {/* <div className="relative w-full sm:w-64">
                                     <input
                                         type="text"
                                         placeholder="Search employees..."
@@ -795,6 +796,21 @@ export default function Employee() {
                                             <XCircle className="h-4 w-4" />
                                         </button>
                                     )}
+                                </div> */}
+                                <div className="relative w-full sm:w-64">
+
+                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--color-text-muted)] z-10" />
+
+                                    <CustomInput
+                                        type="text"
+                                        name="searchQuery"
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                        placeholder="Search employees..."
+                                        clearable={true}
+                                        className="!h-[37px] [&_input]:!h-[37px] [&_input]:!pl-10 [&_input]:!pr-10 [&_input]:!rounded-md"
+                                    />
+
                                 </div>
 
                                 {/* Filter button with popup */}
@@ -855,7 +871,7 @@ export default function Employee() {
                                                 </div>
 
                                                 {/* Popup body */}
-                                                <div className="flex-1 overflow-y-auto p-4">
+                                                <div className="flex-1 overflow-visible p-4">
                                                     {dropdownLoading && (
                                                         <div className="flex items-center gap-2 mb-4 text-[var(--color-text-secondary)]">
                                                             <RefreshCw className="h-4 w-4 animate-spin" />

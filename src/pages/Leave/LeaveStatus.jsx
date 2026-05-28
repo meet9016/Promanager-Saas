@@ -33,6 +33,7 @@ import {
     Building,
     Badge
 } from 'lucide-react';
+import CustomInput from '../../Components/comman/CustomInput';
 
 const SORT_DIRECTIONS = {
     ASCENDING: 'ascending',
@@ -389,7 +390,7 @@ const LeaveManagement = () => {
                             </div>
 
                             <div className="flex items-center gap-3">
-                                <div className="relative w-full sm:w-64">
+                                {/* <div className="relative w-full sm:w-64">
                                     <input
                                         type="text"
                                         placeholder="Search leave requests..."
@@ -398,6 +399,21 @@ const LeaveManagement = () => {
                                         className="w-full pl-10 pr-4 py-2 border border-[var(--color-border-secondary)] rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] text-sm bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)]"
                                     />
                                     <Search className="absolute left-3 top-2.5 h-4 w-4 text-[var(--color-text-muted)]" />
+                                </div> */}
+                                <div className="relative w-full sm:w-64">
+
+                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--color-text-muted)] z-10" />
+
+                                    <CustomInput
+                                        type="text"
+                                        name="searchQuery"
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                        placeholder="Search leave requests..."
+                                        clearable={true}
+                                        className="!h-[37px] [&_input]:!h-[37px] [&_input]:!pl-10 [&_input]:!pr-4 [&_input]:!rounded-lg"
+                                    />
+
                                 </div>
 
                                 {permissions['leave_create'] && (
@@ -482,7 +498,7 @@ const LeaveManagement = () => {
                                         ].map(({ key, label }) => (
                                             <Th key={`header-${key}`} className="px-6 py-3 text-left">
                                                 <button
-                                                    className="flex items-center font-semibold  transition-colors"
+                                                    className="flex items-center font-semibold uppercase transition-colors"
                                                     onClick={() => requestSort(key)}
                                                 >
                                                     {label}

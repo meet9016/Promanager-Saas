@@ -19,6 +19,7 @@ import {
     Td
 } from '../../Components/ui/Table';
 import CustomSelect from '../../Components/comman/CustomSelect';
+import CustomInput from '../../Components/comman/CustomInput';
 
 const SORT_DIRECTIONS = {
     ASCENDING: 'ascending',
@@ -603,8 +604,7 @@ const LoanAdvance = () => {
                                         <option key={option} value={option}>{option}</option>
                                     ))}
                                 </select> */}
-                                <div className="relative w-full sm:w-44">
-
+                                {/* <div className="relative w-full sm:w-44">
                                     <CustomSelect
                                         name="filter"
                                         value={filter}
@@ -617,10 +617,56 @@ const LoanAdvance = () => {
                                         disabled={loading || dropdownLoading}
                                         className="!h-10"
                                     />
+                                </div> */}
+
+
+                                <div className="relative w-full sm:w-64">
+
+                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--color-text-muted)] z-10" />
+
+                                    <CustomInput
+                                        type="text"
+                                        name="searchQuery"
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                        placeholder="Search loans..."
+                                        clearable={true}
+                                        className="!h-[37px] [&_input]:!h-[37px] [&_input]:!pl-10 [&_input]:!pr-4 [&_input]:!rounded-md"
+                                    />
 
                                 </div>
 
-                                <div className="relative w-full sm:w-64">
+                                {permissions['loan_create'] && (
+                                    <button
+                                        onClick={handleAddLoanRedirect}
+                                        className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 h-[37px] rounded-md text-sm font-medium transition-colors"
+                                        disabled={loading}
+                                    >
+                                        <Plus className="h-4 w-4" />
+                                        Add Loan/Advance
+                                    </button>
+                                )}
+
+
+
+
+
+                                <div className="relative w-full sm:w-44">
+                                    <CustomSelect
+                                        name="filter"
+                                        value={filter}
+                                        onChange={(e) => handleFilterChange(e.target.value)}
+                                        options={getFilterOptions.map((option) => ({
+                                            value: option,
+                                            label: option,
+                                        }))}
+                                        searchable={false}
+                                        disabled={loading || dropdownLoading}
+                                        className="!h-[38px] [&_button]:!h-[38px] [&_button]:!min-h-[34px]"
+                                    />
+                                </div>
+
+                                {/* <div className="relative w-full sm:w-64">
                                     <input
                                         type="text"
                                         placeholder="Search loans..."
@@ -640,7 +686,8 @@ const LoanAdvance = () => {
                                         <Plus className="h-4 w-4" />
                                         Add Loan/Advance
                                     </button>
-                                )}
+                                )} */}
+
                             </div>
                         </div>
                     </div>

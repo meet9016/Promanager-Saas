@@ -36,6 +36,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import Pagination from '../../Components/Pagination';
 import { Table, TableHeader, TableBody, TableRow, TableHeaderRow, Th, Td } from '../../Components/ui/Table';
 import CustomDatePicker from '../../Components/comman/CustomDatePicker';
+import CustomInput from '../../Components/comman/CustomInput';
 
 
 
@@ -989,8 +990,46 @@ const DailyAttendance = () => {
               </div>
 
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3">
+
+                {/* Search */}
+                {/* <div className="relative w-full sm:w-64">
+                  <input
+                    type="text"
+                    placeholder="Search employees..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full pl-8 sm:pl-10 pr-8 sm:pr-10 py-1.5 sm:py-2 border border-[var(--color-border-secondary)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent text-xs sm:text-sm bg-[var(--color-bg-primary)] hover:bg-[var(--color-bg-hover)] text-[var(--color-text-primary)] transition-all duration-200"
+                  />
+                  <Search className="absolute left-2 sm:left-3 top-2 sm:top-2.5 h-3 w-3 sm:h-4 sm:w-4 text-[var(--color-text-muted)]" />
+                  {searchQuery && (
+                    <button
+                      onClick={() => setSearchQuery('')}
+                      className="absolute right-2 sm:right-3 top-2 sm:top-2.5 h-3 w-3 sm:h-4 sm:w-4 text-[var(--color-text-muted)] hover:text-[var(--color-text-secondary)]"
+                    >
+                      <XCircle className="h-3 w-3 sm:h-4 sm:w-4" />
+                    </button>
+                  )}
+                </div> */}
+                {/* Search */}
+                <div className="relative w-full sm:w-64">
+
+                  <Search className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 h-3 w-3 sm:h-4 sm:w-4 text-[var(--color-text-muted)] z-10" />
+
+                  <CustomInput
+                    type="text"
+                    name="searchQuery"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Search employees..."
+                    clearable={true}
+                    className="!h-[37px] sm:!h-[40px] [&_input]:!h-[37px] sm:[&_input]:!h-[40px] [&_input]:!pl-8 sm:[&_input]:!pl-10 [&_input]:!pr-8 sm:[&_input]:!pr-10 [&_input]:!rounded-xl [&_input]:!text-xs sm:[&_input]:!text-sm"
+                  />
+
+                </div>
+
+
                 {/* Date */}
-                <div className="relative flex items-center z-[40] min-w-[140px] sm:min-w-[160px]">
+                <div className="relative flex items-center z-[9999] min-w-[140px] sm:min-w-[160px] overflow-visible">
                   {/* <Calendar className="absolute left-3 w-4 h-4 text-[var(--color-primary)] pointer-events-none z-10" />
 
                   <DatePicker
@@ -1011,25 +1050,6 @@ const DailyAttendance = () => {
                   />
                 </div>
 
-                {/* Search */}
-                <div className="relative w-full sm:w-64">
-                  <input
-                    type="text"
-                    placeholder="Search employees..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full pl-8 sm:pl-10 pr-8 sm:pr-10 py-1.5 sm:py-2 border border-[var(--color-border-secondary)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent text-xs sm:text-sm bg-[var(--color-bg-primary)] hover:bg-[var(--color-bg-hover)] text-[var(--color-text-primary)] transition-all duration-200"
-                  />
-                  <Search className="absolute left-2 sm:left-3 top-2 sm:top-2.5 h-3 w-3 sm:h-4 sm:w-4 text-[var(--color-text-muted)]" />
-                  {searchQuery && (
-                    <button
-                      onClick={() => setSearchQuery('')}
-                      className="absolute right-2 sm:right-3 top-2 sm:top-2.5 h-3 w-3 sm:h-4 sm:w-4 text-[var(--color-text-muted)] hover:text-[var(--color-text-secondary)]"
-                    >
-                      <XCircle className="h-3 w-3 sm:h-4 sm:w-4" />
-                    </button>
-                  )}
-                </div>
               </div>
             </div>
           </div>

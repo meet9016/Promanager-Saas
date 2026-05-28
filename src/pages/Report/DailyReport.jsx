@@ -31,13 +31,14 @@ import { exportToExcel } from '../../utils/exportUtils/DailyReport/excelExport';
 import { Toast } from '../../Components/ui/Toast';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import CustomSelect from '../../Components/comman/CustomSelect';
 
 // ⬇️ ADD THIS: adjust the import path to where your Pagination component lives
 // e.g. '../../Components/common/Pagination' or '../Pagination'
 import Pagination from '../../Components/Pagination';
 import { Table, TableHeader, TableBody, TableRow, TableHeaderRow, Th, Td } from '../../Components/ui/Table';
 import CustomDatePicker from '../../Components/comman/CustomDatePicker';
-import CustomSelect from '../../Components/comman/CustomSelect';
+import CustomInput from '../../Components/comman/CustomInput';
 
 /** ---------- Floating Anchors: robust positioning utilities ---------- **/
 const getScrollParents = (node) => {
@@ -654,24 +655,21 @@ const DailyReport = () => {
 
 
 
+                          
                                 <div className="relative w-full sm:w-64">
-                                    <input
+                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--color-text-muted)] z-20" />
+                                    <CustomInput
                                         type="text"
-                                        placeholder="Search employees..."
+                                        name="searchQuery"
                                         value={searchQuery}
                                         onChange={(e) => setSearchQuery(e.target.value)}
-                                        className="w-full pl-10 pr-10 py-2 border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-text-white)] focus:border-[var(--color-border-primary)] text-sm"
+                                        placeholder="Search employees..."
+                                        clearable={true}
+                                        className="!h-[39px] [&_input]:!h-[39px] [&_input]:!pl-10"
                                     />
-                                    <Search className="absolute left-3 top-2.5 h-4 w-4 text-[var(--color-text-muted)]" />
-                                    {searchQuery && (
-                                        <button
-                                            onClick={handleClearSearch}
-                                            className="absolute right-3 top-2.5 h-4 w-4 text-[var(--color-text-muted)] hover:text-[var(--color-text-secondary)]"
-                                        >
-                                            <XCircle className="h-4 w-4" />
-                                        </button>
-                                    )}
                                 </div>
+
+
                                 <div className="relative flex items-center z-[40] min-w-[140px] sm:min-w-[160px] h-[40px]">
                                     <CustomDatePicker
                                         name="dateOfBirth"
@@ -680,7 +678,7 @@ const DailyReport = () => {
                                         placeholder="DD-MM-YYYY"
                                         maxDate={new Date()}
                                         clearable={true}
-                                       
+
                                     />
                                 </div>
 

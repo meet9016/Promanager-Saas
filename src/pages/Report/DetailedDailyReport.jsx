@@ -38,6 +38,7 @@ import Pagination from '../../Components/Pagination';
 import { Table, TableHeader, TableBody, TableRow, TableHeaderRow, Th, Td } from '../../Components/ui/Table';
 import CustomDatePicker from '../../Components/comman/CustomDatePicker';
 import CustomSelect from '../../Components/comman/CustomSelect';
+import CustomInput from '../../Components/comman/CustomInput';
 
 /** ---------- Floating Anchors ---------- **/
 const getScrollParents = (node) => {
@@ -936,7 +937,7 @@ const DetailedDailyReport = () => {
 
 
                                 {/* Search */}
-                                <div className="relative w-full sm:w-64">
+                                {/* <div className="relative w-full sm:w-64">
                                     <input
                                         type="text"
                                         placeholder="Search employees..."
@@ -944,13 +945,7 @@ const DetailedDailyReport = () => {
                                         onChange={(e) => setSearchQuery(e.target.value)}
                                         className="w-full pl-10 pr-10 py-2 border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-text-white)] focus:border-[var(--color-border-primary)] text-sm"
                                     />
-                                    {/* <CustomInput
-                                        type="text"
-                                        placeholder="Search employees..."
-                                        value={searchQuery}
-                                        onChange={(e) => setSearchQuery(e.target.value)}
-                                        className="w-full pl-10 pr-10 py-2 text-sm"
-                                    /> */}
+                                 
                                     <Search className="absolute left-3 top-2.5 h-4 w-4 text-[var(--color-text-muted)]" />
                                     {searchQuery && (
                                         <button
@@ -960,6 +955,21 @@ const DetailedDailyReport = () => {
                                             <XCircle className="h-4 w-4" />
                                         </button>
                                     )}
+                                </div> */}
+                                <div className="relative w-full sm:w-64">
+
+                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--color-text-muted)] z-10" />
+
+                                    <CustomInput
+                                        type="text"
+                                        name="searchQuery"
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                        placeholder="Search employees..."
+                                        clearable={true}
+                                        className="!h-[40px] [&_input]:!h-[42px] [&_input]:!pl-10 [&_input]:!pr-10"
+                                    />
+
                                 </div>
                                 <div className="space-y-2 h-[40px]">
                                     {/* <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Date of Birth</label>  */}
@@ -1214,7 +1224,7 @@ const DetailedDailyReport = () => {
                     <div className="fixed inset-0 z-[200]">
                         <div className="absolute inset-0 bg-black/40" onClick={() => setTimelineFor(null)} />
                         <div className="absolute inset-x-0 top-12 mx-auto w-[95%] max-w-3xl rounded-2xl shadow-2xl overflow-hidden border border-[var(--color-border-secondary)] bg-[var(--color-bg-secondary)]">
-                            <div className="flex items-center justify-between px-5 py-4 border-b border-[var(--color-border-secondary)]">
+                            <div className="flex items-center justify-between px-5 py-4 border-b border-[var(--color-border-secondary)] ">
                                 <div className="flex items-center gap-2">
                                     <Timer className="h-5 w-5 text-[var(--color-primary-dark)]" />
                                     <h4 className="text-sm sm:text-base font-semibold text-[var(--color-text-primary)]">
@@ -1232,15 +1242,15 @@ const DetailedDailyReport = () => {
 
                             <div className="px-5 pt-4">
                                 <div className="rounded-lg border border-[var(--color-border-secondary)] overflow-hidden">
-                                    <div className="flex items-center gap-2 px-3 py-3 border-b border-[var(--color-border-secondary)]">
-                                        <Clock className="h-4 w-4 text-[var(--color-primary-dark)]" />
-                                        <h5 className="text-sm font-semibold">Timeline</h5>
-                                    </div>
+                                    {/* <div className="flex items-center gap-2 px-3 py-3 border-b bg-[var(--color-primary-lighter)] border-[var(--color-border-secondary)]">
+                                        <Clock className="h-4 w-4 text-[var(--color-primary-dark)] text-[var(--color-primary-darker)]" />
+                                        <h5 className="text-sm text-[var(--color-primary-darker)] text-[var(--color-primary-dark)] font-semibold">Timeline</h5>
+                                    </div> */}
                                     <div className="overflow-x-auto">
                                         <Table className="w-full">
-                                            <TableHeader className="bg-[var(--color-bg-gray-light)]">
+                                            <TableHeader className="bg-[var(--color-primary-dark)]">
                                                 <TableHeaderRow>
-                                                    <Th className="text-[11px] text-center font-medium">#</Th>
+                                                    <Th className="text-[11px] text-center font-medium ">#</Th>
                                                     <Th className="text-[11px] text-center font-medium">Clock In</Th>
                                                     <Th className="text-[11px] text-center font-medium">Clock Out</Th>
                                                 </TableHeaderRow>

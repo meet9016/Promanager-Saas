@@ -383,19 +383,19 @@ const SubscriptionPage = () => {
             </div>
 
             {/* History Table */}
-            <div className="bg-[var(--color-bg-secondary)] rounded-3xl shadow-sm border border-[var(--color-border-primary)] overflow-hidden">
+            <div className="bg-[var(--color-primary-lighter)] rounded-3xl shadow-sm border border-[var(--color-border-primary)] overflow-hidden ">
                 <div className="flex items-center justify-between p-6 border-b border-[var(--color-border-primary)]">
                     <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 rounded-xl bg-[var(--color-primary-lightest)] flex items-center justify-center">
+                        <div className="w-12 h-12 rounded-xl flex items-center justify-center">
                             <UsersIcon className="w-6 h-6 text-[var(--color-primary-dark)]" />
                         </div>
 
                         <div>
-                            <h2 className="text-xl font-bold text-[var(--color-text-primary)]">
+                            <h2 className="text-xl font-bold text-[var(--color-primary-dark)]">
                                 Subscription History
                             </h2>
 
-                            <p className="text-sm text-[var(--color-text-secondary)]">
+                            <p className="text-sm text-[var(--color-primary-dark)]">
                                 View all your invoices and plans
                             </p>
                         </div>
@@ -432,7 +432,7 @@ const SubscriptionPage = () => {
                                     ].map((label) => (
                                         <Th
                                             key={label}
-                                            className="bg-[var(--color-primary-lightest)] text-[var(--color-primary-darker)] font-bold text-center whitespace-nowrap"
+                                            className=" text-white font-bold text-center whitespace-nowrap"
                                         >
                                             {label}
                                         </Th>
@@ -444,7 +444,7 @@ const SubscriptionPage = () => {
                                 {subscriptions.map((item, index) => (
                                     <TableRow
                                         key={index}
-                                        className="hover:bg-[var(--color-primary-lightest)] transition-all"
+                                        className="hover:bg-[var(--color-primary-lightest)] bg-white transition-all"
                                     >
                                         <Td className="font-semibold text-center">
                                             {item.invoice_no}

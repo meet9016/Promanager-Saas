@@ -522,14 +522,14 @@ const AddLoanAdvance = ({
                                 </div>
                             </div>
                         </div>
-                        <div className="p-8">
-                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div className="p-8 overflow-visible">
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 overflow-visible">
                                 <div className="lg:col-span-2">
                                     <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
                                         <Users className="w-4 h-4 inline mr-2" />
                                         Select Employee
                                     </label>
-                                    <div className="relative">
+                                    <div className="relative overflow-visible ">
                                         {/* <input
                                             type="text"
                                             placeholder="Search employee by name or ID..."

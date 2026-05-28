@@ -38,6 +38,7 @@ import { SearchableDropdown } from '../../Components/Report/ReportComponents';
 import CustomSelect from '../../Components/comman/CustomSelect';
 import { Table, TableHeader, TableBody, TableRow, TableHeaderRow, Th, Td } from '../../Components/ui/Table';
 import CustomDatePicker from '../../Components/comman/CustomDatePicker';
+import CustomInput from '../../Components/comman/CustomInput';
 
 // ─── Floating anchor helpers ──────────────────────────────────────────────────
 const getScrollParents = (node) => {
@@ -973,14 +974,14 @@ const MonthlyExceptionReport = () => {
                                     <div className="flex items-center gap-2">
                                         {currentTab && <currentTab.icon className="h-5 w-5 text-[var(--color-primary-darker)]" />}
                                         <h3 className="text-lg font-medium text-[var(--color-primary-darker)]">{currentTab?.label}</h3>
-                                        <span className="px-2 py-0.5 bg-white/20 rounded-full text-xs text-[var(--color-primary-darker)] font-medium">
+                                        <span className="px-2 py-0.5 bg-white rounded-full text-xs text-[var(--color-primary-darker)] font-medium">
                                             {activeData.length} record{activeData.length !== 1 ? 's' : ''}
                                         </span>
                                     </div>
 
                                     <div className="flex items-center gap-3 flex-wrap">
                                         {/* Search */}
-                                        <div className="relative w-full sm:w-56">
+                                        {/* <div className="relative w-full sm:w-56">
                                             <input
                                                 type="text"
                                                 placeholder="Search employees..."
@@ -994,6 +995,21 @@ const MonthlyExceptionReport = () => {
                                                     <XCircle className="h-4 w-4 text-[var(--color-text-muted)]" />
                                                 </button>
                                             )}
+                                        </div> */}
+                                        <div className="relative w-full sm:w-56">
+
+                                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--color-text-muted)] z-10" />
+
+                                            <CustomInput
+                                                type="text"
+                                                name="searchQuery"
+                                                value={searchQuery}
+                                                onChange={(e) => setSearchQuery(e.target.value)}
+                                                placeholder="Search employees..."
+                                                clearable={true}
+                                                className="!h-[37px] [&_input]:!h-[37px] [&_input]:!pl-10 [&_input]:!pr-10 [&_input]:!rounded-lg"
+                                            />
+
                                         </div>
 
                                         {/* Filter button */}
