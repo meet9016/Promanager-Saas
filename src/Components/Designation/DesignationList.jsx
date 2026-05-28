@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from "react";
 import { Trash2, Briefcase, X, Search } from "lucide-react";
 import { useSelector } from 'react-redux';
-import { ConfirmDialog } from '../ui/ConfirmDialog';
+import { ConfirmDialog } from '../comman/ConfirmDialog';
 import DesignationForm from "./DesignationForm";
 import useDesignations from "../../hooks/useDesignations";
 import LoadingSpinner from "../Loader/LoadingSpinner"

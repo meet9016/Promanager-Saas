@@ -31,7 +31,7 @@ const SalaryTrend = () => {
   const { highest, average, growth } = getStats();
 
   return (
-    <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8 hover:shadow-xl transition-all duration-300">
+    <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-lg border border-[var(--color-border-secondary)] p-8 hover:shadow-xl transition-all duration-300">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
           <div className="p-3 bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-dark)] rounded-xl shadow-lg">
@@ -40,11 +40,11 @@ const SalaryTrend = () => {
             </svg>
           </div>
           <div>
-            <h3 className="text-xl font-bold text-gray-900">Salary Trend</h3>
-            <p className="text-sm text-gray-500">Monthly salary analysis</p>
+            <h3 className="text-xl font-bold text-[var(--color-text-primary)]">Salary Trend</h3>
+            <p className="text-sm text-[var(--color-text-secondary)]">Monthly salary analysis</p>
           </div>
         </div>
-        <div className="flex items-center gap-2 text-sm text-gray-600 bg-gray-100 px-3 py-2 rounded-full border border-gray-200">
+        <div className="flex items-center gap-2 text-sm text-[var(--color-text-primary)] bg-[var(--color-bg-primary)] px-3 py-2 rounded-full border border-[var(--color-border-secondary)]">
           <div className="w-3 h-3 bg-[var(--color-primary)] rounded-full shadow-sm"></div>
           <span className="font-medium">Average</span>
         </div>
@@ -99,7 +99,7 @@ const SalaryTrend = () => {
             </ResponsiveContainer>
           </div>
           {/* Summary Stats */}
-          <div className="grid grid-cols-3 gap-4 pt-6 border-t border-gray-200">
+          <div className="grid grid-cols-3 gap-4 pt-6 border-t border-[var(--color-border-secondary)]">
             <div className="text-center p-4 bg-gradient-to-br from-green-50 to-green-100 rounded-xl border border-green-200 hover:shadow-lg transition-all duration-200">
               <p className="text-sm font-semibold text-gray-600 mb-2">Highest</p>
               <p className="text-xl font-bold text-green-700">

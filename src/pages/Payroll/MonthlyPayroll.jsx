@@ -30,7 +30,7 @@ import { useAuth } from '../../context/AuthContext';
 import api from '../../api/axiosInstance';
 import { useSelector } from 'react-redux';
 import { Toast } from '../../Components/ui/Toast';
-import { ConfirmDialog } from '../../Components/ui/ConfirmDialog';
+import { ConfirmDialog } from '../../Components/comman/ConfirmDialog';
 import LoadingSpinner from '../../Components/Loader/LoadingSpinner';
 import CustomSelect from '../../Components/comman/CustomSelect';
 import CustomInput from '../../Components/comman/CustomInput';

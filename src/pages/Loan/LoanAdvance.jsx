@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux';
 import { Toast } from '../../Components/ui/Toast';
 import { LoanDetailsModal } from '../../Components/ui/LoanDetailsModal';
 import { AdvanceDetailsModal } from '../../Components/ui/AdvanceDetailsModal';
-import { ConfirmDialog } from '../../Components/ui/ConfirmDialog';
+import { ConfirmDialog } from '../../Components/comman/ConfirmDialog';
 import LoadingSpinner from "../../Components/Loader/LoadingSpinner";
 import {
     Table,

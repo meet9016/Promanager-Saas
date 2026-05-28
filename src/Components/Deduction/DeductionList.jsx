@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Trash2, Calculator } from "lucide-react";
 import { useSelector } from 'react-redux';
-import { ConfirmDialog } from '../ui/ConfirmDialog';
+import { ConfirmDialog } from '../comman/ConfirmDialog';
 import DeductionForm from "./DeductionForm";
 import useDeductions from "../../hooks/useDeductions";
 import LoadingSpinner from "../Loader/LoadingSpinner"

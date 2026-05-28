@@ -24,7 +24,7 @@ import {
     XCircle
 } from "lucide-react";
 import LoadingSpinner from "../../Components/Loader/LoadingSpinner";
-import { ConfirmDialog } from "../../Components/ui/ConfirmDialog";
+import { ConfirmDialog } from "../../Components/comman/ConfirmDialog";
 import { Toast } from "../../Components/ui/Toast";
 import CustomSelect from "../../Components/comman/CustomSelect";
 import { Table, TableHeader, TableBody, TableRow, TableHeaderRow, Th, Td } from '../../Components/ui/Table';
@@ -1212,3 +1212,4 @@ function Modal({ onClose, title, children }) {
         </div>
     );
 }
+

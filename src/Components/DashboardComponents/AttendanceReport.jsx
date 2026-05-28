@@ -39,7 +39,7 @@ const KEY_MAPPING = {
     [COLUMN_KEYS.STATUS]: 'status'
 };
 
-const AttendanceReport = () => {
+const AttendanceReport = ({ salaryTrendComponent, payrollSummaryComponent }) => {
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [hoveredSegment, setHoveredSegment] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');
@@ -399,6 +399,7 @@ const AttendanceReport = () => {
                                 value={selectedDate}
                                 onChange={(e) => handleDateChange(new Date(e.target.value))}
                                 placeholder="DD-MM-YYYY"
+                                align="right"
                                 className="[&_input]:!bg-[var(--color-bg-secondary-20)] [&_input]:!border-[var(--color-bg-secondary-30)] [&_input]:!text-[var(--color-text-white)] [&_input]:!placeholder-[var(--color-text-white-90)] [&_input]:!rounded-lg [&_input]:!py-2 [&_input]:!text-sm"
                             />
 
@@ -467,9 +468,9 @@ const AttendanceReport = () => {
             </div>
 
             {/* Main Content */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:items-stretch">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:items-stretch mb-8">
                 {/* Chart Section */}
-                <div className="lg:col-span-1">
+                <div className="lg:col-span-1 rounded-2xl shadow-lg overflow-hidden border border-[var(--color-border-secondary)]">
                     <div className="bg-[var(--color-bg-secondary)] rounded-lg shadow-sm p-8 h-full flex flex-col">
                         <div className="flex items-center justify-between mb-6">
                             <h3 className="text-lg font-semibold text-[var(--color-text-primary)]">Attendance Overview</h3>
@@ -521,9 +522,26 @@ const AttendanceReport = () => {
                     </div>
                 </div>
 
-                {/* Table Section */}
+                {/* Salary Trend Section */}
                 <div className="lg:col-span-2">
-                    <div className="bg-[var(--color-bg-secondary)] rounded-lg shadow-sm overflow-hidden h-full flex flex-col">
+                    {salaryTrendComponent && (
+                        <div className="h-full">
+                            {salaryTrendComponent}
+                        </div>
+                    )}
+                </div>
+            </div>
+
+            {/* Payroll Summary Section */}
+            {payrollSummaryComponent && (
+                <div className="mb-8">
+                    {payrollSummaryComponent}
+                </div>
+            )}
+
+            {/* Table Section */}
+            <div className="w-full">
+                <div className="bg-[var(--color-bg-secondary)] rounded-lg shadow-sm overflow-hidden h-full flex flex-col">
                         {/* Table Header */}
                         <div className="bg-[var(--color-primary-lighter)]  px-6 py-4 border-b border-[var(--color-border-secondary)]">
                             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -743,7 +761,6 @@ const AttendanceReport = () => {
                         />
                     </div>
                 </div>
-            </div>
             {toast && (
                 <Toast
                     message={toast.message}

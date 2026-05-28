@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { useDispatch } from 'react-redux';
 import { clearPermissions } from '../redux/permissionsSlice';
 import { ThemeToggle } from '../context/Themetoggle';
-import { ConfirmDialog } from './ui/ConfirmDialog';
+import { ConfirmDialog } from './comman/ConfirmDialog';
 import { Link } from 'react-router-dom'; // ← add this
 import Logo from '../assets/logo.png'
 
@@ -126,18 +126,18 @@ const Navbar = ({ isCollapsed, setIsCollapsed }) => {
 
                         {/* Dropdown Menu */}
                         {isDropdownOpen && (
-                            <div className="absolute right-0 top-12 bg-[var(--color-bg-secondary)] border border-[var(--color-border-primary)] rounded-xl shadow-xl w-80 overflow-hidden backdrop-blur-sm animate-in slide-in-from-top-2 duration-200">
+                            <div className="absolute right-0 top-14 bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] rounded-2xl shadow-2xl w-[320px] overflow-hidden animate-in slide-in-from-top-2 duration-200 z-50">
                                 {/* User Info Header */}
-                                <div className="px-4 py-4 bg-gradient-to-r from-[var(--color-bg-primary)] to-[var(--color-bg-gradient-start)] border-b border-[var(--color-border-primary)]">
-                                    <div className="flex items-center space-x-3">
-                                        <div className="w-12 h-12 bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-primary-dark)] rounded-full flex items-center justify-center text-[var(--color-text-white)] font-bold text-lg shadow-lg">
+                                <div className="p-5 bg-[var(--color-bg-secondary)] border-b border-[var(--color-border-secondary)]">
+                                    <div className="flex items-center space-x-4">
+                                        <div className="w-14 h-14 bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-dark)] rounded-full flex items-center justify-center text-white font-bold text-xl shadow-lg ring-4 ring-[var(--color-primary-lightest)]">
                                             {getUserInitials(user?.full_name)}
                                         </div>
                                         <div className="flex-1 min-w-0">
-                                            <h3 className="font-semibold text-[var(--color-text-primary)] truncate">
+                                            <h3 className="text-lg font-bold text-[var(--color-text-primary)] truncate">
                                                 {user?.full_name || user?.name || user?.username || 'User'}
                                             </h3>
-                                            <p className="text-sm text-[var(--color-text-secondary)] truncate">
+                                            <p className="text-sm font-medium text-[var(--color-text-secondary)] truncate">
                                                 {user?.email || user?.username || user?.number || '--'}
                                             </p>
                                         </div>
@@ -145,36 +145,34 @@ const Navbar = ({ isCollapsed, setIsCollapsed }) => {
                                 </div>
 
                                 {/* User Details */}
-                                <div className="px-4 py-4 border-b border-[var(--color-border-primary)] bg-[var(--color-bg-gradient-start)]">
-                                    <h4 className="text-sm font-semibold text-[var(--color-text-primary)] mb-3 flex items-center">
-                                        <User size={14} className="mr-2" />
+                                <div className="p-5 border-b border-[var(--color-border-secondary)] bg-[var(--color-bg-primary)]">
+                                    <h4 className="text-xs font-bold text-[var(--color-text-secondary)] uppercase tracking-wider mb-4 flex items-center">
+                                        <User size={14} className="mr-2 text-[var(--color-primary)]" />
                                         Account Details
                                     </h4>
-                                    <div className="space-y-2 text-sm">
-
-                                        <div className="flex justify-between items-center py-1">
-                                            <span className="text-[var(--color-text-secondary)]">Username:</span>
-                                            <span className="font-mono text-[var(--color-text-primary)] font-medium">
+                                    <div className="space-y-3 text-sm">
+                                        <div className="flex justify-between items-center bg-[var(--color-bg-secondary)] px-3 py-2 rounded-lg border border-[var(--color-border-secondary)] shadow-sm">
+                                            <span className="text-[var(--color-text-secondary)] font-medium">Username</span>
+                                            <span className="text-[var(--color-text-primary)] font-semibold">
                                                 {user?.username || '--'}
                                             </span>
                                         </div>
-                                        <div className="flex justify-between items-center py-1">
-                                            <span className="text-[var(--color-text-secondary)]">Phone:</span>
-                                            <span className="font-mono text-[var(--color-text-primary)] font-medium">
+                                        <div className="flex justify-between items-center bg-[var(--color-bg-secondary)] px-3 py-2 rounded-lg border border-[var(--color-border-secondary)] shadow-sm">
+                                            <span className="text-[var(--color-text-secondary)] font-medium">Phone</span>
+                                            <span className="text-[var(--color-text-primary)] font-semibold">
                                                 {user?.number || '--'}
                                             </span>
                                         </div>
-
-                                        <div className="flex justify-between items-center py-1">
-                                            <span className="text-[var(--color-text-secondary)]">Expire In:</span>
-                                            <span className="font-mono text-[var(--color-text-primary)] font-medium">
+                                        <div className="flex justify-between items-center bg-[var(--color-bg-secondary)] px-3 py-2 rounded-lg border border-[var(--color-border-secondary)] shadow-sm">
+                                            <span className="text-[var(--color-text-secondary)] font-medium">Expire In</span>
+                                            <span className="text-[var(--color-primary)] font-bold bg-[var(--color-primary-lightest)] px-2 py-0.5 rounded-md">
                                                 {user?.subscriptions_days ? `${user.subscriptions_days} days` : '--'}
                                             </span>
                                         </div>
                                         {user?.email && (
-                                            <div className="flex justify-between items-center py-1">
-                                                <span className="text-[var(--color-text-secondary)]">Email:</span>
-                                                <span className="font-mono text-[var(--color-text-primary)] font-medium truncate ml-2 max-w-32">
+                                            <div className="flex justify-between items-center bg-[var(--color-bg-secondary)] px-3 py-2 rounded-lg border border-[var(--color-border-secondary)] shadow-sm">
+                                                <span className="text-[var(--color-text-secondary)] font-medium">Email</span>
+                                                <span className="text-[var(--color-text-primary)] font-semibold truncate ml-2 max-w-[140px]" title={user.email}>
                                                     {user.email}
                                                 </span>
                                             </div>
@@ -191,25 +189,24 @@ const Navbar = ({ isCollapsed, setIsCollapsed }) => {
                                 </div> */}
 
                                 {/* Menu Actions */}
-                                <div className="py-2">
-                                    <Link
+                                <div className="p-3 bg-[var(--color-bg-secondary)]">
+                                    {/* <Link
                                         to="/settings"
                                         onClick={() => setIsDropdownOpen(false)}
-                                        className="w-full px-4 py-3 text-left text-sm text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-gradient-start)] hover:text-[var(--color-text-primary)] flex items-center space-x-3 transition-all duration-200 group no-underline"
+                                        className="w-full px-4 py-2.5 rounded-lg text-sm font-medium text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-primary)] hover:text-[var(--color-primary)] flex items-center space-x-3 transition-all duration-200 group no-underline mb-1"
                                     >
-                                        <div className="p-1 rounded-md bg-[var(--color-bg-gradient-start)] group-hover:bg-[var(--color-primary-lighter)] transition-colors duration-200">
-                                            <Settings size={14} className="group-hover:text-[var(--color-primary-dark)]" />
+                                        <div className="p-1.5 rounded-md bg-[var(--color-bg-primary)] group-hover:bg-[var(--color-primary-lightest)] transition-colors duration-200">
+                                            <Settings size={16} className="text-[var(--color-text-muted)] group-hover:text-[var(--color-primary)]" />
                                         </div>
                                         <span>Settings</span>
-                                    </Link>
-
+                                    </Link> */}
 
                                     <button
                                         onClick={handleLogoutClick}
-                                        className="w-full px-4 py-3 text-left text-sm text-[var(--color-error)] hover:bg-[var(--color-error-light)] hover:text-[var(--color-error-dark)] flex items-center space-x-3 transition-all duration-200 group"
+                                        className="w-full px-4 py-2.5 rounded-lg text-sm font-medium text-[var(--color-error)] hover:bg-[var(--color-error-light)] hover:text-[var(--color-error-dark)] flex items-center space-x-3 transition-all duration-200 group"
                                     >
-                                        <div className="p-1 rounded-md bg-[var(--color-error-light)] group-hover:bg-[var(--color-error)] transition-colors duration-200">
-                                            <LogOut size={14} className="group-hover:text-[var(--color-text-white)]" />
+                                        <div className="p-1.5 rounded-md bg-[var(--color-error-light)] group-hover:bg-[var(--color-error)] transition-colors duration-200">
+                                            <LogOut size={16} className="text-[var(--color-error)] group-hover:text-white" />
                                         </div>
                                         <span>Logout</span>
                                     </button>

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Trash2, IndianRupee } from "lucide-react";
 import { useSelector } from 'react-redux';
-import { ConfirmDialog } from '../ui/ConfirmDialog';
+import { ConfirmDialog } from '../comman/ConfirmDialog';
 import AllowanceForm from "./AllowanceForm";
 import useAllowances from "../../hooks/useAllowances";
 import LoadingSpinner from "../Loader/LoadingSpinner"
