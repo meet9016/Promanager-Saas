@@ -8,6 +8,12 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "../../context/AuthContext";
 import API from "../../api/axiosInstance";
 import { agreementSchema } from "../comman/validation";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+
+import { setPermissions } from "../../redux/permissionsSlice";
+import Cookies from "js-cookie";
+import CryptoJS from "crypto-js";
 
 const LandingNavbar = () => {
     const { isAuthenticated } = useAuth();
@@ -25,11 +31,32 @@ const LandingNavbar = () => {
         whatsapp: "",
         address: "",
     });
+    const [isLoading, setIsLoading] = useState(false);
+
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+
+    const { login } = useAuth();
+
+    const SECRET_KEY = import.meta.env.VITE_AES_SECRET_KEY;
+    const COOKIE_EXPIRY_DAYS = 7;
+
+    const encrypt = (val) =>
+        CryptoJS.AES.encrypt(val, SECRET_KEY).toString();
+
+    const flattenPermissions = (permissionsArray) =>
+        permissionsArray.reduce((acc, item) => ({ ...acc, ...item }), {});
 
     const handleAgreementChange = (field, value) => {
-        setAgreementForm(prev => ({
+        setAgreementForm((prev) => ({
             ...prev,
             [field]: value,
+        }));
+
+        // remove validation error on typing
+        setErrors((prev) => ({
+            ...prev,
+            [field]: "",
         }));
     };
 
@@ -41,52 +68,196 @@ const LandingNavbar = () => {
         });
     };
 
+    // const handleAgreementSubmit = async () => {
+    //     try {
+
+    //         setErrors({});
+
+    //         await agreementSchema.validate(agreementForm, { abortEarly: false });
+
+    //         const formData = new FormData();
+    //         Object.entries(agreementForm).forEach(([key, value]) =>
+    //             formData.append(key, value)
+    //         );
+
+    //         const res = await API.post("create_account_free_account", formData, {
+    //             headers: { "Content-Type": "multipart/form-data" },
+    //         });
+
+    //         const { success, message } = res.data;
+
+    //         if (success) {
+    //             setToast({ message: message || "Account created successfully!", type: "success" });
+    //             setIsAgreementOpen(false);
+    //             setAgreementForm({
+    //                 full_name: "",
+    //                 company_name: "",
+    //                 email: "",
+    //                 mobile: "",
+    //                 gst_number: "",
+    //                 whatsapp: "",
+    //                 address: "",
+    //             });
+    //         } else {
+    //             setToast({ message: message || "Failed to create account.", type: "error" });
+    //         }
+
+    //     } catch (err) {
+    //         if (err.name === "ValidationError") {
+    //             const fieldErrors = {};
+    //             err.inner.forEach(error => {
+    //                 fieldErrors[error.path] = error.message;
+    //             });
+    //             setErrors(fieldErrors);
+    //         } else {
+    //             console.error("Agreement submission error:", err);
+    //             setToast({ message: "Failed to create account. Please try again.", type: "error" });
+    //         }
+    //     }
+    // };
+
+
     const handleAgreementSubmit = async () => {
         try {
-            // Clear previous errors
             setErrors({});
+            setIsLoading(true);
 
-            // Validate the form
-            await agreementSchema.validate(agreementForm, { abortEarly: false });
-
-            const formData = new FormData();
-            Object.entries(agreementForm).forEach(([key, value]) =>
-                formData.append(key, value)
-            );
-
-            const res = await API.post("create_account_free_account", formData, {
-                headers: { "Content-Type": "multipart/form-data" },
+            await agreementSchema.validate(agreementForm, {
+                abortEarly: false,
             });
 
-            const { success, message } = res.data;
+            const formData = new FormData();
 
-            if (success) {
-                setToast({ message: message || "Account created successfully!", type: "success" });
-                setIsAgreementOpen(false);
-                setAgreementForm({
-                    full_name: "",
-                    company_name: "",
-                    email: "",
-                    mobile: "",
-                    gst_number: "",
-                    whatsapp: "",
-                    address: "",
+            Object.entries(agreementForm).forEach(([key, value]) => {
+                formData.append(key, value);
+            });
+
+            const res = await API.post(
+                "create_account_free_account",
+                formData,
+                {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                    },
+                }
+            );
+
+            const { success, message, user_data, token } = res.data;
+
+            if (!success) {
+                setToast({
+                    message: message || "Signup failed.",
+                    type: "error",
                 });
-            } else {
-                setToast({ message: message || "Failed to create account.", type: "error" });
+                return;
             }
+
+            // save token
+            if (token) {
+                localStorage.setItem("token", token);
+            }
+
+            // login auth flow
+            if (user_data?.user_id) {
+                const userData = {
+                    user_id: user_data.user_id,
+                    full_name: user_data.full_name,
+                    username: user_data.username,
+                    email: user_data.email || "",
+                    number: user_data.number,
+                    type: user_data.type,
+                    user_roles_id: user_data.user_role_id,
+                    subscriptions_status:
+                        user_data.subscriptions_status,
+                    subscriptions_days:
+                        user_data.subscriptions_days,
+                };
+
+                login(userData, true);
+
+                // permissions
+                const permFormData = new FormData();
+
+                permFormData.append(
+                    "user_roles_id",
+                    user_data.user_role_id
+                );
+
+                const permRes = await API.post(
+                    "user_permissions",
+                    permFormData,
+                    {
+                        headers: {
+                            "Content-Type":
+                                "multipart/form-data",
+                        },
+                    }
+                );
+
+                if (permRes.data?.data) {
+                    dispatch(
+                        setPermissions(
+                            flattenPermissions(
+                                permRes.data.data
+                            )
+                        )
+                    );
+                }
+
+                // remember credentials
+                Cookies.set("rememberMe", "1", {
+                    expires: COOKIE_EXPIRY_DAYS,
+                });
+
+                Cookies.set(
+                    "savedNumber",
+                    encrypt(agreementForm.mobile),
+                    {
+                        expires: COOKIE_EXPIRY_DAYS,
+                    }
+                );
+            }
+
+            setToast({
+                message: message || "Signup successful!",
+                type: "success",
+            });
+
+            setIsAgreementOpen(false);
+
+            setAgreementForm({
+                full_name: "",
+                company_name: "",
+                email: "",
+                mobile: "",
+                gst_number: "",
+                whatsapp: "",
+                address: "",
+            });
+
+            navigate("/dashboard");
 
         } catch (err) {
             if (err.name === "ValidationError") {
                 const fieldErrors = {};
-                err.inner.forEach(error => {
+
+                err.inner.forEach((error) => {
                     fieldErrors[error.path] = error.message;
                 });
+
                 setErrors(fieldErrors);
             } else {
-                console.error("Agreement submission error:", err);
-                setToast({ message: "Failed to create account. Please try again.", type: "error" });
+                console.error(err);
+
+                setToast({
+                    message:
+                        err?.response?.data?.message ||
+                        "Signup failed. Please try again.",
+                    type: "error",
+                });
             }
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -502,10 +673,11 @@ const LandingNavbar = () => {
                                         </button>
 
                                         <button
+                                            disabled={isLoading}
                                             onClick={handleAgreementSubmit}
                                             className="px-6 py-3 rounded-xl bg-[var(--color-primary)] text-white font-medium hover:opacity-90 transition-all"
                                         >
-                                            Sign Up
+                                            {isLoading ? "Submitting..." : "Sign Up"}
                                         </button>
                                     </div>
                                 </div>
