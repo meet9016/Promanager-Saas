@@ -464,7 +464,7 @@ const LandingNavbar = () => {
                                 </motion.button>
                             </NavLink>
 
-                            <button >
+                            {/* <button >
                                 <motion.button
                                     onClick={() => setIsAgreementOpen(true)}
                                     className="px-6 py-2.5 bg-white text-[var(--color-primary)] font-medium border-2 border-[var(--color-primary)] rounded-full hover:bg-[var(--color-primary)] hover:text-white transition-all"
@@ -473,7 +473,19 @@ const LandingNavbar = () => {
                                 >
                                     Sign Up
                                 </motion.button>
-                            </button>
+                            </button> */}
+                            {!isAuthenticated() && (
+                                <button>
+                                    <motion.button
+                                        onClick={() => setIsAgreementOpen(true)}
+                                        className="px-6 py-2.5 bg-white text-[var(--color-primary)] font-medium border-2 border-[var(--color-primary)] rounded-full hover:bg-[var(--color-primary)] hover:text-white transition-all"
+                                        whileHover={{ scale: 1.05, y: -2 }}
+                                        whileTap={{ scale: 0.95 }}
+                                    >
+                                        Sign Up
+                                    </motion.button>
+                                </button>
+                            )}
                         </div>
 
                         {/* Mobile Menu Button */}
@@ -524,7 +536,10 @@ const LandingNavbar = () => {
                                     </div>
 
                                     <button
-                                        onClick={() => setIsAgreementOpen(false)}
+                                        onClick={() => {
+                                            setIsAgreementOpen(false);
+                                            setErrors({});
+                                        }}
                                         className="w-10 h-10 rounded-full hover:bg-gray-100 flex items-center justify-center transition-all"
                                     >
                                         <X className="w-5 h-5 text-gray-600" />
@@ -544,7 +559,12 @@ const LandingNavbar = () => {
                                                 type="text"
                                                 placeholder="Enter full name"
                                                 value={agreementForm.full_name}
-                                                onChange={(e) => handleAgreementChange("full_name", e.target.value)}
+                                                onChange={(e) =>
+                                                    handleAgreementChange(
+                                                        "full_name",
+                                                        e.target.value.replace(/[^A-Za-z\s]/g, "")
+                                                    )
+                                                }
                                                 className={`w-full h-12 px-4 rounded-xl border ${errors.full_name ? "border-red-500" : "border-gray-200"
                                                     } focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]`}
                                             />
@@ -596,9 +616,16 @@ const LandingNavbar = () => {
                                             </label>
                                             <input
                                                 type="text"
+                                                inputMode="numeric"
+                                                maxLength={10}
                                                 placeholder="Enter mobile number"
-                                                value={agreementForm.mobile}
-                                                onChange={(e) => handleAgreementChange("mobile", e.target.value)}
+                                                onChange={(e) =>
+                                                    handleAgreementChange(
+                                                        "mobile",
+                                                        e.target.value.replace(/\D/g, "")
+                                                    )
+                                                }
+
                                                 className={`w-full h-12 px-4 rounded-xl border ${errors.mobile ? "border-red-500" : "border-gray-200"
                                                     } focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]`}
                                             />
@@ -632,9 +659,16 @@ const LandingNavbar = () => {
                                             </label>
                                             <input
                                                 type="text"
+                                                inputMode="numeric"
+                                                maxLength={10}
                                                 placeholder="Enter WhatsApp number"
                                                 value={agreementForm.whatsapp}
-                                                onChange={(e) => handleAgreementChange("whatsapp", e.target.value)}
+                                                onChange={(e) =>
+                                                    handleAgreementChange(
+                                                        "whatsapp",
+                                                        e.target.value.replace(/\D/g, "")
+                                                    )
+                                                }
                                                 className={`w-full h-12 px-4 rounded-xl border ${errors.whatsapp ? "border-red-500" : "border-gray-200"
                                                     } focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]`}
                                             />
@@ -651,11 +685,11 @@ const LandingNavbar = () => {
                                             Address
                                         </label>
                                         <textarea
-                                            rows={10}
+                                            rows={5}
                                             placeholder="Enter full address"
                                             value={agreementForm.address}
                                             onChange={(e) => handleAgreementChange("address", e.target.value)}
-                                            className={`w-full h-12 px-4 rounded-xl border ${errors.address ? "border-red-500" : "border-gray-200"
+                                            className={`w-full  px-4 rounded-xl border ${errors.address ? "border-red-500" : "border-gray-200"
                                                 } focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]`}
                                         />
                                         {errors.address && (
@@ -666,7 +700,10 @@ const LandingNavbar = () => {
                                     {/* Footer Buttons */}
                                     <div className="flex flex-col sm:flex-row gap-3 justify-end mt-8">
                                         <button
-                                            onClick={() => setIsAgreementOpen(false)}
+                                            onClick={() => {
+                                                setIsAgreementOpen(false);
+                                                setErrors({});
+                                            }}
                                             className="px-6 py-3 rounded-xl border border-gray-300 text-gray-600 hover:bg-gray-100 transition-all"
                                         >
                                             Cancel

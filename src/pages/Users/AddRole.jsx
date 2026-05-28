@@ -15,7 +15,7 @@ import {
 import api from '../../api/axiosInstance';
 import { useAuth } from '../../context/AuthContext';
 import { Toast } from '../../Components/ui/Toast';
-import { ConfirmDialog } from '../../Components/ui/ConfirmDialog';
+import { ConfirmDialog } from '../../Components/comman/ConfirmDialog';
 import { useRef } from 'react';
 import LoadingSpinner from "../../Components/Loader/LoadingSpinner"
 import { useSelector } from 'react-redux';

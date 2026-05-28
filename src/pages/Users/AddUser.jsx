@@ -516,14 +516,14 @@ const AddUser = () => {
                                         maxLength={50}
                                     />
                                     {/* <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[var(--color-text-muted)]" /> */}
-                                    <button
+                                    {/* <button
                                         type="button"
                                         onClick={togglePasswordVisibility}
-                                        className="absolute right-4 top-1/2 transform -translate-y-1/2 text-[var(--color-text-muted)] hover:text-[var(--color-primary-dark)] transition-colors"
+                                        className="absolute right-4 top-1/2 transform -translate-y-1/2 text-[var(--color-primary-dark)] transition-colors"
                                         disabled={isFormDisabled}
                                     >
                                         {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                                    </button>
+                                    </button> */}
                                 </div>
                                 {errors.password && (
                                     <p className="mt-2 text-sm text-[var(--color-text-error)] flex items-center gap-2">

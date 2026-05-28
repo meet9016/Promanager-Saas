@@ -576,7 +576,7 @@ const AttendanceExceptionReport = () => {
             if (exTypes.includes('late_coming') && emp.late_coming_time && emp.late_coming_time !== '0h 0m') {
                 exDetails.push({
                     key: 'late',
-                    pill: 'bg-yellow-100 text-yellow-800 border border-yellow-300',
+                    pill: 'bg-yellow-50 text-yellow-700 border border-yellow-200',
                     label: 'Late',
                     value: emp.late_coming_time,
                     valueColor: 'text-yellow-700',
@@ -585,7 +585,7 @@ const AttendanceExceptionReport = () => {
             if (exTypes.includes('early_going') && emp.early_going_time && emp.early_going_time !== '0h 0m') {
                 exDetails.push({
                     key: 'early',
-                    pill: 'bg-orange-100 text-orange-800 border border-orange-300',
+                    pill: 'bg-orange-50 text-orange-700 border border-orange-200',
                     label: 'Early',
                     value: emp.early_going_time,
                     valueColor: 'text-orange-700',
@@ -594,7 +594,7 @@ const AttendanceExceptionReport = () => {
             if (exTypes.includes('short_hours') && shortBy) {
                 exDetails.push({
                     key: 'short',
-                    pill: 'bg-red-100 text-red-800 border border-red-300',
+                    pill: 'bg-red-50 text-red-700 border border-red-200',
                     label: 'Short',
                     value: shortBy,
                     valueColor: 'text-red-700',
@@ -604,8 +604,8 @@ const AttendanceExceptionReport = () => {
                 const punches = (emp.attendance_history || []).length;
                 exDetails.push({
                     key: 'missed',
-                    pill: 'bg-purple-100 text-purple-800 border border-purple-300',
-                    label: 'Missed Punch',
+                    pill: 'bg-purple-50 text-purple-700 border border-purple-200',
+                    label: 'Missed',
                     value: `${punches} punch${punches !== 1 ? 'es' : ''}`,
                     valueColor: 'text-purple-700',
                 });
@@ -613,27 +613,27 @@ const AttendanceExceptionReport = () => {
 
             return (
                 <TableRow key={emp.employee_id || emp.employee_code || idx}
-                    className={`hover:bg-[var(--color-bg-hover)] transition-colors ${rowClass}`}>
+                    className={`hover:bg-[var(--color-bg-hover)] transition-all duration-200 ${rowClass}`}>
 
                     {/* # */}
-                    <Td className="text-center text-sm text-[var(--color-text-muted)]">{sno}</Td>
+                    <Td className="text-center text-sm font-medium text-[var(--color-text-muted)] w-12">{sno}</Td>
 
                     {/* Employee */}
-                    <Td>
+                    <Td className="min-w-[180px]">
                         <div className="flex flex-col items-start">
-                            <span className="font-medium text-sm text-[var(--color-text-primary)]" title={emp.employee_name}>
+                            <span className="font-semibold text-sm text-[var(--color-text-primary)]" title={emp.employee_name}>
                                 {emp.employee_name || '--'}
                             </span>
-                            <span className="text-xs text-[var(--color-text-secondary)] mt-0.5">{emp.employee_code || '--'}</span>
+                            <span className="text-[11px] uppercase tracking-wider text-[var(--color-text-muted)] mt-0.5">{emp.employee_code || '--'}</span>
                         </div>
                     </Td>
 
                     {/* Shift */}
                     <Td className="text-center text-sm text-[var(--color-text-primary)]">
                         <div className="flex flex-col items-center gap-0.5">
-                            <span>{emp.shift_name || '--'}</span>
+                            <span className="font-medium text-slate-700">{emp.shift_name || '--'}</span>
                             {emp.shift_from_time && emp.shift_to_time && (
-                                <span className="text-xs text-[var(--color-text-muted)]">
+                                <span className="text-[11px] text-[var(--color-text-muted)] bg-slate-50 px-1.5 py-0.5 rounded border border-slate-100 mt-1">
                                     {emp.shift_from_time} – {emp.shift_to_time}
                                 </span>
                             )}
@@ -642,26 +642,26 @@ const AttendanceExceptionReport = () => {
 
                     {/* Clock In */}
                     <Td className="text-center text-sm">
-                        <span className={exTypes.includes('late_coming') ? 'font-semibold text-yellow-700' : 'text-[var(--color-text-primary)]'}>
+                        <span className={exTypes.includes('late_coming') ? 'font-bold text-yellow-600' : 'text-slate-600 font-medium'}>
                             {emp.attandance_first_clock_in || '--'}
                         </span>
                     </Td>
 
                     {/* Clock Out */}
                     <Td className="text-center text-sm">
-                        <span className={exTypes.includes('early_going') ? 'font-semibold text-orange-700' : 'text-[var(--color-text-primary)]'}>
+                        <span className={exTypes.includes('early_going') ? 'font-bold text-orange-600' : 'text-slate-600 font-medium'}>
                             {emp.attandance_last_clock_out || '--'}
                         </span>
                     </Td>
 
                     {/* Working Hrs */}
-                    <Td className="text-center text-sm text-[var(--color-text-secondary)]">
+                    <Td className="text-center text-sm font-medium text-slate-500">
                         {emp.shift_working_hours || '--'}
                     </Td>
 
                     {/* Attendance Hrs */}
                     <Td className="text-center text-sm">
-                        <span className={exTypes.includes('short_hours') ? 'font-semibold text-red-700' : 'text-[var(--color-text-secondary)]'}>
+                        <span className={exTypes.includes('short_hours') ? 'font-bold text-red-600' : 'text-slate-600 font-medium'}>
                             {emp.attandance_hours || '--'}
                         </span>
                     </Td>
@@ -675,24 +675,24 @@ const AttendanceExceptionReport = () => {
                     <Td>
                         {exDetails.length === 0 ? (
                             !emp.attandance_first_clock_in ? (
-                                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-700 border border-red-300">
+                                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[11px] font-bold tracking-wide uppercase bg-red-50 text-red-600 border border-red-200 shadow-sm">
                                     No Punch
                                 </span>
                             ) : (
-                                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700 border border-green-300">
+                                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[11px] font-bold tracking-wide uppercase bg-emerald-50 text-emerald-600 border border-emerald-200 shadow-sm">
                                     <CheckCircle className="h-3.5 w-3.5" />
                                     On Time
                                 </span>
                             )
                         ) : (
-                            <div className="flex flex-col gap-1.5">
+                            <div className="flex flex-wrap gap-2 max-w-[280px]">
                                 {exDetails.map((ex) => (
-                                    <div key={ex.key} className="flex items-center gap-1.5">
-                                        <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold whitespace-nowrap ${ex.pill}`}>
+                                    <div key={ex.key} className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md shadow-sm border ${ex.pill}`}>
+                                        <span className="text-[11px] font-bold uppercase tracking-wider opacity-80">
                                             {ex.label}
                                         </span>
-                                        <span className={`text-xs font-semibold ${ex.valueColor}`}>
-                                            by {ex.value}
+                                        <span className={`text-[12px] font-black ${ex.valueColor}`}>
+                                            {ex.value}
                                         </span>
                                     </div>
                                 ))}

@@ -541,94 +541,89 @@ const MonthlyExceptionReport = () => {
         // ── All Employees tab ─────────────────────────────────────────────────
         if (activeTab === 'all_employees') {
             const exTypes = emp.exception_types || [];
-            const rowClass = getAllEmpRowHighlight(exTypes);
+            // Use a very subtle left border instead of heavy border
+            let rowClass = 'border-l-[3px] border-transparent';
+            if (exTypes.includes('missed_punch')) rowClass = 'border-l-[3px] border-purple-500';
+            else if (exTypes.includes('short_hours')) rowClass = 'border-l-[3px] border-red-500';
+            else if (exTypes.includes('early_going')) rowClass = 'border-l-[3px] border-orange-500';
+            else if (exTypes.includes('late_coming')) rowClass = 'border-l-[3px] border-yellow-500';
 
             const exDetails = [];
             if (exTypes.includes('late_coming')) {
                 exDetails.push({
                     key: 'late',
-                    pill: 'bg-yellow-100 text-yellow-800 border border-yellow-300',
-                    label: 'Late',
-                    value: `${emp.lateDays} day${emp.lateDays !== 1 ? 's' : ''} (${emp.totalLateTime})`,
-                    valueColor: 'text-yellow-700',
+                    dot: 'bg-yellow-500',
+                    text: `Late: ${emp.lateDays}d (${emp.totalLateTime})`,
                 });
             }
             if (exTypes.includes('early_going')) {
                 exDetails.push({
                     key: 'early',
-                    pill: 'bg-orange-100 text-orange-800 border border-orange-300',
-                    label: 'Early',
-                    value: `${emp.earlyDays} day${emp.earlyDays !== 1 ? 's' : ''} (${emp.totalEarlyTime})`,
-                    valueColor: 'text-orange-700',
+                    dot: 'bg-orange-500',
+                    text: `Early: ${emp.earlyDays}d (${emp.totalEarlyTime})`,
                 });
             }
             if (exTypes.includes('short_hours')) {
                 exDetails.push({
                     key: 'short',
-                    pill: 'bg-red-100 text-red-800 border border-red-300',
-                    label: 'Short',
-                    value: `${emp.shortHoursDays} day${emp.shortHoursDays !== 1 ? 's' : ''} (${emp.totalShortTime})`,
-                    valueColor: 'text-red-700',
+                    dot: 'bg-red-500',
+                    text: `Short: ${emp.shortHoursDays}d (${emp.totalShortTime})`,
                 });
             }
             if (exTypes.includes('missed_punch')) {
                 exDetails.push({
                     key: 'missed',
-                    pill: 'bg-purple-100 text-purple-800 border border-purple-300',
-                    label: 'Missed Punch',
-                    value: `${emp.missedPunchDays} day${emp.missedPunchDays !== 1 ? 's' : ''}`,
-                    valueColor: 'text-purple-700',
+                    dot: 'bg-purple-500',
+                    text: `Missed: ${emp.missedPunchDays}d`,
                 });
             }
 
             return (
                 <TableRow key={emp.employee_code || idx}
-                    className={`hover:bg-[var(--color-bg-hover)] transition-colors ${rowClass}`}>
-                    <Td className="text-center text-sm text-[var(--color-text-muted)]">{sno}</Td>
+                    className={`hover:bg-[var(--color-bg-hover)] transition-colors border-b border-[var(--color-border-secondary)] ${rowClass}`}>
+                    <Td className="text-center text-sm font-medium text-[var(--color-text-muted)] w-12">{sno}</Td>
                     <Td>
-                        <div className="flex flex-col items-start">
-                            <span className="font-medium text-sm text-[var(--color-text-primary)]">{emp.employee_name || '--'}</span>
-                            <span className="text-xs text-[var(--color-text-secondary)] mt-0.5">{emp.employee_code || '--'}</span>
+                        <div className="flex flex-col items-start py-1">
+                            <span className="font-semibold text-sm text-[var(--color-text-primary)] tracking-tight">{emp.employee_name || '--'}</span>
+                            <span className="text-[11px] uppercase tracking-wider text-[var(--color-text-muted)] mt-0.5">{emp.employee_code || '--'}</span>
                         </div>
                     </Td>
-                    <Td className="text-center text-sm text-[var(--color-text-secondary)]">
+                    <Td className="text-center text-sm font-medium text-[var(--color-text-secondary)]">
                         {emp.totalDays}
                     </Td>
                     <Td className="text-center text-sm">
-                        <span className={emp.lateDays > 0 ? 'font-semibold text-yellow-700' : 'text-[var(--color-text-muted)]'}>
+                        <span className={emp.lateDays > 0 ? 'font-bold text-yellow-600' : 'text-gray-300 font-medium'}>
                             {emp.lateDays > 0 ? emp.lateDays : '--'}
                         </span>
                     </Td>
                     <Td className="text-center text-sm">
-                        <span className={emp.earlyDays > 0 ? 'font-semibold text-orange-700' : 'text-[var(--color-text-muted)]'}>
+                        <span className={emp.earlyDays > 0 ? 'font-bold text-orange-600' : 'text-gray-300 font-medium'}>
                             {emp.earlyDays > 0 ? emp.earlyDays : '--'}
                         </span>
                     </Td>
                     <Td className="text-center text-sm">
-                        <span className={emp.shortHoursDays > 0 ? 'font-semibold text-red-700' : 'text-[var(--color-text-muted)]'}>
+                        <span className={emp.shortHoursDays > 0 ? 'font-bold text-red-600' : 'text-gray-300 font-medium'}>
                             {emp.shortHoursDays > 0 ? emp.shortHoursDays : '--'}
                         </span>
                     </Td>
                     <Td className="text-center text-sm">
-                        <span className={emp.missedPunchDays > 0 ? 'font-semibold text-purple-700' : 'text-[var(--color-text-muted)]'}>
+                        <span className={emp.missedPunchDays > 0 ? 'font-bold text-purple-600' : 'text-gray-300 font-medium'}>
                             {emp.missedPunchDays > 0 ? emp.missedPunchDays : '--'}
                         </span>
                     </Td>
                     <Td>
                         {exDetails.length === 0 ? (
-                            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700 border border-green-300">
-                                <CheckCircle className="h-3.5 w-3.5" />
-                                No Exceptions
+                            <span className="inline-flex items-center gap-1.5 text-xs font-medium text-gray-400">
+                                <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+                                None
                             </span>
                         ) : (
-                            <div className="flex flex-col gap-1.5">
+                            <div className="flex flex-wrap gap-1.5 items-center max-w-[280px]">
                                 {exDetails.map((ex) => (
-                                    <div key={ex.key} className="flex items-center gap-1.5">
-                                        <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold whitespace-nowrap ${ex.pill}`}>
-                                            {ex.label}
-                                        </span>
-                                        <span className={`text-xs font-semibold ${ex.valueColor}`}>
-                                            {ex.value}
+                                    <div key={ex.key} className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded border border-gray-200 bg-white shadow-sm">
+                                        <span className={`w-1.5 h-1.5 rounded-full ${ex.dot}`}></span>
+                                        <span className="text-[11px] font-medium text-gray-700 whitespace-nowrap">
+                                            {ex.text}
                                         </span>
                                     </div>
                                 ))}

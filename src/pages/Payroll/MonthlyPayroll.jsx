@@ -30,7 +30,7 @@ import { useAuth } from '../../context/AuthContext';
 import api from '../../api/axiosInstance';
 import { useSelector } from 'react-redux';
 import { Toast } from '../../Components/ui/Toast';
-import { ConfirmDialog } from '../../Components/ui/ConfirmDialog';
+import { ConfirmDialog } from '../../Components/comman/ConfirmDialog';
 import LoadingSpinner from '../../Components/Loader/LoadingSpinner';
 import CustomSelect from '../../Components/comman/CustomSelect';
 import CustomInput from '../../Components/comman/CustomInput';
@@ -710,7 +710,7 @@ const EmployeePayrollBlock = ({ empData, permissions, onDataChange, onUnsavedCha
         {showAllowanceModal && (
           <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
 
-            <div className="relative w-full max-w-lg bg-white rounded-3xl shadow-[0_25px_80px_rgba(0,0,0,0.25)] overflow-hidden animate-in fade-in zoom-in duration-300">
+            <div className="relative w-full max-w-lg bg-white rounded-3xl shadow-[0_25px_80px_rgba(0,0,0,0.25)] overflow-visible animate-in fade-in zoom-in duration-300">
 
               {/* Top Gradient */}
               <div className="h-2 bg-gradient-to-r from-[#5D18AF] via-[#7B2DDB] to-[#9B4DFF]" />
@@ -894,7 +894,7 @@ const EmployeePayrollBlock = ({ empData, permissions, onDataChange, onUnsavedCha
         {showDeductionModal && (
           <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
 
-            <div className="relative w-full max-w-lg bg-white rounded-3xl shadow-[0_25px_80px_rgba(0,0,0,0.25)] overflow-hidden animate-in fade-in zoom-in duration-300">
+            <div className="relative w-full max-w-lg bg-white rounded-3xl shadow-[0_25px_80px_rgba(0,0,0,0.25)] overflow-visible animate-in fade-in zoom-in duration-300">
 
               {/* Top Gradient */}
               <div className="h-2 bg-gradient-to-r from-[#5D18AF] via-[#7B2DDB] to-[#9B4DFF]" />

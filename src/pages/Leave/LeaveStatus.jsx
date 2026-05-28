@@ -1036,7 +1036,7 @@ const LeaveManagement = () => {
                         }`}
                     >
                         <div 
-                            className={`bg-[var(--color-bg-secondary)] rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden my-8 transition-all duration-300 ease-out ${
+                            className={`bg-[var(--color-bg-secondary)] rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col overflow-visible my-8 transition-all duration-300 ease-out ${
                                 showAddLeaveModal 
                                     ? 'opacity-100 scale-100 translate-y-0' 
                                     : 'opacity-0 scale-95 translate-y-4'
@@ -1062,7 +1062,7 @@ const LeaveManagement = () => {
                             </div>
 
                             {/* Popup Content */}
-                            <div className="p-6 overflow-y-auto flex-1 bg-[var(--color-bg-primary)]">
+                            <div className="p-6 overflow-visible flex-1 bg-[var(--color-bg-primary)]">
                                 {isLoadingData ? (
                                     <div className="flex items-center justify-center py-12">
                                         <LoadingSpinner />

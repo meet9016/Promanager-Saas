@@ -6,7 +6,7 @@ import api from '../../api/axiosInstance'; // Adjust path as needed
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Toast } from '../../Components/ui/Toast';
-import { ConfirmDialog } from '../../Components/ui/ConfirmDialog';
+import { ConfirmDialog } from '../../Components/comman/ConfirmDialog';
 import Pagination from '../../Components/Pagination';
 import { Table, TableHeader, TableBody, TableRow, TableHeaderRow, Th, Td } from '../../Components/ui/Table';
 import CustomInput from '../../Components/comman/CustomInput';

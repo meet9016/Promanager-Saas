@@ -6,7 +6,7 @@ import api from '../../api/axiosInstance';
 import { useAuth } from '../../context/AuthContext';
 import { useSelector } from 'react-redux';
 import { Toast } from '../../Components/ui/Toast';
-import { ConfirmDialog } from '../../Components/ui/ConfirmDialog';
+import { ConfirmDialog } from '../../Components/comman/ConfirmDialog';
 import Pagination from '../../Components/Pagination'; // Import the Pagination component
 import LoadingSpinner from "../../Components/Loader/LoadingSpinner"
 import { Table, TableHeader, TableBody, TableRow, TableHeaderRow, Th, Td } from '../../Components/ui/Table';

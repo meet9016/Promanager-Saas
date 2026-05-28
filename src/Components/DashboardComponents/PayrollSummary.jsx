@@ -21,7 +21,7 @@ const PayrollSummary = () => {
     <>
       <div className="max-w-8xl mx-auto">
         {/* Main Container */}
-        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8 hover:shadow-xl transition-all duration-300">
+        <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-lg border border-[var(--color-border-secondary)] p-8 hover:shadow-xl transition-all duration-300">
           {/* Header */}
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-8">
             <div className="flex items-center gap-4">
@@ -29,8 +29,8 @@ const PayrollSummary = () => {
                 <TrendingUp className="w-8 h-8 text-white" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-gray-900 mb-1">Payroll Overview</h1>
-                <p className="text-sm text-gray-500">Monthly salary and compensation details</p>
+                <h1 className="text-2xl font-bold text-[var(--color-text-primary)] mb-1">Payroll Overview</h1>
+                <p className="text-sm text-[var(--color-text-secondary)]">Monthly salary and compensation details</p>
               </div>
             </div>
 
@@ -50,7 +50,7 @@ const PayrollSummary = () => {
               </div>
 
               {/* View Toggle */}
-              <div className="flex bg-gray-100 border border-gray-200 rounded-xl p-1">
+              <div className="flex bg-[var(--color-bg-primary)] border border-[var(--color-border-secondary)] rounded-xl p-1">
                 <button
                   onClick={() => setViewType('both')}
                   className={`px-4 py-2 rounded-lg transition-all duration-200 text-sm font-semibold ${viewType === 'both'
@@ -84,39 +84,33 @@ const PayrollSummary = () => {
 
           {/* Summary Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div className="bg-gradient-to-br from-primary-50 to-primary-100 p-8 rounded-xl border border-primary-200 hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-semibold text-gray-600 mb-2">Total Payroll</p>
-                  <p className="text-3xl font-bold text-primary-700">₹{dashboardData?.totals?.total_salary || 0}</p>
-                </div>
-                <div className="w-14 h-14 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center shadow-lg">
-                  <IndianRupee className="w-8 h-8 text-white" />
-                </div>
+            <div className="bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] p-6 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-[var(--color-text-secondary)] mb-1">Total Payroll</p>
+                <p className="text-2xl font-bold text-[var(--color-text-primary)]">₹{dashboardData?.totals?.total_salary || 0}</p>
+              </div>
+              <div className="p-3 bg-[var(--color-primary-lightest)] rounded-full">
+                <IndianRupee className="w-6 h-6 text-[var(--color-primary)]" />
               </div>
             </div>
 
-            <div className="bg-gradient-to-br from-green-50 to-green-100 p-8 rounded-xl border border-green-200 hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-semibold text-gray-600 mb-2">Overtime</p>
-                  <p className="text-3xl font-bold text-green-700">₹{dashboardData?.totals?.overtime_salary || 0}</p>
-                </div>
-                <div className="w-14 h-14 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center shadow-lg">
-                  <Clock className="w-8 h-8 text-white" />
-                </div>
+            <div className="bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] p-6 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-[var(--color-text-secondary)] mb-1">Overtime</p>
+                <p className="text-2xl font-bold text-[var(--color-success)]">₹{dashboardData?.totals?.overtime_salary || 0}</p>
+              </div>
+              <div className="p-3 bg-[var(--color-success-light)] rounded-full">
+                <Clock className="w-6 h-6 text-[var(--color-success)]" />
               </div>
             </div>
 
-            <div className="bg-gradient-to-br from-amber-50 to-amber-100 p-8 rounded-xl border border-amber-200 hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-semibold text-gray-600 mb-2">Bonuses</p>
-                  <p className="text-3xl font-bold text-amber-700">₹{dashboardData?.totals?.week_of_salary || 0}</p>
-                </div>
-                <div className="w-14 h-14 bg-gradient-to-br from-amber-500 to-amber-600 rounded-xl flex items-center justify-center shadow-lg">
-                  <Award className="w-8 h-8 text-white" />
-                </div>
+            <div className="bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] p-6 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-[var(--color-text-secondary)] mb-1">Bonuses</p>
+                <p className="text-2xl font-bold text-[var(--color-warning)]">₹{dashboardData?.totals?.week_of_salary || 0}</p>
+              </div>
+              <div className="p-3 bg-[var(--color-warning-light)] rounded-full">
+                <Award className="w-6 h-6 text-[var(--color-warning)]" />
               </div>
             </div>
           </div>
@@ -126,33 +120,35 @@ const PayrollSummary = () => {
             {/* Employee Payroll Table */}
             {(viewType === 'table' || viewType === 'both') && (
               <div className={viewType === 'table' ? 'w-full' : ''}>
-                <div className="bg-gray-50 rounded-xl shadow-md border border-gray-200 overflow-hidden h-full flex flex-col">
-                  <div className="bg-[var(--color-primary-lighter)] p-5">
+                <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-sm border border-[var(--color-border-secondary)] overflow-hidden h-full flex flex-col">
+                  <div className="p-6 border-b border-[var(--color-border-secondary)]">
                     <div className="flex items-center gap-3">
-                      <Users className="w-6 h-6 text-[var(--color-primary-darker)]" />
-                      <h3 className="text-xl font-bold text-[var(--color-primary-darker)]">Employee Payroll</h3>
+                      <div className="p-2 bg-[var(--color-primary-lightest)] rounded-full">
+                        <Users className="w-5 h-5 text-[var(--color-primary)]" />
+                      </div>
+                      <h3 className="text-lg font-semibold text-[var(--color-text-primary)]">Employee Payroll</h3>
                     </div>
                   </div>
 
                   <div className="overflow-x-auto flex-1 flex flex-col">
-                    <table className="min-w-full flex-1 text-xs"> {/* reduced text size */}
-                      <thead className="bg-[var(--color-primary-dark)] ">
+                    <table className="min-w-full flex-1 text-sm text-left">
+                      <thead className="bg-[var(--color-bg-primary)] border-b border-[var(--color-border-secondary)]">
                         <tr>
-                          <th className="px-4 py-2 text-left font-semibold text-white uppercase tracking-wider">
+                          <th className="px-6 py-4 font-semibold text-[var(--color-text-secondary)] uppercase tracking-wider text-xs">
                             Employee
                           </th>
-                          <th className="px-4 py-2 text-left font-semibold text-white uppercase tracking-wider">
+                          <th className="px-6 py-4 font-semibold text-[var(--color-text-secondary)] uppercase tracking-wider text-xs">
                             Base Salary
                           </th>
-                          <th className="px-4 py-2 text-left font-semibold text-white uppercase tracking-wider">
+                          <th className="px-6 py-4 font-semibold text-[var(--color-text-secondary)] uppercase tracking-wider text-xs">
                             Overtime
                           </th>
-                          <th className="px-4 py-2 text-left font-semibold text-white uppercase tracking-wider">
+                          <th className="px-6 py-4 font-semibold text-[var(--color-text-secondary)] uppercase tracking-wider text-xs">
                             Status
                           </th>
                         </tr>
                       </thead>
-                      <tbody className="bg-[var(--color-bg-secondary)] divide-y divide-[var(--color-border-divider)] align-top">
+                      <tbody className="bg-[var(--color-bg-secondary)] divide-y divide-[var(--color-border-divider)] align-middle">
                         {dashboardData?.payroll_details?.length > 0 ? (
                           <>
                             {dashboardData.payroll_details.slice(0, 5).map((employee) => (
@@ -160,9 +156,9 @@ const PayrollSummary = () => {
                                 key={employee.employee_salary_id}
                                 className="hover:bg-[var(--color-bg-hover)] transition-colors duration-200"
                               >
-                                <td className="px-4 py-2 whitespace-nowrap">
+                                <td className="px-6 py-4 whitespace-nowrap">
                                   <div className="flex items-center gap-3">
-                                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[var(--color-primary-dark)] to-[var(--color-primary)] flex items-center justify-center text-white font-semibold shadow-md text-xs">
+                                    <div className="w-10 h-10 rounded-full bg-[var(--color-primary-dark)] flex items-center justify-center text-white font-semibold text-sm">
                                       {employee.full_name
                                         ? employee.full_name
                                           .split(" ")
@@ -182,19 +178,19 @@ const PayrollSummary = () => {
                                     </div>
                                   </div>
                                 </td>
-                                <td className="px-4 py-2 whitespace-nowrap">
+                                <td className="px-6 py-4 whitespace-nowrap">
                                   <span className="font-semibold text-[var(--color-text-primary)]">
                                     ₹{employee.final_salary}
                                   </span>
                                 </td>
-                                <td className="px-4 py-2 whitespace-nowrap">
+                                <td className="px-6 py-4 whitespace-nowrap">
                                   <span className="font-semibold text-[var(--color-success)]">
                                     ₹{employee.overtime_salary}
                                   </span>
                                 </td>
-                                <td className="px-4 py-2 whitespace-nowrap">
+                                <td className="px-6 py-4 whitespace-nowrap">
                                   <span
-                                    className={`inline-flex px-2 py-0.5 text-[10px] font-semibold rounded-full shadow-sm ${employee.payment_status === "2"
+                                    className={`inline-flex px-3 py-1 text-xs font-semibold rounded-full ${employee.payment_status === "2"
                                         ? "bg-[var(--color-success-light)] text-[var(--color-success)] border border-[var(--color-success)] border-opacity-20"
                                         : "bg-[var(--color-warning-light)] text-[var(--color-warning)] border border-[var(--color-warning)] border-opacity-20"
                                       }`}
@@ -251,12 +247,16 @@ const PayrollSummary = () => {
             {/* Chart Section */}
             {(viewType === 'chart' || viewType === 'both') && (
               <div className={viewType === 'chart' ? 'w-full' : ''}>
-                <div className="bg-gray-50 rounded-xl shadow-md border border-gray-200 overflow-hidden h-full flex flex-col">
-                  <div className="bg-gradient-to-r from-gray-100 to-gray-200 p-5 border-b border-gray-300">
-                    <h3 className="text-xl font-bold text-gray-900 flex items-center gap-3">
-                      <BarChart className="w-6 h-6 text-gray-700" />
-                      Monthly Breakdown
-                    </h3>
+                <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-sm border border-[var(--color-border-secondary)] overflow-hidden h-full flex flex-col">
+                  <div className="p-6 border-b border-[var(--color-border-secondary)]">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-[var(--color-primary-lightest)] rounded-full">
+                        <BarChart className="w-5 h-5 text-[var(--color-primary)]" />
+                      </div>
+                      <h3 className="text-lg font-semibold text-[var(--color-text-primary)]">
+                        Monthly Breakdown
+                      </h3>
+                    </div>
                   </div>
 
                   <div className="p-8 flex-1">

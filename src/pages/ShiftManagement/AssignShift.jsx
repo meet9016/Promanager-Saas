@@ -1,5 +1,6 @@
 // AssignShift.jsx (multi-select employees; uses the SAME API `assign_shift_employee` per employee)
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback, useRef, useLayoutEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { ArrowLeft, Users, Calendar, Save, X, Building, Filter, ChevronDown, ChevronUp, RefreshCw } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import api from '../../api/axiosInstance';
@@ -7,6 +8,72 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Toast } from '../../Components/ui/Toast';
 import LoadingSpinner from '../../Components/Loader/LoadingSpinner';
 import CustomSelect from '../../Components/comman/CustomSelect';
+
+// ─── Floating anchor helpers ──────────────────────────────────────────────────
+const getScrollParents = (node) => {
+    const parents = [];
+    if (!node) return parents;
+    let parent = node.parentNode;
+    const scrollRegex = /(auto|scroll|overlay)/;
+    while (parent && parent.nodeType === 1) {
+        const style = window.getComputedStyle(parent);
+        const overflow = `${style.overflow}${style.overflowY}${style.overflowX}`;
+        if (scrollRegex.test(overflow)) parents.push(parent);
+        parent = parent.parentNode;
+    }
+    parents.push(window);
+    return parents;
+};
+
+const useAnchoredPosition = (anchorRef, isOpen, opts = {}) => {
+    const { placement = 'bottom-end', offset = 10, minWidth = 192 } = opts;
+    const [pos, setPos] = useState({ top: -9999, left: -9999, width: 0, ready: false });
+    const cleanupRef = useRef([]);
+
+    const compute = useCallback(() => {
+        const el = anchorRef.current;
+        if (!el) return;
+        const rect = el.getBoundingClientRect();
+        const scrollX = window.scrollX || window.pageXOffset;
+        const scrollY = window.scrollY || window.pageYOffset;
+        let top = rect.bottom + scrollY + offset;
+        let left;
+        if (placement === 'bottom-start') left = rect.left + scrollX;
+        else if (placement === 'bottom-center') left = rect.left + scrollX + rect.width / 2 - minWidth / 2;
+        else left = rect.left + scrollX + rect.width - minWidth;
+        setPos({ top, left, width: rect.width, ready: true });
+    }, [anchorRef, offset, placement, minWidth]);
+
+    useLayoutEffect(() => {
+        if (!isOpen) {
+            cleanupRef.current.forEach((fn) => fn && fn());
+            cleanupRef.current = [];
+            setPos((p) => ({ ...p, ready: false }));
+            return;
+        }
+        compute();
+        const parents = getScrollParents(anchorRef.current);
+        const rafThrottle = (fn) => {
+            let ticking = false;
+            return () => {
+                if (ticking) return;
+                ticking = true;
+                requestAnimationFrame(() => { fn(); ticking = false; });
+            };
+        };
+        const handler = rafThrottle(() => compute());
+        parents.forEach((p) => p.addEventListener('scroll', handler, { passive: true }));
+        window.addEventListener('resize', handler, { passive: true });
+        const remove = () => {
+            parents.forEach((p) => p.removeEventListener('scroll', handler));
+            window.removeEventListener('resize', handler);
+        };
+        cleanupRef.current.push(remove);
+        return () => { remove(); cleanupRef.current = []; };
+    }, [isOpen, compute, anchorRef]);
+
+    return pos;
+};
 
 const AssignShift = () => {
     const { user } = useAuth();
@@ -30,7 +97,11 @@ const AssignShift = () => {
     const [branches, setBranches] = useState([]);
     const [departments, setDepartments] = useState([]);
     const [dropdownLoading, setDropdownLoading] = useState(false);
-    const [showFilters, setShowFilters] = useState(false); // NEW: Toggle filter visibility
+
+    // Filter popup states (same pattern as Employee.jsx)
+    const [filterDropdown, setFilterDropdown] = useState(false);
+    const filterBtnRef = useRef(null);
+    const filterPos = useAnchoredPosition(filterBtnRef, filterDropdown, { placement: 'bottom-end', offset: 10, minWidth: 420 });
 
     // Searchable dropdown state
     const [searchTerm, setSearchTerm] = useState('');
@@ -58,6 +129,8 @@ const AssignShift = () => {
 
     // Check if any filters are active
     const hasActiveFilters = filters.branch_id || filters.department_id;
+    const getActiveFiltersCount = () =>
+        Object.values(filters).filter((v) => v !== '' && v !== null && v !== undefined).length;
 
     // Modified fetchDropdownData to accept filter parameters
     const fetchDropdownData = async (appliedFilters = null) => {
@@ -152,7 +225,7 @@ const AssignShift = () => {
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
-    // Toggle a single employee id
+    // Multi-select helpers
     const toggleEmployee = (empId) => {
         setSelectedEmployees((prev) =>
             prev.includes(empId) ? prev.filter((id) => id !== empId) : [...prev, empId]
@@ -162,88 +235,57 @@ const AssignShift = () => {
     // Select all currently filtered employees
     const selectAllFiltered = () => {
         const allIds = filteredEmployees.map((e) => e.employee_id);
-        // union
         setSelectedEmployees((prev) => Array.from(new Set([...prev, ...allIds])));
     };
 
-    // Clear all selections
     const clearAllSelected = () => setSelectedEmployees([]);
 
-    // Handle chip removal
     const removeOneSelected = (empId) => {
         setSelectedEmployees((prev) => prev.filter((id) => id !== empId));
     };
 
-    // Resolve display object for selected chips
     const selectedEmployeeObjects = useMemo(() => {
-        if (!selectedEmployees.length) return [];
-        const mapById = new Map(employees.map((e) => [e.employee_id, e]));
+        const map = new Map(employees.map((e) => [e.employee_id, e]));
         return selectedEmployees
-            .map((id) => mapById.get(id))
+            .map((id) => map.get(id))
             .filter(Boolean);
     }, [selectedEmployees, employees]);
 
-    // Submit: call SAME API once per selected employee
-    // Modified handleSubmit function to pass employee ID array
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    const handleBack = () => navigate(-1);
 
+    const handleSubmit = async () => {
         if (!selectedEmployees.length || !selectedShift) {
-            showToast('Please select at least one employee and a shift', 'error');
+            showToast('Please select employee(s) and a shift', 'error');
             return;
         }
-
-        if (!user?.user_id) {
-            showToast('User not found', 'error');
-            return;
-        }
-
         try {
             setSubmitting(true);
-
-            // Create FormData with employee ID array
-            const formData = new FormData();
-            formData.append('shift_id', selectedShift);
-
-            selectedEmployees.forEach(employeeId => {
-                formData.append('employee_id[]', employeeId);
-            });
-
-            const response = await api.post('assign_shift_employee_new', formData);
-
-            if (response.data?.success) {
-                showToast(
-                    `Shift assigned successfully to ${selectedEmployees.length} employee(s)`,
-                    'success'
-                );
-
-                // Reset form
-                setSelectedEmployees([]);
-                setSelectedShift(editShiftId || '');
-                setSearchTerm('');
-
-                // Navigate back after success
-                setTimeout(() => navigate('/shift-management'), 1200);
-            } else {
-                showToast(
-                    response.data?.message || 'Failed to assign shift to employees',
-                    'error'
-                );
+            // Loop and call SAME API per employee
+            let successCount = 0;
+            let failCount = 0;
+            for (const empId of selectedEmployees) {
+                const fd = new FormData();
+                fd.append('employee_id', empId);
+                fd.append('shift_id', selectedShift);
+                try {
+                    const res = await api.post('assign_shift_employee', fd);
+                    if (res.data?.success) successCount++;
+                    else failCount++;
+                } catch {
+                    failCount++;
+                }
             }
-
-        } catch (error) {
-            console.error('Error assigning shifts:', error);
-            showToast('An error occurred while assigning shifts', 'error');
+            if (successCount) showToast(`Assigned shift to ${successCount} employee(s)`, 'success');
+            if (failCount) showToast(`Failed for ${failCount} employee(s)`, 'error');
+            if (successCount) navigate(-1);
         } finally {
             setSubmitting(false);
         }
     };
 
-    const handleBack = () => navigate('/shift-management');
-
-    if (loading) {
+    if (loading && !employees.length) {
         return (
-            <div className="">
+            <div className="min-h-screen flex items-center justify-center bg-[var(--color-bg-primary)]">
                 <LoadingSpinner />
             </div>
         );
@@ -263,7 +305,6 @@ const AssignShift = () => {
                                     title="Go Back"
                                 >
                                     <ArrowLeft size={18} />
-
                                 </button>
                                 <div className="flex items-center gap-3">
                                     <h1 className="text-2xl font-bold text-[var(--color-text-white)]">
@@ -271,118 +312,212 @@ const AssignShift = () => {
                                     </h1>
                                 </div>
                             </div>
+
+                            {/* Filter button with popup (Employee.jsx style) */}
                             <div className="flex items-center gap-3">
-                                <button
-                                    onClick={() => setShowFilters(!showFilters)}
-                                    className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-primary-600 hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-lg font-medium transition-colors"
-                                >
-                                    <Filter className="h-4 w-4" />
-                                    Filters
-                                    {hasActiveFilters && (
-                                        <span className="ml-1 w-2 h-2 bg-primary-600 rounded-full"></span>
+                                <div className="relative">
+                                    <button
+                                        ref={filterBtnRef}
+                                        onClick={() => setFilterDropdown((v) => !v)}
+                                        className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-md text-sm font-medium transition-colors"
+                                    >
+                                        <Filter className="h-4 w-4" />
+                                        Filters
+                                        {getActiveFiltersCount() > 0 && (
+                                            <span className="bg-[var(--color-primary-dark)] text-white text-xs rounded-full px-2 py-0.5">
+                                                {getActiveFiltersCount()}
+                                            </span>
+                                        )}
+                                        <ChevronDown className="h-4 w-4" />
+                                    </button>
+
+                                    {filterDropdown && createPortal(
+                                        <>
+                                            {/* Overlay backdrop */}
+                                            <div
+                                                className="fixed inset-0 z-[100] bg-black/40"
+                                                onClick={() => setFilterDropdown(false)}
+                                            />
+                                            {/* Desktop popup */}
+                                            <div
+                                                className="hidden sm:flex flex-col absolute z-[110] bg-[var(--color-bg-secondary)] rounded-lg shadow-2xl border border-[var(--color-border-secondary)] max-h-[80vh]"
+                                                style={{
+                                                    position: 'absolute',
+                                                    top: filterPos.ready ? filterPos.top : -9999,
+                                                    left: filterPos.ready ? Math.max(12, filterPos.left) : -9999,
+                                                    width: Math.max(420, filterPos.width),
+                                                    minWidth: 420
+                                                }}
+                                            >
+                                                {/* Popup header */}
+                                                <div className="flex items-center justify-between p-4 border-b border-[var(--color-border-secondary)]">
+                                                    <div className="flex items-center gap-3">
+                                                        <div className="p-2 bg-[var(--color-primary-lightest)] rounded-lg">
+                                                            <Filter className="h-5 w-5 text-[var(--color-primary)]" />
+                                                        </div>
+                                                        <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">Filters</h2>
+                                                    </div>
+                                                    <button
+                                                        onClick={() => setFilterDropdown(false)}
+                                                        className="text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] p-1 rounded-lg hover:bg-[var(--color-bg-hover)]"
+                                                    >
+                                                        <X className="h-4 w-4" />
+                                                    </button>
+                                                </div>
+
+                                                {/* Popup body */}
+                                                <div className="flex-1 overflow-visible p-4">
+                                                    {dropdownLoading && (
+                                                        <div className="flex items-center gap-2 mb-4 text-[var(--color-text-secondary)]">
+                                                            <RefreshCw className="h-4 w-4 animate-spin" />
+                                                            <span className="text-sm">Loading filter options...</span>
+                                                        </div>
+                                                    )}
+
+                                                    <div className="grid grid-cols-2 gap-4">
+                                                        {/* Branch */}
+                                                        <div>
+                                                            <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                                <Building className="inline h-4 w-4 mr-1" />
+                                                                Branch
+                                                            </label>
+                                                            <CustomSelect
+                                                                name="branch_id"
+                                                                value={filters.branch_id}
+                                                                onChange={(e) => handleFilterChange('branch_id', e.target.value)}
+                                                                options={branches.map((b) => ({
+                                                                    value: b.id,
+                                                                    label: b.name,
+                                                                }))}
+                                                                placeholder="All Branches"
+                                                                searchable={true}
+                                                                disabled={dropdownLoading}
+                                                            />
+                                                        </div>
+
+                                                        {/* Department */}
+                                                        <div>
+                                                            <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                                <Users className="inline h-4 w-4 mr-1" />
+                                                                Department
+                                                            </label>
+                                                            <CustomSelect
+                                                                name="department_id"
+                                                                value={filters.department_id}
+                                                                onChange={(e) => handleFilterChange('department_id', e.target.value)}
+                                                                options={departments.map((d) => ({
+                                                                    value: d.id,
+                                                                    label: d.name,
+                                                                }))}
+                                                                placeholder="All Departments"
+                                                                searchable={true}
+                                                                disabled={dropdownLoading}
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                {/* Popup footer */}
+                                                <div className="flex gap-2 p-4 border-t border-[var(--color-border-secondary)]">
+                                                    <button
+                                                        onClick={() => setFilterDropdown(false)}
+                                                        className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-[var(--color-primary-dark)] text-[var(--color-text-white)] rounded-lg hover:bg-[var(--color-primary-darker)] transition-colors text-sm font-medium"
+                                                    >
+                                                        <Filter className="h-4 w-4" /> Done
+                                                    </button>
+                                                    <button
+                                                        onClick={() => { resetFilters(); }}
+                                                        className="flex items-center justify-center gap-2 px-4 py-2 bg-[var(--color-bg-gray-light)] text-[var(--color-text-secondary)] rounded-lg hover:bg-[var(--color-bg-hover)] transition-colors text-sm font-medium min-w-[90px]"
+                                                    >
+                                                        <RefreshCw className="h-4 w-4" /> Reset
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                            {/* Mobile popup */}
+                                            <div className="sm:hidden fixed inset-0 z-[110] flex">
+                                                <div className="ml-auto h-full w-full bg-[var(--color-bg-secondary)] flex flex-col">
+                                                    <div className="flex items-center justify-between p-4 border-b border-[var(--color-border-secondary)]">
+                                                        <div className="flex items-center gap-3">
+                                                            <div className="p-2 bg-[var(--color-primary-lightest)] rounded-lg">
+                                                                <Filter className="h-5 w-5 text-[var(--color-primary)]" />
+                                                            </div>
+                                                            <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">Filters</h2>
+                                                        </div>
+                                                        <button
+                                                            onClick={() => setFilterDropdown(false)}
+                                                            className="text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] p-1 rounded-lg hover:bg-[var(--color-bg-hover)]"
+                                                        >
+                                                            <X className="h-5 w-5" />
+                                                        </button>
+                                                    </div>
+                                                    <div className="flex-1 overflow-y-auto p-4 grid grid-cols-1 gap-4">
+                                                        {/* Branch */}
+                                                        <div>
+                                                            <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                                <Building className="inline h-4 w-4 mr-1" />
+                                                                Branch
+                                                            </label>
+                                                            <CustomSelect
+                                                                name="branch_id"
+                                                                value={filters.branch_id}
+                                                                onChange={(e) => handleFilterChange('branch_id', e.target.value)}
+                                                                options={branches.map((b) => ({
+                                                                    value: b.id,
+                                                                    label: b.name,
+                                                                }))}
+                                                                placeholder="All Branches"
+                                                                searchable={true}
+                                                                disabled={dropdownLoading}
+                                                            />
+                                                        </div>
+
+                                                        {/* Department */}
+                                                        <div>
+                                                            <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                                <Users className="inline h-4 w-4 mr-1" />
+                                                                Department
+                                                            </label>
+                                                            <CustomSelect
+                                                                name="department_id"
+                                                                value={filters.department_id}
+                                                                onChange={(e) => handleFilterChange('department_id', e.target.value)}
+                                                                options={departments.map((d) => ({
+                                                                    value: d.id,
+                                                                    label: d.name,
+                                                                }))}
+                                                                placeholder="All Departments"
+                                                                searchable={true}
+                                                                disabled={dropdownLoading}
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                    <div className="p-4 border-t border-[var(--color-border-secondary)] grid grid-cols-1 gap-2">
+                                                        <button
+                                                            onClick={() => setFilterDropdown(false)}
+                                                            className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-[var(--color-primary-dark)] text-[var(--color-text-white)] rounded-lg hover:bg-[var(--color-primary-darker)] transition-colors text-sm font-medium"
+                                                        >
+                                                            <Filter className="h-4 w-4" /> Done
+                                                        </button>
+                                                        <button
+                                                            onClick={() => { resetFilters(); }}
+                                                            className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-[var(--color-bg-gray-light)] text-[var(--color-text-secondary)] rounded-lg hover:bg-[var(--color-bg-hover)] transition-colors text-sm font-medium"
+                                                        >
+                                                            Reset
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </>,
+                                        document.body
                                     )}
-                                </button>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <div className="space-y-6">
-                    {/* Collapsible Filters */}
-                    {showFilters && (
-                        <div className="bg-[var(--color-bg-card)] rounded-lg shadow-[var(--color-shadow-light)] border border-[var(--color-border-secondary)] p-5">
-                            <div className="flex items-center justify-between mb-4">
-                                <div className="flex items-center gap-3">
-                                    <div className="p-2 bg-[var(--color-primary-lightest)] rounded-lg">
-                                        <Filter className="h-5 w-5 text-[var(--color-primary)]" />
-                                    </div>
-                                    <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">Filters</h2>
-                                </div>
-                                <button
-                                    onClick={resetFilters}
-                                    className="flex items-center gap-2 px-4 py-2 bg-[var(--color-bg-secondary)] text-[var(--color-text-secondary)] rounded-lg hover:bg-[var(--color-bg-hover)] transition-colors duration-200"
-                                >
-                                    <RefreshCw className="h-4 w-4" />
-                                    Reset
-                                </button>
-                            </div>
-
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                                {/* Branch Filter */}
-                                <div className="flex flex-col">
-                                    <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
-                                        <Building className="inline h-4 w-4 mr-1" />
-                                        Branch
-                                    </label>
-                                    {/* <select
-                                        value={filters.branch_id}
-                                        onChange={(e) => handleFilterChange('branch_id', e.target.value)}
-                                        className="w-full px-3 py-2 bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent text-[var(--color-text-primary)]"
-                                        disabled={dropdownLoading}
-                                    >
-                                        <option value="">All Branches</option>
-                                        {branches.map(branch => (
-                                            <option key={branch.id} value={branch.id}>{branch.name}</option>
-                                        ))}
-                                    </select> */}
-                                    <CustomSelect
-                                        name="branch_id"
-                                        value={filters.branch_id}
-                                        onChange={(e) =>
-                                            handleFilterChange(
-                                                'branch_id',
-                                                e.target.value
-                                            )
-                                        }
-                                        options={branches.map((branch) => ({
-                                            value: branch.id,
-                                            label: branch.name,
-                                        }))}
-                                        placeholder="All Branches"
-                                        searchable={true}
-                                        disabled={dropdownLoading}
-                                    />
-                                </div>
-
-                                {/* Department Filter */}
-                                <div className="flex flex-col">
-                                    <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
-                                        <Users className="inline h-4 w-4 mr-1" />
-                                        Department
-                                    </label>
-                                    {/* <select
-                                        value={filters.department_id}
-                                        onChange={(e) => handleFilterChange('department_id', e.target.value)}
-                                        className="w-full px-3 py-2 bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent text-[var(--color-text-primary)]"
-                                        disabled={dropdownLoading}
-                                    >
-                                        <option value="">All Departments</option>
-                                        {departments.map(department => (
-                                            <option key={department.id} value={department.id}>{department.name}</option>
-                                        ))}
-                                    </select> */}
-                                    <CustomSelect
-                                        name="department_id"
-                                        value={filters.department_id}
-                                        onChange={(e) =>
-                                            handleFilterChange(
-                                                'department_id',
-                                                e.target.value
-                                            )
-                                        }
-                                        options={departments.map((department) => ({
-                                            value: department.id,
-                                            label: department.name,
-                                        }))}
-                                        placeholder="All Departments"
-                                        searchable={true}
-                                        disabled={dropdownLoading}
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                    )}
-
                     {/* Main Form Card */}
                     <div className="bg-[var(--color-bg-secondary)] backdrop-blur-sm rounded-2xl border border-slate-200 shadow-lg">
                         {/* Employee Selection */}
@@ -506,22 +641,6 @@ const AssignShift = () => {
                                     <Calendar className="w-4 h-4 inline mr-2" />
                                     Select Shift <span className="text-[var(--color-error)]">*</span>
                                 </label>
-                                {/* <select
-                                    value={selectedShift}
-                                    onChange={(e) => setSelectedShift(e.target.value)}
-                                    className="w-full px-4 py-3 border border-[var(--color-border-secondary)] rounded-xl focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-all duration-200 shadow-sm bg-[var(--color-bg-secondary)]"
-                                    disabled={loading}
-                                    required
-                                >
-                                    <option value="">
-                                        {loading ? 'Loading shifts...' : 'Choose a shift...'}
-                                    </option>
-                                    {shifts.map((shift) => (
-                                        <option key={shift.shift_id} value={shift.shift_id}>
-                                            {shift.shift_name}
-                                        </option>
-                                    ))}
-                                </select> */}
                                 <CustomSelect
                                     name="selectedShift"
                                     value={selectedShift}
@@ -577,7 +696,6 @@ const AssignShift = () => {
                                 </button>
                             </div>
                         </div>
-                        {/* </div> */}
                     </div>
                 </div>
 

@@ -7,13 +7,12 @@ import { useAuth } from '../context/AuthContext';
 
 const DashboardContent = () => {
   return (
-    <div className="min-h-screen p-8 bg-gradient-to-br from-gray-50 to-gray-100">
+    <div className="min-h-screen p-6 lg:p-8 bg-[var(--color-bg-primary)]">
       <div className="max-w-[1600px] mx-auto space-y-6">
-        <AttendanceReport />
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-          <SalaryTrend />
-          <PayrollSummary />
-        </div>
+        <AttendanceReport 
+          salaryTrendComponent={<SalaryTrend />}
+          payrollSummaryComponent={<PayrollSummary />}
+        />
       </div>
     </div>
   );

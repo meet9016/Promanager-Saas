@@ -11,7 +11,7 @@ import {
     Info
 } from "lucide-react";
 import { useSelector } from "react-redux";
-import { ConfirmDialog } from "../ui/ConfirmDialog";
+import { ConfirmDialog } from "../comman/ConfirmDialog";
 import BranchForm from "./BranchForm";
 import useBranches from "../../hooks/useBranches";
 import LoadingSpinner from "../Loader/LoadingSpinner";
@@ -427,3 +427,4 @@ const BranchList = () => {
 };
 
 export default BranchList;
+

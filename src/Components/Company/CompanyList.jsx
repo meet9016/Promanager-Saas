@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from "react";
 import { Trash2, MapPin, Building2, Phone, User, FileText, Search, X, Eye, ArrowRight, Edit } from "lucide-react";
 import { useSelector } from 'react-redux';
-import { ConfirmDialog } from '../ui/ConfirmDialog';
+import { ConfirmDialog } from '../comman/ConfirmDialog';
 import CompanyForm from "./CompanyForm";
 import useCompanies from "../../hooks/useCompanies";
 import LoadingSpinner from "../Loader/LoadingSpinner";

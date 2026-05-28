@@ -5,7 +5,7 @@ import DepartmentForm from "./DepartmentForm";
 import useDepartments from "../../hooks/useDepartments";
 import LoadingSpinner from "../Loader/LoadingSpinner";
 import { Toast } from "../ui/Toast";
-import { ConfirmDialog } from "../ui/ConfirmDialog";
+import DeleteModal from "../comman/DeleteModal";
 import CustomSelect from "../comman/CustomSelect";
 
 // ─── Shared layout primitives (same as DepartmentForm) ────────────────────────
@@ -533,15 +533,12 @@ const DepartmentList = () => {
                     </div>
                 )}
             </div>
-            <ConfirmDialog
+            <DeleteModal
                 isOpen={confirmModal.isOpen && confirmModal.type === 'delete'}
                 onClose={closeModal}
-                onConfirm={confirmDeleteDepartment}
+                onDelete={confirmDeleteDepartment}
                 title="Delete Department"
                 message={`Are you sure you want to delete "${confirmModal.data?.name || 'this Department'}"? This action cannot be undone.`}
-                confirmText="Delete"
-                cancelText="Cancel"
-                type="danger"
             />
             {toast && (
                 <Toast
