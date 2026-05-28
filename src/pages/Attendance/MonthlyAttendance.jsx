@@ -1,15 +1,86 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState, useLayoutEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import api from '../../api/axiosInstance';
-import { Filter, Users, Calendar, Building, Award, RefreshCw, HelpCircle, ChevronDown, Search, X, CheckCircle, XCircle, Clock, AlertTriangle, Minus } from 'lucide-react';
+import { Filter, Users, Calendar, Building, Award, RefreshCw, HelpCircle, ChevronDown, Search, X, CheckCircle, XCircle, Clock, AlertTriangle, Minus, Loader2 } from 'lucide-react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { Toast } from '../../Components/ui/Toast';
 import CustomDatePicker from '../../Components/comman/CustomDatePicker';
 import CustomSelect from '../../Components/comman/CustomSelect';
 
-/* ------------ utils ------------ */
+/* ============ Anchored Position Utility ============ */
+const getScrollParents = (node) => {
+    const parents = [];
+    if (!node) return parents;
+    let parent = node.parentNode;
+    const scrollRegex = /(auto|scroll|overlay)/;
+    while (parent && parent.nodeType === 1) {
+        const style = window.getComputedStyle(parent);
+        const overflow = `${style.overflow}${style.overflowY}${style.overflowX}`;
+        if (scrollRegex.test(overflow)) parents.push(parent);
+        parent = parent.parentNode;
+    }
+    parents.push(window);
+    return parents;
+};
+
+const useAnchoredPosition = (anchorRef, isOpen, opts = {}) => {
+    const { placement = 'bottom-end', offset = 8, minWidth = 420 } = opts;
+    const [pos, setPos] = useState({ top: 0, left: 0, width: 0, ready: false });
+    const cleanupRef = useRef([]);
+
+    const compute = useCallback(() => {
+        const el = anchorRef.current;
+        if (!el) return;
+        const rect = el.getBoundingClientRect();
+        const scrollX = window.scrollX || window.pageXOffset;
+        const scrollY = window.scrollY || window.pageYOffset;
+        let top = rect.bottom + scrollY + offset;
+        let left;
+        if (placement === 'bottom-start') {
+            left = rect.left + scrollX;
+        } else if (placement === 'bottom-center') {
+            left = rect.left + scrollX + rect.width / 2 - minWidth / 2;
+        } else {
+            left = rect.left + scrollX + rect.width - minWidth;
+        }
+        setPos({ top, left, width: rect.width, ready: true });
+    }, [anchorRef, offset, placement, minWidth]);
+
+    useLayoutEffect(() => {
+        if (!isOpen) {
+            cleanupRef.current.forEach((fn) => fn && fn());
+            cleanupRef.current = [];
+            setPos((p) => ({ ...p, ready: false }));
+            return;
+        }
+        compute();
+        const parents = getScrollParents(anchorRef.current);
+        const rafThrottle = (fn) => {
+            let ticking = false;
+            return () => {
+                if (ticking) return;
+                ticking = true;
+                requestAnimationFrame(() => { fn(); ticking = false; });
+            };
+        };
+        const handler = rafThrottle(() => compute());
+        parents.forEach((p) => p.addEventListener('scroll', handler, { passive: true }));
+        window.addEventListener('resize', handler, { passive: true });
+        const remove = () => {
+            parents.forEach((p) => p.removeEventListener('scroll', handler));
+            window.removeEventListener('resize', handler);
+        };
+        cleanupRef.current.push(remove);
+        return () => { remove(); cleanupRef.current = []; };
+    }, [isOpen, compute, anchorRef]);
+
+    return pos;
+};
+
+/* ============ Utils ============ */
 const pad2 = (n) => (n < 10 ? `0${n}` : String(n));
 
 const localDateFromYmd = (ymd) => {
@@ -63,7 +134,7 @@ const CODE_COLORS = {
     L: 'bg-orange-50   text-orange-500  border-orange-200',
 };
 
-/* Avatar palette — deterministic by first char */
+/* Avatar palette */
 const AVATAR_COLORS = [
     'bg-violet-500', 'bg-blue-500', 'bg-emerald-500', 'bg-rose-500',
     'bg-amber-500', 'bg-cyan-500', 'bg-fuchsia-500', 'bg-teal-500',
@@ -115,12 +186,24 @@ const StatCard = ({ label, value, color, icon: Icon, iconBg }) => (
     </div>
 );
 
+/* ============ Active Filters Badge ============ */
+const getActiveFiltersCount = (filters) => {
+    let count = 0;
+    if (filters.branch_id) count++;
+    if (filters.department_id) count++;
+    if (filters.designation_id) count++;
+    return count;
+};
+
+/* ===================== MAIN COMPONENT ===================== */
 const MonthlyAttendance = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const { user } = useAuth();
     const containerRef = useRef(null);
+    const filterBtnRef = useRef(null);
 
+    /* Responsive */
     const [isMobile, setIsMobile] = useState(false);
     useEffect(() => {
         const check = () => setIsMobile(window.innerWidth < 768);
@@ -149,6 +232,15 @@ const MonthlyAttendance = () => {
     const [showFilters, setShowFilters] = useState(false);
     const [toast, setToast] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');
+
+    /* Anchored position for filter dropdown */
+    const filterPos = useAnchoredPosition(filterBtnRef, showFilters, {
+        placement: 'bottom-end',
+        offset: 10,
+        minWidth: 420
+    });
+
+    const activeFiltersCount = useMemo(() => getActiveFiltersCount(filters), [filters]);
 
     const daysInMonth = useMemo(() => getDaysInMonth(filters.month_year), [filters.month_year]);
 
@@ -298,6 +390,12 @@ const MonthlyAttendance = () => {
     const resetFilters = () => {
         setFilters({ branch_id: '', department_id: '', designation_id: '', employee_id: '', month_year: new Date().toISOString().slice(0, 7) });
         setRows([]); setError('');
+        setToast({ message: 'Filters reset successfully', type: 'success' });
+    };
+
+    const applyFilters = () => {
+        /* Filters auto-apply via debounce; just close panel */
+        setShowFilters(false);
     };
 
     const formatMonthYear = (my) => {
@@ -312,6 +410,19 @@ const MonthlyAttendance = () => {
         return new Date(parseInt(y), parseInt(m) - 1).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }).toUpperCase();
     };
 
+    /* Auto-close dropdown if anchor scrolled off-screen */
+    useEffect(() => {
+        if (showFilters && filterBtnRef.current) {
+            const rect = filterBtnRef.current.getBoundingClientRect();
+            const fullyOut =
+                rect.bottom < 0 ||
+                rect.top > window.innerHeight ||
+                rect.right < 0 ||
+                rect.left > window.innerWidth;
+            if (fullyOut) setShowFilters(false);
+        }
+    }, [showFilters, filterPos]);
+
     /* ===================== RENDER ===================== */
     return (
         <div className="min-h-screen bg-slate-50 pb-8" style={{ fontFamily: "'Inter', sans-serif" }}>
@@ -321,13 +432,10 @@ const MonthlyAttendance = () => {
 
                 {/* ══ HERO HEADER CARD ══ */}
                 <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-                    {/* Rainbow top border */}
-                    {/* <div className="h-1 w-full bg-gradient-to-r from-blue-500 via-violet-500 via-fuchsia-500 to-orange-400" /> */}
-
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 px-6 py-5">
                         {/* Left */}
                         <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 rounded-2xl bg-violet-600 flex items-center justify-center shadow-lg shadow-violet-200 flex-shrink-0">
+                            <div className="w-12 h-12 rounded-2xl bg-[var(--color-primary-dark)] flex items-center justify-center shadow-lg shadow-violet-200 flex-shrink-0">
                                 <svg width={22} height={22} viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
                                     <rect x={3} y={4} width={18} height={18} rx={2} /><line x1={16} y1={2} x2={16} y2={6} /><line x1={8} y1={2} x2={8} y2={6} /><line x1={3} y1={10} x2={21} y2={10} />
                                 </svg>
@@ -336,230 +444,335 @@ const MonthlyAttendance = () => {
                                 <div className="flex items-center gap-2 mb-0.5">
                                     <span className="flex items-center gap-1.5 text-[10px] font-bold text-emerald-600 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full uppercase tracking-widest">
                                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                                        Live · {formatMonthYearShort(filters.month_year)}
+                                        Live &middot; {formatMonthYearShort(filters.month_year)}
                                     </span>
                                 </div>
                                 <h1 className="text-base sm:text-2xl font-bold text-[var(--color-primary-darker)]">
                                     Monthly Attendance
                                 </h1>
                                 <p className="text-xs text-slate-400 mt-0.5">
-                                    {gridData.length} employee{gridData.length !== 1 ? 's' : ''} · {daysInMonth} days · tracked in real time
+                                    {gridData.length} employee{gridData.length !== 1 ? 's' : ''} &middot; {daysInMonth} days &middot; tracked in real time
                                 </p>
                             </div>
                         </div>
 
-                        {/* Right: donut + filter btn */}
+                        {/* Right: filter btn */}
                         <div className="flex items-center gap-3">
                             <button
+                                ref={filterBtnRef}
                                 onClick={() => setShowFilters(!showFilters)}
                                 className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold border transition-all duration-200
                                     ${showFilters
-                                        ? 'bg-violet-600 text-white border-violet-600 shadow-lg shadow-violet-100'
-                                        : 'bg-white text-slate-600 border-slate-200 hover:border-violet-300 hover:text-violet-600'
+                                        ? 'bg-[var(--color-primary-dark)] text-white border-violet-600 shadow-lg shadow-violet-100'
+                                        : 'bg-[var(--color-primary-dark)] text-white border-slate-200 '
                                     }`}
                             >
                                 <Filter size={14} />
                                 Filters
+                                {activeFiltersCount > 0 && (
+                                    <span className="bg-[var(--color-primary-dark)] text-white text-xs rounded-full px-2 py-0.5 min-w-[20px] text-center">
+                                        {activeFiltersCount}
+                                    </span>
+                                )}
                                 <ChevronDown size={13} className={`transition-transform ${showFilters ? 'rotate-180' : ''}`} />
                             </button>
                         </div>
                     </div>
                 </div>
 
+                {/* ══ FILTER DROPDOWN (EmployeeDirectoryReport Style) ══ */}
+                {showFilters &&
+                    createPortal(
+                        <>
+                            {/* Backdrop */}
+                            <div
+                                className="fixed inset-0 z-[100] bg-black/40"
+                                onClick={() => setShowFilters(false)}
+                            />
+
+                            {/* ── Desktop Anchored Dropdown ── */}
+                            <div
+                                className="hidden sm:block absolute z-[110] bg-[var(--color-bg-secondary)] rounded-lg shadow-2xl border border-[var(--color-border-secondary)] max-h-[80vh] overflow-visible flex flex-col"
+                                style={{
+                                    position: 'absolute',
+                                    top: filterPos.ready ? filterPos.top : -9999,
+                                    left: filterPos.ready ? Math.max(12, filterPos.left) : -9999,
+                                    width: Math.max(420, filterPos.width),
+                                    minWidth: 420
+                                }}
+                            >
+                                {/* Header */}
+                                <div className="flex items-center justify-between p-4 border-b border-[var(--color-border-secondary)] bg-[var(--color-bg-secondary)]">
+                                    <h3 className="text-lg font-semibold text-[var(--color-text-primary)]">Filter Attendance</h3>
+                                    <button
+                                        onClick={() => setShowFilters(false)}
+                                        className="text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] p-1 rounded-lg hover:bg-[var(--color-bg-hover)]"
+                                    >
+                                        <X size={16} />
+                                    </button>
+                                </div>
+
+                                {/* Loading */}
+                                {dropdownLoading && (
+                                    <div className="flex items-center gap-2 p-4 text-[var(--color-text-secondary)] border-b border-[var(--color-border-secondary)]">
+                                        <Loader2 size={14} className="animate-spin" />
+                                        <span className="text-sm">Loading filter options...</span>
+                                    </div>
+                                )}
+
+                                {/* Content */}
+                                <div className="flex-1 p-4 w-full overflow-visible max-h-none">
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        {/* Month Year */}
+                                        <div>
+                                            <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                <Calendar size={14} className="inline mr-1" />
+                                                Month & Year <span className="text-red-400">*</span>
+                                            </label>
+                                            <CustomDatePicker
+                                                name="month_year"
+                                                value={
+                                                    filters.month_year
+                                                        ? new Date(`${filters.month_year}-01`)
+                                                        : null
+                                                }
+                                                onChange={(e) => {
+                                                    const value = e?.target?.value || '';
+                                                    if (!value) {
+                                                        handleFilterChange('month_year', '');
+                                                        return;
+                                                    }
+                                                    const [year, month] = value.split('-');
+                                                    handleFilterChange('month_year', `${year}-${month}`);
+                                                }}
+                                                placeholder="Select month and year"
+                                                maxDate={new Date()}
+                                                clearable={true}
+                                                showMonthYearPicker={true}
+                                                showFullMonthYearPicker={true}
+                                                showPopperArrow={false}
+                                                className="w-full h-[40px]"
+                                            />
+                                        </div>
+
+                                        {/* Branch */}
+                                        <div>
+                                            <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                <Building size={14} className="inline mr-1" />
+                                                Branch
+                                            </label>
+                                            <CustomSelect
+                                                name="branch_id"
+                                                value={filters.branch_id}
+                                                onChange={(e) => handleFilterChange('branch_id', e.target.value)}
+                                                options={branches.map((b) => ({ value: b.id, label: b.name }))}
+                                                placeholder="All Branches"
+                                                searchable={true}
+                                                disabled={dropdownLoading}
+                                            />
+                                        </div>
+
+                                        {/* Department */}
+                                        <div>
+                                            <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                <Users size={14} className="inline mr-1" />
+                                                Department
+                                            </label>
+                                            <CustomSelect
+                                                name="department_id"
+                                                value={filters.department_id}
+                                                onChange={(e) => handleFilterChange('department_id', e.target.value)}
+                                                options={departments.map((d) => ({ value: d.id, label: d.name }))}
+                                                placeholder="All Departments"
+                                                searchable={true}
+                                                disabled={dropdownLoading}
+                                            />
+                                        </div>
+
+                                        {/* Designation */}
+                                        <div>
+                                            <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                <Award size={14} className="inline mr-1" />
+                                                Designation
+                                            </label>
+                                            <CustomSelect
+                                                name="designation_id"
+                                                value={filters.designation_id}
+                                                onChange={(e) => handleFilterChange('designation_id', e.target.value)}
+                                                options={designations.map((d) => ({ value: d.id, label: d.name }))}
+                                                placeholder="All Designations"
+                                                searchable={true}
+                                                disabled={dropdownLoading}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Footer */}
+                                <div className="flex flex-col sm:flex-row gap-2 p-4 border-t border-[var(--color-border-secondary)] bg-[var(--color-bg-secondary)]">
+                                    <button
+                                        onClick={applyFilters}
+                                        disabled={loading}
+                                        className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-[var(--color-primary-dark)] text-[var(--color-text-white)] rounded-lg hover:bg-[var(--color-primary-darker)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
+                                    >
+                                        {loading ? <Loader2 size={14} className="animate-spin" /> : <Filter size={14} />}
+                                        {loading ? 'Loading...' : 'Apply Filters'}
+                                    </button>
+                                    <button
+                                        onClick={resetFilters}
+                                        className="flex items-center justify-center gap-2 px-4 py-2 bg-[var(--color-bg-gray-light)] text-[var(--color-text-secondary)] rounded-lg hover:bg-[var(--color-bg-hover)] transition-colors text-sm font-medium min-w-[100px]"
+                                    >
+                                        <RefreshCw size={14} />
+                                        Reset
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* ── Mobile Sheet ── */}
+                            <div className="sm:hidden fixed inset-0 z-[110] flex">
+                                <div className="ml-auto h-full w-full bg-[var(--color-bg-secondary)] flex flex-col">
+                                    {/* Mobile Header */}
+                                    <div className="flex items-center justify-between p-4 border-b border-[var(--color-border-secondary)]">
+                                        <h3 className="text-lg font-semibold text-[var(--color-text-primary)]">Filter Attendance</h3>
+                                        <button
+                                            onClick={() => setShowFilters(false)}
+                                            className="text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] p-1 rounded-lg hover:bg-[var(--color-bg-hover)]"
+                                        >
+                                            <X size={20} />
+                                        </button>
+                                    </div>
+
+                                    {/* Mobile Loading */}
+                                    {dropdownLoading && (
+                                        <div className="flex items-center gap-2 p-4 text-[var(--color-text-secondary)] border-b border-[var(--color-border-secondary)]">
+                                            <Loader2 size={14} className="animate-spin" />
+                                            <span className="text-sm">Loading filter options...</span>
+                                        </div>
+                                    )}
+
+                                    {/* Mobile Content */}
+                                    <div className="flex-1 overflow-y-auto p-4">
+                                        <div className="grid grid-cols-1 gap-4">
+                                            {/* Month Year */}
+                                            <div>
+                                                <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                    <Calendar size={14} className="inline mr-1" />
+                                                    Month & Year <span className="text-red-400">*</span>
+                                                </label>
+                                                <CustomDatePicker
+                                                    name="month_year"
+                                                    value={
+                                                        filters.month_year
+                                                            ? new Date(`${filters.month_year}-01`)
+                                                            : null
+                                                    }
+                                                    onChange={(e) => {
+                                                        const value = e?.target?.value || '';
+                                                        if (!value) {
+                                                            handleFilterChange('month_year', '');
+                                                            return;
+                                                        }
+                                                        const [year, month] = value.split('-');
+                                                        handleFilterChange('month_year', `${year}-${month}`);
+                                                    }}
+                                                    placeholder="Select month and year"
+                                                    maxDate={new Date()}
+                                                    clearable={true}
+                                                    showMonthYearPicker={true}
+                                                    showFullMonthYearPicker={true}
+                                                    showPopperArrow={false}
+                                                    className="w-full h-[40px]"
+                                                />
+                                            </div>
+
+                                            {/* Branch */}
+                                            <div>
+                                                <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                    <Building size={14} className="inline mr-1" />
+                                                    Branch
+                                                </label>
+                                                <select
+                                                    value={filters.branch_id}
+                                                    onChange={(e) => handleFilterChange('branch_id', e.target.value)}
+                                                    className="w-full px-3 py-2 bg-[var(--color-bg-primary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent text-[var(--color-text-primary)] text-sm"
+                                                    disabled={dropdownLoading}
+                                                >
+                                                    <option value="">All Branches</option>
+                                                    {branches.map((b) => (
+                                                        <option key={b.id} value={b.id}>{b.name}</option>
+                                                    ))}
+                                                </select>
+                                            </div>
+
+                                            {/* Department */}
+                                            <div>
+                                                <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                    <Users size={14} className="inline mr-1" />
+                                                    Department
+                                                </label>
+                                                <select
+                                                    value={filters.department_id}
+                                                    onChange={(e) => handleFilterChange('department_id', e.target.value)}
+                                                    className="w-full px-3 py-2 bg-[var(--color-bg-primary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent text-[var(--color-text-primary)] text-sm"
+                                                    disabled={dropdownLoading}
+                                                >
+                                                    <option value="">All Departments</option>
+                                                    {departments.map((d) => (
+                                                        <option key={d.id} value={d.id}>{d.name}</option>
+                                                    ))}
+                                                </select>
+                                            </div>
+
+                                            {/* Designation */}
+                                            <div>
+                                                <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                    <Award size={14} className="inline mr-1" />
+                                                    Designation
+                                                </label>
+                                                <select
+                                                    value={filters.designation_id}
+                                                    onChange={(e) => handleFilterChange('designation_id', e.target.value)}
+                                                    className="w-full px-3 py-2 bg-[var(--color-bg-primary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent text-[var(--color-text-primary)] text-sm"
+                                                    disabled={dropdownLoading}
+                                                >
+                                                    <option value="">All Designations</option>
+                                                    {designations.map((d) => (
+                                                        <option key={d.id} value={d.id}>{d.name}</option>
+                                                    ))}
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Mobile Footer */}
+                                    <div className="flex flex-col gap-2 p-4 border-t border-[var(--color-border-secondary)] bg-[var(--color-bg-secondary)]">
+                                        <button
+                                            onClick={applyFilters}
+                                            disabled={loading}
+                                            className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-[var(--color-primary-dark)] text-[var(--color-text-white)] rounded-lg hover:bg-[var(--color-primary-darker)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
+                                        >
+                                            {loading ? <Loader2 size={14} className="animate-spin" /> : <Filter size={14} />}
+                                            {loading ? 'Loading...' : 'Apply Filters'}
+                                        </button>
+                                        <button
+                                            onClick={resetFilters}
+                                            className="flex items-center justify-center gap-2 px-4 py-2 bg-[var(--color-bg-gray-light)] text-[var(--color-text-secondary)] rounded-lg hover:bg-[var(--color-bg-hover)] transition-colors text-sm font-medium"
+                                        >
+                                            <RefreshCw size={14} />
+                                            Reset
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </>,
+                        document.body
+                    )}
+
                 {/* ══ ERROR ══ */}
                 {error && (
                     <div className="flex items-center gap-2.5 bg-red-50 border border-red-200 text-red-600 rounded-xl px-4 py-3 text-sm">
                         <HelpCircle size={15} className="flex-shrink-0" />
                         <span><b>Error:</b> {error}</span>
-                    </div>
-                )}
-
-                {/* ══ STATS ROW ══ */}
-                {/* {gridData.length > 0 && (
-                    <div className="bg-white rounded-2xl shadow-sm border border-slate-100 flex flex-wrap divide-x divide-slate-100">
-                        <StatCard label="Present" value={summaryStats.totals['P']}
-                            color="text-emerald-600" iconBg="bg-emerald-100" icon={CheckCircle} />
-                        <StatCard label="Absent" value={summaryStats.totals['A']}
-                            color="text-red-500" iconBg="bg-red-100" icon={XCircle} />
-                        <StatCard label="Week Off" value={summaryStats.totals['WO']}
-                            color="text-slate-600" iconBg="bg-slate-100" icon={Minus} />
-                        <StatCard label="Incomplete" value={summaryStats.totals['INC']}
-                            color="text-orange-500" iconBg="bg-orange-100" icon={AlertTriangle} />
-                    </div>
-                )} */}
-
-                {/* ══ FILTERS PANEL ══ */}
-                {showFilters && (
-                    <div className="bg-white rounded-2xl shadow-sm border border-slate-100 ">
-                        <div className="flex items-center justify-between px-5 py-3 border-b border-slate-100 bg-slate-50/60">
-                            <span className="text-sm font-bold text-slate-700">Filter Attendance</span>
-                            <button onClick={resetFilters}
-                                className="flex items-center gap-1.5 text-xs text-slate-500 hover:text-violet-600 px-3 py-1.5 rounded-lg hover:bg-violet-50 border border-slate-200 hover:border-violet-200 transition-all">
-                                <RefreshCw size={13} /> Reset
-                            </button>
-                        </div>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 p-5">
-                            {/* Month Year */}
-                            <div className="flex flex-col gap-1.5 z-40">
-                                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1">
-                                    <Calendar size={11} /> Month & Year <span className="text-red-400">*</span>
-                                </label>
-                                <div className="relative">
-                                    {/* <DatePicker
-                                        selected={filters.month_year ? new Date(`${filters.month_year}-01`) : null}
-                                        onChange={(date) => {
-                                            const iso = date ? `${date.getFullYear()}-${pad2(date.getMonth() + 1)}` : '';
-                                            handleFilterChange('month_year', iso);
-                                        }}
-                                        dateFormat="MMMM yyyy"
-                                        showMonthYearPicker showFullMonthYearPicker
-                                        className="w-full pl-8 pr-3 py-2.5 rounded-xl border border-slate-200 bg-white text-slate-700 text-sm focus:outline-none focus:ring-2 focus:ring-violet-400 focus:border-transparent transition-all"
-                                        placeholderText="Select month and year"
-                                        maxDate={new Date()} showPopperArrow={false}
-                                    />
-                                    <Calendar size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" /> */}
-
-
-                                    <CustomDatePicker
-                                        name="month_year"
-                                        value={
-                                            filters.month_year
-                                                ? new Date(`${filters.month_year}-01`)
-                                                : null
-                                        }
-                                        onChange={(e) => {
-
-                                            const value = e?.target?.value || '';
-
-                                            if (!value) {
-                                                handleFilterChange('month_year', '');
-                                                return;
-                                            }
-
-                                            const [year, month] = value.split('-');
-
-                                            handleFilterChange(
-                                                'month_year',
-                                                `${year}-${month}`
-                                            );
-                                        }}
-                                        placeholder="Select month and year"
-                                        maxDate={new Date()}
-                                        clearable={true}
-                                        showMonthYearPicker={true}
-                                        showFullMonthYearPicker={true}
-                                        showPopperArrow={false}
-                                        className="w-full h-[40px]"
-                                    />
-                                </div>
-                            </div>
-
-                            {/* Branch */}
-                            <div className="flex flex-col gap-1.5">
-                                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1">
-                                    <Building size={11} /> Branch
-                                </label>
-                                <div className="relative">
-                                    {/* <select value={filters.branch_id}
-                                        onChange={(e) => handleFilterChange('branch_id', e.target.value)}
-                                        className="w-full pl-8 pr-8 py-2.5 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-violet-400 focus:border-transparent text-slate-700 text-sm appearance-none transition-all"
-                                        disabled={dropdownLoading}>
-                                        <option value="">All Branches</option>
-                                        {branches.map(b => <option key={b.id} value={b.id}>{b.name}</option>)}
-                                    </select> */}
-
-                                    <CustomSelect
-                                        name="branch_id"
-                                        value={filters.branch_id}
-                                        onChange={(e) =>
-                                            handleFilterChange(
-                                                'branch_id',
-                                                e.target.value
-                                            )
-                                        }
-                                        options={branches.map((b) => ({
-                                            value: b.id,
-                                            label: b.name,
-                                        }))}
-                                        placeholder="All Branches"
-                                        searchable={true}
-                                        disabled={dropdownLoading}
-                                    />
-
-                                </div>
-                            </div>
-
-                            {/* Department */}
-                            <div className="flex flex-col gap-1.5">
-                                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1">
-                                    <Users size={11} /> Department
-                                </label>
-                                <div className="relative">
-                                    {/* <select value={filters.department_id}
-                                        onChange={(e) => handleFilterChange('department_id', e.target.value)}
-                                        className="w-full pl-8 pr-8 py-2.5 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-violet-400 focus:border-transparent text-slate-700 text-sm appearance-none transition-all"
-                                        disabled={dropdownLoading}>
-                                        <option value="">All Departments</option>
-                                        {departments.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
-                                    </select> */}
-
-                                    <CustomSelect
-                                        name="department_id"
-                                        value={filters.department_id}
-                                        onChange={(e) =>
-                                            handleFilterChange(
-                                                'department_id',
-                                                e.target.value
-                                            )
-                                        }
-                                        options={departments.map((d) => ({
-                                            value: d.id,
-                                            label: d.name,
-                                        }))}
-                                        placeholder="All Departments"
-                                        searchable={true}
-                                        disabled={dropdownLoading}
-                                    />
-                                    {/* <Users size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
-                                    <ChevronDown size={14} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" /> */}
-                                </div>
-                            </div>
-
-                            {/* Designation */}
-                            <div className="flex flex-col gap-1.5">
-                                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1">
-                                    <Award size={11} /> Designation
-                                </label>
-                                <div className="relative">
-                                    {/* <select value={filters.designation_id}
-                                        onChange={(e) => handleFilterChange('designation_id', e.target.value)}
-                                        className="w-full pl-8 pr-8 py-2.5 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-violet-400 focus:border-transparent text-slate-700 text-sm appearance-none transition-all"
-                                        disabled={dropdownLoading}>
-                                        <option value="">All Designations</option>
-                                        {designations.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
-                                    </select> */}
-                                    <CustomSelect
-                                        name="designation_id"
-                                        value={filters.designation_id}
-                                        onChange={(e) =>
-                                            handleFilterChange(
-                                                'designation_id',
-                                                e.target.value
-                                            )
-                                        }
-                                        options={designations.map((d) => ({
-                                            value: d.id,
-                                            label: d.name,
-                                        }))}
-                                        placeholder="All Designations"
-                                        searchable={true}
-                                        disabled={dropdownLoading}
-                                    />
-                                    {/* <Award size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
-                                    <ChevronDown size={14} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" /> */}
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 )}
 
@@ -682,7 +895,7 @@ const MonthlyAttendance = () => {
                                         className="border-b border-slate-100 group hover:bg-violet-50/40 transition-colors"
                                         style={{ display: 'grid', gridTemplateColumns: gridTemplate, background: rowBg }}
                                     >
-                                        {/* Employee Code — sticky, solid bg */}
+                                        {/* Employee Code */}
                                         <div
                                             className="sticky left-0 z-10 border-r border-slate-100 flex items-center px-3 transition-colors"
                                             style={{
@@ -696,7 +909,7 @@ const MonthlyAttendance = () => {
                                             </span>
                                         </div>
 
-                                        {/* Employee Name — sticky, solid bg */}
+                                        {/* Employee Name */}
                                         <div
                                             className="sticky z-10 border-r border-slate-100 flex items-center gap-2.5 px-3 transition-colors"
                                             style={{
@@ -730,14 +943,13 @@ const MonthlyAttendance = () => {
                                                             <div
                                                                 title={[
                                                                     CODE_LABELS[cell.code] || cell.code,
-                                                                    cell.late ? '⏰ Late' : '',
-                                                                    cell.early ? '🚪 Early Going' : '',
+                                                                    cell.late ? 'Late' : '',
+                                                                    cell.early ? 'Early Going' : '',
                                                                 ].filter(Boolean).join(' · ')}
                                                                 className={`w-8 h-8 rounded-full flex items-center justify-center text-[9px] font-extrabold leading-none shadow-sm ${circleColor}`}
                                                             >
                                                                 {cell.code === '½P' ? '½P' : cell.code}
                                                             </div>
-                                                            {/* Indicator dots */}
                                                             {(cell.late || cell.early || cell.overtime) && (
                                                                 <div className="flex items-center gap-0.5">
                                                                     {cell.late && <span className="w-1 h-1 rounded-full bg-orange-400 flex-shrink-0" title="Late" />}
@@ -756,7 +968,7 @@ const MonthlyAttendance = () => {
                                             );
                                         })}
 
-                                        {/* ── Summary column ── */}
+                                        {/* Summary column */}
                                         <div
                                             className="flex flex-wrap items-center gap-1 px-2 py-1 content-center"
                                             style={{ height: `${CELL_H}px`, width: SUMMARY_COL_W }}

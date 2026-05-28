@@ -36,6 +36,7 @@ import Pagination from '../../Components/Pagination';
 import { Table, TableHeader, TableBody, TableRow, TableHeaderRow, Th, Td } from '../../Components/ui/Table';
 import CustomDatePicker from '../../Components/comman/CustomDatePicker';
 import CustomSelect from '../../Components/comman/CustomSelect';
+import CustomInput from '../../Components/comman/CustomInput';
 
 // ─── Floating anchor helpers (same pattern as DailyReport) ───────────────────
 const getScrollParents = (node) => {
@@ -828,7 +829,7 @@ const AttendanceExceptionReport = () => {
 
 
                                 {/* Search */}
-                                <div className="relative w-full sm:w-56">
+                                {/* <div className="relative w-full sm:w-56">
                                     <input
                                         type="text"
                                         placeholder="Search employees..."
@@ -842,6 +843,18 @@ const AttendanceExceptionReport = () => {
                                             <XCircle className="h-4 w-4 text-[var(--color-text-muted)]" />
                                         </button>
                                     )}
+                                </div> */}
+                                <div className="relative w-full sm:w-56">
+                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--color-text-muted)] z-10" />
+                                    <CustomInput
+                                        type="text"
+                                        name="searchQuery"
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                        placeholder="Search employees..."
+                                        clearable={true}
+                                        className="!h-[37px] [&_input]:!h-[40px] [&_input]:!pl-10 [&_input]:!pr-10 [&_input]:!rounded-lg"
+                                    />
                                 </div>
 
                                 <div className="relative flex items-center z-[40] min-w-[140px] sm:min-w-[160px]">

@@ -127,27 +127,27 @@ const PayrollSummary = () => {
             {(viewType === 'table' || viewType === 'both') && (
               <div className={viewType === 'table' ? 'w-full' : ''}>
                 <div className="bg-gray-50 rounded-xl shadow-md border border-gray-200 overflow-hidden h-full flex flex-col">
-                  <div className="bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-primary-dark)] p-5">
+                  <div className="bg-[var(--color-primary-lighter)] p-5">
                     <div className="flex items-center gap-3">
-                      <Users className="w-6 h-6 text-white" />
-                      <h3 className="text-xl font-bold text-white">Employee Payroll</h3>
+                      <Users className="w-6 h-6 text-[var(--color-primary-darker)]" />
+                      <h3 className="text-xl font-bold text-[var(--color-primary-darker)]">Employee Payroll</h3>
                     </div>
                   </div>
 
                   <div className="overflow-x-auto flex-1 flex flex-col">
                     <table className="min-w-full flex-1 text-xs"> {/* reduced text size */}
-                      <thead className="bg-[var(--color-bg-hover)]">
+                      <thead className="bg-[var(--color-primary-dark)] ">
                         <tr>
-                          <th className="px-4 py-2 text-left font-semibold text-[var(--color-text-secondary)] uppercase tracking-wider">
+                          <th className="px-4 py-2 text-left font-semibold text-white uppercase tracking-wider">
                             Employee
                           </th>
-                          <th className="px-4 py-2 text-left font-semibold text-[var(--color-text-secondary)] uppercase tracking-wider">
+                          <th className="px-4 py-2 text-left font-semibold text-white uppercase tracking-wider">
                             Base Salary
                           </th>
-                          <th className="px-4 py-2 text-left font-semibold text-[var(--color-text-secondary)] uppercase tracking-wider">
+                          <th className="px-4 py-2 text-left font-semibold text-white uppercase tracking-wider">
                             Overtime
                           </th>
-                          <th className="px-4 py-2 text-left font-semibold text-[var(--color-text-secondary)] uppercase tracking-wider">
+                          <th className="px-4 py-2 text-left font-semibold text-white uppercase tracking-wider">
                             Status
                           </th>
                         </tr>

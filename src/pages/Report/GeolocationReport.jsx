@@ -45,6 +45,7 @@ import Pagination from '../../Components/Pagination';
 import { Table, TableHeader, TableBody, TableRow, TableHeaderRow, Th, Td } from '../../Components/ui/Table';
 import CustomDatePicker from '../../Components/comman/CustomDatePicker';
 import CustomSelect from '../../Components/comman/CustomSelect';
+import CustomInput from '../../Components/comman/CustomInput';
 
 /** ---------- Floating Anchors ---------- **/
 const getScrollParents = (node) => {
@@ -845,7 +846,7 @@ const GeolocationReport = () => {
                             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
 
                                 {/* Search */}
-                                <div className="relative w-full sm:w-64">
+                                {/* <div className="relative w-full sm:w-64">
                                     <input
                                         type="text"
                                         placeholder="Search employees..."
@@ -862,6 +863,21 @@ const GeolocationReport = () => {
                                             <XCircle className="h-3 w-3 sm:h-4 sm:w-4" />
                                         </button>
                                     )}
+                                </div> */}
+                                <div className="relative w-full sm:w-64">
+
+                                    <Search className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 h-3 w-3 sm:h-4 sm:w-4 text-[var(--color-text-muted)] z-10" />
+
+                                    <CustomInput
+                                        type="text"
+                                        name="searchQuery"
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                        placeholder="Search employees..."
+                                        clearable={true}
+                                        className="!h-[37px] [&_input]:!h-[40px] [&_input]:!pl-8 sm:[&_input]:!pl-10 [&_input]:!pr-8 sm:[&_input]:!pr-10 [&_input]:!rounded-xl"
+                                    />
+
                                 </div>
 
                                 <div className="relative flex items-center z-[40] min-w-[140px] sm:min-w-[160px]">
@@ -1120,31 +1136,31 @@ const GeolocationReport = () => {
                     <div className="fixed inset-0 z-[200]">
                         <div className="absolute inset-0 bg-black/40" onClick={() => setTimelineFor(null)} />
                         <div className="absolute inset-x-0 top-12 mx-auto w-[95%] max-w-6xl rounded-2xl shadow-2xl overflow-hidden border border-[var(--color-border-secondary)] bg-[var(--color-bg-secondary)] max-h-[80vh] flex flex-col">
-                            <div className="flex items-center justify-between px-5 py-4 border-b border-[var(--color-border-secondary)] bg-[var(--color-primary-dark)]">
+                            <div className="flex items-center justify-between px-5 py-4 border-b border-[var(--color-border-secondary)] bg-[var(--color-primary-lighter)]">
                                 <div className="flex items-center gap-2">
-                                    <MapPin className="h-5 w-5 text-[var(--color-text-white)]" />
-                                    <h4 className="text-sm sm:text-base font-semibold text-[var(--color-text-white)]">
+                                    <MapPin className="h-5 w-5 text-[var(--color-primary-dark)]" />
+                                    <h4 className="text-sm sm:text-base font-semibold text-[var(--color-primary-darker)]">
                                         Geolocation Timeline — {timelineFor.employee_name}
                                         {timelineFor.employee_code ? ` (${timelineFor.employee_code})` : ''}
                                     </h4>
                                 </div>
                                 <button
                                     onClick={() => setTimelineFor(null)}
-                                    className="p-1 rounded-lg hover:bg-[var(--color-bg-secondary-20)] text-[var(--color-text-white)]"
+                                    className="p-1 rounded-lg hover:bg-[var(--color-bg-secondary-20)] text-[var(--color-primary-dark)]"
                                 >
                                     <X className="h-5 w-5" />
                                 </button>
                             </div>
 
-                            <div className="flex-1 overflow-y-auto px-5 pt-4">
+                            <div className="flex-1 overflow-y-auto px-5 p-4">
                                 <div className="rounded-lg border border-[var(--color-border-secondary)] overflow-hidden">
-                                    <div className="flex items-center gap-2 px-3 py-3 border-b border-[var(--color-border-secondary)] bg-primary-50">
+                                    {/* <div className="flex items-center gap-2 px-3 py-3 border-b border-[var(--color-border-secondary)] bg-primary-50">
                                         <Clock className="h-4 w-4 text-primary-600" />
                                         <h5 className="text-sm font-semibold">Detailed Clock In/Out Timeline</h5>
-                                    </div>
+                                    </div> */}
                                     <div className="overflow-x-auto">
                                         <Table className="w-full min-w-[800px]">
-                                            <TableHeader className="bg-gray-50">
+                                            <TableHeader className="bg-gray-50 bg-[var(--color-primary-dark)]">
                                                 <TableHeaderRow>
                                                     <Th className="text-[11px] text-left font-medium">#</Th>
                                                     <Th className="text-[11px] text-center font-medium">Clock In</Th>

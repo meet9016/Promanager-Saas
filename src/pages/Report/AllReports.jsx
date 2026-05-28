@@ -371,7 +371,7 @@ const AllReports = () => {
                 </div>
 
                 {/* Coming Soon */}
-                <div className="mb-8">
+                {/* <div className="mb-8">
                     <div className="flex items-center gap-3 mb-6">
                         <div className="p-2 bg-[var(--color-bg-gray-light)] rounded-lg">
                             <Clock className="h-5 w-5 text-[var(--color-text-muted)]" />
@@ -440,7 +440,7 @@ const AllReports = () => {
                             </div>
                         ))}
                     </div>
-                </div>
+                </div> */}
             </div>
         </div>
     );

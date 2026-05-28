@@ -1,9 +1,15 @@
 // PaymentPage.jsx
 import React, { useState, useMemo, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Helmet } from "@dr.pogodin/react-helmet";
 import api from '../../../api/axiosInstance';
 import { Toast } from '../../ui/Toast';
+import { useAuth } from '../../../context/AuthContext';
+import { useDispatch } from 'react-redux';
+import { setPermissions } from '../../../redux/permissionsSlice';
+import { agreementSchema } from '../../comman/validation';
+import { X } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 // ─── Reusable UI ─────────────────────────────────────────────────────────────
 const Field = ({ label, required, right, children }) => (
@@ -13,7 +19,7 @@ const Field = ({ label, required, right, children }) => (
         <div className="flex items-center justify-between">
             <label className="text-sm font-semibold text-gray-700">
                 {label}
-                {required && <span className="text-[#6C4CF1] ml-0.5">*</span>}
+                {required && <span className="text-[var(--color-primary-darker)] ml-0.5">*</span>}
             </label>
 
             {right && <div>{right}</div>}
@@ -55,6 +61,90 @@ const fmt = (n) => Number(n || 0).toLocaleString('en-IN');
 
 // ─── Component ────────────────────────────────────────────────────────────────
 const PaymentPage = () => {
+    const { login } = useAuth();
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    const [isRegisterOpen, setIsRegisterOpen] = useState(false);
+    const [registerForm, setRegisterForm] = useState({
+        full_name: "",
+        company_name: "",
+        email: "",
+        mobile: "",
+        gst_number: "",
+        whatsapp: "",
+        address: "",
+    });
+    const [registerErrors, setRegisterErrors] = useState({});
+
+    const handleRegisterChange = (field, value) => {
+        setRegisterForm(prev => ({ ...prev, [field]: value }));
+    };
+
+    const flattenPermissions = (permissionsArray) => permissionsArray.reduce((acc, item) => ({ ...acc, ...item }), {});
+
+    const handleRegisterSubmit = async () => {
+        try {
+            setRegisterErrors({});
+            await agreementSchema.validate(registerForm, { abortEarly: false });
+
+            const formData = new FormData();
+            Object.entries(registerForm).forEach(([key, value]) => formData.append(key, value));
+
+            const res = await api.post("create_account_free_account", formData, {
+                headers: { "Content-Type": "multipart/form-data" },
+            });
+
+            const { success, message, token, user_data } = res.data;
+
+            if (success) {
+                setToast({ message: message || "Account created successfully!", type: "success" });
+                setIsRegisterOpen(false);
+
+                if (token && user_data) {
+                    const user_id = user_data.user_id;
+                    localStorage.setItem('token', token);
+                    
+                    const userData = {
+                        user_id,
+                        full_name: user_data.full_name,
+                        username: user_data.username,
+                        email: user_data.email || "",
+                        number: user_data.number,
+                        type: user_data.type,
+                        user_roles_id: user_data.user_role_id,
+                        subscriptions_status: user_data.subscriptions_status,
+                        subscriptions_days: user_data.subscriptions_days,
+                    };
+
+                    login(userData, false);
+
+                    const permFormData = new FormData();
+                    permFormData.append("user_roles_id", user_data.user_role_id);
+                    const permRes = await api.post("user_permissions", permFormData, {
+                        headers: { "Content-Type": "multipart/form-data" },
+                    });
+                    if (permRes.data?.data) {
+                        dispatch(setPermissions(flattenPermissions(permRes.data.data)));
+                    }
+
+                    navigate("/dashboard");
+                }
+            } else {
+                setToast({ message: message || "Failed to create account.", type: "error" });
+            }
+        } catch (err) {
+            if (err.name === "ValidationError") {
+                const fieldErrors = {};
+                err.inner.forEach(error => { fieldErrors[error.path] = error.message; });
+                setRegisterErrors(fieldErrors);
+            } else {
+                setToast({ message: "Failed to create account. Please try again.", type: "error" });
+            }
+        }
+    };
+
+    const [toast, setToast] = useState(null);
     const [plans, setPlans] = useState([]);
     const [loading, setLoading] = useState(false);
     const [selectedPlan, setSelectedPlan] = useState(null);
@@ -72,7 +162,7 @@ const PaymentPage = () => {
     const months = CYCLE_MONTHS[billingCycle] ?? 1;
     const pricePerUser = useMemo(() => Number(selectedPlan?.price_per_user ?? 0), [selectedPlan]);
     const planColors = PLAN_COLORS[selectedPlan?.name] ?? PLAN_COLORS.Platinum;
-    const [toast, setToast] = useState(null);
+
 
     // ── Calculations ──────────────────────────────────────────────────────────
     // employees x price_per_user x months (from billing cycle)
@@ -422,7 +512,7 @@ const PaymentPage = () => {
                 </div>
                 <h2 className="text-4xl lg:text-5xl font-extrabold text-[var(--color-text-primary)] mb-4">
                     Pay Securely &{" "}
-                    <span className="bg-gradient-to-r from-[#6C4CF1] to-[#4B2EDB] bg-clip-text text-transparent">
+                    <span className="bg-[var(--color-primary-dark)] bg-clip-text text-transparent">
                         Enjoy Your Plan
                     </span>
                 </h2>
@@ -457,6 +547,7 @@ const PaymentPage = () => {
                                         onClick={() => {
                                             setIsFreePlan(true);
                                             setSelectedPlan(null);
+                                            setIsRegisterOpen(true);
                                         }}
                                         className={`py-2.5 rounded-xl text-xs font-bold border-2 transition-all
                                             ${isFreePlan
@@ -522,7 +613,7 @@ focus:outline-none focus:border-[#6C4CF1] focus:ring-2 focus:ring-[#6C4CF1]/20" 
                                             <button key={cycle} type="button" onClick={() => setBillingCycle(cycle)}
                                                 className={`py-1.5 rounded-lg text-xs font-bold capitalize transition-all border
                                                 ${billingCycle === cycle
-                                                        ? 'bg-[#6C4CF1] text-white border-[#6C4CF1] shadow'
+                                                        ? 'bg-[var(--color-primary-dark)] text-white border-[#6C4CF1] shadow'
                                                         : 'border-gray-200 text-gray-500 hover:border-[#6C4CF1]/40'}`}>
                                                 {cycle}
                                             </button>
@@ -676,8 +767,8 @@ focus:outline-none focus:border-[#6C4CF1] focus:ring-2 focus:ring-[#6C4CF1]/20" 
                     text-gray-800 placeholder:text-gray-300 focus:outline-none focus:border-[#6C4CF1]
                     focus:ring-2 focus:ring-[#6C4CF1]/15 transition-all uppercase tracking-widest" />
                                                         <button type="button" onClick={applyCoupon} disabled={!couponInput.trim()}
-                                                            className="px-5 py-2.5 rounded-xl bg-[#6C4CF1] text-white text-sm font-semibold
-                    hover:bg-[#4B2EDB] transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
+                                                            className="px-5 py-2.5 rounded-xl bg-[var(--color-primary-dark)] text-white text-sm font-semibold
+                    transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
                                                             Apply
                                                         </button>
                                                     </div>
@@ -741,7 +832,7 @@ focus:outline-none focus:border-[#6C4CF1] focus:ring-2 focus:ring-[#6C4CF1]/20" 
                                 </div>
 
                                 <button onClick={() => handleSubmit()}
-                                    className="mt-6 w-full py-3 rounded-xl bg-gradient-to-r from-[#6C4CF1] to-[#4B2EDB] text-white font-bold text-sm hover:opacity-90 active:scale-95 transition-all shadow-lg shadow-[#6C4CF1]/30 flex items-center justify-center gap-2">
+                                    className="mt-6 w-full py-3 rounded-xl bg-[var(--color-primary-dark)] text-white font-bold text-sm hover:opacity-90 active:scale-95 transition-all shadow-lg  flex items-center justify-center gap-2">
                                     <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                                     </svg>
@@ -766,6 +857,89 @@ focus:outline-none focus:border-[#6C4CF1] focus:ring-2 focus:ring-[#6C4CF1]/20" 
                     onClose={() => setToast(null)}
                 />
             )}
+
+            <AnimatePresence>
+                {isRegisterOpen && (
+                    <>
+                        <motion.div
+                            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[999]"
+                            onClick={() => setIsRegisterOpen(false)}
+                        />
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.9, y: 40 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.9, y: 40 }}
+                            transition={{ duration: 0.25 }}
+                            className="fixed inset-0 z-[1000] flex items-center justify-center p-4"
+                        >
+                            <div className="w-full max-w-2xl bg-white rounded-3xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
+                                <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100 shrink-0">
+                                    <div>
+                                        <h2 className="text-2xl font-bold text-gray-800">Register Form</h2>
+                                        <p className="text-sm text-gray-500 mt-1">Fill all required details carefully</p>
+                                    </div>
+                                    <button onClick={() => setIsRegisterOpen(false)} className="w-10 h-10 rounded-full hover:bg-gray-100 flex items-center justify-center transition-all">
+                                        <X className="w-5 h-5 text-gray-600" />
+                                    </button>
+                                </div>
+                                <div className="p-6 overflow-y-auto">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                        <div>
+                                            <label className="text-sm font-medium text-gray-700 mb-2 block">Full Name</label>
+                                            <input type="text" placeholder="Enter full name" value={registerForm.full_name} onChange={(e) => handleRegisterChange("full_name", e.target.value)}
+                                                className={`w-full h-12 px-4 rounded-xl border ${registerErrors.full_name ? "border-red-500" : "border-gray-200"} focus:outline-none focus:ring-2 focus:ring-[#6C4CF1]`} />
+                                            {registerErrors.full_name && <p className="text-red-500 text-xs mt-1">{registerErrors.full_name}</p>}
+                                        </div>
+                                        <div>
+                                            <label className="text-sm font-medium text-gray-700 mb-2 block">Company Name</label>
+                                            <input type="text" placeholder="Enter company name" value={registerForm.company_name} onChange={(e) => handleRegisterChange("company_name", e.target.value)}
+                                                className={`w-full h-12 px-4 rounded-xl border ${registerErrors.company_name ? "border-red-500" : "border-gray-200"} focus:outline-none focus:ring-2 focus:ring-[#6C4CF1]`} />
+                                            {registerErrors.company_name && <p className="text-red-500 text-xs mt-1">{registerErrors.company_name}</p>}
+                                        </div>
+                                        <div>
+                                            <label className="text-sm font-medium text-gray-700 mb-2 block">Email Address</label>
+                                            <input type="email" placeholder="Enter email" value={registerForm.email} onChange={(e) => handleRegisterChange("email", e.target.value)}
+                                                className={`w-full h-12 px-4 rounded-xl border ${registerErrors.email ? "border-red-500" : "border-gray-200"} focus:outline-none focus:ring-2 focus:ring-[#6C4CF1]`} />
+                                            {registerErrors.email && <p className="text-red-500 text-xs mt-1">{registerErrors.email}</p>}
+                                        </div>
+                                        <div>
+                                            <label className="text-sm font-medium text-gray-700 mb-2 block">Mobile Number</label>
+                                            <input type="text" placeholder="Enter mobile number" value={registerForm.mobile} onChange={(e) => handleRegisterChange("mobile", e.target.value)}
+                                                className={`w-full h-12 px-4 rounded-xl border ${registerErrors.mobile ? "border-red-500" : "border-gray-200"} focus:outline-none focus:ring-2 focus:ring-[#6C4CF1]`} />
+                                            {registerErrors.mobile && <p className="text-red-500 text-xs mt-1">{registerErrors.mobile}</p>}
+                                        </div>
+                                        <div>
+                                            <label className="text-sm font-medium text-gray-700 mb-2 block">GST Number</label>
+                                            <input type="text" placeholder="Enter GST number" value={registerForm.gst_number} onChange={(e) => handleRegisterChange("gst_number", e.target.value)}
+                                                className={`w-full h-12 px-4 rounded-xl border ${registerErrors.gst_number ? "border-red-500" : "border-gray-200"} focus:outline-none focus:ring-2 focus:ring-[#6C4CF1]`} />
+                                            {registerErrors.gst_number && <p className="text-red-500 text-xs mt-1">{registerErrors.gst_number}</p>}
+                                        </div>
+                                        <div>
+                                            <label className="text-sm font-medium text-gray-700 mb-2 block">WhatsApp Number</label>
+                                            <input type="text" placeholder="Enter WhatsApp number" value={registerForm.whatsapp} onChange={(e) => handleRegisterChange("whatsapp", e.target.value)}
+                                                className={`w-full h-12 px-4 rounded-xl border ${registerErrors.whatsapp ? "border-red-500" : "border-gray-200"} focus:outline-none focus:ring-2 focus:ring-[#6C4CF1]`} />
+                                            {registerErrors.whatsapp && <p className="text-red-500 text-xs mt-1">{registerErrors.whatsapp}</p>}
+                                        </div>
+                                    </div>
+                                    <div className="mt-5">
+                                        <label className="text-sm font-medium text-gray-700 mb-2 block">Address</label>
+                                        <textarea rows={4} placeholder="Enter full address" value={registerForm.address} onChange={(e) => handleRegisterChange("address", e.target.value)}
+                                            className={`w-full px-4 py-3 rounded-xl border ${registerErrors.address ? "border-red-500" : "border-gray-200"} focus:outline-none focus:ring-2 focus:ring-[#6C4CF1]`} />
+                                        {registerErrors.address && <p className="text-red-500 text-xs mt-1">{registerErrors.address}</p>}
+                                    </div>
+                                    <div className="flex flex-col sm:flex-row gap-3 justify-end mt-8">
+                                        <button onClick={() => setIsRegisterOpen(false)} className="px-6 py-3 rounded-xl border border-gray-300 text-gray-600 hover:bg-gray-100 transition-all">
+                                            Cancel
+                                        </button>
+                                        <button onClick={handleRegisterSubmit} className="px-6 py-3 rounded-xl bg-[#6C4CF1] text-white font-medium hover:opacity-90 transition-all">
+                                            Sign Up
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </motion.div>
+                    </>
+                )}
+            </AnimatePresence>
         </div>
 
     );

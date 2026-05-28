@@ -28,6 +28,7 @@ import { ConfirmDialog } from "../../Components/ui/ConfirmDialog";
 import { Toast } from "../../Components/ui/Toast";
 import CustomSelect from "../../Components/comman/CustomSelect";
 import { Table, TableHeader, TableBody, TableRow, TableHeaderRow, Th, Td } from '../../Components/ui/Table';
+import CustomInput from "../../Components/comman/CustomInput";
 
 export default function HolidayManagement() {
     const { user } = useAuth();
@@ -336,7 +337,7 @@ export default function HolidayManagement() {
                             </h3>
                             <div className="flex gap-3">
 
-                                <div className="relative w-full sm:w-80">
+                                {/* <div className="relative w-full sm:w-80">
                                     <input
                                         type="text"
                                         placeholder="Search holidays..."
@@ -345,31 +346,24 @@ export default function HolidayManagement() {
                                         className="w-full pl-10 pr-4 py-2.5 border border-[var(--color-border-secondary)] rounded-lg text-sm focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-all bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)]"
                                     />
                                     <Search className="absolute left-3 top-3 h-4 w-4 text-[var(--color-text-muted)]" />
+                                </div> */}
+                                <div className="relative w-full sm:w-80">
+
+                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--color-text-muted)] z-10" />
+
+                                    <CustomInput
+                                        type="text"
+                                        name="searchTerm"
+                                        value={searchTerm}
+                                        onChange={(e) => setSearchTerm(e.target.value)}
+                                        placeholder="Search holidays..."
+                                        clearable={true}
+                                        className="!h-[42px] [&_input]:!h-[42px] [&_input]:!pl-10 [&_input]:!pr-4 [&_input]:!rounded-lg"
+                                    />
+
                                 </div>
 
-
-
-
-                                {permissions['holiday_create'] && (
-                                    <button
-                                        onClick={() => {
-                                            resetForm();
-                                            setCreateModal(true);
-                                        }}
-                                        className="flex items-center gap-2 bg-white text-[var(--color-primary-dark)] px-4 py-2 rounded-lg font-medium text-sm transition-colors shadow-sm"
-                                    >
-                                        <Plus size={18} /> Add Holiday
-                                    </button>
-                                )}
-                                <button
-                                    onClick={() => setShowCalendarView(!showCalendarView)}
-                                    className="flex items-center gap-2 px-4 py-2 bg-white text-[var(--color-primary-dark)] rounded-lg transition-colors font-medium text-sm shadow-sm"
-                                >
-                                    <CalendarDays size={18} />
-                                    {showCalendarView ? "List View" : "Calendar View"}
-                                </button>
-
-                                <div className="relative w-full sm:w-auto">
+                                <div className="relative w-full sm:w-[180px]">
                                     {/* <select
                                         className="pl-10 pr-5 py-2.5 border border-[var(--color-border-secondary)] font-medium rounded-lg text-sm focus:ring-2 focus:ring-[var(--color-primary)] bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] appearance-none cursor-pointer min-w-[100px]"
                                         value={filterType}
@@ -397,10 +391,48 @@ export default function HolidayManagement() {
                                             })),
                                         ]}
                                         searchable={false}
-                                        className="w-full min-w-[100px] h-[42px]"
+                                        className="w-full min-w-[180px] !h-[40px] [&_button]:!h-[40px] [&_button]:!min-h-[40px]"
+
                                     />
                                     {/* <Filter className="absolute left-3 top-3 h-4 w-4 text-[var(--color-primary-dark)] pointer-events-none" /> */}
                                 </div>
+
+
+                                {permissions['holiday_create'] && (
+                                    <button
+                                        onClick={() => {
+                                            resetForm();
+                                            setCreateModal(true);
+                                        }}
+                                        className="flex items-center gap-2 bg-white text-[var(--color-primary-dark)] px-4 py-2 rounded-lg font-medium text-sm transition-colors shadow-sm"
+                                    >
+                                        <Plus size={18} /> Add Holiday
+                                    </button>
+                                )}
+                                <button
+                                    onClick={() => setShowCalendarView(!showCalendarView)}
+                                    className="flex items-center gap-2 px-4 py-2 bg-white text-[var(--color-primary-dark)] rounded-lg transition-colors font-medium text-sm shadow-sm"
+                                >
+                                    <CalendarDays size={18} />
+                                    {showCalendarView ? "List View" : "Calendar View"}
+                                </button>
+
+                                {/* <div className="relative w-full sm:w-auto">
+                                    <select
+                                        className="pl-10 pr-5 py-2.5 border border-[var(--color-border-secondary)] font-medium rounded-lg text-sm focus:ring-2 focus:ring-[var(--color-primary)] bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] appearance-none cursor-pointer min-w-[100px]"
+                                        value={filterType}
+                                        onChange={(e) => setFilterType(e.target.value)}
+                                    >
+                                        <option value="">All Types</option>
+                                        {holidayTypes.map((type) => (
+                                            <option key={type.holiday_type_id} value={type.holiday_type_id}>
+                                                {type.holiday_type_name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                  
+                                    <Filter className="absolute left-3 top-3 h-4 w-4 text-[var(--color-primary-dark)] pointer-events-none" />
+                                </div> */}
                             </div>
                         </div>
                     </div>

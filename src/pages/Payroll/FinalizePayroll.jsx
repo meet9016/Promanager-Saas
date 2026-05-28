@@ -23,6 +23,7 @@ import { useSelector } from 'react-redux';
 import Pagination from '../../Components/Pagination';
 import LoadingSpinner from "../../Components/Loader/LoadingSpinner"
 import CustomSelect from '../../Components/comman/CustomSelect';
+import CustomInput from '../../Components/comman/CustomInput';
 
 const SORT_DIRECTIONS = {
   ASCENDING: 'ascending',
@@ -492,17 +493,33 @@ export default function FinalizePayroll() {
         {/* Main Content */}
         <div className="bg-[var(--color-bg-secondary)] rounded-lg border border-[var(--color-primary-dark)] overflow-hidden shadow-sm">
           {/* Header section */}
-          <div className="px-6 py-4 border-b border-[var(--color-primary-light)] bg-[var(--color-primary-dark)]">
+          <div className="px-6 py-4 border-b border-[var(--color-primary-light)] bg-[var(--color-primary-lighter)]">
             <div className="flex justify-between items-center">
               <div className="flex items-center">
-                <IndianRupee className="h-6 w-6 text-[var(--color-text-white)] mr-2" />
-                <h3 className="text-lg font-medium text-[var(--color-text-white)]">
+                <IndianRupee className="h-6 w-6 text-[var(--color-primary-darker)] mr-2" />
+                <h3 className="text-lg font-medium text-[var(--color-primary-darker)]">
                   Employee Salary Records
                 </h3>
               </div>
+              
 
               <div className="flex items-center gap-3">
                 {/* Month Filter */}
+                  <div className="relative w-full sm:w-64">
+
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--color-text-muted)] z-10" />
+
+                  <CustomInput
+                    type="text"
+                    name="searchQuery"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Search records..."
+                    clearable={true}
+                    className="!h-[37px] [&_input]:!h-[37px] [&_input]:!pl-10 [&_input]:!pr-4 [&_input]:!rounded-md"
+                  />
+
+                </div>
                 <div className="relative">
                   {/* <select
                     value={selectedMonth}
@@ -515,6 +532,7 @@ export default function FinalizePayroll() {
                       </option>
                     ))}
                   </select> */}
+                  
                   <CustomSelect
                     name="selectedMonth"
                     value={selectedMonth}
@@ -524,7 +542,7 @@ export default function FinalizePayroll() {
                       label: option.label,
                     }))}
                     searchable={false}
-                    className="w-full h-[42px]"
+                    className="!h-[37px] [&_button]:!h-[37px] [&_button]:!min-h-[34px] text-sm"
                   />
                   {/* <ChevronDown className="absolute right-2 top-2.5 h-4 w-4 text-[var(--color-text-muted)] pointer-events-none" /> */}
                 </div>
@@ -552,12 +570,12 @@ export default function FinalizePayroll() {
                       label: option.label,
                     }))}
                     searchable={false}
-                    className="w-full h-[42px]"
+                    className="!h-[37px] [&_button]:!h-[37px] [&_button]:!min-h-[34px] text-sm"
                   />
                 </div>
 
                 {/* Search */}
-                <div className="relative w-full sm:w-64">
+                {/* <div className="relative w-full sm:w-64">
                   <input
                     type="text"
                     placeholder="Search records..."
@@ -567,7 +585,8 @@ export default function FinalizePayroll() {
                   />
                   <Search className="absolute left-3 top-2.5 h-4 w-4 text-[var(--color-text-muted)]" />
 
-                </div>
+                </div> */}
+              
 
                 {/* Monthly Payroll Button */}
                 {(permissions?.salary_view || permissions?.salary_create) && (
@@ -618,7 +637,7 @@ export default function FinalizePayroll() {
             <>
               <div className="overflow-x-auto">
                 <table className="min-w-full divide-y divide-[var(--color-border-divider)]">
-                  <thead className="bg-[var(--color-primary-lightest)]">
+                  <thead className="bg-[var(--color-primary-dark)]">
                     <tr>
                       {[
                         { key: COLUMN_KEYS.FULL_NAME, label: 'Full Name' },
@@ -630,7 +649,7 @@ export default function FinalizePayroll() {
                       ].map(({ key, label }) => (
                         <th key={`header-${key}`} className="px-6 py-3 text-left">
                           <button
-                            className="flex items-center text-xs font-medium text-[var(--color-text-secondary)] uppercase tracking-wider hover:text-[var(--color-text-secondary)]"
+                            className="flex items-center text-xs font-medium text-white uppercase tracking-wider "
                             onClick={() => requestSort(key)}
                           >
                             {label}
@@ -638,11 +657,11 @@ export default function FinalizePayroll() {
                           </button>
                         </th>
                       ))}
-                      <th className="px-6 py-3 text-left text-xs font-medium text-[var(--color-text-secondary)] uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                         Mobile
                       </th>
                       {(permissions?.add_salary_payment || permissions?.salary_delete || permissions?.salary_view) && (
-                        <th className="px-6 py-3 text-left text-xs font-medium text-[var(--color-text-secondary)] uppercase tracking-wider">
+                        <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                           Actions
                         </th>
                       )}

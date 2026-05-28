@@ -13,6 +13,8 @@ import { useAuth } from '../../context/AuthContext';
 import api from '../../api/axiosInstance';
 import { Toast } from '../ui/Toast';
 import CustomSelect from '../comman/CustomSelect';
+import CustomInput from '../comman/CustomInput';
+import CustomDatePicker from '../comman/CustomDatePicker';
 
 const SORT_DIRECTIONS = {
     ASCENDING: 'ascending',
@@ -371,7 +373,7 @@ const AttendanceReport = () => {
     return (
         <>
             {/* Header */}
-            <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-xl mb-6 overflow-hidden">
+            <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-xl mb-6 overflow-visible">
                 <div className="bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] p-8">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-4">
@@ -379,7 +381,7 @@ const AttendanceReport = () => {
                                 <h1 className="text-2xl font-bold text-[var(--color-text-white)] mb-2">DASHBOARD</h1>
                             </div>
                         </div>
-                        <div className="flex items-center space-x-2 ">
+                        {/* <div className="flex items-center space-x-2 ">
                             <Calendar className="w-5 h-5 text-[var(--color-text-white)]" />
                             <DatePicker
                                 selected={selectedDate}
@@ -388,6 +390,18 @@ const AttendanceReport = () => {
                                 placeholderText="DD-MM-YYYY"
                                 className="w-full bg-[var(--color-bg-secondary-20)] border border-[var(--color-bg-secondary-30)] rounded-lg px-3 py-2 text-sm text-[var(--color-text-white)] placeholder-[var(--color-text-white-90)] focus:outline-none focus:ring-2 focus:ring-[var(--color-bg-secondary-30)]"
                             />
+                        </div> */}
+                        <div className="flex items-center space-x-2">
+
+
+                            <CustomDatePicker
+                                name="selectedDate"
+                                value={selectedDate}
+                                onChange={(e) => handleDateChange(new Date(e.target.value))}
+                                placeholder="DD-MM-YYYY"
+                                className="[&_input]:!bg-[var(--color-bg-secondary-20)] [&_input]:!border-[var(--color-bg-secondary-30)] [&_input]:!text-[var(--color-text-white)] [&_input]:!placeholder-[var(--color-text-white-90)] [&_input]:!rounded-lg [&_input]:!py-2 [&_input]:!text-sm"
+                            />
+
                         </div>
                     </div>
                 </div>
@@ -511,14 +525,14 @@ const AttendanceReport = () => {
                 <div className="lg:col-span-2">
                     <div className="bg-[var(--color-bg-secondary)] rounded-lg shadow-sm overflow-hidden h-full flex flex-col">
                         {/* Table Header */}
-                        <div className="bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] px-6 py-4 border-b border-[var(--color-border-secondary)]">
+                        <div className="bg-[var(--color-primary-lighter)]  px-6 py-4 border-b border-[var(--color-border-secondary)]">
                             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                                <h3 className="text-lg font-semibold text-[var(--color-text-white)]">Employee Attendance</h3>
+                                <h3 className="text-lg font-semibold text-[var(--color-primary-darker)]">Employee Attendance</h3>
 
                                 {/* Search and Filters */}
                                 <div className="flex flex-col sm:flex-row gap-3">
                                     {/* Search Input */}
-                                    <div className="relative">
+                                    {/* <div className="relative">
                                         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[var(--color-text-muted)] w-4 h-4" />
                                         <input
                                             type="text"
@@ -535,7 +549,23 @@ const AttendanceReport = () => {
                                                 <XCircle className="w-4 h-4" />
                                             </button>
                                         )}
+                                    </div> */}
+                                    <div className="relative w-full sm:w-[240px]">
+
+                                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--color-text-muted)] z-10" />
+
+                                        <CustomInput
+                                            type="text"
+                                            name="searchQuery"
+                                            value={searchQuery}
+                                            onChange={(e) => setSearchQuery(e.target.value)}
+                                            placeholder="Search employees..."
+                                            clearable={true}
+                                            className="!h-[38px] [&_input]:!h-[38px] [&_input]:!pl-10 [&_input]:!pr-10 [&_input]:!rounded-xl [&_input]:!bg-white/95 [&_input]:!border-0 [&_input]:!shadow-sm [&_input]:!text-sm"
+                                        />
+
                                     </div>
+
 
                                     {/* <select
                                         value={statusFilter}
@@ -549,28 +579,29 @@ const AttendanceReport = () => {
                                         ))}
                                     </select> */}
 
-                                        <CustomSelect
-                                            name="statusFilter"
-                                            value={statusFilter}
-                                            onChange={(e) => handleFilterChange(e.target.value)}
-                                            options={statusOptions.map((option) => ({
-                                                value: option.value,
-                                                label: option.label,
-                                            }))}
-                                            placeholder="Select status"
-                                            searchable={true}
-                                        />
-                                   
+                                    <CustomSelect
+                                        name="statusFilter"
+                                        value={statusFilter}
+                                        onChange={(e) => handleFilterChange(e.target.value)}
+                                        options={statusOptions.map((option) => ({
+                                            value: option.value,
+                                            label: option.label,
+                                        }))}
+                                        placeholder="Select status"
+                                        searchable={true}
+                                        className="w-full sm:w-[180px] !h-[38px] [&_button]:!h-[38px] [&_button]:!min-h-[38px] [&_button]:!rounded-xl"
+                                    />
 
 
-                                    {(searchQuery || statusFilter !== 'all') && (
+
+                                    {/* {(searchQuery || statusFilter !== 'all') && (
                                         <button
                                             onClick={handleClearFilters}
                                             className="px-3 py-2 text-sm bg-[var(--color-bg-gray-light)] text-[var(--color-text-secondary)] rounded-lg hover:bg-[var(--color-bg-hover)] transition-colors"
                                         >
                                             Clear
                                         </button>
-                                    )}
+                                    )} */}
                                 </div>
                             </div>
                         </div>
@@ -579,7 +610,7 @@ const AttendanceReport = () => {
                         <div className="flex-1 overflow-x-hidden">
                             <div className="overflow-hidden">
                                 <table className="w-full table-auto border-separate border-spacing-0">
-                                    <thead className="bg-[var(--color-bg-gray-light)]/80 backdrop-blur sticky top-0 ">
+                                    <thead className="bg-[var(--color-primary-dark)] backdrop-blur sticky top-0 ">
                                         <tr className="text-left">
                                             {[
                                                 { key: COLUMN_KEYS.NAME, label: 'Employee Name' },
@@ -591,7 +622,7 @@ const AttendanceReport = () => {
                                             ].map(col => (
                                                 <th
                                                     key={col.key}
-                                                    className="px-4 py-3 cursor-pointer select-none text-xs font-semibold text-[var(--color-text-secondary)] uppercase tracking-wider"
+                                                    className="px-4 py-3 cursor-pointer select-none text-xs font-semibold text-white uppercase tracking-wider"
                                                     onClick={() => requestSort(col.key)}
                                                 >
                                                     <div className="flex items-center gap-1">

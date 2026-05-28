@@ -9,6 +9,7 @@ import { Toast } from '../../Components/ui/Toast';
 import { ConfirmDialog } from '../../Components/ui/ConfirmDialog';
 import Pagination from '../../Components/Pagination';
 import { Table, TableHeader, TableBody, TableRow, TableHeaderRow, Th, Td } from '../../Components/ui/Table';
+import CustomInput from '../../Components/comman/CustomInput';
 
 // Day Status Legend Component
 const DayStatusLegend = () => {
@@ -430,7 +431,7 @@ const ShiftManagement = () => {
                                     </div>
 
                                     <div className="flex items-center gap-3">
-                                        <div className="relative w-full sm:w-64">
+                                        {/* <div className="relative w-full sm:w-64">
                                             <input
                                                 type="text"
                                                 placeholder="Search shifts..."
@@ -452,6 +453,27 @@ const ShiftManagement = () => {
                                                     <RefreshCw className="h-4 w-4 animate-spin text-[var(--color-text-muted)]" />
                                                 </div>
                                             )}
+                                        </div> */}
+                                        <div className="relative w-full sm:w-64">
+
+                                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--color-text-muted)] z-10" />
+
+                                            <CustomInput
+                                                type="text"
+                                                name="searchQuery"
+                                                value={searchQuery}
+                                                onChange={handleSearchChange}
+                                                placeholder="Search shifts..."
+                                                clearable={!searchLoading}
+                                                className="!h-[37px] [&_input]:!h-[37px] [&_input]:!pl-10 [&_input]:!pr-10 [&_input]:!rounded-md"
+                                            />
+
+                                            {searchLoading && (
+                                                <div className="absolute right-3 top-1/2 -translate-y-1/2 z-10">
+                                                    <RefreshCw className="h-4 w-4 animate-spin text-[var(--color-text-muted)]" />
+                                                </div>
+                                            )}
+
                                         </div>
 
                                         {permissions['shift_create'] &&

@@ -517,7 +517,7 @@ const ShiftReallocation = () => {
                                     Reallocation History
                                 </h2>
                                 <div className="flex items-center gap-3">
-                                    <div className="relative w-full sm:w-64">
+                                    {/* <div className="relative w-full sm:w-64">
                                         <input
                                             type="text"
                                             placeholder="Search..."
@@ -539,6 +539,27 @@ const ShiftReallocation = () => {
                                                 <RefreshCw className="h-4 w-4 animate-spin text-[var(--color-text-muted)]" />
                                             </div>
                                         )}
+                                    </div> */}
+                                    <div className="relative w-full sm:w-64">
+
+                                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--color-text-muted)] z-10" />
+
+                                        <CustomInput
+                                            type="text"
+                                            name="searchQuery"
+                                            value={searchQuery}
+                                            onChange={handleSearchChange}
+                                            placeholder="Search..."
+                                            clearable={!searchLoading}
+                                            className="!h-[37px] [&_input]:!h-[37px] [&_input]:!pl-10 [&_input]:!pr-10 [&_input]:!rounded-md"
+                                        />
+
+                                        {searchLoading && (
+                                            <div className="absolute right-3 top-1/2 -translate-y-1/2 z-10">
+                                                <RefreshCw className="h-4 w-4 animate-spin text-[var(--color-text-muted)]" />
+                                            </div>
+                                        )}
+
                                     </div>
                                     {permissions['shift_reallocation_create'] && (
                                         <button
@@ -790,7 +811,7 @@ const ShiftReallocation = () => {
 
                                 {/* Filters */}
                                 {sourceShift && (
-                                    <div className="bg-[var(--color-bg-secondary)] rounded-lg shadow-sm border border-[var(--color-primary-dark)] overflow-hidden">
+                                    <div className="bg-[var(--color-bg-secondary)] rounded-lg shadow-sm border border-[var(--color-primary-dark)]">
                                         <div className="px-6 py-4 border-b border-[var(--color-primary-light)] bg-[var(--color-primary-dark)] flex items-center justify-between">
                                             <h2 className="text-lg font-semibold text-[var(--color-text-white)] flex items-center gap-2">
                                                 <Filter className="w-5 h-5" />

@@ -36,6 +36,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import Pagination from '../../Components/Pagination';
 import { Table, TableHeader, TableBody, TableRow, TableHeaderRow, Th, Td } from '../../Components/ui/Table';
 import CustomDatePicker from '../../Components/comman/CustomDatePicker';
+import CustomInput from '../../Components/comman/CustomInput';
 
 
 
@@ -531,10 +532,10 @@ const EditAttendanceModal = ({ employee, onClose, onSave }) => {
       <div className="relative w-full max-w-4xl bg-white rounded-xl shadow-2xl max-h-[95vh] sm:max-h-[92vh] flex flex-col overflow-hidden">
 
         {/* Header */}
-        <div className="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 bg-gradient-to-r from-primary-600 to-primary-700">
+        <div className="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 bg-[var(--color-primary-dark)] to-primary-700">
           <div className="flex-1 min-w-0">
             <h2 className="text-base sm:text-lg font-semibold text-white truncate">Edit Attendance</h2>
-            <p className="text-xs sm:text-sm text-primary-100 truncate">
+            <p className="text-xs sm:text-sm text-white truncate">
               <User className="inline w-3 h-3 sm:w-4 sm:h-4 mr-1" />
               {employee?.employee_name} {employee?.employee_code ? `• ${employee.employee_code}` : ""}
             </p>
@@ -560,8 +561,8 @@ const EditAttendanceModal = ({ employee, onClose, onSave }) => {
 
           {/* Date Range Info */}
           {minDate && maxDate && (
-            <div className="bg-primary-50 border border-primary-200 rounded-lg p-3 sm:p-4">
-              <p className="text-xs sm:text-sm text-primary-800 font-medium">
+            <div className="bg-[var(--color-primary-lighter)]  border border-[var(--color-primary-lighter)] rounded-lg p-3 sm:p-4">
+              <p className="text-xs sm:text-sm text-[var(--color-primary-darker)] font-medium">
                 <Calendar className="inline w-3 h-3 sm:w-4 sm:h-4 mr-1" />
                 Allowed Date Range: {formatToDDMMYYYY(minDate)} to {formatToDDMMYYYY(maxDate)}
               </p>
@@ -630,7 +631,7 @@ const EditAttendanceModal = ({ employee, onClose, onSave }) => {
                       {entry.type}
                     </span>
                     {entry.isExisting ? (
-                      <span className="px-1.5 sm:px-2 py-0.5 text-xs rounded bg-primary-100 text-primary-700">Existing</span>
+                      <span className="px-1.5 sm:px-2 py-0.5 text-xs rounded bg-[var(--color-primary-lighter)]  text-[var(--color-primary-darker)]">Existing</span>
                     ) : (
                       <span className="px-1.5 sm:px-2 py-0.5 text-xs rounded bg-green-100 text-green-700">New</span>
                     )}
@@ -705,7 +706,7 @@ const EditAttendanceModal = ({ employee, onClose, onSave }) => {
           <button
             onClick={handleSubmit}
             disabled={isLoading || !isEditMode}
-            className="px-3 sm:px-5 py-1.5 sm:py-2 text-xs sm:text-sm bg-primary-600 text-white rounded-md hover:bg-primary-700 disabled:opacity-50 flex items-center"
+            className="px-3 sm:px-5 py-1.5 sm:py-2 text-xs sm:text-sm bg-[var(--color-primary-dark)] text-white rounded-md hover:bg-primary-700 disabled:opacity-50 flex items-center"
           >
             {isLoading ? (<><Loader2 className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2 animate-spin" />Saving...</>) : (<><Save className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />Save Changes</>)}
           </button>
@@ -989,6 +990,44 @@ const DailyAttendance = () => {
               </div>
 
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3">
+
+                {/* Search */}
+                {/* <div className="relative w-full sm:w-64">
+                  <input
+                    type="text"
+                    placeholder="Search employees..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full pl-8 sm:pl-10 pr-8 sm:pr-10 py-1.5 sm:py-2 border border-[var(--color-border-secondary)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent text-xs sm:text-sm bg-[var(--color-bg-primary)] hover:bg-[var(--color-bg-hover)] text-[var(--color-text-primary)] transition-all duration-200"
+                  />
+                  <Search className="absolute left-2 sm:left-3 top-2 sm:top-2.5 h-3 w-3 sm:h-4 sm:w-4 text-[var(--color-text-muted)]" />
+                  {searchQuery && (
+                    <button
+                      onClick={() => setSearchQuery('')}
+                      className="absolute right-2 sm:right-3 top-2 sm:top-2.5 h-3 w-3 sm:h-4 sm:w-4 text-[var(--color-text-muted)] hover:text-[var(--color-text-secondary)]"
+                    >
+                      <XCircle className="h-3 w-3 sm:h-4 sm:w-4" />
+                    </button>
+                  )}
+                </div> */}
+                {/* Search */}
+                <div className="relative w-full sm:w-64">
+
+                  <Search className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 h-3 w-3 sm:h-4 sm:w-4 text-[var(--color-text-muted)] z-10" />
+
+                  <CustomInput
+                    type="text"
+                    name="searchQuery"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Search employees..."
+                    clearable={true}
+                    className="!h-[37px] sm:!h-[40px] [&_input]:!h-[37px] sm:[&_input]:!h-[40px] [&_input]:!pl-8 sm:[&_input]:!pl-10 [&_input]:!pr-8 sm:[&_input]:!pr-10 [&_input]:!rounded-xl [&_input]:!text-xs sm:[&_input]:!text-sm"
+                  />
+
+                </div>
+
+
                 {/* Date */}
                 <div className="relative flex items-center z-[40] min-w-[140px] sm:min-w-[160px]">
                   {/* <Calendar className="absolute left-3 w-4 h-4 text-[var(--color-primary)] pointer-events-none z-10" />
@@ -1008,28 +1047,10 @@ const DailyAttendance = () => {
                     placeholder="DD-MM-YYYY"
                     maxDate={new Date()}
                     clearable={true}
+                    align="right"
                   />
                 </div>
 
-                {/* Search */}
-                <div className="relative w-full sm:w-64">
-                  <input
-                    type="text"
-                    placeholder="Search employees..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full pl-8 sm:pl-10 pr-8 sm:pr-10 py-1.5 sm:py-2 border border-[var(--color-border-secondary)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent text-xs sm:text-sm bg-[var(--color-bg-primary)] hover:bg-[var(--color-bg-hover)] text-[var(--color-text-primary)] transition-all duration-200"
-                  />
-                  <Search className="absolute left-2 sm:left-3 top-2 sm:top-2.5 h-3 w-3 sm:h-4 sm:w-4 text-[var(--color-text-muted)]" />
-                  {searchQuery && (
-                    <button
-                      onClick={() => setSearchQuery('')}
-                      className="absolute right-2 sm:right-3 top-2 sm:top-2.5 h-3 w-3 sm:h-4 sm:w-4 text-[var(--color-text-muted)] hover:text-[var(--color-text-secondary)]"
-                    >
-                      <XCircle className="h-3 w-3 sm:h-4 sm:w-4" />
-                    </button>
-                  )}
-                </div>
               </div>
             </div>
           </div>
