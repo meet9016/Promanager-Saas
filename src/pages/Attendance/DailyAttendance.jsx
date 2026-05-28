@@ -1047,7 +1047,7 @@ const DailyAttendance = () => {
                     placeholder="DD-MM-YYYY"
                     maxDate={new Date()}
                     clearable={true}
-                
+                    align="right"
                   />
                 </div>
 

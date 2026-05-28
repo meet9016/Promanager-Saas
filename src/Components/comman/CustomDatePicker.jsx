@@ -29,6 +29,7 @@ const CustomDatePicker = ({
     clearable = true,
     error = false,
     className = '',
+    align = 'left',
 }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [viewDate, setViewDate] = useState(null); // month/year being viewed
@@ -235,15 +236,16 @@ const CustomDatePicker = ({
 
             {/* Calendar Dropdown */}
             {isOpen && viewDate && (
-                <div className="
-                    absolute z-50 mt-1 left-0
+                <div className={`
+                    absolute z-[9999] mt-1 
+                    ${align === 'right' ? 'right-0' : 'left-0'}
                     bg-[var(--color-bg-secondary)]
                     border border-[var(--color-border-primary)]
                     rounded-xl shadow-2xl
                     overflow-hidden
                     animate-fadeIn
                     w-72
-                ">
+                `}>
                     {/* ── DAYS VIEW ── */}
                     {mode === 'days' && (
                         <>

@@ -511,7 +511,7 @@ const AddLoanAdvance = ({
 
                 <div className="space-y-8">
                     {/* Enhanced Employee Information */}
-                    <div className="bg-[var(--color-bg-secondary)] backdrop-blur-sm rounded-2xl border border-slate-200 shadow-lg relative z-30">
+                    <div className="bg-[var(--color-bg-secondary)] backdrop-blur-sm rounded-2xl border border-slate-200 shadow-lg relative z-40">
                         <div className="px-8 py-6 border-b border-slate-200 bg-gradient-to-r from-[var(--color-bg-primary)] to-[var(--color-bg-secondary)] rounded-t-2xl">
                             <div className="flex items-center gap-3">
                                 <div className="w-10 h-10 bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-dark)] rounded-xl flex items-center justify-center">
@@ -612,27 +612,6 @@ const AddLoanAdvance = ({
                                             className="w-full"
                                         />
 
-                                        {isDropdownOpen && filteredEmployees.length > 0 && (
-                                            <div className="absolute top-full left-0 right-0 bg-[var(--color-bg-secondary)] border border-[var(--color-border-primary)] rounded-lg shadow-lg z-50 max-h-64 overflow-y-auto mt-1">
-                                                {filteredEmployees.map((employee) => (
-                                                    <div
-                                                        key={employee.employee_id}
-                                                        className="p-3 hover:bg-[var(--color-bg-secondary)] cursor-pointer border-b border-[var(--color-border-primary)] last:border-b-0 "
-                                                        onClick={() => handleEmployeeSelect(employee)}
-                                                    >
-                                                        <div className="flex flex-col">
-                                                            <span className="font-medium text-[var(--color-text-primary)]">{employee.full_name}</span>
-                                                        </div>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        )}
-
-                                        {isDropdownOpen && searchTerm && filteredEmployees.length === 0 && (
-                                            <div className="absolute top-full left-0 right-0 bg-[var(--color-bg-secondary)] border border-[var(--color-border-primary)] rounded-lg shadow-lg z-50 mt-1">
-                                                <div className="p-3 text-[var(--color-text-secondary)] text-center">No employees found</div>
-                                            </div>
-                                        )}
                                     </div>
                                 </div>
                             </div>
@@ -640,7 +619,7 @@ const AddLoanAdvance = ({
                     </div>
 
                     {/* Enhanced Loan Details */}
-                    <div className="bg-[var(--color-bg-secondary)] backdrop-blur-sm rounded-2xl border border-slate-200 shadow-lg relative z-[9999] overflow-visible">
+                    <div className="bg-[var(--color-bg-secondary)] backdrop-blur-sm rounded-2xl border border-slate-200 shadow-lg relative z-30 overflow-visible">
                         <div className="px-8 py-6 border-b border-slate-200 bg-gradient-to-r from-[var(--color-bg-primary)] to-[var(--color-bg-secondary)] rounded-t-2xl">
                             <div className="flex items-center gap-3">
                                 <div className="w-10 h-10 bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-dark)] rounded-xl flex items-center justify-center">
@@ -813,7 +792,7 @@ const AddLoanAdvance = ({
                     </div>
 
                     {/* Enhanced Dates and Status */}
-                    <div className="bg-[var(--color-bg-secondary)] backdrop-blur-sm rounded-2xl border border-slate-200 shadow-lg relative z-10">
+                    <div className="bg-[var(--color-bg-secondary)] backdrop-blur-sm rounded-2xl border border-slate-200 shadow-lg relative z-20">
                         <div className="px-8 py-6 border-b border-slate-200 bg-gradient-to-r from-[var(--color-bg-primary)] to-[var(--color-bg-secondary)] rounded-t-2xl">
                             <div className="flex items-center gap-3">
                                 <div className="w-10 h-10 bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-dark)] rounded-xl flex items-center justify-center">
