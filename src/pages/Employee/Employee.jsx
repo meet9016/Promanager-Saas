@@ -179,7 +179,7 @@ export default function Employee() {
         employee_type_id: '',
         salary_type_id: '',
         gender_id: '',
-        status_id: '1'
+        status_id: ''
     });
 
     // tempFilters: jo dropdown me dikhata hai aur select karte waqt update hota hai
@@ -190,7 +190,7 @@ export default function Employee() {
         employee_type_id: '',
         salary_type_id: '',
         gender_id: '',
-        status_id: '1'
+        status_id: ''
     });
     // ============================
 

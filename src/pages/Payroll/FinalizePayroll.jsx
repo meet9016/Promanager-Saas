@@ -501,11 +501,11 @@ export default function FinalizePayroll() {
                   Employee Salary Records
                 </h3>
               </div>
-              
+
 
               <div className="flex items-center gap-3">
                 {/* Month Filter */}
-                  <div className="relative w-full sm:w-64">
+                <div className="relative w-full sm:w-64">
 
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--color-text-muted)] z-10" />
 
@@ -532,7 +532,7 @@ export default function FinalizePayroll() {
                       </option>
                     ))}
                   </select> */}
-                  
+
                   <CustomSelect
                     name="selectedMonth"
                     value={selectedMonth}
@@ -586,7 +586,7 @@ export default function FinalizePayroll() {
                   <Search className="absolute left-3 top-2.5 h-4 w-4 text-[var(--color-text-muted)]" />
 
                 </div> */}
-              
+
 
                 {/* Monthly Payroll Button */}
                 {(permissions?.salary_view || permissions?.salary_create) && (
@@ -763,127 +763,128 @@ export default function FinalizePayroll() {
 
       {/* Payment Modal */}
       {showPaymentModal && selectedRecord && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-[var(--color-bg-secondary)] rounded-lg shadow-xl max-w-md w-full mx-4">
-            <div className="flex items-center justify-between p-8 border-b">
-              <h3 className="text-lg font-semibold text-[var(--color-text-primary)]">Process Payment</h3>
-              <button
-                onClick={closePaymentModal}
-                className="text-[var(--color-text-muted)] hover:text-[var(--color-text-secondary)]"
-              >
-                <X className="h-6 w-6" />
-              </button>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+          <div className="relative w-full max-w-md overflow-hidden rounded-2xl bg-[var(--color-bg-secondary)] shadow-2xl ring-1 ring-black/5 animate-in zoom-in-95 duration-200">
+            {/* Decorative gradient header */}
+            <div className="relative bg-gradient-to-br from-[var(--color-primary-dark)] via-[var(--color-primary)] to-[var(--color-primary-darker)] px-6 pt-6 pb-16">
+              <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_top_right,white,transparent_60%)]" />
+              <div className="relative flex items-start justify-between">
+                <div>
+                  <div className="inline-flex items-center gap-2 rounded-full bg-white/15 backdrop-blur px-3 py-1 text-xs font-medium text-white/90 mb-3">
+                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-300 animate-pulse" />
+                    Secure Payment
+                  </div>
+                  <h3 className="text-xl font-semibold text-white tracking-tight">Process Payment</h3>
+                  <p className="text-sm text-white/70 mt-1">Review and confirm the transaction</p>
+                </div>
+                <button
+                  onClick={closePaymentModal}
+                  className="rounded-full p-2 text-white/80 hover:text-white hover:bg-white/15 transition"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
             </div>
 
-            <div className="p-8">
-              <div className="mb-6">
-                <div className="bg-[var(--color-bg-primary)] p-4 rounded-lg">
-                  <h4 className="font-medium text-[var(--color-text-primary)] mb-2">Payment Details</h4>
-                  <div className="space-y-2 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-[var(--color-text-secondary)]">Employee:</span>
-                      <span className="font-medium">{selectedRecord.full_name}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-[var(--color-text-secondary)]">Employee Code:</span>
-                      <span className="font-medium">{selectedRecord.employee_code}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-[var(--color-text-secondary)]">Department:</span>
-                      <span className="font-medium">{selectedRecord.department_name}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-[var(--color-text-secondary)]">Month/Year:</span>
-                      <span className="font-medium">{formatMonthYear(selectedRecord.month_year)}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-[var(--color-text-secondary)]">Mobile:</span>
-                      <span className="font-medium">{selectedRecord.mobile_number}</span>
-                    </div>
-                    <div className="flex justify-between border-t pt-2">
-                      <span className="text-[var(--color-text-secondary)]">Amount:</span>
-                      <span className="font-semibold text-[var(--color-success-dark)]">{formatCurrency(selectedRecord.total_pay_salary)}</span>
-                    </div>
+            {/* Amount card – floats over the header */}
+            <div className="px-6 -mt-12 relative">
+              <div className="rounded-xl bg-[var(--color-bg-primary)] shadow-lg ring-1 ring-black/5 p-5">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-xs uppercase tracking-wider text-[var(--color-text-muted)]">Total Amount</p>
+                    <p className="text-3xl font-bold text-[var(--color-success-dark)] mt-1">
+                      {formatCurrency(selectedRecord.total_pay_salary)}
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-xs text-[var(--color-text-muted)]">Period</p>
+                    <p className="text-sm font-semibold text-[var(--color-text-primary)] mt-1">
+                      {formatMonthYear(selectedRecord.month_year)}
+                    </p>
                   </div>
                 </div>
               </div>
+            </div>
 
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-1">
-                    Payment Mode
-                  </label>
-                  {/* <select
-                    value={paymentData.payment_mode}
-                    onChange={(e) => setPaymentData(prev => ({ ...prev, payment_mode: e.target.value }))}
-                    className="w-full border border-[var(--color-border-secondary)] rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)]"
-                  >
-                    {Object.entries(PAYMENT_MODES).map(([value, label]) => (
-                      <option key={value} value={value}>
-                        {label}
-                      </option>
-                    ))}
-                  </select> */}
-                  <CustomSelect
-                    name="payment_mode"
-                    value={paymentData.payment_mode}
-                    onChange={(e) =>
-                      setPaymentData((prev) => ({
-                        ...prev,
-                        payment_mode: e.target.value,
-                      }))
-                    }
-                    options={Object.entries(PAYMENT_MODES).map(
-                      ([value, label]) => ({
-                        value,
-                        label,
-                      })
-                    )}
-                    searchable={false}
-                    className="w-full h-[42px]"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-1">
-                    Remark
-                  </label>
-                  <textarea
-                    value={paymentData.remark}
-                    onChange={(e) => setPaymentData(prev => ({ ...prev, remark: e.target.value }))}
-                    className="w-full border border-[var(--color-border-secondary)] rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)]"
-                    rows="3"
-                    placeholder="Enter payment remark..."
-                  />
-                </div>
+            {/* Employee details */}
+            <div className="px-6 pt-5">
+              <div className="grid grid-cols-2 gap-3">
+                {[
+                  { label: 'Employee', value: selectedRecord.full_name },
+                  { label: 'Code', value: selectedRecord.employee_code },
+                  { label: 'Department', value: selectedRecord.department_name },
+                  { label: 'Mobile', value: selectedRecord.mobile_number },
+                ].map((item) => (
+                  <div key={item.label} className="rounded-lg bg-[var(--color-bg-primary)] px-3 py-2.5 border border-[var(--color-border-secondary)]/50">
+                    <p className="text-[10px] uppercase tracking-wider text-[var(--color-text-muted)]">{item.label}</p>
+                    <p className="text-sm font-semibold text-[var(--color-text-primary)] truncate mt-0.5">{item.value}</p>
+                  </div>
+                ))}
               </div>
             </div>
 
-            <div className="flex justify-end space-x-3 p-8 border-t">
+            {/* Form */}
+            <div className="px-6 pt-5 pb-6 space-y-4">
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-[var(--color-text-secondary)] mb-1.5">
+                  Payment Mode
+                </label>
+                <CustomSelect
+                  name="payment_mode"
+                  value={paymentData.payment_mode}
+                  onChange={(e) =>
+                    setPaymentData((prev) => ({ ...prev, payment_mode: e.target.value }))
+                  }
+                  options={Object.entries(PAYMENT_MODES).map(([value, label]) => ({ value, label }))}
+                  searchable={false}
+                  className="w-full h-[42px]"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-[var(--color-text-secondary)] mb-1.5">
+                  Remark
+                </label>
+                <textarea
+                  value={paymentData.remark}
+                  onChange={(e) => setPaymentData(prev => ({ ...prev, remark: e.target.value }))}
+                  className="w-full border border-[var(--color-border-secondary)] rounded-lg px-3 py-2.5 text-sm bg-[var(--color-bg-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition resize-none"
+                  rows="3"
+                  placeholder="Add a note for this payment..."
+                />
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className="flex items-center justify-end gap-2 px-6 py-4 bg-[var(--color-bg-primary)]/50 border-t border-[var(--color-border-secondary)]/50">
               <button
                 onClick={closePaymentModal}
-                className="px-4 py-2 text-sm font-medium text-[var(--color-text-secondary)] bg-[var(--color-bg-gradient-start)] hover:bg-[var(--color-bg-gray-light)] rounded-md transition-colors"
                 disabled={paymentLoading}
+                className="px-4 py-2.5 text-sm font-medium text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-gray-light)] rounded-lg transition"
               >
                 Cancel
               </button>
               <button
                 onClick={handlePayment}
                 disabled={paymentLoading}
-                className="px-4 py-2 text-sm font-medium text-[var(--color-text-white)] bg-[var(--color-primary-dark)] hover:bg-[var(--color-primary-darker)] rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="group relative px-5 py-2.5 text-sm font-semibold text-[var(--color-text-white)] bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] rounded-lg shadow-md shadow-[var(--color-primary)]/30 hover:shadow-lg hover:shadow-[var(--color-primary)]/40 hover:-translate-y-0.5 active:translate-y-0 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
               >
                 {paymentLoading ? (
-                  <div className="flex items-center space-x-2">
+                  <div className="flex items-center gap-2">
                     <RefreshCw className="w-4 h-4 animate-spin" />
                     <span>Processing...</span>
                   </div>
                 ) : (
-                  'Process Payment'
+                  <div className="flex items-center gap-2">
+                    <span>Confirm Payment</span>
+                    <span className="opacity-70 group-hover:translate-x-0.5 transition-transform">→</span>
+                  </div>
                 )}
               </button>
             </div>
           </div>
         </div>
+
       )}
 
       {/* Delete Confirmation Modal */}
@@ -967,6 +968,7 @@ export default function FinalizePayroll() {
             </div>
           </div>
         </div>
+
       )}
 
       {/* Toast Notification */}
