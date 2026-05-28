@@ -582,7 +582,7 @@ const MonthlyReport = () => {
                 )}
 
                 {/* Filters Card */}
-                <div className="bg-[var(--color-bg-secondary)] rounded-xl shadow-sm border border-[var(--color-border-secondary)] p-5 md:p-8 mb-8">
+                <div className="bg-[var(--color-bg-secondary)] rounded-xl shadow-sm border border-[var(--color-border-secondary)]  md:p-5 mb-8">
                     <div className="flex items-start md:items-center gap-3 mb-5">
                         <div className="p-2 bg-[var(--color-primary-lightest)] rounded-lg">
                             <Filter className="h-5 w-5 text-[var(--color-primary-dark)]" />

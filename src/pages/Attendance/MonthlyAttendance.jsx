@@ -431,11 +431,11 @@ const MonthlyAttendance = () => {
             <div className="p-3 sm:p-6 mx-auto max-w-[1900px] space-y-4">
 
                 {/* ══ HERO HEADER CARD ══ */}
-                <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+                <div className="bg-[var(--color-primary-dark)]  rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 px-6 py-5">
                         {/* Left */}
                         <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 rounded-2xl bg-[var(--color-primary-dark)] flex items-center justify-center shadow-lg shadow-violet-200 flex-shrink-0">
+                            <div className="w-12 h-12 rounded-2xl  flex items-center justify-center  flex-shrink-0">
                                 <svg width={22} height={22} viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
                                     <rect x={3} y={4} width={18} height={18} rx={2} /><line x1={16} y1={2} x2={16} y2={6} /><line x1={8} y1={2} x2={8} y2={6} /><line x1={3} y1={10} x2={21} y2={10} />
                                 </svg>
@@ -447,10 +447,10 @@ const MonthlyAttendance = () => {
                                         Live &middot; {formatMonthYearShort(filters.month_year)}
                                     </span>
                                 </div>
-                                <h1 className="text-base sm:text-2xl font-bold text-[var(--color-primary-darker)]">
+                                <h1 className="text-base sm:text-2xl font-bold text-white">
                                     Monthly Attendance
                                 </h1>
-                                <p className="text-xs text-slate-400 mt-0.5">
+                                <p className="text-xs text-white mt-0.5">
                                     {gridData.length} employee{gridData.length !== 1 ? 's' : ''} &middot; {daysInMonth} days &middot; tracked in real time
                                 </p>
                             </div>
@@ -463,8 +463,8 @@ const MonthlyAttendance = () => {
                                 onClick={() => setShowFilters(!showFilters)}
                                 className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold border transition-all duration-200
                                     ${showFilters
-                                        ? 'bg-[var(--color-primary-dark)] text-white border-violet-600 shadow-lg shadow-violet-100'
-                                        : 'bg-[var(--color-primary-dark)] text-white border-slate-200 '
+                                        ? 'bg-white  text-[var(--color-primary-dark)] border-violet-600 shadow-lg shadow-violet-100'
+                                        : 'bg-white  text-[var(--color-primary-dark)] border-slate-200 '
                                     }`}
                             >
                                 <Filter size={14} />

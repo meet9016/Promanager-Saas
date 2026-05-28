@@ -397,6 +397,13 @@ export default function HolidayManagement() {
                                     {/* <Filter className="absolute left-3 top-3 h-4 w-4 text-[var(--color-primary-dark)] pointer-events-none" /> */}
                                 </div>
 
+                                <button
+                                    onClick={() => setShowCalendarView(!showCalendarView)}
+                                    className="flex items-center gap-2 px-4 py-2 bg-white text-[var(--color-primary-dark)] rounded-lg transition-colors font-medium text-sm shadow-sm"
+                                >
+                                    <CalendarDays size={18} />
+                                    {showCalendarView ? "List View" : "Calendar View"}
+                                </button>
 
                                 {permissions['holiday_create'] && (
                                     <button
@@ -409,13 +416,6 @@ export default function HolidayManagement() {
                                         <Plus size={18} /> Add Holiday
                                     </button>
                                 )}
-                                <button
-                                    onClick={() => setShowCalendarView(!showCalendarView)}
-                                    className="flex items-center gap-2 px-4 py-2 bg-white text-[var(--color-primary-dark)] rounded-lg transition-colors font-medium text-sm shadow-sm"
-                                >
-                                    <CalendarDays size={18} />
-                                    {showCalendarView ? "List View" : "Calendar View"}
-                                </button>
 
                                 {/* <div className="relative w-full sm:w-auto">
                                     <select

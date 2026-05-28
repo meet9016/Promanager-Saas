@@ -10,6 +10,7 @@ export const ConfirmDialog = ({
     confirmText = "Confirm",
     cancelText = "Cancel",
     type = "danger"
+    
 }) => {
     if (!isOpen) return null;
 
