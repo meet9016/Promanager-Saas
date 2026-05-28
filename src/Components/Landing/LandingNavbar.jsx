@@ -300,7 +300,7 @@ const LandingNavbar = () => {
                                     whileHover={{ scale: 1.05, y: -2 }}
                                     whileTap={{ scale: 0.95 }}
                                 >
-                                    Agreement
+                                    Sign Up
                                 </motion.button>
                             </button>
                         </div>
@@ -345,7 +345,7 @@ const LandingNavbar = () => {
                                 <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100">
                                     <div>
                                         <h2 className="text-2xl font-bold text-gray-800">
-                                            Agreement Form
+                                            Register Form
                                         </h2>
                                         <p className="text-sm text-gray-500 mt-1">
                                             Fill all required details carefully
@@ -505,7 +505,7 @@ const LandingNavbar = () => {
                                             onClick={handleAgreementSubmit}
                                             className="px-6 py-3 rounded-xl bg-[var(--color-primary)] text-white font-medium hover:opacity-90 transition-all"
                                         >
-                                            Submit Agreement
+                                            Sign Up
                                         </button>
                                     </div>
                                 </div>

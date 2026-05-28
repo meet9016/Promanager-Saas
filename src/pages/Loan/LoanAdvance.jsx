@@ -635,6 +635,21 @@ const LoanAdvance = () => {
                                     />
 
                                 </div>
+                                
+                                <div className="relative w-full sm:w-44">
+                                    <CustomSelect
+                                        name="filter"
+                                        value={filter}
+                                        onChange={(e) => handleFilterChange(e.target.value)}
+                                        options={getFilterOptions.map((option) => ({
+                                            value: option,
+                                            label: option,
+                                        }))}
+                                        searchable={false}
+                                        disabled={loading || dropdownLoading}
+                                        className="!h-[38px] [&_button]:!h-[38px] [&_button]:!min-h-[34px]"
+                                    />
+                                </div>
 
                                 {permissions['loan_create'] && (
                                     <button
@@ -651,20 +666,6 @@ const LoanAdvance = () => {
 
 
 
-                                <div className="relative w-full sm:w-44">
-                                    <CustomSelect
-                                        name="filter"
-                                        value={filter}
-                                        onChange={(e) => handleFilterChange(e.target.value)}
-                                        options={getFilterOptions.map((option) => ({
-                                            value: option,
-                                            label: option,
-                                        }))}
-                                        searchable={false}
-                                        disabled={loading || dropdownLoading}
-                                        className="!h-[38px] [&_button]:!h-[38px] [&_button]:!min-h-[34px]"
-                                    />
-                                </div>
 
                                 {/* <div className="relative w-full sm:w-64">
                                     <input

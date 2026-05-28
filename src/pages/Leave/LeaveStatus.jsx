@@ -6,6 +6,9 @@ import api from '../../api/axiosInstance';
 import { Toast } from '../../Components/ui/Toast';
 import LoadingSpinner from "../../Components/Loader/LoadingSpinner"
 import { Table, TableHeader, TableBody, TableRow, TableHeaderRow, Th, Td } from '../../Components/ui/Table';
+import CustomDatePicker from '../../Components/comman/CustomDatePicker';
+import CustomInput from '../../Components/comman/CustomInput';
+import CustomSelect from '../../Components/comman/CustomSelect';
 
 // Lucide React Icons
 import {
@@ -33,7 +36,6 @@ import {
     Building,
     Badge
 } from 'lucide-react';
-import CustomInput from '../../Components/comman/CustomInput';
 
 const SORT_DIRECTIONS = {
     ASCENDING: 'ascending',
@@ -129,6 +131,30 @@ const LeaveManagement = () => {
         leaveData: null
     });
 
+    // ====== ADD LEAVE POPUP STATES (From LeaveApplication) ======
+    const [addLeaveModal, setAddLeaveModal] = useState({
+        isOpen: false
+    });
+
+    // Animation state for smooth popup
+    const [showAddLeaveModal, setShowAddLeaveModal] = useState(false);
+
+    const [leaveFormData, setLeaveFormData] = useState({
+        user_id: '',
+        employee_id: '',
+        leave_type: '',
+        start_date: '',
+        end_date: '',
+        reason: ''
+    });
+
+    const [employees, setEmployees] = useState([]);
+    const [leaveTypes, setLeaveTypes] = useState([]);
+    const [employeeSearch, setEmployeeSearch] = useState('');
+    const [selectedEmployeeName, setSelectedEmployeeName] = useState('');
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isLoadingData, setIsLoadingData] = useState(false);
+
     // Toast state
     const [toast, setToast] = useState({
         show: false,
@@ -202,6 +228,196 @@ const LeaveManagement = () => {
             setLoading(false);
         }
     }, [user, selectedStatus, logout, showToast]);
+
+    // ====== ADD LEAVE POPUP FUNCTIONS (From LeaveApplication) ======
+
+    // Set user_id from auth context
+    useEffect(() => {
+        if (user && user.user_id) {
+            setLeaveFormData(prev => ({ ...prev, user_id: user.user_id }));
+        }
+    }, [user]);
+
+    // Fetch employees and leave types for popup
+    const fetchEmployees = useCallback(async () => {
+        try {
+            if (!user?.user_id) return;
+
+            const formDataToSend = new FormData();
+            const response = await api.post('/assign_shift_list_drop_down', formDataToSend);
+
+            if (response.data.success && response.data.data.employee_list) {
+                setEmployees(response.data.data.employee_list);
+            }
+        } catch (error) {
+            console.error('Error fetching employees:', error);
+            showToast(error.message || 'Failed to fetch employee list', 'error');
+        }
+    }, [user, showToast]);
+
+    const fetchLeaveTypes = useCallback(async () => {
+        try {
+            const response = await api.post('/leave_type_drop_down');
+
+            if (response.data.success && response.data.data.leave_type_list) {
+                const leaveTypeData = response.data.data.leave_type_list || [];
+                setLeaveTypes(Array.isArray(leaveTypeData) ? leaveTypeData : []);
+            } else {
+                setLeaveTypes([]);
+            }
+        } catch (error) {
+            console.error('Error fetching leave types:', error);
+            setLeaveTypes([]);
+            showToast(error.message || 'Failed to fetch leave types', 'error');
+        }
+    }, [showToast]);
+
+    // Open Add Leave Popup - SMOOTH ANIMATION
+    const handleOpenAddLeave = useCallback(async () => {
+        // First set the modal data state
+        setAddLeaveModal({ isOpen: true });
+        setIsLoadingData(true);
+
+        // Reset form
+        setLeaveFormData({
+            user_id: user?.user_id || '',
+            employee_id: '',
+            leave_type: '',
+            start_date: '',
+            end_date: '',
+            reason: ''
+        });
+        setSelectedEmployeeName('');
+        setEmployeeSearch('');
+
+        // Fetch data
+        await Promise.all([fetchEmployees(), fetchLeaveTypes()]);
+        setIsLoadingData(false);
+
+        // Trigger the animation after data is loaded
+        requestAnimationFrame(() => {
+            setShowAddLeaveModal(true);
+        });
+    }, [user, fetchEmployees, fetchLeaveTypes]);
+
+    // Close Add Leave Popup - SMOOTH ANIMATION
+    const handleCloseAddLeave = useCallback(() => {
+        // First animate out
+        setShowAddLeaveModal(false);
+
+        // Then remove from DOM after animation completes
+        setTimeout(() => {
+            setAddLeaveModal({ isOpen: false });
+        }, 300);
+    }, []);
+
+    // Handle leave form change
+    const handleLeaveFormChange = useCallback((e) => {
+        const { name, value } = e.target;
+        setLeaveFormData(prev => ({ ...prev, [name]: value }));
+    }, []);
+
+    // Handle employee select
+    const handleEmployeeSelect = useCallback((e) => {
+        const selectedEmployee = employees.find(
+            (employee) => String(employee.employee_id) === String(e.target.value)
+        );
+
+        if (!selectedEmployee) return;
+
+        setLeaveFormData(prev => ({
+            ...prev,
+            employee_id: selectedEmployee.employee_id,
+        }));
+
+        setSelectedEmployeeName(selectedEmployee.full_name);
+        setEmployeeSearch(selectedEmployee.full_name);
+    }, [employees]);
+
+    // Format date for API
+    const formatDateForAPI = useCallback((dateString) => {
+        if (!dateString) return '';
+        const date = new Date(dateString);
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = date.getFullYear();
+        return `${day}-${month}-${year}`;
+    }, []);
+
+    // Handle start date change
+    const handleStartDateChange = useCallback((date) => {
+        setLeaveFormData(prev => ({
+            ...prev,
+            start_date: date,
+            end_date: prev.end_date && date && prev.end_date < date ? '' : prev.end_date
+        }));
+    }, []);
+
+    // Handle end date change
+    const handleEndDateChange = useCallback((date) => {
+        setLeaveFormData(prev => ({
+            ...prev,
+            end_date: date
+        }));
+    }, []);
+
+    // Reset leave form
+    const resetLeaveForm = useCallback(() => {
+        setLeaveFormData({
+            user_id: user?.user_id || '',
+            employee_id: '',
+            leave_type: '',
+            start_date: '',
+            end_date: '',
+            reason: ''
+        });
+        setSelectedEmployeeName('');
+        setEmployeeSearch('');
+    }, [user]);
+
+    // Submit leave form
+    const handleSubmitLeave = useCallback(async (e) => {
+        e.preventDefault();
+
+        if (!leaveFormData.employee_id) {
+            showToast('Please select an employee', 'error');
+            return;
+        }
+
+        setIsSubmitting(true);
+
+        try {
+            const submitData = new FormData();
+            submitData.append('employee_id', leaveFormData.employee_id);
+            submitData.append('leave_type', leaveFormData.leave_type);
+            submitData.append('start_date', formatDateForAPI(leaveFormData.start_date));
+            submitData.append('end_date', formatDateForAPI(leaveFormData.end_date));
+            submitData.append('reason', leaveFormData.reason);
+
+            const response = await api.post('/add_leave', submitData);
+
+            showToast(response.data.message || 'Leave request submitted successfully!', 'success');
+
+            // Reset form and close popup
+            resetLeaveForm();
+            handleCloseAddLeave();
+
+            // Refresh leave list
+            fetchLeaveRequests();
+
+        } catch (error) {
+            showToast(error.response?.data?.message || 'Failed to submit leave request', 'error');
+        } finally {
+            setIsSubmitting(false);
+        }
+    }, [leaveFormData, formatDateForAPI, showToast, resetLeaveForm, handleCloseAddLeave, fetchLeaveRequests]);
+
+    // Get today's date at midnight for comparison
+    const today = useMemo(() => {
+        const date = new Date();
+        date.setHours(0, 0, 0, 0);
+        return date;
+    }, []);
 
     // Search and filter effect
     useEffect(() => {
@@ -359,27 +575,6 @@ const LeaveManagement = () => {
     return (
         <div className="min-h-screen bg-[var(--color-bg-primary)]">
             <div className="p-8  mx-auto">
-                {/* <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-custom mb-8 overflow-hidden">
-                    <div className="bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] p-8">
-                        <div className="flex items-center gap-4">
-                            <button
-                                onClick={() => navigate(-1)}
-                                className="flex items-center gap-2 text-[var(--color-text-white)] hover:text-[var(--color-text-white-90)] transition-colors bg-[var(--color-bg-secondary-20)] hover:bg-[var(--color-bg-secondary-30)] px-4 py-2 rounded-lg backdrop-blur-sm"
-                            >
-                                <ArrowLeft size={18} />
-                                Back
-                            </button>
-                            <div className="flex items-center gap-3">
-                                <div>
-                                    <h1 className="text-2xl font-bold text-[var(--color-text-white)]">
-                                        Leave Management
-                                    </h1>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div> */}
-
                 <div className="bg-[var(--color-bg-secondary)] rounded-xl border border-[var(--color-border-primary)] overflow-hidden shadow-custom">
                     {/* Header section with tabs */}
                     <div className="px-6 py-4 border-b border-[var(--color-border-primary)] bg-[var(--color-primary-lighter)] ">
@@ -390,20 +585,8 @@ const LeaveManagement = () => {
                             </div>
 
                             <div className="flex items-center gap-3">
-                                {/* <div className="relative w-full sm:w-64">
-                                    <input
-                                        type="text"
-                                        placeholder="Search leave requests..."
-                                        value={searchQuery}
-                                        onChange={(e) => setSearchQuery(e.target.value)}
-                                        className="w-full pl-10 pr-4 py-2 border border-[var(--color-border-secondary)] rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] text-sm bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)]"
-                                    />
-                                    <Search className="absolute left-3 top-2.5 h-4 w-4 text-[var(--color-text-muted)]" />
-                                </div> */}
                                 <div className="relative w-full sm:w-64">
-
                                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--color-text-muted)] z-10" />
-
                                     <CustomInput
                                         type="text"
                                         name="searchQuery"
@@ -413,12 +596,11 @@ const LeaveManagement = () => {
                                         clearable={true}
                                         className="!h-[37px] [&_input]:!h-[37px] [&_input]:!pl-10 [&_input]:!pr-4 [&_input]:!rounded-lg"
                                     />
-
                                 </div>
 
                                 {permissions['leave_create'] && (
                                     <button
-                                        onClick={() => navigate('/leaveapplication')}
+                                        onClick={handleOpenAddLeave}
                                         className="flex items-center gap-2 bg-white text-[var(--color-primary-darker)] px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm"
                                     >
                                         <Plus className="h-4 w-4" />
@@ -604,6 +786,7 @@ const LeaveManagement = () => {
                     )}
                 </div>
 
+                {/* Rejection Modal */}
                 {rejectionModal.isOpen && (
                     <div className="fixed inset-0 bg-black/50  flex items-center justify-center p-4 z-50">
                         <div className="bg-[var(--color-bg-secondary)] rounded-xl shadow-2xl w-full max-w-md border border-[var(--color-border-primary)]">
@@ -653,17 +836,17 @@ const LeaveManagement = () => {
                     </div>
                 )}
 
-                {/* Updated View Modal Section - Replace the existing viewModal section */}
+                {/* View Modal Section */}
                 {viewModal.isOpen && viewModal.leaveData && (
                     <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 backdrop-blur-sm">
                         <div className="bg-[var(--color-bg-secondary)] rounded-3xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden ">
 
                             {/* Header */}
                             <div className="bg-[var(--color-bg-secondary)] px-6 py-5 relative overflow-hidden">
-                                <div className="absolute inset-0 bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] transform "></div>
+                                <div className="absolute inset-0 bg-[var(--color-primary-dark)]  transform "></div>
                                 <div className="relative flex items-center justify-between">
                                     <div className="flex items-center space-x-4">
-                                        <div className="w-12 h-12 bg-black/20 backdrop-blur-sm rounded-2xl flex items-center justify-center border border-black/20">
+                                        <div className="w-12 h-12  rounded-2xl flex items-center justify-center ">
                                             <User className="w-6 h-6 text-white" />
                                         </div>
                                         <div>
@@ -819,7 +1002,7 @@ const LeaveManagement = () => {
                                                         handleApprove(viewModal.leaveData.leave_id);
                                                         setViewModal({ isOpen: false, leaveData: null });
                                                     }}
-                                                    className="flex items-center px-6 py-3 text-sm font-bold text-white bg-[var(--color-primary-dark)] hover:bg-[var(--color-primary-darker)] rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
+                                                    className="flex items-center px-6 py-3 text-sm font-bold text-white bg-[var(--color-primary-dark)] rounded-xl shadow-lg duration-200 transform"
                                                 >
                                                     <CheckCircle className="w-5 h-5 mr-2" />
                                                     Approve
@@ -831,7 +1014,7 @@ const LeaveManagement = () => {
                                                         setViewModal({ isOpen: false, leaveData: null });
                                                         handleReject(viewModal.leaveData);
                                                     }}
-                                                    className="flex items-center px-6 py-3 text-sm font-bold text-white bg-[var(--color-error)] hover:bg-[var(--color-error-dark)] rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
+                                                    className="flex items-center px-6 py-3 text-sm font-bold text-white bg-[var(--color-error)] rounded-xl shadow-lg duration-200 transform "
                                                 >
                                                     <XCircle className="w-5 h-5 mr-2" />
                                                     Reject
@@ -840,6 +1023,168 @@ const LeaveManagement = () => {
                                         </>
                                     )}
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* ====== ADD LEAVE POPUP MODAL - SMOOTH ANIMATION ====== */}
+                {addLeaveModal.isOpen && (
+                    <div 
+                        className={`fixed inset-0 flex items-center justify-center p-4 z-50 overflow-y-auto transition-all duration-300 ease-out ${
+                            showAddLeaveModal ? 'bg-black/50 backdrop-blur-sm' : 'bg-black/0'
+                        }`}
+                    >
+                        <div 
+                            className={`bg-[var(--color-bg-secondary)] rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden my-8 transition-all duration-300 ease-out ${
+                                showAddLeaveModal 
+                                    ? 'opacity-100 scale-100 translate-y-0' 
+                                    : 'opacity-0 scale-95 translate-y-4'
+                            }`}
+                        >
+                            {/* Popup Header */}
+                            <div className="bg-[var(--color-primary-dark)] px-6 py-4 flex items-center justify-between">
+                                <div className="flex items-center space-x-3">
+                                    <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
+                                        <Plus className="w-5 h-5 text-white" />
+                                    </div>
+                                    <div>
+                                        <h2 className="text-xl font-bold text-white">Apply for Leave</h2>
+                                        <p className="text-sm text-white/80">Fill in the details below</p>
+                                    </div>
+                                </div>
+                                <button
+                                    onClick={handleCloseAddLeave}
+                                    className="p-2 hover:bg-white/15 rounded-xl transition-all duration-200"
+                                >
+                                    <X className="w-6 h-6 text-white" />
+                                </button>
+                            </div>
+
+                            {/* Popup Content */}
+                            <div className="p-6 overflow-y-auto flex-1 bg-[var(--color-bg-primary)]">
+                                {isLoadingData ? (
+                                    <div className="flex items-center justify-center py-12">
+                                        <LoadingSpinner />
+                                    </div>
+                                ) : (
+                                    <form onSubmit={handleSubmitLeave} className="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+                                        {/* Employee Selection */}
+                                        <div className="space-y-2">
+                                            <label className="block text-sm font-medium text-[var(--color-text-secondary)]">
+                                                Select Employee <span className="text-[var(--color-error)]">*</span>
+                                            </label>
+                                            <CustomSelect
+                                                name="employee_id"
+                                                value={leaveFormData.employee_id}
+                                                onChange={handleEmployeeSelect}
+                                                placeholder="Search and select employee"
+                                                searchable={true}
+                                                required
+                                                options={employees.map((employee) => ({
+                                                    value: employee.employee_id,
+                                                    label: employee.full_name,
+                                                }))}
+                                            />
+                                        </div>
+
+                                        {/* Leave Type Selection */}
+                                        <div className="space-y-2">
+                                            <label className="block text-sm font-medium text-[var(--color-text-secondary)]">
+                                                Leave Type <span className="text-[var(--color-error)]">*</span>
+                                            </label>
+                                            <CustomSelect
+                                                name="leave_type"
+                                                value={leaveFormData.leave_type}
+                                                onChange={handleLeaveFormChange}
+                                                options={
+                                                    Array.isArray(leaveTypes)
+                                                        ? leaveTypes.map((leaveType) => ({
+                                                            value: leaveType.leave_type_id,
+                                                            label: leaveType.leave_type,
+                                                        }))
+                                                        : []
+                                                }
+                                                placeholder="Select leave type"
+                                                required
+                                                searchable={true}
+                                            />
+                                        </div>
+
+                                        {/* Start Date */}
+                                        <div className="space-y-2">
+                                            <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">
+                                                Start Date <span className="text-[var(--color-error)]">*</span>
+                                            </label>
+                                            <CustomDatePicker
+                                                name="start_date"
+                                                value={leaveFormData.start_date}
+                                                onChange={(e) => handleStartDateChange(new Date(e.target.value))}
+                                                minDate={today}
+                                                placeholder="DD-MM-YYYY"
+                                            />
+                                        </div>
+
+                                        {/* End Date */}
+                                        <div className="space-y-2">
+                                            <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">
+                                                End Date <span className="text-[var(--color-error)]">*</span>
+                                            </label>
+                                            <CustomDatePicker
+                                                name="end_date"
+                                                value={leaveFormData.end_date}
+                                                onChange={(e) => handleEndDateChange(new Date(e.target.value))}
+                                                minDate={leaveFormData.start_date || today}
+                                                placeholder="DD-MM-YYYY"
+                                            />
+                                        </div>
+
+                                        {/* Reason */}
+                                        <div className="space-y-2 md:col-span-2">
+                                            <label className="block text-sm font-medium text-[var(--color-text-secondary)]">
+                                                Reason for Leave <span className="text-[var(--color-error)]">*</span>
+                                            </label>
+                                            <textarea
+                                                name="reason"
+                                                value={leaveFormData.reason}
+                                                onChange={handleLeaveFormChange}
+                                                required
+                                                rows="3"
+                                                className="w-full px-3 py-2 border border-[var(--color-border-secondary)] rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)] resize-none"
+                                                placeholder="Please provide details about your leave request"
+                                            />
+                                        </div>
+
+                                        {/* Action Buttons */}
+                                        <div className="md:col-span-2 flex items-center justify-end pt-4 space-x-4 border-t border-[var(--color-border-primary)]">
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    resetLeaveForm();
+                                                    handleCloseAddLeave();
+                                                }}
+                                                className="px-5 py-2.5 text-sm font-medium text-[var(--color-text-secondary)] bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] rounded-lg hover:bg-[var(--color-bg-hover)] transition-colors"
+                                            >
+                                                Cancel
+                                            </button>
+                                            <button
+                                                type="submit"
+                                                className="px-6 py-2.5 text-sm font-medium text-[var(--color-text-white)] bg-[var(--color-primary-dark)] hover:bg-[var(--color-primary-darker)] rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--color-primary)] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                                disabled={isSubmitting}
+                                            >
+                                                {isSubmitting ? (
+                                                    <span className="flex items-center gap-2">
+                                                        <LoadingSpinner size="sm" />
+                                                        Submitting...
+                                                    </span>
+                                                ) : (
+                                                    'Submit Request'
+                                                )}
+                                            </button>
+                                        </div>
+                                    </form>
+                                )}
                             </div>
                         </div>
                     </div>

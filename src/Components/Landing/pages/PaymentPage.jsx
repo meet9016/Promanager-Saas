@@ -13,7 +13,7 @@ const Field = ({ label, required, right, children }) => (
         <div className="flex items-center justify-between">
             <label className="text-sm font-semibold text-gray-700">
                 {label}
-                {required && <span className="text-[#6C4CF1] ml-0.5">*</span>}
+                {required && <span className="text-[var(--color-primary-darker)] ml-0.5">*</span>}
             </label>
 
             {right && <div>{right}</div>}
@@ -422,7 +422,7 @@ const PaymentPage = () => {
                 </div>
                 <h2 className="text-4xl lg:text-5xl font-extrabold text-[var(--color-text-primary)] mb-4">
                     Pay Securely &{" "}
-                    <span className="bg-gradient-to-r from-[#6C4CF1] to-[#4B2EDB] bg-clip-text text-transparent">
+                    <span className="bg-[var(--color-primary-dark)] bg-clip-text text-transparent">
                         Enjoy Your Plan
                     </span>
                 </h2>
@@ -522,7 +522,7 @@ focus:outline-none focus:border-[#6C4CF1] focus:ring-2 focus:ring-[#6C4CF1]/20" 
                                             <button key={cycle} type="button" onClick={() => setBillingCycle(cycle)}
                                                 className={`py-1.5 rounded-lg text-xs font-bold capitalize transition-all border
                                                 ${billingCycle === cycle
-                                                        ? 'bg-[#6C4CF1] text-white border-[#6C4CF1] shadow'
+                                                        ? 'bg-[var(--color-primary-dark)] text-white border-[#6C4CF1] shadow'
                                                         : 'border-gray-200 text-gray-500 hover:border-[#6C4CF1]/40'}`}>
                                                 {cycle}
                                             </button>
@@ -676,8 +676,8 @@ focus:outline-none focus:border-[#6C4CF1] focus:ring-2 focus:ring-[#6C4CF1]/20" 
                     text-gray-800 placeholder:text-gray-300 focus:outline-none focus:border-[#6C4CF1]
                     focus:ring-2 focus:ring-[#6C4CF1]/15 transition-all uppercase tracking-widest" />
                                                         <button type="button" onClick={applyCoupon} disabled={!couponInput.trim()}
-                                                            className="px-5 py-2.5 rounded-xl bg-[#6C4CF1] text-white text-sm font-semibold
-                    hover:bg-[#4B2EDB] transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
+                                                            className="px-5 py-2.5 rounded-xl bg-[var(--color-primary-dark)] text-white text-sm font-semibold
+                    transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
                                                             Apply
                                                         </button>
                                                     </div>
@@ -741,7 +741,7 @@ focus:outline-none focus:border-[#6C4CF1] focus:ring-2 focus:ring-[#6C4CF1]/20" 
                                 </div>
 
                                 <button onClick={() => handleSubmit()}
-                                    className="mt-6 w-full py-3 rounded-xl bg-gradient-to-r from-[#6C4CF1] to-[#4B2EDB] text-white font-bold text-sm hover:opacity-90 active:scale-95 transition-all shadow-lg shadow-[#6C4CF1]/30 flex items-center justify-center gap-2">
+                                    className="mt-6 w-full py-3 rounded-xl bg-[var(--color-primary-dark)] text-white font-bold text-sm hover:opacity-90 active:scale-95 transition-all shadow-lg  flex items-center justify-center gap-2">
                                     <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                                     </svg>
