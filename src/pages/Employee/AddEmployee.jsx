@@ -1046,7 +1046,7 @@ const AddEmployee = () => {
                             <button
                                 type="button"
                                 onClick={() => toggleSection(section.key)}
-                                className="w-full flex items-center justify-between p-8 hover:bg-[var(--color-bg-secondary)] transition-all duration-200"
+                                className="w-full flex items-center justify-between p-8 transition-all duration-200"
                             >
                                 <div className="flex items-center gap-3">
                                     <div className={`p-2 rounded-lg bg-${section.color}-100`}>
