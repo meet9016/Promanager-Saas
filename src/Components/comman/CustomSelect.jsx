@@ -211,7 +211,7 @@ const CustomSelect = ({
                         role="listbox"
                     >
                         {/* Empty placeholder option */}
-                        {!required && !searchQuery && (
+                        {/* {!required && !searchQuery && (
                             <button
                                 type="button"
                                 onClick={() => handleSelect('')}
@@ -231,7 +231,7 @@ const CustomSelect = ({
                                 <span className="flex-1 italic opacity-70">{placeholder}</span>
                                 {!value && <Check size={14} className="shrink-0" />}
                             </button>
-                        )}
+                        )} */}
 
                         {/* Filtered Options */}
                         {filteredOptions.length > 0 ? (

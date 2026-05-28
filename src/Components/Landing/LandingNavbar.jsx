@@ -464,7 +464,7 @@ const LandingNavbar = () => {
                                 </motion.button>
                             </NavLink>
 
-                            <button >
+                            {/* <button >
                                 <motion.button
                                     onClick={() => setIsAgreementOpen(true)}
                                     className="px-6 py-2.5 bg-white text-[var(--color-primary)] font-medium border-2 border-[var(--color-primary)] rounded-full hover:bg-[var(--color-primary)] hover:text-white transition-all"
@@ -473,7 +473,19 @@ const LandingNavbar = () => {
                                 >
                                     Sign Up
                                 </motion.button>
-                            </button>
+                            </button> */}
+                            {!isAuthenticated() && (
+                                <button>
+                                    <motion.button
+                                        onClick={() => setIsAgreementOpen(true)}
+                                        className="px-6 py-2.5 bg-white text-[var(--color-primary)] font-medium border-2 border-[var(--color-primary)] rounded-full hover:bg-[var(--color-primary)] hover:text-white transition-all"
+                                        whileHover={{ scale: 1.05, y: -2 }}
+                                        whileTap={{ scale: 0.95 }}
+                                    >
+                                        Sign Up
+                                    </motion.button>
+                                </button>
+                            )}
                         </div>
 
                         {/* Mobile Menu Button */}

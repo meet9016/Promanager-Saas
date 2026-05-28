@@ -77,6 +77,7 @@ const PaymentPage = () => {
     });
     const [registerErrors, setRegisterErrors] = useState({});
 
+
     const handleRegisterChange = (field, value) => {
         setRegisterForm(prev => ({ ...prev, [field]: value }));
     };
@@ -104,7 +105,7 @@ const PaymentPage = () => {
                 if (token && user_data) {
                     const user_id = user_data.user_id;
                     localStorage.setItem('token', token);
-                    
+
                     const userData = {
                         user_id,
                         full_name: user_data.full_name,
@@ -157,6 +158,9 @@ const PaymentPage = () => {
     const [enabled, setEnabled] = useState(false);
     const [isFreePlan, setIsFreePlan] = useState(false);
 
+
+
+
     // ── Derived ───────────────────────────────────────────────────────────────
     const availableCycles = selectedPlan?.billing_cycle ?? [];
     const months = CYCLE_MONTHS[billingCycle] ?? 1;
@@ -187,21 +191,62 @@ const PaymentPage = () => {
     }, [baseAmount, couponApplied, enabled]);
 
     // getRange — handle "101+" correctly (max should allow current employees, not cap it)
-    const getRange = (range) => {
-        if (range.includes('+')) return { min: Number(range.replace('+', '')), max: Infinity };
+    // const getRange = (range) => {
+    //     if (range.includes('+')) return { min: Number(range.replace('+', '')), max: Infinity };
+    //     const [min, max] = range.split('-').map(Number);
+    //     return { min, max };
+    // };
+    const getRange = (range, planName = "") => {
+
+        // custom ranges
+        if (planName === "Silver") {
+            return { min: 10, max: 20 };
+        }
+
+        if (range.includes('+')) {
+            return {
+                min: Number(range.replace('+', '')),
+                max: Infinity
+            };
+        }
+
         const [min, max] = range.split('-').map(Number);
+
         return { min, max };
     };
 
+    // ── KEY FIX: Auto-select plan based on employee count ────────────────────
     useEffect(() => {
-        if (!plans.length || !employees) return;
-        const matched = plans.find(p => { const { min, max } = getRange(p.user_range); return employees >= min && employees <= max; });
+        if (!plans.length) return;
+
+        // If employees <= 10, auto-select Free plan
+        if (employees <= 10) {
+            setIsFreePlan(true);
+            setSelectedPlan(null);
+            setBillingCycle("7 days");
+            return;
+        }
+
+        // If employees > 10, ensure Free plan is NOT selected
+        if (isFreePlan) {
+            setIsFreePlan(false);
+        }
+
+        // Find matching paid plan for current employee count
+        const matched = plans.find(p => {
+            const { min, max } = getRange(p.user_range, p.name);
+            return employees >= min && employees <= max;
+        });
+
         const newPlan = matched || plans[plans.length - 1];
+
         if (newPlan && newPlan.id !== selectedPlan?.id) {
             setSelectedPlan(newPlan);
-            if (newPlan.billing_cycle?.length) setBillingCycle(newPlan.billing_cycle[newPlan?.billing_cycle.length - 1]);
+            if (newPlan.billing_cycle?.length) {
+                setBillingCycle(newPlan.billing_cycle[newPlan.billing_cycle.length - 1]);
+            }
         }
-    }, [employees, plans])
+    }, [employees, plans]);
 
     // ── Fetch ─────────────────────────────────────────────────────────────────
     useEffect(() => {
@@ -217,9 +262,8 @@ const PaymentPage = () => {
                     const data = response.data.data;
                     setPlans(data);
                     if (data.length > 0) {
-                        setSelectedPlan(data[0]);
-
-                        setBillingCycle(data[0]?.billing_cycle?.[data[0]?.billing_cycle.length - 1]);
+                        // Don't auto-select here - let the employees useEffect handle it
+                        // Initial employees is 21, so it will auto-select the appropriate paid plan
                     }
                 } else {
                     console.error(response?.data?.message || 'Failed to fetch pricing data');
@@ -238,7 +282,7 @@ const PaymentPage = () => {
     const handlePlanSelect = (plan) => {
         setIsFreePlan(false);
         setSelectedPlan(plan);
-        const { min, max } = getRange(plan.user_range);
+        const { min, max } = getRange(plan.user_range, plan.name);
         const clampedEmployees = max === Infinity
             ? Math.max(employees, min)
             : Math.min(Math.max(employees, min), max);
@@ -247,11 +291,21 @@ const PaymentPage = () => {
         if (plan.billing_cycle?.length) setBillingCycle(plan?.billing_cycle?.[plan?.billing_cycle.length - 1]);
     };
 
+    // ── Handle Free Plan selection ───────────────────────────────────────────
+    const handleFreePlanSelect = () => {
+        setIsFreePlan(true);
+        setSelectedPlan(null);
+        setEmployees(Math.min(employees, 10)); // Cap employees at 10 for free plan
+        setBillingCycle("7 days");
+        setIsRegisterOpen(true);
+    };
+
     const maxEmployees = useMemo(() => {
         if (!plans.length) return 500;
         const last = getRange(plans[plans.length - 1].user_range);
         return last.max === Infinity ? 9999 : last.max;
     }, [plans]);
+
     // ── Coupon ────────────────────────────────────────────────────────────────
     const applyCoupon = async () => {
         try {
@@ -315,6 +369,7 @@ const PaymentPage = () => {
             return false;
         }
     };
+
 
     // ── Submit ────────────────────────────────────────────────────────────────
 
@@ -475,6 +530,9 @@ const PaymentPage = () => {
 
 
 
+
+
+
     // ─────────────────────────────────────────────────────────────────────────
     return (
         <div className="min-h-screen bg-white">
@@ -543,22 +601,17 @@ const PaymentPage = () => {
 
                                     {/* Static Free Button */}
                                     <button
-
-                                        onClick={() => {
-                                            setIsFreePlan(true);
-                                            setSelectedPlan(null);
-                                            setIsRegisterOpen(true);
-                                        }}
+                                        onClick={handleFreePlanSelect}
                                         className={`py-2.5 rounded-xl text-xs font-bold border-2 transition-all
                                             ${isFreePlan
-                                                ? 'bg-pink-500 text-white border-pink-500 shadow-md'
-                                                : 'bg-white text-[#6b7280] border-[#e5e7eb] hover:border-pink-400'
+                                                ? 'bg-gradient-to-r from-[#6C4CF1] to-[#4B2EDB] text-white border-transparent shadow-md'
+                                                : 'border-gray-200 text-gray-500 hover:border-[#6C4CF1]/40 bg-white'
                                             }`}>
 
                                         Free
 
                                         <div className="text-[10px] font-normal mt-0.5 text-gray-400">
-                                            1 users
+                                            0 - 10 users
                                         </div>
 
                                     </button>
@@ -573,7 +626,8 @@ const PaymentPage = () => {
                                                         : 'border-gray-200 text-gray-500 hover:border-[#6C4CF1]/40'}`}>
                                                 {p.name}
                                                 <div className={`text-[10px] font-normal mt-0.5 ${isActive ? 'text-white/70' : 'text-gray-400'}`}>
-                                                    {p.user_range} users
+                                                    {/* {p.user_range} users */}
+                                                    {p.name === "Silver" ? "10-20" : p.user_range} users
                                                 </div>
                                             </button>
                                         );
@@ -609,17 +663,31 @@ focus:outline-none focus:border-[#6C4CF1] focus:ring-2 focus:ring-[#6C4CF1]/20" 
                                         Billing Cycle
                                     </label>
                                     <div className="grid grid-cols-3 gap-1.5">
-                                        {availableCycles.map(cycle => (
-                                            <button key={cycle} type="button" onClick={() => setBillingCycle(cycle)}
-                                                className={`py-1.5 rounded-lg text-xs font-bold capitalize transition-all border
-                                                ${billingCycle === cycle
-                                                        ? 'bg-[var(--color-primary-dark)] text-white border-[#6C4CF1] shadow'
-                                                        : 'border-gray-200 text-gray-500 hover:border-[#6C4CF1]/40'}`}>
-                                                {cycle}
-                                            </button>
-                                        ))}
-                                    </div>
 
+                                        {isFreePlan ? (
+                                            <button
+                                                type="button"
+                                                className="py-1.5 rounded-lg text-xs font-bold capitalize transition-all border
+            bg-[var(--color-primary-dark)] text-white border-[#6C4CF1] shadow"
+                                            >
+                                                7 Days
+                                            </button>
+                                        ) : (
+                                            availableCycles.map(cycle => (
+                                                <button
+                                                    key={cycle}
+                                                    type="button"
+                                                    onClick={() => setBillingCycle(cycle)}
+                                                    className={`py-1.5 rounded-lg text-xs font-bold capitalize transition-all border
+                ${billingCycle === cycle
+                                                            ? 'bg-[var(--color-primary-dark)] text-white border-[#6C4CF1] shadow'
+                                                            : 'border-gray-200 text-gray-500 hover:border-[#6C4CF1]/40'}`}
+                                                >
+                                                    {cycle}
+                                                </button>
+                                            ))
+                                        )}
+                                    </div>
                                 </div>
                             </div>
                         </div>
