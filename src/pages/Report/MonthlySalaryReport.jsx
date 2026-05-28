@@ -756,54 +756,70 @@ const MonthlySalaryReport = () => {
                                     </TableHeaderRow>
                                 </TableHeader>
                                 <TableBody className="divide-y divide-[var(--color-border-primary)]">
-                                    {currentItems.map((employee, index) => (
-                                        <TableRow key={employee.employee_code || index} className="bg-[var(--color-bg-secondary)] hover:bg-[var(--color-bg-hover)] transition-colors group border-b border-[var(--color-border-secondary)] last:border-0">
+                                    {currentItems.map((employee, index) => {
+                                        const initials = employee.employee_name
+                                            ? employee.employee_name.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase()
+                                            : '??';
+                                        
+                                        return (
+                                        <TableRow key={employee.employee_code || index} className="bg-[var(--color-bg-secondary)] hover:bg-[var(--color-bg-hover)] transition-all duration-200 group border-b border-[var(--color-border-secondary)] last:border-0">
                                             {/* Employee Details */}
                                             <Td className="py-4">
-                                                <div className="flex flex-col items-start pl-2">
-                                                    <span className="text-sm font-bold text-[var(--color-text-primary)] group-hover:text-[var(--color-primary-dark)] transition-colors">
-                                                        {employee.employee_name || '--'}
-                                                    </span>
-                                                    <span className="text-xs text-[var(--color-text-secondary)] mt-1 tracking-wide font-medium bg-[var(--color-bg-gray-light)] px-2 py-0.5 rounded-full">
-                                                        {employee.employee_code || '--'}
-                                                    </span>
+                                                <div className="flex items-center gap-3 pl-2">
+                                                    <div className="flex-shrink-0 h-9 w-9 rounded-full bg-gradient-to-br from-[var(--color-primary-light)] to-[var(--color-primary)] text-white flex items-center justify-center text-xs font-bold shadow-sm">
+                                                        {initials}
+                                                    </div>
+                                                    <div className="flex flex-col items-start">
+                                                        <span className="text-sm font-bold text-[var(--color-text-primary)] group-hover:text-[var(--color-primary-dark)] transition-colors tracking-tight">
+                                                            {employee.employee_name || '--'}
+                                                        </span>
+                                                        <span className="text-[11px] font-semibold text-[var(--color-text-muted)] mt-0.5 bg-[var(--color-bg-gray-light)] px-1.5 py-0.5 rounded">
+                                                            {employee.employee_code || '--'}
+                                                        </span>
+                                                    </div>
                                                 </div>
                                             </Td>
 
                                             {/* Base Salary */}
                                             <Td className="text-center py-4">
-                                                <span className="text-base font-semibold text-[var(--color-text-primary)]">
-                                                    {formatCurrency(employee.employee_salary)}
-                                                </span>
+                                                <div className="inline-flex items-center justify-center px-3 py-1 bg-slate-50 border border-slate-200 rounded-lg shadow-sm">
+                                                    <span className="text-[14px] font-bold text-slate-700">
+                                                        {formatCurrency(employee.employee_salary)}
+                                                    </span>
+                                                </div>
                                             </Td>
 
                                             {/* Attendance Summary */}
                                             <Td className="py-4">
-                                                <div className="flex items-center justify-center gap-3 text-xs font-medium">
-                                                    <div className="flex flex-col items-center">
-                                                        <span className="text-[var(--color-text-muted)] mb-0.5">Work</span>
-                                                        <span className="text-[var(--color-text-primary)] px-2 py-0.5 bg-[var(--color-bg-gray-light)] rounded-md">{employee.working_days || 0}</span>
+                                                <div className="flex items-center justify-center gap-2 text-[11px] font-bold tracking-wide">
+                                                    <div className="flex items-center gap-1.5 px-2 py-1 bg-blue-50 text-blue-700 border border-blue-100 rounded-md shadow-sm">
+                                                        <span className="opacity-80">W</span>
+                                                        <span className="text-[13px]">{employee.working_days || 0}</span>
                                                     </div>
-                                                    <div className="flex flex-col items-center">
-                                                        <span className="text-[var(--color-text-muted)] mb-0.5">Pres</span>
-                                                        <span className="text-green-700 px-2 py-0.5 bg-green-50 rounded-md">{employee.present_days || 0}</span>
+                                                    <div className="flex items-center gap-1.5 px-2 py-1 bg-green-50 text-green-700 border border-green-100 rounded-md shadow-sm">
+                                                        <span className="opacity-80">P</span>
+                                                        <span className="text-[13px]">{employee.present_days || 0}</span>
                                                     </div>
-                                                    <div className="flex flex-col items-center">
-                                                        <span className="text-[var(--color-text-muted)] mb-0.5">Abs</span>
-                                                        <span className="text-red-700 px-2 py-0.5 bg-red-50 rounded-md">{employee.absent_days || 0}</span>
+                                                    <div className="flex items-center gap-1.5 px-2 py-1 bg-red-50 text-red-700 border border-red-100 rounded-md shadow-sm">
+                                                        <span className="opacity-80">A</span>
+                                                        <span className="text-[13px]">{employee.absent_days || 0}</span>
                                                     </div>
                                                 </div>
                                             </Td>
 
                                             {/* Overtime Details */}
                                             <Td className="text-center py-4">
-                                                <div className="flex flex-col items-center justify-center">
-                                                    <span className="text-sm font-semibold text-orange-600">
-                                                        {formatCurrency(employee.overtime_salary)}
-                                                    </span>
+                                                <div className="flex flex-col items-center justify-center gap-1">
+                                                    {parseFloat(employee.overtime_salary || 0) > 0 ? (
+                                                        <span className="inline-flex items-center justify-center px-2.5 py-1 bg-orange-50 text-orange-700 border border-orange-200 rounded-md font-bold text-[13px] shadow-sm">
+                                                            {formatCurrency(employee.overtime_salary)}
+                                                        </span>
+                                                    ) : (
+                                                        <span className="text-[14px] font-medium text-gray-300">--</span>
+                                                    )}
                                                     {parseFloat(employee.overtime_days || 0) > 0 && (
-                                                        <span className="text-[10px] text-orange-500 bg-orange-50 px-1.5 py-0.5 rounded mt-1 flex items-center gap-1">
-                                                            <Clock className="h-3 w-3" /> {employee.overtime_days}d
+                                                        <span className="text-[10px] text-orange-600 font-bold flex items-center gap-1 uppercase tracking-wide">
+                                                            <Clock className="h-3 w-3" /> {employee.overtime_days} days
                                                         </span>
                                                     )}
                                                 </div>
@@ -811,13 +827,17 @@ const MonthlySalaryReport = () => {
 
                                             {/* Week Off */}
                                             <Td className="text-center py-4">
-                                                <div className="flex flex-col items-center justify-center">
-                                                    <span className="text-sm font-semibold text-[var(--color-primary-dark)]">
-                                                        {formatCurrency(employee.week_off_salary)}
-                                                    </span>
+                                                <div className="flex flex-col items-center justify-center gap-1">
+                                                    {parseFloat(employee.week_off_salary || 0) > 0 ? (
+                                                        <span className="inline-flex items-center justify-center px-2.5 py-1 bg-[var(--color-primary-lightest)] text-[var(--color-primary-dark)] border border-[var(--color-primary-light)] rounded-md font-bold text-[13px] shadow-sm">
+                                                            {formatCurrency(employee.week_off_salary)}
+                                                        </span>
+                                                    ) : (
+                                                        <span className="text-[14px] font-medium text-gray-300">--</span>
+                                                    )}
                                                     {parseFloat(employee.week_off_days || 0) > 0 && (
-                                                        <span className="text-[10px] text-[var(--color-primary)] bg-[var(--color-primary-lightest)] px-1.5 py-0.5 rounded mt-1 flex items-center gap-1">
-                                                            <CalendarX className="h-3 w-3" /> {employee.week_off_days}d
+                                                        <span className="text-[10px] text-[var(--color-primary)] font-bold flex items-center gap-1 uppercase tracking-wide">
+                                                            <CalendarX className="h-3 w-3" /> {employee.week_off_days} days
                                                         </span>
                                                     )}
                                                 </div>
@@ -825,21 +845,22 @@ const MonthlySalaryReport = () => {
 
                                             {/* Subtotal */}
                                             <Td className="text-center py-4">
-                                                <span className="text-sm font-medium text-[var(--color-text-secondary)]">
+                                                <span className="text-[15px] font-bold text-gray-600">
                                                     {formatCurrency(employee.subtotal_salary)}
                                                 </span>
                                             </Td>
 
                                             {/* Final Salary */}
                                             <Td className="text-center py-4 pr-4">
-                                                <div className="inline-flex items-center justify-center px-4 py-2 bg-gradient-to-r from-green-500/10 to-green-600/10 border border-green-200/50 rounded-lg">
-                                                    <span className="text-base font-bold text-green-700 tracking-tight">
+                                                <div className="inline-flex items-center justify-center px-3.5 py-1.5 bg-emerald-50 border border-emerald-200 rounded-lg shadow-sm">
+                                                    <span className="text-[15px] font-black text-emerald-700 tracking-tight">
                                                         {formatCurrency(employee.total_salary)}
                                                     </span>
                                                 </div>
                                             </Td>
                                         </TableRow>
-                                    ))}
+                                    );
+                                })}
                                 </TableBody>
                             </Table>
                         </div>
