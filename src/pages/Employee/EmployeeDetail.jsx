@@ -26,6 +26,7 @@ import api from '../../api/axiosInstance';
 import { useAuth } from '../../context/AuthContext';
 import { useSelector } from 'react-redux';
 import LoadingSpinner from "../../Components/Loader/LoadingSpinner"
+import CustomDatePicker from '../../Components/comman/CustomDatePicker';
 
 
 const EmployeeDetail = () => {
@@ -389,7 +390,7 @@ const EmployeeDetail = () => {
                                 className="flex items-center gap-2 text-[var(--color-text-white)] hover:text-[var(--color-text-white)] transition-colors bg-[var(--color-bg-secondary-20)] hover:bg-[var(--color-bg-secondary-30)] px-2 py-2 rounded-lg backdrop-blur-sm"
                             >
                                 <ArrowLeft size={18} />
-                               
+
                             </button>
                             <div className="flex items-center gap-3">
                                 <div>
@@ -759,7 +760,7 @@ const EmployeeDetail = () => {
                                     <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-2">
                                         Last Working Day <span className="text-[var(--color-error)]">*</span>
                                     </label>
-                                    <DatePicker
+                                    {/* <DatePicker
                                         selected={getValidDate(lastWorkingDay)}
                                         onChange={handleLastWorkingDayChange}
                                         className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent ${dateError
@@ -773,6 +774,15 @@ const EmployeeDetail = () => {
                                         scrollableYearDropdown
                                         scrollableMonthDropdown
                                         yearDropdownItemNumber={10}
+                                    /> */}
+                                    <CustomDatePicker
+                                        value={getValidDate(lastWorkingDay)}
+                                        onChange={(e) => handleLastWorkingDayChange(e.target.value)}
+                                        placeholder="DD-MM-YYYY"
+                                        className={`w-full ${dateError
+                                                ? 'border-[var(--color-error)] bg-[var(--color-error-light)]'
+                                                : ''
+                                            }`}
                                     />
                                     {dateError && (
                                         <p className="text-[var(--color-error)] text-xs mt-1">{dateError}</p>
@@ -802,14 +812,14 @@ const EmployeeDetail = () => {
                             <div className="flex space-x-4">
                                 <button
                                     onClick={closeDeactivateModal}
-                                    className="flex-1 px-4 py-2 bg-[var(--color-bg-gray-light)] text-gray-800 rounded-lg hover:bg-gray-300 transition-colors font-medium"
+                                    className="flex-1 hover:bg-[var(--color-primary-lightest)] px-4 py-2  text-[var(--color-primary)] bg-transparent rounded-xl border-[var(--color-primary)] border-2 transition-colors font-medium"
                                     disabled={loading}
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     onClick={handleDeactivateSubmit}
-                                    className="flex-1 px-4 py-2 bg-[var(--color-error)] text-[var(--color-text-white)] rounded-lg hover:bg-[var(--color-error-dark)] transition-colors font-medium flex items-center justify-center"
+                                    className="flex-1 px-4 py-2 bg-[var(--color-primary-dark)] text-[var(--color-text-white)] rounded-lg  transition-colors font-medium flex items-center justify-center"
                                     disabled={loading || !lastWorkingDay}
                                 >
                                     {loading && <Loader2 size={16} className="animate-spin mr-2" />}

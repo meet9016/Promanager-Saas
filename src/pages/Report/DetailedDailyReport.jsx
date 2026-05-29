@@ -24,7 +24,8 @@ import {
     Timer,
     Activity,
     Clock,
-    ChevronRight
+    ChevronRight,
+    RefreshCw
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import api from '../../api/axiosInstance';
@@ -60,6 +61,7 @@ const useAnchoredPosition = (anchorRef, isOpen, opts = {}) => {
     const { placement = 'bottom-end', offset = 10, minWidth = 192 } = opts;
     const [pos, setPos] = useState({ top: -9999, left: -9999, width: 0, ready: false });
     const cleanupRef = useRef([]);
+   
 
     const compute = useCallback(() => {
         const el = anchorRef.current;
@@ -310,8 +312,22 @@ const Filters = ({
                                 minWidth: 420
                             }}
                         >
-                            <div className="flex items-center justify-between p-4 border-b border-[var(--color-border-secondary)]">
+                            {/* <div className="flex items-center justify-between p-4 border-b border-[var(--color-border-secondary)]">
                                 <h3 className="text-lg font-semibold text-[var(--color-text-primary)]">Filter Attendance</h3>
+                                <button
+                                    onClick={() => setFilterDropdown(false)}
+                                    className="text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] p-1 rounded-lg hover:bg-[var(--color-bg-hover)]"
+                                >
+                                    <X className="h-4 w-4" />
+                                </button>
+                            </div> */}
+                            <div className="flex items-center justify-between p-4 border-b border-[var(--color-border-secondary)]">
+                                <div className="flex items-center gap-3">
+                                    <div className="p-2 bg-[var(--color-primary-lightest)] rounded-lg">
+                                        <Filter className="h-5 w-5 text-[var(--color-primary)]" />
+                                    </div>
+                                    <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">Filters</h2>
+                                </div>
                                 <button
                                     onClick={() => setFilterDropdown(false)}
                                     className="text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] p-1 rounded-lg hover:bg-[var(--color-bg-hover)]"
@@ -372,7 +388,7 @@ const Filters = ({
                                 </div>
                             </div>
 
-                            <div className="flex flex-col sm:flex-row gap-2 p-4 border-t border-[var(--color-border-secondary)]">
+                            {/* <div className="flex flex-col sm:flex-row gap-2 p-4 border-t border-[var(--color-border-secondary)]">
                                 <button
                                     onClick={() => { applyFilters(); setFilterDropdown(false); }}
                                     className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-[var(--color-primary-dark)] text-[var(--color-text-white)] rounded-lg hover:bg-[var(--color-primary-darker)] transition-colors text-sm font-medium"
@@ -385,6 +401,24 @@ const Filters = ({
                                     className="flex items-center justify-center gap-2 px-4 py-2 bg-[var(--color-bg-gray-light)] text-[var(--color-text-secondary)] rounded-lg hover:bg-[var(--color-bg-hover)] transition-colors text-sm font-medium min-w-[100px]"
                                 >
                                     Reset
+                                </button>
+                            </div> */}
+                            <div className="flex flex-col sm:flex-row justify-end gap-2 p-4 border-t border-[var(--color-border-secondary)] rounded-b-2xl">
+                                <button
+                                    onClick={resetFilters}
+                                    className="flex items-center justify-center gap-2 px-4 py-2 bg-transparent text-[var(--color-primary)] border-2 hover:bg-[var(--color-primary-lightest)] border-[var(--color-primary)] rounded-lg hover:bg-[var(--color-bg-hover)] transition-colors text-sm font-medium min-w-[100px]"
+                                >
+                                    <RefreshCw size={14} />
+                                    Reset
+                                </button>
+
+                                <button
+                                    onClick={() => { applyFilters(); setFilterDropdown(false); }}
+                                    // disabled={loading}
+                                    className="w-auto sm:w-[140px] flex items-center justify-center gap-2 px-4 py-2 bg-[var(--color-primary-dark)] text-[var(--color-text-white)] rounded-lg hover:bg-[var(--color-primary-darker)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
+                                >
+                                  <Filter size={14} />
+                                    Apply Filters
                                 </button>
                             </div>
                         </div>
@@ -532,6 +566,7 @@ const DetailedDailyReport = () => {
     const [departments, setDepartments] = useState([]);
     const [designations, setDesignations] = useState([]);
     const [shifts, setShifts] = useState([]);
+    
 
     const navigate = useNavigate();
     const { user } = useAuth();
@@ -926,7 +961,7 @@ const DetailedDailyReport = () => {
 
                 {/* Main content */}
                 <div className="bg-[var(--color-bg-secondary)] rounded-lg border border-[var(--color-primary-dark)] overflow-hidden shadow-sm">
-                    <div className="px-6 py-4 border-b border-[var(--color-primary-light)] bg-[var(--color-primary-lightest)]">
+                    <div className="px-6 py-4 border-b border-[var(--color-primary-light)] bg-[var(--color-primary-lighter)]">
                         <div className="flex justify-between items-center">
                             <div className="flex items-center">
                                 <Activity className="h-6 w-6 text-[var(--color-primary-darker)] mr-2" />

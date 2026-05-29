@@ -1433,6 +1433,7 @@ const MonthlyPayroll = () => {
         setUnsavedByEmployee({});
         setExpandedEmployees({});
         setSelectedEmployeeIds([]);
+        navigate('/finalize-payroll');
       } else {
         throw new Error(response.data?.message || 'Failed to submit payroll');
       }

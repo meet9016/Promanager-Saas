@@ -527,7 +527,7 @@ const AddUser = () => {
                                 </div>
                                 {errors.password && (
                                     <p className="mt-2 text-sm text-[var(--color-text-error)] flex items-center gap-2">
-                                        <AlertCircle className="w-4 h-4" />
+                                        <AlertCircle className="w-4 h-4 text-red-500" />
                                         {errors.password}
                                     </p>
                                 )}

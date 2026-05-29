@@ -418,7 +418,7 @@ const AssignShift = () => {
                                                 </div>
 
                                                 {/* Popup footer */}
-                                                <div className="flex gap-2 p-4 border-t border-[var(--color-border-secondary)]">
+                                                {/* <div className="flex gap-2 p-4 border-t border-[var(--color-border-secondary)]">
                                                     <button
                                                         onClick={() => setFilterDropdown(false)}
                                                         className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-[var(--color-primary-dark)] text-[var(--color-text-white)] rounded-lg hover:bg-[var(--color-primary-darker)] transition-colors text-sm font-medium"
@@ -430,6 +430,24 @@ const AssignShift = () => {
                                                         className="flex items-center justify-center gap-2 px-4 py-2 bg-[var(--color-bg-gray-light)] text-[var(--color-text-secondary)] rounded-lg hover:bg-[var(--color-bg-hover)] transition-colors text-sm font-medium min-w-[90px]"
                                                     >
                                                         <RefreshCw className="h-4 w-4" /> Reset
+                                                    </button>
+                                                </div> */}
+                                                
+                                                <div className="flex flex-col sm:flex-row justify-end gap-2 p-4 border-t border-[var(--color-border-secondary)] rounded-b-2xl">
+                                                    <button
+                                                        onClick={() => setFilterDropdown(false)}
+                                                        className="flex items-center justify-center gap-2 px-4 py-2 bg-transparent text-[var(--color-primary)] border-2 hover:bg-[var(--color-primary-lightest)] border-[var(--color-primary)] rounded-lg hover:bg-[var(--color-bg-hover)] transition-colors text-sm font-medium min-w-[100px]"
+                                                    >
+                                                        <RefreshCw size={14} />
+                                                        Reset
+                                                    </button>
+
+                                                    <button
+                                                        onClick={() => { resetFilters(); }}
+                                                        className="w-auto sm:w-[140px] flex items-center justify-center gap-2 px-4 py-2 bg-[var(--color-primary-dark)] text-[var(--color-text-white)] rounded-lg hover:bg-[var(--color-primary-darker)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
+                                                    >
+                                                        {loading ? <Loader2 size={14} className="animate-spin" /> : <Filter size={14} />}
+                                                        {loading ? 'Loading...' : 'Apply Filters'}
                                                     </button>
                                                 </div>
                                             </div>

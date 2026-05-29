@@ -112,7 +112,7 @@ const CustomInput = ({
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
                         tabIndex={-1}
-                        className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors p-0.5"
+                        className="text-[var(--color-primary-darker)]  transition-colors p-0.5"
                         title={showPassword ? 'Hide password' : 'Show password'}
                     >
                         {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}

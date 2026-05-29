@@ -54,6 +54,12 @@ const PAYMENT_MODES = {
 };
 
 export default function FinalizePayroll() {
+  const [showSalaryDetailsModal, setShowSalaryDetailsModal] = useState(false);
+  const [salaryDetails, setSalaryDetails] = useState(null);
+  const [salaryDetailsLoading, setSalaryDetailsLoading] = useState(false);
+
+
+
   const [salaryRecords, setSalaryRecords] = useState([]);
   const [loading, setLoading] = useState(true);
   const [paginationLoading, setPaginationLoading] = useState(false);
@@ -74,6 +80,8 @@ export default function FinalizePayroll() {
   const [totalPages, setTotalPages] = useState(1);
   const [totalRecords, setTotalRecords] = useState(0);
   const permissions = useSelector(state => state.permissions) || {};
+
+  console.log(permissions, "a")
 
   const navigate = useNavigate();
   const [toast, setToast] = useState(null);
@@ -445,6 +453,7 @@ export default function FinalizePayroll() {
     }
   };
 
+
   // Render sort icon
   const renderSortIcon = useCallback((key) => {
     if (sortConfig.key !== key) {
@@ -459,6 +468,41 @@ export default function FinalizePayroll() {
   if (!isAuthenticated()) {
     return <Navigate to="/login" replace />;
   }
+
+
+
+
+
+  const handleViewSalaryDetails = async (record) => {
+    try {
+      setSalaryDetailsLoading(true);
+
+      const formData = new FormData();
+      formData.append('employee_salary_id', record.employee_salary_id);
+
+      const response = await api.post(
+        'single_employee_salary_list',
+        formData
+      );
+
+      if (response.data?.success) {
+        setSalaryDetails(response.data.data);
+        setShowSalaryDetailsModal(true);
+      } else {
+        showToast(response.data?.message || 'Failed to fetch details', 'error');
+      }
+    } catch (error) {
+      showToast(
+        error.response?.data?.message || 'Failed to fetch salary details',
+        'error'
+      );
+    } finally {
+      setSalaryDetailsLoading(false);
+    }
+  };
+
+
+
 
   return (
     <div className="min-h-screen bg-[var(--color-bg-primary)]">
@@ -643,8 +687,15 @@ export default function FinalizePayroll() {
                         { key: COLUMN_KEYS.FULL_NAME, label: 'Full Name' },
                         { key: COLUMN_KEYS.DEPARTMENT, label: 'Department' },
                         { key: COLUMN_KEYS.MONTH_YEAR, label: 'Month/Year' },
-                        { key: COLUMN_KEYS.TOTAL_SALARY, label: 'Base Salary' },
-                        { key: COLUMN_KEYS.TOTAL_PAY_SALARY, label: 'Total Pay' },
+                        { key: COLUMN_KEYS.TOTAL_PAY_SALARY, label: 'Base Salary' },
+                        { key: COLUMN_KEYS.week_of_salary, label: 'Weak of salary' },
+                        { key: COLUMN_KEYS.overtime_salary, label: 'OverTime Salary' },
+                        { key: COLUMN_KEYS.total_allowance_amount, label: 'Allowance' },
+                        { key: COLUMN_KEYS.total_deduction_amount, label: 'Deduction' },
+                        { key: COLUMN_KEYS.total_advance_amount, label: 'Advance Salary' },
+                        { key: COLUMN_KEYS.total_loan_amount, label: 'Loan Amount' },
+                        { key: COLUMN_KEYS.total_holiday_amount, label: 'Holiday Amount' },
+                        { key: COLUMN_KEYS.TOTAL_SALARY, label: 'Total Pay' },
                         { key: COLUMN_KEYS.PAYMENT_STATUS, label: 'Payment Status' }
                       ].map(({ key, label }) => (
                         <th key={`header-${key}`} className="px-6 py-3 text-left">
@@ -695,10 +746,31 @@ export default function FinalizePayroll() {
                             </div>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--color-text-primary)] font-medium">
-                            {formatCurrency(record.total_salary)}
+                            {formatCurrency(record.total_pay_salary)}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--color-text-primary)] font-medium">
+                            {formatCurrency(record.week_of_salary)}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--color-text-primary)] font-medium">
+                            {formatCurrency(record.overtime_salary)}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--color-success-dark)] font-medium">
+                            {formatCurrency(record.total_allowance_amount)}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-red-500 font-medium">
+                            {formatCurrency(record.total_deduction_amount)}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-red-500 font-medium">
+                            {formatCurrency(record.total_advance_amount)}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-red-500 font-medium">
+                            {formatCurrency(record.total_loan_amount)}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--color-success-dark)] font-medium">
+                            {formatCurrency(record.total_holiday_amount)}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--color-success-dark)] font-semibold">
-                            {formatCurrency(record.total_pay_salary)}
+                            {formatCurrency(record.total_salary)}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm">
                             <span className={`inline-flex items-center space-x-1 px-2 py-1 rounded-full text-xs font-medium ${paymentStatus.className}`}>
@@ -712,6 +784,17 @@ export default function FinalizePayroll() {
                           {(permissions?.add_salary_payment || permissions?.salary_delete || permissions?.salary_view) && (
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--color-text-secondary)]">
                               <div className="flex items-center space-x-3">
+
+
+                                <button
+                                  onClick={() => handleViewSalaryDetails(record)}
+                                  className="w-9 h-9 flex items-center justify-center rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-100 hover:scale-110 hover:shadow-md transition-all duration-200"
+                                  title="View"
+                                >
+                                  <Eye className="w-4 h-4" strokeWidth={2.5} />
+                                </button>
+
+
                                 {permissions?.add_salary_payment && record.payment_status === PAYMENT_STATUS.UNPAID && (
                                   <button
                                     onClick={() => openPaymentModal(record)}
@@ -730,6 +813,10 @@ export default function FinalizePayroll() {
                                     <Trash2 className="w-4 h-4" strokeWidth={2.5} />
                                   </button>
                                 )}
+
+
+
+
                                 {permissions?.salary_view && record.payment_status === PAYMENT_STATUS.PAID && (
                                   <button
                                     onClick={() => handleViewSalarySlip(record)}
@@ -739,6 +826,7 @@ export default function FinalizePayroll() {
                                     <Eye className="w-4 h-4" strokeWidth={2.5} />
                                   </button>
                                 )}
+
                               </div>
                             </td>
                           )}
@@ -970,6 +1058,314 @@ export default function FinalizePayroll() {
         </div>
 
       )}
+
+
+
+
+
+      {showSalaryDetailsModal && salaryDetails && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+          <div className="relative w-full max-w-6xl max-h-[90vh] overflow-hidden rounded-2xl bg-[var(--color-bg-secondary)] shadow-2xl border border-[var(--color-primary-dark)] flex flex-col animate-in zoom-in-95 duration-200">
+
+            {/* Premium Editorial Header */}
+            <div className="relative bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] p-6 text-[var(--color-text-white)] shrink-0">
+              <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_top_right,white,transparent_50%)]" />
+              <div className="relative flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-[var(--color-bg-secondary-20)] backdrop-blur-md rounded-xl flex items-center justify-center border border-white/10 shadow-inner">
+                    <Users className="w-6 h-6 text-[var(--color-text-white)]" />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-[10px] uppercase font-bold tracking-widest bg-white/15 px-2 py-0.5 rounded-md text-white/90">
+                        {salaryDetails.employee_salary?.month_year ? formatMonthYear(salaryDetails.employee_salary.month_year) : '--'}
+                      </span>
+                      <span className="text-[10px] uppercase font-bold tracking-widest bg-[var(--color-success-light)] text-[var(--color-text-success)] px-2 py-0.5 rounded-md">
+                        {salaryDetails.employee_salary?.payment_status === '2' ? 'Paid' : 'Unpaid'}
+                      </span>
+                    </div>
+                    <h3 className="text-xl font-bold tracking-tight mt-1">{salaryDetails.employee?.full_name || 'Salary Statement'}</h3>
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => {
+                    setShowSalaryDetailsModal(false);
+                    setSalaryDetails(null);
+                  }}
+                  className="rounded-xl p-2 text-[var(--color-text-white)] opacity-80 hover:opacity-100 hover:bg-white/10 transition-all"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
+            </div>
+
+            {/* Grid Content Space */}
+            <div className="p-6 overflow-y-auto bg-[var(--color-bg-primary)] space-y-6 flex-1">
+
+              {/* Core Employee Card Deck */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                {[
+                  { label: 'Department', value: salaryDetails.employee?.department_name || '--', icon: <Users className="w-3.5 h-3.5" /> },
+                  { label: 'Mobile Number', value: salaryDetails.employee?.mobile_number || '--', icon: <Search className="w-3.5 h-3.5" /> },
+                  { label: 'Email ID', value: salaryDetails.employee?.email || '--', icon: <AlertCircle className="w-3.5 h-3.5" /> },
+                  { label: 'Branch / Location', value: salaryDetails.employee?.branch_name || '--', icon: <Calendar className="w-3.5 h-3.5" /> }
+                ].map((item, idx) => (
+                  <div key={idx} className="bg-[var(--color-bg-secondary)] border border-[var(--color-primary-light)]/40 p-3.5 rounded-xl shadow-sm hover:border-[var(--color-primary-dark)]/30 transition-all">
+                    <p className="text-[12px]  font-bold tracking-wider text-[var(--color-text-muted)] flex items-center gap-1.5 mb-1">
+                      <span className="text-[var(--color-primary-dark)]">{item.icon}</span>
+                      {item.label}
+                    </p>
+                    <p className="text-sm font-semibold text-[var(--color-text-primary)] truncate">{item.value}</p>
+                  </div>
+                ))}
+              </div>
+
+              {/* Dynamic Bento Box Financial Overview Layout */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+
+                {/* Main Net Pay Hero Tile */}
+                <div className="md:col-span-1 bg-gradient-to-br from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] p-5 rounded-2xl text-[var(--color-text-white)] shadow-md flex flex-col justify-between relative overflow-hidden">
+                  <div className="absolute -bottom-8 -right-8 w-24 h-24 bg-white/5 rounded-full blur-xl" />
+                  <div>
+                    <span className="text-[12px]  font-bold tracking-widest text-white/70">Net Take-Home Salary</span>
+                    <h2 className="text-3xl font-black mt-2 tracking-tight">
+                      {formatCurrency(salaryDetails.employee_salary?.total_pay_salary)}
+                    </h2>
+                  </div>
+                  <div className="mt-6 pt-4 border-t border-white/10 grid grid-cols-2 gap-2 text-xs text-white/80">
+                    <div>
+                      <p className="opacity-70 text-[10px] ">Base Scale</p>
+                      <p className="font-semibold">{formatCurrency(salaryDetails.employee_salary?.total_salary)}</p>
+                    </div>
+                    <div>
+                      <p className="opacity-70 text-[10px] ">Final Gross</p>
+                      <p className="font-semibold">{formatCurrency(salaryDetails.employee_salary?.final_salary)}</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Sub Totals Accumulators Container */}
+                <div className="md:col-span-2 grid grid-cols-2 sm:grid-cols-3 gap-4 bg-[var(--color-primary-lighter)]/30 border border-[var(--color-primary-light)] p-4 rounded-2xl">
+                  {[
+                    { label: 'Week of Salary', val: salaryDetails.employee_salary?.week_of_salary, pos: true },
+                    { label: 'Overtime Earnings', val: salaryDetails.employee_salary?.overtime_salary, pos: true },
+                    { label: 'Allowance Sum', val: salaryDetails.employee_salary?.total_allowance_amount, pos: true },
+                    { label: 'Holiday Inclusions', val: salaryDetails.employee_salary?.total_holiday_amount, pos: true },
+                    { label: 'Deductions Sum', val: salaryDetails.employee_salary?.total_deduction_amount, pos: false },
+                    { label: 'Loan Installment', val: salaryDetails.employee_salary?.total_loan_amount, pos: false },
+                    { label: 'Advance Deduction', val: salaryDetails.employee_salary?.total_advance_amount, pos: false }
+                  ].map((card, idx) => (
+                    <div key={idx} className="bg-[var(--color-bg-secondary)] border border-[var(--color-primary-light)]/60 rounded-xl p-3 shadow-xs">
+                      <p className="text-[12px] font-bold text-[var(--color-text-muted)] tracking-wide truncate">{card.label}</p>
+                      <p className={`text-base font-bold mt-1 ${card.pos ? 'text-[var(--color-text-primary)]' : 'text-[var(--color-text-error)]'}`}>
+                        {formatCurrency(card.val)}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Live Attendance Shift Micro Panel */}
+              {salaryDetails.employee_salary_attedance?.map((shift, idx) => (
+                <div key={idx} className="bg-[var(--color-bg-secondary)] border-l-4 border-[var(--color-primary-dark)] rounded-r-xl p-4 shadow-xs flex flex-wrap items-center justify-between gap-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-[var(--color-primary-lighter)] flex items-center justify-center text-[var(--color-primary-dark)]">
+                      <Calendar className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <h4 className="text-md font-bold text-[var(--color-text-primary)]  tracking-wider">{shift.shift_name || 'Active Shift Profile'}</h4>
+                      <p className="text-sm text-[var(--color-text-muted)] mt-0.5">Calculated Working Structure metrics for this cycle.</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-6 text-center">
+                    <div>
+                      <p className="text-[12px]  font-bold text-[var(--color-text-muted)]">Days Worked</p>
+                      <p className="text-sm font-bold text-[var(--color-text-primary)] mt-0.5">{shift.total_working_days} Days</p>
+                    </div>
+                    <div className="border-l border-[var(--color-border-divider)] pl-6">
+                      <p className="text-[12px]  font-bold text-[var(--color-text-muted)]">Total Hours</p>
+                      <p className="text-sm font-bold text-[var(--color-text-primary)] mt-0.5">{shift.total_working_hours} Hrs</p>
+                    </div>
+                    <div className="border-l border-[var(--color-border-divider)] pl-6">
+                      <p className="text-[12px]  font-bold text-[var(--color-text-muted)]">Base Calculated</p>
+                      <p className="text-sm font-bold text-[var(--color-primary-darker)] mt-0.5">{formatCurrency(shift.total_salary)}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+
+              {/* Detailed Itemized Breakdowns Stack */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+                {/* Additions Bucket Block */}
+                <div className="space-y-4">
+                  {/* Allowances Table Section */}
+                  <div className="bg-[var(--color-bg-secondary)] border border-[var(--color-primary-light)]/70 rounded-xl p-4 shadow-xs">
+                    <h4 className="text-md font-bold  text-[var(--color-primary-darker)] tracking-wider mb-3 flex items-center gap-2">
+                      <span className="w-1.5 h-3 rounded-full bg-[var(--color-primary-dark)]" />
+                      Allowances Breakdown
+                    </h4>
+                    <div className="overflow-hidden border border-[var(--color-border-divider)] rounded-lg text-xs">
+                      <table className="w-full text-left">
+                        <thead className="bg-[var(--color-primary-lighter)]  text-[var(--color-primary-darker)] font-bold">
+                          <tr>
+                            <th className="p-2.5">Allowance Name</th>
+                            <th className="p-2.5 text-right">Amount</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-[var(--color-border-divider)] text-[var(--color-text-secondary)]">
+                          {salaryDetails.employee_salary_allowance?.length > 0 ? (
+                            salaryDetails.employee_salary_allowance.map((item, index) => (
+                              <tr key={index} className="hover:bg-[var(--color-bg-primary)]">
+                                <td className="text-md p-2.5 font-medium">{item.allowance_name}</td>
+                                <td className="text-md  p-2.5 text-right font-semibold text-[var(--color-text-primary)]">{formatCurrency(item.allowance_amount)}</td>
+                              </tr>
+                            ))
+                          ) : (
+                            <tr><td colSpan="2" className="p-3 text-center text-[var(--color-text-muted)] italic">No allowances captured.</td></tr>
+                          )}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+
+                  {/* Holiday Items Breakdown */}
+                  <div className="bg-[var(--color-bg-secondary)] border border-[var(--color-primary-light)]/70 rounded-xl p-4 shadow-xs">
+                    <h4 className="text-md font-bold  text-[var(--color-primary-darker)] tracking-wider mb-3 flex items-center gap-2">
+                      <span className="w-1.5 h-3 rounded-full bg-[var(--color-primary-dark)]" />
+                      Holidays Compensation
+                    </h4>
+                    <div className="overflow-hidden border border-[var(--color-border-divider)] rounded-lg text-xs">
+                      <table className="w-full text-left">
+                        <thead className="bg-[var(--color-primary-lighter)] text-[var(--color-primary-darker)] font-bold">
+                          <tr>
+                            <th className="p-2.5">Occasion</th>
+                            <th className="p-2.5">Date</th>
+                            <th className="p-2.5 text-right">Amount</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-[var(--color-border-divider)] text-[var(--color-text-secondary)]">
+                          {salaryDetails.employee_salary_holiday?.length > 0 ? (
+                            salaryDetails.employee_salary_holiday.map((item, index) => (
+                              <tr key={index} className="hover:bg-[var(--color-bg-primary)]">
+                                <td className="p-2.5 font-medium">{item.holiday_name}</td>
+                                <td className="p-2.5 text-[var(--color-text-muted)]">{item.holiday_date}</td>
+                                <td className="p-2.5 text-right font-semibold text-[var(--color-text-primary)]">{formatCurrency(item.holiday_amount)}</td>
+                              </tr>
+                            ))
+                          ) : (
+                            <tr><td colSpan="3" className="p-3 text-center text-[var(--color-text-muted)] italic">No holidays listed.</td></tr>
+                          )}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Deductions & Liabilities Columns */}
+                <div className="space-y-4">
+                  {/* Standard Deductions Block */}
+                  <div className="bg-[var(--color-bg-secondary)] border border-[var(--color-primary-light)]/70 rounded-xl p-4 shadow-xs">
+                    <h4 className="text-md font-bold  text-[var(--color-text-error)] tracking-wider mb-3 flex items-center gap-2">
+                      <span className="w-1.5 h-3 rounded-full bg-[var(--color-error)]" />
+                      Deductions Breakdown
+                    </h4>
+                    <div className="overflow-hidden border border-[var(--color-border-divider)] rounded-lg text-xs">
+                      <table className="w-full text-left">
+                        <thead className="bg-red-50 text-[var(--color-text-error)] font-bold">
+                          <tr>
+                            <th className="p-2.5">Deduction Description</th>
+                            <th className="p-2.5 text-right">Amount</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-[var(--color-border-divider)] text-[var(--color-text-secondary)]">
+                          {salaryDetails.employee_salary_deduction?.length > 0 ? (
+                            salaryDetails.employee_salary_deduction.map((item, index) => (
+                              <tr key={index} className="hover:bg-[var(--color-bg-primary)]">
+                                <td className="p-2.5 font-medium">{item.deduction_name}</td>
+                                <td className="p-2.5 text-right font-semibold text-[var(--color-text-error)]">{formatCurrency(item.deduction_amount)}</td>
+                              </tr>
+                            ))
+                          ) : (
+                            <tr><td colSpan="2" className="p-3 text-center text-[var(--color-text-muted)] italic">No deductions registered.</td></tr>
+                          )}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+
+                  {/* Active Loan Ledger Segment */}
+                  <div className="bg-[var(--color-bg-secondary)] border border-[var(--color-primary-light)]/70 rounded-xl p-4 shadow-xs">
+                    <h4 className="text-md font-bold  text-[var(--color-text-secondary)] tracking-wider mb-3 flex items-center gap-2">
+                      <span className="w-1.5 h-3 rounded-full bg-amber-500" />
+                      Loan Installments & Advances Recovery
+                    </h4>
+                    <div className="space-y-3 text-xs">
+                      {/* Active Loans Mapping loops */}
+                      <div>
+                        <p className="text-[11px] font-bold  tracking-wider text-[var(--color-text-muted)] mb-1.5">Loans Ledger</p>
+                        {salaryDetails.employee_salary_loan?.length > 0 ? (
+                          <div className="border border-[var(--color-border-divider)] rounded-lg divide-y divide-[var(--color-border-divider)]">
+                            {salaryDetails.employee_salary_loan.map((loan, idx) => (
+                              <div key={idx} className="p-2.5 flex justify-between items-center bg-[var(--color-bg-primary)]/40">
+                                <div>
+                                  <span className="bg-amber-100 text-amber-800 text-[9px] font-bold uppercase px-1.5 py-0.5 rounded mr-1.5">{loan.loan_priority_name || 'Standard'} Priority</span>
+                                  <span className="text-[var(--color-text-muted)]">{loan.loan_payment_date}</span>
+                                </div>
+                                <span className="font-bold text-[var(--color-text-error)]">{formatCurrency(loan.installment_amount)}</span>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <p className="text-[11px] text-[var(--color-text-muted)] italic">No running active loans.</p>
+                        )}
+                      </div>
+
+                      {/* Dynamic Advances Loop mapping */}
+                      <div className="pt-1">
+                        <p className="text-[11px] font-bold  tracking-wider text-[var(--color-text-muted)] mb-1.5">Advances Ledger</p>
+                        {salaryDetails.employee_salary_advance?.length > 0 ? (
+                          <div className="border border-[var(--color-border-divider)] rounded-lg divide-y divide-[var(--color-border-divider)]">
+                            {salaryDetails.employee_salary_advance.map((adv, idx) => (
+                              <div key={idx} className="p-2.5 flex justify-between items-center bg-[var(--color-bg-primary)]/40">
+                                <div>
+                                  <span className="bg-blue-100 text-blue-800 text-[9px] font-bold uppercase px-1.5 py-0.5 rounded mr-1.5">{adv.advance_priority_name || 'Advance'}</span>
+                                  <span className="text-[var(--color-text-muted)]">{adv.advance_payment_date}</span>
+                                </div>
+                                <span className="font-bold text-[var(--color-text-error)]">{formatCurrency(adv.amount)}</span>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <p className="text-[11px] text-[var(--color-text-muted)] italic">No salary advances processed.</p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+            </div>
+
+            {/* Sheet Action Footer */}
+            <div className="p-4 bg-[var(--color-bg-secondary)] border-t border-[var(--color-border-divider)] flex justify-end shrink-0">
+              <button
+                onClick={() => {
+                  setShowSalaryDetailsModal(false);
+                  setSalaryDetails(null);
+                }}
+                className="px-5 py-2 text-xs font-semibold text-[var(--color-text-secondary)] bg-[var(--color-bg-primary)] border border-[var(--color-border-secondary)] hover:bg-[var(--color-bg-gray-light)] rounded-lg transition-colors"
+              >
+                Close View
+              </button>
+            </div>
+
+          </div>
+        </div>
+      )}
+
 
       {/* Toast Notification */}
       {toast && (

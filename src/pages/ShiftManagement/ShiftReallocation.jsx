@@ -1017,7 +1017,7 @@ const ShiftReallocation = () => {
                                             type="button"
                                             onClick={handleCloseForm}
                                             disabled={submitting}
-                                            className="px-6 py-2 border border-[var(--color-border-secondary)] text-[var(--color-text-secondary)] rounded-md hover:bg-[var(--color-bg-primary)] font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                            className="px-6 py-2 bg-transparent text-[var(--color-primary)] border-2 hover:bg-[var(--color-primary-lightest)] border-[var(--color-primary)] rounded-xl font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                                         >
                                             Cancel
                                         </button>

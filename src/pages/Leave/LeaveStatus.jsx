@@ -1030,20 +1030,18 @@ const LeaveManagement = () => {
 
                 {/* ====== ADD LEAVE POPUP MODAL - SMOOTH ANIMATION ====== */}
                 {addLeaveModal.isOpen && (
-                    <div 
-                        className={`fixed inset-0 flex items-center justify-center p-4 z-50 overflow-y-auto transition-all duration-300 ease-out ${
-                            showAddLeaveModal ? 'bg-black/50 backdrop-blur-sm' : 'bg-black/0'
-                        }`}
-                    >
-                        <div 
-                            className={`bg-[var(--color-bg-secondary)] rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col overflow-visible my-8 transition-all duration-300 ease-out ${
-                                showAddLeaveModal 
-                                    ? 'opacity-100 scale-100 translate-y-0' 
-                                    : 'opacity-0 scale-95 translate-y-4'
+                    <div
+                        className={`fixed inset-0 flex items-center justify-center p-4 z-50 overflow-y-auto transition-all duration-300 ease-out ${showAddLeaveModal ? 'bg-black/50 backdrop-blur-sm' : 'bg-black/0'
                             }`}
+                    >
+                        <div
+                            className={`bg-[var(--color-bg-secondary)] rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col overflow-visible my-8 transition-all duration-300 ease-out ${showAddLeaveModal
+                                ? 'opacity-100 scale-100 translate-y-0'
+                                : 'opacity-0 scale-95 translate-y-4'
+                                }`}
                         >
                             {/* Popup Header */}
-                            <div className="bg-[var(--color-primary-dark)] px-6 py-4 flex items-center justify-between">
+                            <div className="bg-[var(--color-primary-dark)] px-6 py-4 flex items-center justify-between rounded-t-2xl">
                                 <div className="flex items-center space-x-3">
                                     <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
                                         <Plus className="w-5 h-5 text-white" />
@@ -1062,7 +1060,7 @@ const LeaveManagement = () => {
                             </div>
 
                             {/* Popup Content */}
-                            <div className="p-6 overflow-visible flex-1 bg-[var(--color-bg-primary)]">
+                            <div className="p-6 overflow-visible flex-1 bg-[var(--color-bg-primary)] rounded-b-2xl">
                                 {isLoadingData ? (
                                     <div className="flex items-center justify-center py-12">
                                         <LoadingSpinner />
@@ -1151,7 +1149,7 @@ const LeaveManagement = () => {
                                                 onChange={handleLeaveFormChange}
                                                 required
                                                 rows="3"
-                                                className="w-full px-3 py-2 border border-[var(--color-border-secondary)] rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)] resize-none"
+                                                className="w-full px-3 py-2 border border-[var(--color-border-secondary)] rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)] resize-none"
                                                 placeholder="Please provide details about your leave request"
                                             />
                                         </div>
@@ -1164,7 +1162,7 @@ const LeaveManagement = () => {
                                                     resetLeaveForm();
                                                     handleCloseAddLeave();
                                                 }}
-                                                className="px-5 py-2.5 text-sm font-medium text-[var(--color-text-secondary)] bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] rounded-lg hover:bg-[var(--color-bg-hover)] transition-colors"
+                                                className="px-5 py-2.5 text-sm font-medium bg-transparent text-[var(--color-primary)] border-2 hover:bg-[var(--color-primary-lightest)] border-[var(--color-primary)] rounded-xl transition-colors"
                                             >
                                                 Cancel
                                             </button>

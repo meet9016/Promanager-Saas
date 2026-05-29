@@ -441,15 +441,17 @@ const MonthlyAttendance = () => {
                                 </svg>
                             </div>
                             <div>
-                                <div className="flex items-center gap-2 mb-0.5">
+                                <div className="flex items-center gap-2 mb-0.5 flex-wrap">
+                                    <h1 className="text-base sm:text-2xl font-bold text-white">
+                                        Monthly Attendance
+                                    </h1>
+
                                     <span className="flex items-center gap-1.5 text-[10px] font-bold text-emerald-600 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full uppercase tracking-widest">
                                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                                         Live &middot; {formatMonthYearShort(filters.month_year)}
                                     </span>
                                 </div>
-                                <h1 className="text-base sm:text-2xl font-bold text-white">
-                                    Monthly Attendance
-                                </h1>
+
                                 <p className="text-xs text-white mt-0.5">
                                     {gridData.length} employee{gridData.length !== 1 ? 's' : ''} &middot; {daysInMonth} days &middot; tracked in real time
                                 </p>
@@ -463,7 +465,7 @@ const MonthlyAttendance = () => {
                                 onClick={() => setShowFilters(!showFilters)}
                                 className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold border transition-all duration-200
                                     ${showFilters
-                                        ? 'bg-white  text-[var(--color-primary-dark)] border-violet-600 shadow-lg shadow-violet-100'
+                                        ? 'bg-white  text-[var(--color-primary-dark)] border-violet-600 shadow-lg'
                                         : 'bg-white  text-[var(--color-primary-dark)] border-slate-200 '
                                     }`}
                             >
@@ -492,7 +494,7 @@ const MonthlyAttendance = () => {
 
                             {/* ── Desktop Anchored Dropdown ── */}
                             <div
-                                className="hidden sm:block absolute z-[110] bg-[var(--color-bg-secondary)] rounded-lg shadow-2xl border border-[var(--color-border-secondary)] max-h-[80vh] overflow-visible flex flex-col"
+                                className="hidden sm:block absolute z-[110] bg-[var(--color-bg-secondary)] rounded-lg border border-[var(--color-border-secondary)] max-h-[80vh] overflow-visible flex flex-col"
                                 style={{
                                     position: 'absolute',
                                     top: filterPos.ready ? filterPos.top : -9999,
@@ -502,13 +504,19 @@ const MonthlyAttendance = () => {
                                 }}
                             >
                                 {/* Header */}
-                                <div className="flex items-center justify-between p-4 border-b border-[var(--color-border-secondary)] bg-[var(--color-bg-secondary)]">
-                                    <h3 className="text-lg font-semibold text-[var(--color-text-primary)]">Filter Attendance</h3>
+
+                                <div className="flex items-center justify-between p-4 border-b border-[var(--color-border-secondary)]">
+                                    <div className="flex items-center gap-3">
+                                        <div className="p-2 bg-[var(--color-primary-lightest)] rounded-lg">
+                                            <Filter className="h-5 w-5 text-[var(--color-primary)]" />
+                                        </div>
+                                        <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">Filters</h2>
+                                    </div>
                                     <button
                                         onClick={() => setShowFilters(false)}
                                         className="text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] p-1 rounded-lg hover:bg-[var(--color-bg-hover)]"
                                     >
-                                        <X size={16} />
+                                        <X className="h-4 w-4" />
                                     </button>
                                 </div>
 
@@ -609,21 +617,23 @@ const MonthlyAttendance = () => {
                                 </div>
 
                                 {/* Footer */}
-                                <div className="flex flex-col sm:flex-row gap-2 p-4 border-t border-[var(--color-border-secondary)] bg-[var(--color-bg-secondary)]">
-                                    <button
-                                        onClick={applyFilters}
-                                        disabled={loading}
-                                        className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-[var(--color-primary-dark)] text-[var(--color-text-white)] rounded-lg hover:bg-[var(--color-primary-darker)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
-                                    >
-                                        {loading ? <Loader2 size={14} className="animate-spin" /> : <Filter size={14} />}
-                                        {loading ? 'Loading...' : 'Apply Filters'}
-                                    </button>
+
+                                <div className="flex flex-col sm:flex-row justify-end gap-2 p-4 border-t border-[var(--color-border-secondary)] rounded-b-2xl">
                                     <button
                                         onClick={resetFilters}
-                                        className="flex items-center justify-center gap-2 px-4 py-2 bg-[var(--color-bg-gray-light)] text-[var(--color-text-secondary)] rounded-lg hover:bg-[var(--color-bg-hover)] transition-colors text-sm font-medium min-w-[100px]"
+                                        className="flex items-center justify-center gap-2 px-4 py-2 bg-transparent text-[var(--color-primary)] border-2 hover:bg-[var(--color-primary-lightest)] border-[var(--color-primary)] rounded-lg hover:bg-[var(--color-bg-hover)] transition-colors text-sm font-medium min-w-[100px]"
                                     >
                                         <RefreshCw size={14} />
                                         Reset
+                                    </button>
+                                   
+                                    <button
+                                        onClick={applyFilters}
+                                        disabled={loading}
+                                        className="w-auto sm:w-[140px] flex items-center justify-center gap-2 px-4 py-2 bg-[var(--color-primary-dark)] text-[var(--color-text-white)] rounded-lg hover:bg-[var(--color-primary-darker)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
+                                    >
+                                        {loading ? <Loader2 size={14} className="animate-spin" /> : <Filter size={14} />}
+                                        {loading ? 'Loading...' : 'Apply Filters'}
                                     </button>
                                 </div>
                             </div>
@@ -749,7 +759,7 @@ const MonthlyAttendance = () => {
                                         <button
                                             onClick={applyFilters}
                                             disabled={loading}
-                                            className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-[var(--color-primary-dark)] text-[var(--color-text-white)] rounded-lg hover:bg-[var(--color-primary-darker)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
+                                            className="w-auto sm:w-[160px] flex items-center justify-center gap-2 px-4 py-2 bg-[var(--color-primary-dark)] text-[var(--color-text-white)] rounded-lg hover:bg-[var(--color-primary-darker)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
                                         >
                                             {loading ? <Loader2 size={14} className="animate-spin" /> : <Filter size={14} />}
                                             {loading ? 'Loading...' : 'Apply Filters'}

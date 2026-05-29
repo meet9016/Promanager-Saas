@@ -945,7 +945,12 @@ focus:outline-none focus:border-[#6C4CF1] focus:ring-2 focus:ring-[#6C4CF1]/20" 
                                         <h2 className="text-2xl font-bold text-gray-800">Register Form</h2>
                                         <p className="text-sm text-gray-500 mt-1">Fill all required details carefully</p>
                                     </div>
-                                    <button onClick={() => setIsRegisterOpen(false)} className="w-10 h-10 rounded-full hover:bg-gray-100 flex items-center justify-center transition-all">
+                                    <button
+                                        onClick={() => {
+                                            setIsAgreementOpen(false);
+                                            setErrors({});
+                                        }}
+                                        className="w-10 h-10 rounded-full hover:bg-gray-100 flex items-center justify-center transition-all">
                                         <X className="w-5 h-5 text-gray-600" />
                                     </button>
                                 </div>
@@ -995,7 +1000,11 @@ focus:outline-none focus:border-[#6C4CF1] focus:ring-2 focus:ring-[#6C4CF1]/20" 
                                         {registerErrors.address && <p className="text-red-500 text-xs mt-1">{registerErrors.address}</p>}
                                     </div>
                                     <div className="flex flex-col sm:flex-row gap-3 justify-end mt-8">
-                                        <button onClick={() => setIsRegisterOpen(false)} className="px-6 py-3 rounded-xl border border-gray-300 text-gray-600 hover:bg-gray-100 transition-all">
+                                        <button onClick={() => {
+                                            setIsAgreementOpen(false);
+                                            setErrors({});
+                                        }}
+                                            className="px-6 py-3 rounded-xl border border-gray-300 text-gray-600 hover:bg-gray-100 transition-all">
                                             Cancel
                                         </button>
                                         <button onClick={handleRegisterSubmit} className="px-6 py-3 rounded-xl bg-[#6C4CF1] text-white font-medium hover:opacity-90 transition-all">

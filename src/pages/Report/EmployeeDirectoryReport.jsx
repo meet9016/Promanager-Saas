@@ -148,6 +148,7 @@ const EmployeeDirectoryReport = () => {
     const [salaryTypes, setSalaryTypes] = useState([]);
     const [genders, setGenders] = useState([]);
     const [status, setStatus] = useState([]);
+    const [loading, setLoading] = useState(false);
 
     const [dropdownLoading, setDropdownLoading] = useState(false);
     const [reportGenerating, setReportGenerating] = useState(false);
@@ -475,8 +476,8 @@ const EmployeeDirectoryReport = () => {
 
                 {/* Results */}
                 {reportData && (
-                    <div className="bg-[var(--color-bg-secondary)] rounded-xl shadow-sm border border-[var(--color-border-secondary)] overflow-hidden">
-                        <div className="px-6 py-4 border-b border-[var(--color-primary-light)] bg-[var(--color-primary-lighter)] ">
+                    <div className="bg-[var(--color-bg-secondary)] rounded-xl shadow-sm border border-primary-200 overflow-hidden">
+                        <div className="px-6 py-4 border-b border-primary-200 bg-[var(--color-primary-lighter)] ">
                             <div className="flex justify-between items-center">
                                 <div className="flex items-center">
                                     <Users className="h-6 w-6 text-[var(--color-primary-darker)] mr-2" />
@@ -525,10 +526,24 @@ const EmployeeDirectoryReport = () => {
                                                         }}
                                                     >
                                                         {/* Header */}
-                                                        <div className="flex items-center justify-between p-4 border-b border-[var(--color-border-secondary)] bg-[var(--color-bg-secondary)]">
-                                                            <h3 className="text-lg font-semibold text-[var(--color-text-primary)]">Filter Employees</h3>
+                                                        {/* <div className="flex items-center justify-between p-4 border-b border-[var(--color-border-secondary)] bg-[var(--color-bg-secondary)]">
+                                                            <h3 className="text-lg font-semibold text-[var(--color-text-primary)]">Filter</h3>
                                                             <button
                                                                 onClick={() => setFilterDropdown(false)}
+                                                                className="text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] p-1 rounded-lg hover:bg-[var(--color-bg-hover)]"
+                                                            >
+                                                                <X className="h-4 w-4" />
+                                                            </button>
+                                                        </div> */}
+                                                        <div className="flex items-center justify-between p-4 border-b border-[var(--color-border-secondary)]">
+                                                            <div className="flex items-center gap-3">
+                                                                <div className="p-2 bg-[var(--color-primary-lightest)] rounded-lg">
+                                                                    <Filter className="h-5 w-5 text-[var(--color-primary)]" />
+                                                                </div>
+                                                                <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">Filters</h2>
+                                                            </div>
+                                                            <button
+                                                               onClick={() => setFilterDropdown(false)}
                                                                 className="text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] p-1 rounded-lg hover:bg-[var(--color-bg-hover)]"
                                                             >
                                                                 <X className="h-4 w-4" />
@@ -778,7 +793,7 @@ const EmployeeDirectoryReport = () => {
                                                         </div>
 
                                                         {/* Footer */}
-                                                        <div className="flex flex-col sm:flex-row gap-2 p-4 border-t border-[var(--color-border-secondary)] bg-[var(--color-bg-secondary)]">
+                                                        {/* <div className="flex flex-col sm:flex-row gap-2 p-4 border-t border-[var(--color-border-secondary)] bg-[var(--color-bg-secondary)]">
                                                             <button
                                                                 onClick={applyFilters}
                                                                 disabled={reportGenerating}
@@ -793,6 +808,25 @@ const EmployeeDirectoryReport = () => {
                                                             >
                                                                 <RefreshCw className="h-4 w-4" />
                                                                 Reset
+                                                            </button>
+                                                        </div> */}
+                                                        <div className="flex flex-col sm:flex-row justify-end gap-2 p-4 border-t border-[var(--color-border-secondary)] rounded-b-2xl">
+                                                            <button
+                                                                onClick={resetFilters}
+                                                                disabled={reportGenerating}
+                                                                className="flex items-center justify-center gap-2 px-4 py-2 bg-transparent text-[var(--color-primary)] border-2 hover:bg-[var(--color-primary-lightest)] border-[var(--color-primary)] rounded-lg hover:bg-[var(--color-bg-hover)] transition-colors text-sm font-medium min-w-[100px]"
+                                                            >
+                                                                <RefreshCw size={14} />
+                                                                Reset
+                                                            </button>
+
+                                                            <button
+                                                                onClick={applyFilters}
+                                                                disabled={reportGenerating}
+                                                                className="w-auto sm:w-[140px] flex items-center justify-center gap-2 px-4 py-2 bg-[var(--color-primary-dark)] text-[var(--color-text-white)] rounded-lg hover:bg-[var(--color-primary-darker)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
+                                                            >
+                                                                {loading ? <Loader2 size={14} className="animate-spin" /> : <Filter size={14} />}
+                                                                {loading ? 'Loading...' : 'Apply Filters'}
                                                             </button>
                                                         </div>
                                                     </div>

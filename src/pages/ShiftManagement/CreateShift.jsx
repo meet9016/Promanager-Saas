@@ -946,7 +946,7 @@ const CreateShift = () => {
                                         type="button"
                                         onClick={() => navigate('/shift-management')}
                                         disabled={submitting}
-                                        className="px-6 py-3 border border-[var(--color-border-secondary)] text-[var(--color-text-secondary)] rounded-lg hover:bg-[var(--color-bg-primary)] transition-colors font-medium"
+                                        className="px-6 py-3 bg-transparent text-[var(--color-primary)] border-2 hover:bg-[var(--color-primary-lightest)] border-[var(--color-primary)] rounded-xl transition-colors font-medium"
                                     >
                                         Cancel
                                     </button>

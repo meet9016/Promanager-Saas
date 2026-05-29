@@ -73,7 +73,7 @@ export const AdvanceDetailsModal = ({ isOpen, onClose, advanceDetails, loading, 
 
     return (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-2xl  w-full max-h-[90vh] overflow-hidden border border-[var(--color-primary-dark)]">
+            <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-2xl max-w-4xl  w-full max-h-[90vh] overflow-hidden border border-[var(--color-primary-dark)]">
                 {/* Modal Header */}
                 <div className="relative bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] px-8 py-6">
                     <button
@@ -242,23 +242,23 @@ export const AdvanceDetailsModal = ({ isOpen, onClose, advanceDetails, loading, 
                             {/* Payment History Table */}
                             <div className="bg-[var(--color-bg-secondary)] rounded-xl shadow-sm border border-[var(--color-border-primary)] overflow-hidden">
                                 <div className="px-6 py-4 bg-[var(--color-primary-lighter)] border-b border-[var(--color-border-primary)]">
-                                    <h3 className="text-lg font-semibold text-[var(--color-text-primary)]">Payment History</h3>
+                                    <h3 className="text-lg font-semibold text-[var(--color-primary-darker)]">Payment History</h3>
                                 </div>
                                 {advanceDetails.advance_list && advanceDetails.advance_list.length > 0 ? (
                                     <div className="overflow-x-auto">
                                         <table className="w-full">
-                                            <thead className="bg-[var(--color-primary-lightest)] border-b border-[var(--color-border-primary)]">
+                                            <thead className="bg-[var(--color-primary-dark)] border-b border-[var(--color-border-primary)]">
                                                 <tr>
-                                                    <th className="px-6 py-4 text-left text-xs font-semibold text-[var(--color-text-secondary)] uppercase tracking-wider">
+                                                    <th className="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
                                                         No.
                                                     </th>
-                                                    <th className="px-6 py-4 text-left text-xs font-semibold text-[var(--color-text-secondary)] uppercase tracking-wider">
+                                                    <th className="px-6 py-4 text-left text-xs font-semibold text-white  uppercase tracking-wider">
                                                         Payment Date
                                                     </th>
-                                                    <th className="px-6 py-4 text-left text-xs font-semibold text-[var(--color-text-secondary)] uppercase tracking-wider">
+                                                    <th className="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
                                                         Amount
                                                     </th>
-                                                    <th className="px-6 py-4 text-left text-xs font-semibold text-[var(--color-text-secondary)] uppercase tracking-wider">
+                                                    <th className="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
                                                         Payment Type
                                                     </th>
                                                 </tr>

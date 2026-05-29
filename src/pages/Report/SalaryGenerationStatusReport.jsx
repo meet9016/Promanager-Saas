@@ -107,8 +107,13 @@ const SalaryStatusBadge = ({ genStatus, paymentLabel }) => {
 const SalaryGenerationStatusReport = () => {
     const navigate = useNavigate();
     const { user } = useAuth();
+    const currentDate = new Date();
 
-    const [filters, setFilters] = useState({ branch_id: '', department_id: '', designation_id: '', employee_id: '', month_year: '' });
+    const [filters, setFilters] = useState({
+        branch_id: '', department_id: '', designation_id: '', employee_id: '', month_year: `${currentDate.getFullYear()}-${String(
+            currentDate.getMonth() + 1
+        ).padStart(2, '0')}`
+    });
     const [branches, setBranches] = useState([]);
     const [departments, setDepartments] = useState([]);
     const [designations, setDesignations] = useState([]);
@@ -303,7 +308,7 @@ const SalaryGenerationStatusReport = () => {
                                 placeholderText="Select month and year" maxDate={new Date()} showPopperArrow={false}
                             />
 
-                           
+
 
                         </div>
                         <div className="flex flex-col">
