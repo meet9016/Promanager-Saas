@@ -977,64 +977,74 @@ export default function FinalizePayroll() {
 
       {/* Delete Confirmation Modal */}
       {showDeleteModal && selectedRecord && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-[var(--color-bg-secondary)] rounded-lg shadow-xl max-w-md w-full mx-4">
-            <div className="flex items-center justify-between p-8 border-b">
-              <h3 className="text-lg font-semibold text-[var(--color-text-primary)]">Delete Salary Record</h3>
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-[var(--color-bg-secondary)] rounded-xl shadow-xl max-w-md w-full overflow-hidden ">
+
+            {/* Header - Simple & Formal */}
+            <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--color-text-muted)]/10 bg-[var(--color-primary-dark)]  ">
+              <div className="flex items-center space-x-2.5">
+                <AlertCircle className="h-5 w-5 text-white" />
+                <h3 className="font-semibold text-white">
+                  Delete Salary Record
+                </h3>
+              </div>
               <button
                 onClick={closeDeleteModal}
-                className="text-[var(--color-text-muted)] hover:text-[var(--color-text-secondary)]"
+                className="text-white transition-colors p-1"
               >
-                <X className="h-6 w-6" />
+                <X className="h-5 w-5" />
               </button>
             </div>
 
-            <div className="p-8">
-              <div className="flex items-center space-x-3 mb-4">
-                <div className="flex-shrink-0">
-                  <AlertCircle className="h-10 w-10 text-[var(--color-error)]" />
-                </div>
-                <div>
-                  <h4 className="text-lg font-medium text-[var(--color-text-primary)]">
-                    Are you sure you want to delete this record?
-                  </h4>
-                  <p className="text-sm text-[var(--color-text-secondary)] mt-1">
-                    This action cannot be undone. The salary record will be permanently removed.
-                  </p>
-                </div>
+            {/* Content Body */}
+            <div className="p-6">
+              <div className="mb-5">
+                <h4 className="text-md font-medium text-[var(--color-text-primary)]">
+                  Are you sure you want to delete this record?
+                </h4>
+                <p className="text-xs text-[var(--color-text-secondary)] mt-1">
+                  This action is permanent and cannot be undone.
+                </p>
               </div>
 
-              <div className="bg-[var(--color-bg-primary)] p-4 rounded-lg">
-                <h5 className="font-medium text-[var(--color-text-primary)] mb-2">Record Details</h5>
-                <div className="space-y-1 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-[var(--color-text-secondary)]">Employee:</span>
-                    <span className="font-medium">{selectedRecord.full_name}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-[var(--color-text-secondary)]">Employee Code:</span>
-                    <span className="font-medium">{selectedRecord.employee_code}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-[var(--color-text-secondary)]">Department:</span>
-                    <span className="font-medium">{selectedRecord.department_name}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-[var(--color-text-secondary)]">Month/Year:</span>
-                    <span className="font-medium">{formatMonthYear(selectedRecord.month_year)}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-[var(--color-text-secondary)]">Total Pay:</span>
-                    <span className="font-medium text-[var(--color-text-error)]">{formatCurrency(selectedRecord.total_pay_salary)}</span>
-                  </div>
+              {/* Record Details - Clean & Sobar Minimalist Table */}
+              <div className="border border-[var(--color-text-muted)]/10 rounded-lg divide-y divide-[var(--color-text-muted)]/5 bg-[var(--color-bg-primary)]/50">
+
+                <div className="flex justify-between items-center px-4 py-2.5 text-xs">
+                  <span className="text-[var(--color-text-secondary)]">Employee Name</span>
+                  <span className="font-semibold text-[var(--color-text-primary)]">{selectedRecord.full_name}</span>
                 </div>
+
+                <div className="flex justify-between items-center px-4 py-2.5 text-xs">
+                  <span className="text-[var(--color-text-secondary)]">Employee Code</span>
+                  <span className="font-medium text-[var(--color-text-primary)]">{selectedRecord.employee_code}</span>
+                </div>
+
+                <div className="flex justify-between items-center px-4 py-2.5 text-xs">
+                  <span className="text-[var(--color-text-secondary)]">Department</span>
+                  <span className="font-medium text-[var(--color-text-primary)]">{selectedRecord.department_name}</span>
+                </div>
+
+                <div className="flex justify-between items-center px-4 py-2.5 text-xs">
+                  <span className="text-[var(--color-text-secondary)]">Month / Year</span>
+                  <span className="font-medium text-[var(--color-text-primary)]">{formatMonthYear(selectedRecord.month_year)}</span>
+                </div>
+
+                <div className="flex justify-between items-center px-4 py-3 text-xs bg-[var(--color-primary-lighter)]/20">
+                  <span className="font-medium text-[var(--color-text-primary)]">Total Amount</span>
+                  <span className="font-bold text-sm text-[var(--color-text-error)]">
+                    {formatCurrency(selectedRecord.total_pay_salary)}
+                  </span>
+                </div>
+
               </div>
             </div>
 
-            <div className="flex justify-end space-x-3 p-8 border-t">
+            {/* Footer Actions */}
+            <div className="flex justify-end items-center space-x-2 px-6 py-4 bg-[var(--color-bg-primary)] border-t border-[var(--color-text-muted)]/10">
               <button
                 onClick={closeDeleteModal}
-                className="px-4 py-2 text-sm font-medium text-[var(--color-text-secondary)] bg-[var(--color-bg-gradient-start)] hover:bg-[var(--color-bg-gray-light)] rounded-md transition-colors"
+                className="px-4 py-3 text-sm font-medium bg-transparent text-[var(--color-primary)] border-2 hover:bg-[var(--color-primary-lightest)] border-[var(--color-primary)] rounded-lg hover:bg-[var(--color-bg-hover)]  transition-colors"
                 disabled={deleteLoading}
               >
                 Cancel
@@ -1042,11 +1052,11 @@ export default function FinalizePayroll() {
               <button
                 onClick={handleDelete}
                 disabled={deleteLoading}
-                className="px-4 py-2 text-sm font-medium text-[var(--color-text-white)] bg-[var(--color-error)] hover:bg-[var(--color-error-dark)] rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-4 py-3 text-sm font-medium text-white bg-[var(--color-primary-dark)]   rounded-md transition-colors disabled:opacity-50"
               >
                 {deleteLoading ? (
-                  <div className="flex items-center space-x-2">
-                    <RefreshCw className="w-4 h-4 animate-spin" />
+                  <div className="flex items-center space-x-1.5">
+                    <RefreshCw className="w-3.5 h-3.5 animate-spin" />
                     <span>Deleting...</span>
                   </div>
                 ) : (
@@ -1054,6 +1064,7 @@ export default function FinalizePayroll() {
                 )}
               </button>
             </div>
+
           </div>
         </div>
 
