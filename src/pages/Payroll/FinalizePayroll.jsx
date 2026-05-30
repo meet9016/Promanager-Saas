@@ -1510,6 +1510,7 @@ export default function FinalizePayroll() {
                                       const dailySal = Number(d.daily_salary_for_day || 0);
                                       const hourlySal = Number(d.hourly_salary_for_day || 0);
                                       const otSal = Number(d.overtime_salary_for_day || 0);
+
                                       return (
                                         <tr key={dIdx} className="hover:bg-[var(--color-bg-primary)]/60 transition border-b border-[var(--color-border-divider)] last:border-0">
                                           <td className="px-3 py-2 font-semibold text-[var(--color-text-primary)] whitespace-nowrap">{dateLabel}</td>
@@ -1522,17 +1523,17 @@ export default function FinalizePayroll() {
                                           <td className="px-3 py-2 text-[var(--color-text-primary)] font-medium whitespace-nowrap">{d.actual_hours || '0h 0m'}</td>
                                           <td className="px-3 py-2 text-right text-[var(--color-text-primary)] tabular-nums">{hourlySal ? formatCurrency(hourlySal) : '—'}</td>
                                           <td className="px-3 py-2 text-right font-semibold text-emerald-700 tabular-nums">{dailySal ? formatCurrency(dailySal) : '—'}</td>
-                                          <td className={`px-3 py-2 text-center tabular-nums ${lateVal > 0 ? 'text-rose-600 font-bold' : 'text-[var(--color-text-muted)]'}`}>
-                                            {lateVal > 0 ? lateVal : '—'}
+                                          <td className={`px-3 py-2 text-center tabular-nums ${lateVal > 0 ? 'text-rose-600 font-bold' : 'text-[var(--color-text-primary)]'}`}>
+                                            {d?.late_coming_minutes}
                                           </td>
-                                          <td className={`px-3 py-2 text-center tabular-nums ${earlyVal > 0 ? 'text-amber-600 font-bold' : 'text-[var(--color-text-muted)]'}`}>
-                                            {earlyVal > 0 ? earlyVal : '—'}
+                                          <td className={`px-3 py-2 text-center tabular-nums ${earlyVal > 0 ? 'text-amber-600 font-bold' : 'text-[var(--color-text-primary)]'}`}>
+                                            {d?.early_going_minutes}
                                           </td>
-                                          <td className={`px-3 py-2 text-center tabular-nums ${otVal > 0 ? 'text-indigo-600 font-bold' : 'text-[var(--color-text-muted)]'}`}>
-                                            {otVal > 0 ? d.overtime : '—'}
+                                          <td className={`px-3 py-2 text-center tabular-nums ${otVal > 0 ? 'text-indigo-600 font-bold' : 'text-[var(--color-text-primary)]'}`}>
+                                            {d?.overtime}
                                           </td>
-                                          <td className={`px-3 py-2 text-right tabular-nums ${otSal > 0 ? 'text-indigo-700 font-semibold' : 'text-[var(--color-text-muted)]'}`}>
-                                            {otSal > 0 ? formatCurrency(otSal) : '—'}
+                                          <td className={`px-3 py-2 text-right tabular-nums ${otSal > 0 ? 'text-indigo-700 font-semibold' : 'text-[var(--color-text-primary)]'}`}>
+                                            {d.overtime_salary_for_day}
                                           </td>
                                         </tr>
                                       );
