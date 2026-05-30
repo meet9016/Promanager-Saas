@@ -13,7 +13,8 @@ import {
   X,
   CheckCircle,
   Trash2,
-  Eye
+  Eye,
+  HandCoins
 } from 'lucide-react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
@@ -808,15 +809,7 @@ export default function FinalizePayroll() {
                                     <CreditCard className="w-4 h-4" strokeWidth={2.5} />
                                   </button>
                                 )}
-                                {permissions?.salary_delete && (
-                                  <button
-                                    onClick={() => openDeleteModal(record)}
-                                    className="w-9 h-9 flex items-center justify-center rounded-xl bg-red-50 text-red-500 hover:bg-red-100 hover:scale-110 hover:shadow-md transition-all duration-200"
-                                    title="Delete"
-                                  >
-                                    <Trash2 className="w-4 h-4" strokeWidth={2.5} />
-                                  </button>
-                                )}
+
 
 
 
@@ -827,7 +820,18 @@ export default function FinalizePayroll() {
                                     className="w-9 h-9 flex items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 hover:bg-emerald-100 hover:scale-110 hover:shadow-md transition-all duration-200"
                                     title="View"
                                   >
-                                    <Eye className="w-4 h-4" strokeWidth={2.5} />
+                                    <HandCoins className="w-4 h-4" strokeWidth={2.5} />
+                                  </button>
+                                )}
+
+
+                                {permissions?.salary_delete && (
+                                  <button
+                                    onClick={() => openDeleteModal(record)}
+                                    className="w-9 h-9 flex items-center justify-center rounded-xl bg-red-50 text-red-500 hover:bg-red-100 hover:scale-110 hover:shadow-md transition-all duration-200"
+                                    title="Delete"
+                                  >
+                                    <Trash2 className="w-4 h-4" strokeWidth={2.5} />
                                   </button>
                                 )}
 
@@ -1158,8 +1162,8 @@ export default function FinalizePayroll() {
 
                   <span
                     className={`mt-3 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${isPaid
-                        ? 'bg-emerald-400/20 text-emerald-200 border border-emerald-300/30'
-                        : 'bg-amber-400/20 text-amber-200 border border-amber-300/30'
+                      ? 'bg-emerald-400/20 text-emerald-200 border border-emerald-300/30'
+                      : 'bg-amber-400/20 text-amber-200 border border-amber-300/30'
                       }`}
                   >
                     <span className={`w-1.5 h-1.5 rounded-full ${isPaid ? 'bg-emerald-300' : 'bg-amber-300'}`} />

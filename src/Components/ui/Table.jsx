@@ -7,7 +7,7 @@ export function cn(...inputs) {
 }
 
 const Table = React.forwardRef(({ className, wrapperClassName, ...props }, ref) => (
-  <div className={cn("relative w-full overflow-auto", wrapperClassName)}>
+  <div className={cn("relative w-full overflow-auto max-h-[600px]", wrapperClassName)}>
     <table
       ref={ref}
       className={cn("w-full border-separate border-spacing-0 caption-bottom text-sm", className)}
@@ -18,7 +18,7 @@ const Table = React.forwardRef(({ className, wrapperClassName, ...props }, ref) 
 Table.displayName = "Table";
 
 const TableHeader = React.forwardRef(({ className, ...props }, ref) => (
-  <thead ref={ref} className={cn("sticky top-0 z-10 bg-[var(--color-primary-dark)]", className)} {...props} />
+  <thead ref={ref} className={cn("sticky top-0 z-50 bg-[var(--color-primary-dark)]", className)} {...props} />
 ));
 TableHeader.displayName = "TableHeader";
 
@@ -77,7 +77,7 @@ const Th = React.forwardRef(({ className, small, ...props }, ref) => (
   <th
     ref={ref}
     className={cn(
-      "px-2 sm:px-4 py-3 text-center font-semibold text-white uppercase tracking-wider",
+      "sticky top-0 z-50 bg-[var(--color-primary-dark)] px-2 sm:px-4 py-3 text-center font-semibold text-white uppercase tracking-wider",
       small ? "text-[11px]" : "text-xs",
       className
     )}

@@ -961,25 +961,25 @@ const DailyAttendance = () => {
         </div> */}
 
         {/* Summary cards — 8 columns on large screens */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2 sm:gap-4 mb-4 sm:mb-6 ">
-            <SummaryCard icon={Users} label="Total" value={summaryStats.total} tone="text-[var(--color-primary-dark)]"
-              onClick={() => handleFilterClick('total')} isActive={activeFilter === 'total'} />
-            <SummaryCard icon={CheckCircle} label="Present" value={summaryStats.present} tone="text-green-600"
-              onClick={() => handleFilterClick('present')} isActive={activeFilter === 'present'} />
-            <SummaryCard icon={XCircle} label="Absent" value={summaryStats.absent} tone="text-red-600"
-              onClick={() => handleFilterClick('absent')} isActive={activeFilter === 'absent'} />
-            <SummaryCard icon={CalendarX} label="Week Off" value={summaryStats.weekOff} tone="text-purple-600"
-              onClick={() => handleFilterClick('weekOff')} isActive={activeFilter === 'weekOff'} />
-            <SummaryCard icon={AlertCircle} label="Incomplete" value={summaryStats.incomplete} tone="text-orange-600"
-              onClick={() => handleFilterClick('incomplete')} isActive={activeFilter === 'incomplete'} />
-            <SummaryCard icon={Clock} label="Late" value={summaryStats.late} tone="text-amber-600"
-              onClick={() => handleFilterClick('late')} isActive={activeFilter === 'late'} />
-            <SummaryCard icon={TrendingUp} label="Overtime" value={summaryStats.overtime} tone="text-primary-600"
-              onClick={() => handleFilterClick('overtime')} isActive={activeFilter === 'overtime'} />
-            <SummaryCard icon={LogOut} label="Early Going" value={summaryStats.earlyGoing} tone="text-teal-600"
-              onClick={() => handleFilterClick('earlyGoing')} isActive={activeFilter === 'earlyGoing'} />
-          </div>
-       
+        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2 sm:gap-4 mb-4 sm:mb-6 ">
+          <SummaryCard icon={Users} label="Total" value={summaryStats.total} tone="text-[var(--color-primary-dark)]"
+            onClick={() => handleFilterClick('total')} isActive={activeFilter === 'total'} />
+          <SummaryCard icon={CheckCircle} label="Present" value={summaryStats.present} tone="text-green-600"
+            onClick={() => handleFilterClick('present')} isActive={activeFilter === 'present'} />
+          <SummaryCard icon={XCircle} label="Absent" value={summaryStats.absent} tone="text-red-600"
+            onClick={() => handleFilterClick('absent')} isActive={activeFilter === 'absent'} />
+          <SummaryCard icon={CalendarX} label="Week Off" value={summaryStats.weekOff} tone="text-purple-600"
+            onClick={() => handleFilterClick('weekOff')} isActive={activeFilter === 'weekOff'} />
+          <SummaryCard icon={AlertCircle} label="Incomplete" value={summaryStats.incomplete} tone="text-orange-600"
+            onClick={() => handleFilterClick('incomplete')} isActive={activeFilter === 'incomplete'} />
+          <SummaryCard icon={Clock} label="Late" value={summaryStats.late} tone="text-amber-600"
+            onClick={() => handleFilterClick('late')} isActive={activeFilter === 'late'} />
+          <SummaryCard icon={TrendingUp} label="Overtime" value={summaryStats.overtime} tone="text-primary-600"
+            onClick={() => handleFilterClick('overtime')} isActive={activeFilter === 'overtime'} />
+          <SummaryCard icon={LogOut} label="Early Going" value={summaryStats.earlyGoing} tone="text-teal-600"
+            onClick={() => handleFilterClick('earlyGoing')} isActive={activeFilter === 'earlyGoing'} />
+        </div>
+
 
         {/* Main content */}
         <div className="bg-[var(--color-bg-secondary)] rounded-lg border border-[var(--color-primary-dark)] overflow-hidden shadow-sm">
@@ -1090,7 +1090,7 @@ const DailyAttendance = () => {
             </div>
           ) : (
             /* Desktop Table View */
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto ">
               {loading ? (
                 <div className="p-8 text-center text-[var(--color-text-secondary)]">
                   <div className="flex items-center justify-center">
@@ -1102,7 +1102,8 @@ const DailyAttendance = () => {
                 <div className="p-8 text-center text-[var(--color-text-secondary)]">No records found</div>
               ) : (
                 <>
-                  <Table className="min-w-[1200px]">
+
+                  <Table className="min-w-[1200px]"  wrapperClassName="max-h-[60vh] overflow-y-auto">
                     <TableHeader>
                       <TableHeaderRow>
                         <Th>Employee</Th>
@@ -1119,7 +1120,6 @@ const DailyAttendance = () => {
                         <Th>Actions</Th>
                       </TableHeaderRow>
                     </TableHeader>
-
                     <TableBody>
                       {paginatedData.map((emp, idx) => {
                         const timeColorClass = getTimeColor(emp);
