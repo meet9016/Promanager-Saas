@@ -292,7 +292,7 @@ const SubscriptionPage = () => {
                             </div>
                         </div>
 
-                        <div className="flex gap-3 flex-wrap">
+                        {/* <div className="flex gap-3 flex-wrap">
                             <button className="bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white px-5 py-3 rounded-xl font-semibold transition-all shadow-md">
                                 Manage Plan
                             </button>
@@ -300,7 +300,7 @@ const SubscriptionPage = () => {
                             <button className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-5 py-3 rounded-xl font-semibold transition-all">
                                 Usage Details
                             </button>
-                        </div>
+                        </div> */}
                     </div>
 
                     {/* Stats */}

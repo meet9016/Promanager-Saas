@@ -499,7 +499,7 @@ export default function HolidayManagement() {
                                 <Table className="min-w-full divide-y divide-[var(--color-border-divider)]">
                                     <TableHeader className="bg-[var(--color-primary-dark)]">
                                         <TableHeaderRow>
-                                            {["Holiday Name", "Type", "Paid?", "Dates", "Description", "Actions"].map((head) => (
+                                            {["Holiday Name", "Type", "Paid", "Dates", "Description", "Actions"].map((head) => (
                                                 <Th key={head} className="px-6 py-3 text-left font-semibold">
                                                     {head}
                                                 </Th>
