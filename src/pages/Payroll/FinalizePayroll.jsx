@@ -510,7 +510,7 @@ export default function FinalizePayroll() {
 
 
   return (
-    <div className="min-h-screen bg-[var(--color-bg-primary)]">
+    <div className="h-full bg-[var(--color-bg-primary)]">
       <div className="p-8  mx-auto">
         {/* Header Section */}
         {/* <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-xl mb-8 overflow-hidden">
@@ -684,9 +684,9 @@ export default function FinalizePayroll() {
             </div>
           ) : (
             <>
-              <div className="overflow-x-auto">
+              <div className="h-[650px] overflow-y-auto overflow-x-auto custom-scrollbar">
                 <table className="min-w-full divide-y divide-[var(--color-border-divider)]">
-                  <thead className="bg-[var(--color-primary-dark)]">
+                  <thead className="sticky top-0 z-20 bg-[var(--color-primary-dark)]">
                     <tr>
                       {[
                         { key: COLUMN_KEYS.FULL_NAME, label: 'Full Name' },

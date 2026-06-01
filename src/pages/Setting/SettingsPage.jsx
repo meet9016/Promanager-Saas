@@ -33,7 +33,7 @@ const SettingsPage = () => {
     const { user } = useAuth();
 
     return (
-        <div className="min-h-screen bg-[var(--color-bg-primary)]">
+        <div className="h-full bg-[var(--color-bg-primary)]">
             <div className="p-8 mx-auto space-y-6">
                 {/* Header */}
                 <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-xl overflow-hidden">

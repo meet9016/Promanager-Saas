@@ -166,7 +166,7 @@ const CustomSelect = ({
                         bg-[var(--color-bg-secondary)]
                         border border-[var(--color-border-primary)]
                         rounded-xl shadow-xl
-                        overflow-hidden
+                        
                         animate-fadeIn
                     "
                     style={{ maxHeight: '280px' }}

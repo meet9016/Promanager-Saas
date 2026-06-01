@@ -275,7 +275,7 @@ const Increment = () => {
 
 
     return (
-        <div className="min-h-screen bg-[var(--color-bg-primary)]">
+        <div className="h-full bg-[var(--color-bg-primary)]">
             <div className=" mx-auto  ">
 
 
@@ -344,49 +344,51 @@ const Increment = () => {
                                         </button>
                                     </div>
 
-                                    {incrementList && incrementList.map((item, index) => {
-                                        return (
 
-                                            <div key={index} className="border border-[var(--color-border-primary)] my-4 rounded-lg p-4 bg-[var(--color-bg-card)]">
-                                                <div className="flex items-center justify-between mb-4">
-                                                    <h4 className="text-sm font-semibold text-[var(--color-text-secondary)]">
-                                                        Increment
-                                                    </h4>
-                                                    <button
-                                                        type="button"
-                                                        onClick={() => removeIncrement(index)}
-                                                        className="w-9 h-9 flex items-center justify-center rounded-xl bg-red-50 text-red-500 hover:bg-red-100 hover:scale-110 hover:shadow-md transition-all duration-200 disabled:opacity-50"
-                                                        title="Remove this allowance"
-                                                    >
-                                                        <Trash2 className="w-4 h-4" strokeWidth={2.5} />
-                                                    </button>
+                                    <div className="h-[450px] overflow-y-auto custom-scrollbar pr-2">
+                                        {incrementList && incrementList.map((item, index) => {
+                                            return (
 
-                                                </div>
+                                                <div key={index} className="border border-[var(--color-border-primary)] my-4 rounded-lg p-4 bg-[var(--color-bg-card)]">
+                                                    <div className="flex items-center justify-between mb-4">
+                                                        <h4 className="text-sm font-semibold text-[var(--color-text-secondary)]">
+                                                            Increment
+                                                        </h4>
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => removeIncrement(index)}
+                                                            className="w-9 h-9 flex items-center justify-center rounded-xl bg-red-50 text-red-500 hover:bg-red-100 hover:scale-110 hover:shadow-md transition-all duration-200 disabled:opacity-50"
+                                                            title="Remove this allowance"
+                                                        >
+                                                            <Trash2 className="w-4 h-4" strokeWidth={2.5} />
+                                                        </button>
 
-                                                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                                                    <div className="space-y-2">
-                                                        <label className="block text-sm font-medium text-[var(--color-text-secondary)]">
-                                                            Salary <span className="text-[var(--color-error)]">*</span>
-                                                        </label>
-                                                        <input
-                                                            type="number"
-                                                            value={item?.salary || ""}
-                                                            onChange={(e) => {
-                                                                const value = e.target.value;
-                                                                setIncrementList(prev =>
-                                                                    prev.map((row, i) =>
-                                                                        i === index ? { ...row, salary: value } : row
-                                                                    )
-                                                                );
-                                                            }}
-                                                            className="w-full px-3 py-2 border border-[var(--color-border-primary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition-all"
-                                                            required
-                                                        />
                                                     </div>
 
-                                                    <div className="space-y-2">
-                                                        <label className="block text-sm font-medium text-[var(--color-text-secondary)]">Salary Type <span className="text-[var(--color-error)]">*</span></label>
-                                                        {/* <select
+                                                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                                                        <div className="space-y-2">
+                                                            <label className="block text-sm font-medium text-[var(--color-text-secondary)]">
+                                                                Salary <span className="text-[var(--color-error)]">*</span>
+                                                            </label>
+                                                            <input
+                                                                type="number"
+                                                                value={item?.salary || ""}
+                                                                onChange={(e) => {
+                                                                    const value = e.target.value;
+                                                                    setIncrementList(prev =>
+                                                                        prev.map((row, i) =>
+                                                                            i === index ? { ...row, salary: value } : row
+                                                                        )
+                                                                    );
+                                                                }}
+                                                                className="w-full px-3 py-2 border border-[var(--color-border-primary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition-all"
+                                                                required
+                                                            />
+                                                        </div>
+
+                                                        <div className="space-y-2">
+                                                            <label className="block text-sm font-medium text-[var(--color-text-secondary)]">Salary Type <span className="text-[var(--color-error)]">*</span></label>
+                                                            {/* <select
                                                             className="w-full px-3 py-2 border border-[var(--color-border-primary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition-all"
                                                             required
                                                             value={item?.salary_type_id || ""}
@@ -407,113 +409,114 @@ const Increment = () => {
 
 
                                                         </select> */}
-                                                        <CustomSelect
-                                                            name="salary_type_id"
-                                                            value={item?.salary_type_id || ""}
-                                                            onChange={(e) => {
-                                                                const value = e.target.value;
+                                                            <CustomSelect
+                                                                name="salary_type_id"
+                                                                value={item?.salary_type_id || ""}
+                                                                onChange={(e) => {
+                                                                    const value = e.target.value;
 
-                                                                setIncrementList(prev =>
-                                                                    prev.map((row, i) =>
-                                                                        i === index
-                                                                            ? { ...row, salary_type_id: value }
-                                                                            : row
-                                                                    )
-                                                                );
-                                                            }}
-                                                            options={salaryTypeList.map(option => ({
-                                                                value: option.salary_type_id,
-                                                                label: option.name,
-                                                            }))}
-                                                            placeholder="Select Salary Type"
-                                                            required
-                                                            searchable={true}
-                                                        />
+                                                                    setIncrementList(prev =>
+                                                                        prev.map((row, i) =>
+                                                                            i === index
+                                                                                ? { ...row, salary_type_id: value }
+                                                                                : row
+                                                                        )
+                                                                    );
+                                                                }}
+                                                                options={salaryTypeList.map(option => ({
+                                                                    value: option.salary_type_id,
+                                                                    label: option.name,
+                                                                }))}
+                                                                placeholder="Select Salary Type"
+                                                                required
+                                                                searchable={true}
+                                                            />
 
-                                                    </div>
+                                                        </div>
 
-                                                    <div className="space-y-2">
-                                                        <label className="block text-sm font-medium text-[var(--color-text-secondary)]">Start Date <span className="text-[var(--color-error)]">*</span></label>
-                                                        <CustomDatePicker
-                                                            name="starting_date"
-                                                            value={item?.starting_date || ""}
-                                                            placeholder="DD-MM-YYYY"
-                                                            onChange={(e) => {
-                                                                const formatted = e.target.value;
-                                                                if (!formatted) return;
+                                                        <div className="space-y-2">
+                                                            <label className="block text-sm font-medium text-[var(--color-text-secondary)]">Start Date <span className="text-[var(--color-error)]">*</span></label>
+                                                            <CustomDatePicker
+                                                                name="starting_date"
+                                                                value={item?.starting_date || ""}
+                                                                placeholder="DD-MM-YYYY"
+                                                                onChange={(e) => {
+                                                                    const formatted = e.target.value;
+                                                                    if (!formatted) return;
 
-                                                                const prevDate = new Date(formatted);
-                                                                prevDate.setDate(prevDate.getDate() - 1);
-                                                                const prevFormatted = formatLocalDate(prevDate);
+                                                                    const prevDate = new Date(formatted);
+                                                                    prevDate.setDate(prevDate.getDate() - 1);
+                                                                    const prevFormatted = formatLocalDate(prevDate);
 
-                                                                setIncrementList(prev => {
-                                                                    const updated = [...prev];
+                                                                    setIncrementList(prev => {
+                                                                        const updated = [...prev];
 
-                                                                    updated[index] = {
-                                                                        ...updated[index],
-                                                                        starting_date: formatted
-                                                                    };
-
-                                                                    if (index > 0) {
-                                                                        updated[index - 1] = {
-                                                                            ...updated[index - 1],
-                                                                            ending_date: prevFormatted
+                                                                        updated[index] = {
+                                                                            ...updated[index],
+                                                                            starting_date: formatted
                                                                         };
-                                                                    }
 
-                                                                    return updated;
-                                                                });
-                                                            }}
-                                                        />
+                                                                        if (index > 0) {
+                                                                            updated[index - 1] = {
+                                                                                ...updated[index - 1],
+                                                                                ending_date: prevFormatted
+                                                                            };
+                                                                        }
+
+                                                                        return updated;
+                                                                    });
+                                                                }}
+                                                            />
+                                                        </div>
+                                                        <div className="space-y-2">
+                                                            <label className="block text-sm font-medium text-[var(--color-text-secondary)]">End Date </label>
+
+                                                            <CustomDatePicker
+                                                                name="ending_date"
+                                                                value={item?.ending_date || ""}
+                                                                placeholder="DD-MM-YYYY"
+                                                                disabled={index === incrementList.length - 1}
+                                                                onChange={(e) => {
+                                                                    const formatted = e.target.value;
+                                                                    if (!formatted) return;
+
+                                                                    setIncrementList(prev =>
+                                                                        prev.map((row, i) =>
+                                                                            i === index ? { ...row, ending_date: formatted } : row
+                                                                        )
+                                                                    );
+                                                                }}
+                                                            />
+                                                        </div>
                                                     </div>
-                                                    <div className="space-y-2">
-                                                        <label className="block text-sm font-medium text-[var(--color-text-secondary)]">End Date </label>
+                                                    {index === incrementList.length - 1 && (
 
-                                                        <CustomDatePicker
-                                                            name="ending_date"
-                                                            value={item?.ending_date || ""}
-                                                            placeholder="DD-MM-YYYY"
-                                                            disabled={index === incrementList.length - 1}
-                                                            onChange={(e) => {
-                                                                const formatted = e.target.value;
-                                                                if (!formatted) return;
-
-                                                                setIncrementList(prev =>
-                                                                    prev.map((row, i) =>
-                                                                        i === index ? { ...row, ending_date: formatted } : row
-                                                                    )
-                                                                );
-                                                            }}
-                                                        />
-                                                    </div>
-                                                </div>
-                                                {index === incrementList.length - 1 && (
-
-                                                    // <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-lg border border-[var(--color-border-primary)] p-8">
-                                                    <div className="flex gap-4 justify-end mt-10">
-                                                        <button
-                                                            type="button"
-                                                            className="px-6 py-3 border border-[var(--color-border-secondary)] text-[var(--color-text-secondary)] rounded-lg hover:bg-[var(--color-bg-primary)] transition-colors font-medium"
-                                                        >
-                                                            Cancel
-                                                        </button>
-                                                        <button
-                                                            onClick={handleSubmit}
-                                                            className="px-8 py-3 bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] text-[var(--color-text-white)] rounded-lg hover:from-[var(--color-primary-darker)] hover:to-[var(--color-primary-darkest)] transition-all duration-200 font-medium shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-                                                        >
-                                                            {isSubmitting && (
-                                                                <div className="w-4 h-4 border-2 border-[var(--color-border-primary)] border-t-transparent rounded-full animate-spin"></div>
-                                                            )}
-                                                            {isSubmitting ?
-                                                                'Please wait' : 'Submit'
-                                                            }
-                                                        </button>
-                                                    </div>
-                                                    // </div>
-                                                )}
-                                            </div>)
-                                    }
-                                    )}
+                                                        // <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-lg border border-[var(--color-border-primary)] p-8">
+                                                        <div className="flex gap-4 justify-end mt-10">
+                                                            <button
+                                                                type="button"
+                                                                className="px-6 py-3 border border-[var(--color-border-secondary)] text-[var(--color-text-secondary)] rounded-lg hover:bg-[var(--color-bg-primary)] transition-colors font-medium"
+                                                            >
+                                                                Cancel
+                                                            </button>
+                                                            <button
+                                                                onClick={handleSubmit}
+                                                                className="px-8 py-3 bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] text-[var(--color-text-white)] rounded-lg hover:from-[var(--color-primary-darker)] hover:to-[var(--color-primary-darkest)] transition-all duration-200 font-medium shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                                                            >
+                                                                {isSubmitting && (
+                                                                    <div className="w-4 h-4 border-2 border-[var(--color-border-primary)] border-t-transparent rounded-full animate-spin"></div>
+                                                                )}
+                                                                {isSubmitting ?
+                                                                    'Please wait' : 'Submit'
+                                                                }
+                                                            </button>
+                                                        </div>
+                                                        // </div>
+                                                    )}
+                                                </div>)
+                                        }
+                                        )}
+                                    </div>
                                     {/* 
                                     {employeeId &&
 

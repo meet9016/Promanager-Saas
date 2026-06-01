@@ -34,7 +34,7 @@ const Designation = () => {
     };
 
     return (
-        <div className="min-h-screen bg-[var(--color-bg-primary)]">
+        <div className="h-full bg-[var(--color-bg-primary)] overflow-hidden">
             <div className=" mx-auto">
 
 

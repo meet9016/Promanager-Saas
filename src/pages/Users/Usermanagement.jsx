@@ -206,7 +206,7 @@ const UserManagement = () => {
 
     return (
         <>
-            <div className="min-h-screen bg-[var(--color-bg-primary)]">
+            <div className="h-full bg-[var(--color-bg-primary)]">
                 <div className="p-8  mx-auto">
                     {/* <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-xl mb-8 overflow-hidden">
                         <div className="bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] p-8">

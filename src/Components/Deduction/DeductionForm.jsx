@@ -44,7 +44,7 @@ const DeductionForm = ({ onSubmit, loading = false, showToast }) => {
     };
 
     return (
-        <div className="bg-[var(--color-bg-secondary)] rounded-xl shadow-sm border border-[var(--color-primary-dark)] overflow-hidden">
+        <div className=" bg-[var(--color-bg-secondary)] rounded-xl shadow-sm border border-[var(--color-primary-dark)] overflow-hidden">
             <div className="p-8 bg-[var(--color-bg-secondary)]">
                 <div className="flex w-full flex-row items-center justify-between mb-4">
                     <div className="space-y-2" >

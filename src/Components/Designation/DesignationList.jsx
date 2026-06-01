@@ -105,7 +105,7 @@ const DesignationList = () => {
 
     return (
         <>
-            <div className="bg-[var(--color-bg-secondary)] rounded-xl shadow-sm border border-[var(--color-primary-dark)] overflow-hidden">
+            <div className="bg-[var(--color-bg-secondary)] h-full rounded-xl shadow-sm border border-[var(--color-primary-dark)] overflow-hidden">
                 <div className="relative">
                     <div className="bg-[var(--color-primary-dark)] px-6 py-4">
                         <div className="flex items-center justify-between">
@@ -166,7 +166,7 @@ const DesignationList = () => {
                             </button>
                         </div>
                     ) : (
-                        <div className="grid gap-4">
+                        <div className="grid gap-4 h-[450px] overflow-y-auto custom-scrollbar">
                             {filteredDesignations.map((designation) => {
                                 const designationId = designation.designation_id || designation.id;
                                 const isDeleting = deletingId === designationId;
@@ -174,7 +174,7 @@ const DesignationList = () => {
                                 return (
                                     <div
                                         key={designationId}
-                                        className="border border-[var(--color-border-primary)] rounded-lg p-4 hover:border-primary-300 hover:shadow-md transition-all duration-200 bg-gradient-to-r from-primary-50/20 to-indigo-50/20 hover:from-primary-50/40 hover:to-indigo-50/40"
+                                        className="h-[65px] border border-[var(--color-border-primary)] rounded-lg p-4 hover:border-primary-300 hover:shadow-md transition-all duration-200 bg-gradient-to-r from-primary-50/20 to-indigo-50/20 hover:from-primary-50/40 hover:to-indigo-50/40"
                                     >
                                         <div className="flex items-start justify-between">
                                             <div className="flex-1 min-w-0">

@@ -915,10 +915,10 @@ const DetailedDailyReport = () => {
         }
     }, [filterDropdown, filterPos]);
     return (
-        <div className="min-h-screen bg-[var(--color-bg-primary)]">
+        <div className="h-[calc(100vh-64px)] bg-[var(--color-bg-primary)] overflow-hidden">
             {toast && <Toast message={toast.message} type={toast.type} onClose={closeToast} />}
 
-            <div className="p-8 mx-auto">
+            <div className="p-8 mx-auto h-full flex flex-col overflow-hidden">
                 {/* Summary cards (API-driven) */}
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-4 mb-4 sm:mb-6">
                     <SummaryCard
@@ -960,7 +960,7 @@ const DetailedDailyReport = () => {
                 </div>
 
                 {/* Main content */}
-                <div className="bg-[var(--color-bg-secondary)] rounded-lg border border-[var(--color-primary-dark)] overflow-hidden shadow-sm">
+                <div className="bg-[var(--color-bg-secondary)] rounded-lg border border-[var(--color-primary-dark)] overflow-hidden shadow-sm flex flex-col flex-1 min-h-0">
                     <div className="px-6 py-4 border-b border-[var(--color-primary-light)] bg-[var(--color-primary-lighter)]">
                         <div className="flex justify-between items-center">
                             <div className="flex items-center">
@@ -1085,7 +1085,7 @@ const DetailedDailyReport = () => {
                     </div>
 
                     {/* Table */}
-                    <div className="overflow-x-auto">
+                    <div className="overflow-x-auto flex-1 min-h-0 ">
                         {loading ? (
                             <div className="p-8 text-center text-[var(--color-text-secondary)]">
                                 <div className="flex items-center justify-center">
@@ -1098,7 +1098,7 @@ const DetailedDailyReport = () => {
                         ) : (
                             <>
                                 <Table className="w-full min-w-[1200px] border-separate border-spacing-0">
-                                    <TableHeader className="sticky top-0 z-10 bg-[var(--color-primary-dark)] backdrop-blur supports-[backdrop-filter]:bg-[var(--color-bg-gray-light)]/60">
+                                    <TableHeader className="sticky top-0 z-30 bg-[var(--color-primary-dark)] backdrop-blur supports-[backdrop-filter]:bg-[var(--color-bg-gray-light)]/60">
                                         <TableHeaderRow className="border-b border-[var(--color-border-secondary)]">
                                             <Th className='text-white text-center font-medium'>Employee</Th>
                                             <Th className='text-white text-center font-medium'>Shift</Th>

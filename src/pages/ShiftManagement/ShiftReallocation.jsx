@@ -487,7 +487,7 @@ const ShiftReallocation = () => {
     };
 
     return (
-        <div className="min-h-screen bg-[var(--color-bg-primary)]">
+        <div className="h-full bg-[var(--color-bg-primary)]">
             <div className=" mx-auto p-8">
                 {/* Header */}
                 {/* <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-xl mb-8 overflow-hidden">

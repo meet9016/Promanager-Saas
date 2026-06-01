@@ -78,7 +78,7 @@ const DeductionList = () => {
 
     return (
         <>
-            <div className="bg-[var(--color-bg-secondary)] rounded-xl shadow-sm border border-[var(--color-primary-dark)] overflow-hidden">
+            <div className=" bg-[var(--color-bg-secondary)] rounded-xl shadow-sm border border-[var(--color-primary-dark)] overflow-hidden">
                 <div className="relative">
                     <div className="bg-[var(--color-primary-dark)] px-6 py-4">
                         <div className="flex items-center space-x-3">
@@ -117,7 +117,7 @@ const DeductionList = () => {
                             </p>
                         </div>
                     ) : (
-                        <div className="grid gap-4">
+                        <div className="grid gap-4 h-[450px] overflow-y-auto custom-scrollbar">
                             {deductions.map((deduction) => {
                                 const deductionId = deduction.deduction_id || deduction.id;
                                 const isDeleting = deletingId === deductionId;
@@ -125,7 +125,7 @@ const DeductionList = () => {
                                 return (
                                     <div
                                         key={deductionId}
-                                        className="border border-[var(--color-border-primary)] rounded-lg p-4 hover:border-primary-300 hover:shadow-md transition-all duration-200 bg-gradient-to-r from-red-50/20 to-orange-50/20 hover:from-red-50/40 hover:to-orange-50/40"
+                                        className="h-[65px] border border-[var(--color-border-primary)] rounded-lg p-4 hover:border-primary-300 hover:shadow-md transition-all duration-200 bg-gradient-to-r from-red-50/20 to-orange-50/20 hover:from-red-50/40 hover:to-orange-50/40"
                                     >
                                         <div className="flex items-start justify-between">
                                             <div className="flex-1 min-w-0">

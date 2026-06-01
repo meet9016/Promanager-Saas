@@ -696,10 +696,10 @@ const MonthlyExceptionReport = () => {
     const currentTab = TABS.find((t) => t.key === activeTab);
 
     return (
-        <div className="min-h-screen bg-[var(--color-bg-primary)]">
+        <div className="h-[calc(100vh-64px)] bg-[var(--color-bg-primary)] overflow-hidden">
             {toast && <Toast message={toast.message} type={toast.type} onClose={closeToast} />}
 
-            <div className="p-8  mx-auto">
+            <div className="p-8  mx-auto h-full flex flex-col overflow-hidden">
                 {/* ── Page Header ── */}
                 <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-xl mb-8 overflow-hidden">
                     <div className="bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] p-6">
@@ -961,7 +961,7 @@ const MonthlyExceptionReport = () => {
                         </div>
 
                         {/* ── Main content card ── */}
-                        <div className="bg-[var(--color-bg-secondary)] rounded-lg border border-[var(--color-primary-dark)] overflow-hidden shadow-sm">
+                        <div className="bg-[var(--color-bg-secondary)] rounded-lg border border-[var(--color-primary-dark)] overflow-hidden shadow-sm flex flex-col flex-1 min-h-0">
 
                             {/* Table toolbar */}
                             <div className="px-6 py-4 border-b border-[var(--color-primary-light)] bg-[var(--color-primary-lighter)]">
@@ -1198,7 +1198,7 @@ const MonthlyExceptionReport = () => {
                             </div>
 
                             {/* ── Table ── */}
-                            <div className="overflow-x-auto">
+                           <div className="flex flex-col flex-1 min-h-0">
                                 {loading ? (
                                     <div className="p-12 text-center text-[var(--color-text-secondary)]">
                                         <div className="flex items-center justify-center gap-3">

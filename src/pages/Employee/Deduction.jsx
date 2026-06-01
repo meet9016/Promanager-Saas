@@ -3,7 +3,7 @@ import Deduction from "../../Components/Deduction";
 
 const DeductionPage = () => {
     return (
-        <div className="min-h-screen bg-[var(--color-bg-primary)] p-8">
+        <div className="h-full bg-[var(--color-bg-primary)] p-8 overflow-hidden">
             <Deduction />
         </div>
     );

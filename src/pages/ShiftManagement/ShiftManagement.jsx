@@ -411,7 +411,7 @@ const ShiftManagement = () => {
     };
 
     return (
-        <div className="min-h-screen bg-[var(--color-bg-primary)] relative">
+        <div className="h-full bg-[var(--color-bg-primary)] relative">
             {/* Shift Management header - spans full width */}
             <div className=" mx-auto p-8">
 

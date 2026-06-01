@@ -427,15 +427,15 @@ const EmployeeDirectoryReport = () => {
     }, [navigate]);
 
     return (
-        <div className="min-h-screen bg-[var(--color-bg-primary)]">
-            <div className="p-8  mx-auto">
+        <div className="h-[calc(100vh-64px)] bg-[var(--color-bg-primary)] overflow-hidden">
+            <div className="p-8  mx-auto h-full flex flex-col">
                 {/* Header */}
 
 
                 {/* Summary */}
                 {summaryStats && (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-                        <div className="bg-[var(--color-bg-secondary)] rounded-xl p-8 shadow-sm border border-[var(--color-border-primary)]">
+                        <div className="bg-[var(--color-bg-secondary)] rounded-xl p-6 shadow-sm border border-[var(--color-border-primary)]">
                             <div className="flex items-center justify-between ">
                                 <div>
                                     <p className="text-sm text-[var(--color-text-secondary)]">Total Employees</p>
@@ -444,7 +444,7 @@ const EmployeeDirectoryReport = () => {
                                 <Users className="h-8 w-8 text-[var(--color-primary)]" />
                             </div>
                         </div>
-                        <div className="bg-[var(--color-bg-secondary)] rounded-xl p-8 shadow-sm border border-[var(--color-border-primary)]">
+                        <div className="bg-[var(--color-bg-secondary)] rounded-xl p-6 shadow-sm border border-[var(--color-border-primary)]">
                             <div className="flex items-center justify-between">
                                 <div>
                                     <p className="text-sm text-[var(--color-text-secondary)]">Active</p>
@@ -453,7 +453,7 @@ const EmployeeDirectoryReport = () => {
                                 <UserCheck className="h-8 w-8 text-[var(--color-success)]" />
                             </div>
                         </div>
-                        <div className="bg-[var(--color-bg-secondary)] rounded-xl p-8 shadow-sm border border-[var(--color-border-primary)]">
+                        <div className="bg-[var(--color-bg-secondary)] rounded-xl p-6 shadow-sm border border-[var(--color-border-primary)]">
                             <div className="flex items-center justify-between">
                                 <div>
                                     <p className="text-sm text-[var(--color-text-secondary)]">Male</p>
@@ -462,7 +462,7 @@ const EmployeeDirectoryReport = () => {
                                 <User className="h-8 w-8 text-[var(--color-primary)]" />
                             </div>
                         </div>
-                        <div className="bg-[var(--color-bg-secondary)] rounded-xl p-8 shadow-sm border border-[var(--color-border-primary)]">
+                        <div className="bg-[var(--color-bg-secondary)] rounded-xl p-6 shadow-sm border border-[var(--color-border-primary)]">
                             <div className="flex items-center justify-between">
                                 <div>
                                     <p className="text-sm text-[var(--color-text-secondary)]">Female</p>
@@ -476,7 +476,7 @@ const EmployeeDirectoryReport = () => {
 
                 {/* Results */}
                 {reportData && (
-                    <div className="bg-[var(--color-bg-secondary)] rounded-xl shadow-sm border border-primary-200 overflow-hidden">
+                    <div className="bg-[var(--color-bg-secondary)] rounded-xl shadow-sm border border-primary-200 overflow-hidden flex flex-col flex-1 min-h-0">
                         <div className="px-6 py-4 border-b border-primary-200 bg-[var(--color-primary-lighter)] ">
                             <div className="flex justify-between items-center">
                                 <div className="flex items-center">
@@ -1043,9 +1043,9 @@ const EmployeeDirectoryReport = () => {
                         </div>
 
                         {/* Table */}
-                        <div className="overflow-x-auto">
+                        <div className="overflow-x-auto  min-h-0 overflow-auto">
                             <Table className="w-full min-w-[1200px]">
-                                <TableHeader className="bg-[var(--color-primary-dark)] border-b border-[var(--color-border-secondary)]">
+                                <TableHeader className=" bg-[var(--color-primary-dark)] border-b border-[var(--color-border-secondary)]">
                                     <TableHeaderRow>
                                         <Th className="px-6 py-3 text-center font-medium">Employee</Th>
                                         <Th className="px-6 py-3 text-center font-medium">Code</Th>

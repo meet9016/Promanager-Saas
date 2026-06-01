@@ -573,7 +573,7 @@ const LeaveManagement = () => {
     }
 
     return (
-        <div className="min-h-screen bg-[var(--color-bg-primary)]">
+        <div className="h-full bg-[var(--color-bg-primary)]">
             <div className="p-8  mx-auto">
                 <div className="bg-[var(--color-bg-secondary)] rounded-xl border border-[var(--color-border-primary)] overflow-hidden shadow-custom">
                     {/* Header section with tabs */}

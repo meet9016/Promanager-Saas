@@ -525,7 +525,7 @@ const LoanAdvance = () => {
     }
 
     return (
-        <div className="min-h-screen bg-[var(--color-bg-primary)]">
+        <div className="h-full bg-[var(--color-bg-primary)]">
             <div className="p-8  mx-auto">
                 {toast && (
                     <Toast

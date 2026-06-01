@@ -145,6 +145,7 @@ const useAnchoredPosition = (anchorRef, isOpen, opts = {}) => {
 //         </div>
 //     </div>
 // );
+
 const SummaryCard = ({
     label,
     value,
@@ -153,22 +154,61 @@ const SummaryCard = ({
     borderColor = "border-primary-200"
 }) => (
     <div
-        className={`bg-[var(--color-bg-secondary)] border ${borderColor} rounded-2xl p-5 transition-all duration-200 hover:shadow-md`}
+        className={`
+            group
+            relative
+            bg-[var(--color-bg-secondary)]
+            border ${borderColor}
+            rounded-xl
+            px-4 py-3
+            transition-all duration-300
+            hover:shadow-lg
+            overflow-hidden
+        `}
     >
+        {/* Hover Bottom Border */}
+        <div
+            className={`
+                absolute bottom-0 left-0
+                h-1 w-0
+                group-hover:w-full
+                transition-all duration-300
+                bg-current
+                ${tone}
+            `}
+        />
+
         <div className="flex items-center justify-between">
-            <div>
-                <p className="text-sm font-medium text-[var(--color-text-secondary)]">
-                    {label}
-                </p>
+            <div className="flex items-center gap-3">
+                <div
+                    className={`
+        h-10 w-10
+        rounded-xl
+        flex items-center justify-center
+        ${tone === "text-blue-600" ? "bg-blue-100" : ""}
+        ${tone === "text-green-600" ? "bg-green-100" : ""}
+        ${tone === "text-red-600" ? "bg-red-100" : ""}
+        ${tone === "text-purple-600" ? "bg-purple-100" : ""}
+        ${tone === "text-orange-600" ? "bg-orange-100" : ""}
+        ${tone === "text-cyan-600" ? "bg-cyan-100" : ""}
+        ${tone === "text-teal-600" ? "bg-teal-100" : ""}
+    `}
+                >
+                    <Icon className={`h-5 w-5 ${tone}`} />
+                </div>
 
-                <h3 className={`text-4xl font-bold mt-2 ${tone}`}>
-                    {value}
-                </h3>
+                <div>
+                    <p className="text-xs text-[var(--color-text-secondary)]">
+                        {label}
+                    </p>
+
+                    <h3 className={`text-3xl font-bold ${tone}`}>
+                        {value}
+                    </h3>
+                </div>
             </div>
 
-            <div className={`h-14 w-14 rounded-xl border flex items-center justify-center ${borderColor}`}>
-                <Icon className={`h-6 w-6 ${tone}`} />
-            </div>
+            <div className={`w-2 h-2 rounded-full ${tone.replace('text', 'bg')}`} />
         </div>
     </div>
 );
@@ -879,10 +919,10 @@ const GeolocationReport = () => {
     }, [filterDropdown, filterPos]);
 
     return (
-        <div className="min-h-screen bg-[var(--color-bg-primary)]">
+        <div className="h-[calc(100vh-64px)] bg-[var(--color-bg-primary)] overflow-hidden">
             {toast && <Toast message={toast.message} type={toast.type} onClose={closeToast} />}
 
-            <div className="p-8  mx-auto">
+            <div className="p-8  mx-auto h-full flex flex-col overflow-hidden">
 
 
                 {/* Summary cards (API-driven) */}
@@ -945,7 +985,7 @@ const GeolocationReport = () => {
                 </div>
 
                 {/* Main content */}
-                <div className="bg-[var(--color-bg-secondary)] rounded-lg border border-primary-200 overflow-hidden shadow-sm">
+                <div className="bg-[var(--color-bg-secondary)] rounded-lg border border-primary-200 overflow-hidden shadow-sm flex flex-col flex-1 min-h-0">
                     <div className="px-6 py-4 border-b border-primary-200 bg-[var(--color-primary-lighter)]">
                         <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4">
                             <div className="flex items-center">
@@ -1226,7 +1266,7 @@ const GeolocationReport = () => {
                     </div>
 
                     {/* Summary at bottom */}
-                    <div className="px-6 py-4 border-t border-[var(--color-border-secondary)] bg-[var(--color-bg-primary)]">
+                    <div className="px-6 py-4 border-t border-[var(--color-border-secondary)] bg-[var(--color-bg-primary)] ">
                         <div className="flex justify-end items-center text-sm text-[var(--color-text-secondary)]">
                             <div className="flex flex-wrap items-center gap-4">
                                 <Legend color="bg-green-500" label={`Present (${summaryStats.present})`} />

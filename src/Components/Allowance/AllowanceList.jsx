@@ -118,7 +118,7 @@ const AllowanceList = () => {
                             </p>
                         </div>
                     ) : (
-                        <div className="grid gap-4">
+                        <div className="grid gap-4 h-[450px] overflow-y-auto custom-scrollbar">
                             {allowances.map((allowance) => {
                                 const allowanceId = allowance.allowance_id || allowance.id;
                                 const isDeleting = deletingId === allowanceId;
@@ -126,7 +126,7 @@ const AllowanceList = () => {
                                 return (
                                     <div
                                         key={allowanceId}
-                                        className="border border-[var(--color-border-primary)] rounded-lg p-4 hover:border-primary-300 hover:shadow-md transition-all duration-200 bg-gradient-to-r from-green-50/20 to-emerald-50/20 hover:from-green-50/40 hover:to-emerald-50/40"
+                                        className="h-[65px] border border-[var(--color-border-primary)] rounded-lg p-4 hover:border-primary-300 hover:shadow-md transition-all duration-200 bg-gradient-to-r from-green-50/20 to-emerald-50/20 hover:from-green-50/40 hover:to-emerald-50/40"
                                     >
                                         <div className="flex items-start justify-between">
                                             <div className="flex-1 min-w-0">
