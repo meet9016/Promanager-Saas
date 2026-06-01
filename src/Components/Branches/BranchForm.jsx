@@ -55,8 +55,6 @@ const BranchForm = ({ onSubmit, loading = false, showToast, initialData = null, 
 
     return (
         <div className="bg-[var(--color-bg-secondary)] rounded-xl shadow-sm border border-[var(--color-primary-dark)] overflow-hidden">
-
-
             <div className="p-8 bg-[var(--color-bg-secondary)]">
                 <div className="flex w-full flex-row items-center justify-between mb-4">
                     <div className="space-y-2" >

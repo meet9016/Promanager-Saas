@@ -221,7 +221,7 @@ const BranchList = () => {
                             </button>
                         </div>
                     ) : (
-                        <div className="space-y-2">
+                        <div className="space-y-2 h-[450px] overflow-y-auto">
                             {filteredBranches.map((branch) => {
                                 const branchId = branch.branch_id || branch.id;
                                 const isDeleting = deletingId === branchId;

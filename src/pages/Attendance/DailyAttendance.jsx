@@ -938,10 +938,10 @@ const DailyAttendance = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[var(--color-bg-primary)]">
+    <div className="h-100 overflow-hidden  bg-[var(--color-bg-primary)]">
       {toast && <Toast message={toast.message} type={toast.type} onClose={closeToast} />}
 
-      <div className="p-3 sm:p-8  mx-auto">
+      <div className="p-3 sm:p-8  mx-auto  ">
         {/* Header */}
         {/* <div className="bg-[var(--color-bg-secondary)] rounded-xl sm:rounded-2xl shadow-xl mb-4 sm:mb-8 overflow-hidden">
           <div className="bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] p-4 sm:p-8">
@@ -1102,8 +1102,7 @@ const DailyAttendance = () => {
                 <div className="p-8 text-center text-[var(--color-text-secondary)]">No records found</div>
               ) : (
                 <>
-
-                  <Table className="min-w-[1200px]"  wrapperClassName="max-h-[60vh] overflow-y-auto">
+                  <Table className="min-w-[1200px]" wrapperClassName="max-h-[55vh] overflow-y-auto">
                     <TableHeader>
                       <TableHeaderRow>
                         <Th>Employee</Th>

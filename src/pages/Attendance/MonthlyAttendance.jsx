@@ -425,7 +425,7 @@ const MonthlyAttendance = () => {
 
     /* ===================== RENDER ===================== */
     return (
-        <div className="min-h-screen bg-slate-50 pb-8" style={{ fontFamily: "'Inter', sans-serif" }}>
+        <div className="h-100 bg-slate-50 pb-8" style={{ fontFamily: "'Inter', sans-serif" }}>
             {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
 
             <div className="p-3 sm:p-6 mx-auto max-w-[1900px] space-y-4">

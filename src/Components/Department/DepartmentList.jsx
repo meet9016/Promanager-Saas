@@ -403,7 +403,7 @@ const DepartmentList = () => {
                 </div>
             </div>
 
-            <div className="p-8 bg-[var(--color-bg-secondary)] flex flex-col gap-4">
+            <div className="p-8 bg-[var(--color-bg-secondary)] flex flex-col gap-4 ">
                 {/* Add Form */}
                 {permissions['department_create'] && (
                     <DepartmentForm onSubmit={handleAddDepartment} loading={loading} showToast={showToast} />
@@ -455,81 +455,83 @@ const DepartmentList = () => {
                         </button>
                     </div>
                 ) : (
-                    <div className="grid gap-3">
-                        {filteredDepartments.map((department) => {
-                            const departmentId = department.department_id || department.id;
-                            const isOpen = openId === departmentId;
-                            const isSaving = savingId === departmentId;
+                    <div className="h-[450px] overflow-y-auto">
+                        <div className="grid gap-3  ">
+                            {filteredDepartments.map((department) => {
+                                const departmentId = department.department_id || department.id;
+                                const isOpen = openId === departmentId;
+                                const isSaving = savingId === departmentId;
 
-                            return (
-                                <div
-                                    key={departmentId}
-                                    className={`border rounded-lg transition-all duration-200 overflow-hidden ${isOpen
-                                        ? "border-[var(--color-primary-dark)] shadow-md bg-[var(--color-bg-secondary)]"
-                                        : "border-[var(--color-border-primary)] hover:border-primary-300 hover:shadow-sm bg-gradient-to-r from-primary-50/20 to-indigo-50/20 hover:from-primary-50/40 hover:to-indigo-50/40"
-                                        }`}
-                                >
-                                    {/* Card header row — always visible */}
-                                    <div className="flex items-center justify-between p-4">
+                                return (
+                                    <div
+                                        key={departmentId}
+                                        className={`border rounded-lg transition-all duration-200 overflow-hidden  ${isOpen
+                                            ? "border-[var(--color-primary-dark)] shadow-md bg-[var(--color-bg-secondary)]"
+                                            : "border-[var(--color-border-primary)] hover:border-primary-300 hover:shadow-sm bg-gradient-to-r from-primary-50/20 to-indigo-50/20 hover:from-primary-50/40 hover:to-indigo-50/40"
+                                            }`}
+                                    >
+                                        {/* Card header row — always visible */}
+                                        <div className="flex items-center justify-between p-4">
 
-                                        <div className="flex items-center gap-2 min-w-0">
-                                            <div className="p-1.5 bg-[var(--color-primary-lighter)] rounded-md shrink-0">
-                                                <Users className="w-4 h-4 text-[var(--color-primary-dark)]" />
+                                            <div className="flex items-center gap-2 min-w-0">
+                                                <div className="p-1.5 bg-[var(--color-primary-lighter)] rounded-md shrink-0">
+                                                    <Users className="w-4 h-4 text-[var(--color-primary-dark)]" />
+                                                </div>
+                                                <h4 className="text-base font-semibold text-[var(--color-text-primary)] truncate">
+                                                    {department.name}
+                                                </h4>
                                             </div>
-                                            <h4 className="text-base font-semibold text-[var(--color-text-primary)] truncate">
-                                                {department.name}
-                                            </h4>
+                                            {/* } */}
+                                            <div className="flex items-center gap-2">
+                                                {/* Settings toggle button */}
+                                                {permissions['department_edit'] && (
+                                                    <button
+                                                        onClick={() => handleToggleAccordion(departmentId)}
+                                                        className={`ml-3 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 shrink-0 ${isOpen
+                                                            ? "bg-[var(--color-primary-dark)] text-white"
+                                                            : "text-[var(--color-primary-dark)] hover:bg-[var(--color-primary-lightest)] border border-[var(--color-border-secondary)]"
+                                                            }`}
+                                                        title={isOpen ? "Close settings" : "Open settings"}
+                                                    >
+                                                        <Settings2 className="w-3.5 h-3.5" />
+                                                        Settings
+                                                        {isOpen
+                                                            ? <ChevronUp className="w-3.5 h-3.5" />
+                                                            : <ChevronDown className="w-3.5 h-3.5" />}
+                                                    </button>
+                                                )}
+                                                {permissions['department_delete'] && (
+                                                    <button
+                                                        onClick={() => handleDeleteClick(department)}
+                                                        className="w-9 h-9 flex items-center justify-center rounded-xl bg-red-50 text-red-500 hover:bg-red-100 hover:scale-110 hover:shadow-md transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                                                        title="Delete department"
+                                                    >
+                                                        <Trash2 className="w-4 h-4" strokeWidth={2.5} />
+                                                    </button>
+                                                )}
+
+
+                                            </div>
+
+
+
                                         </div>
-                                        {/* } */}
-                                        <div className="flex items-center gap-2">
-                                            {/* Settings toggle button */}
-                                            {permissions['department_edit'] && (
-                                                <button
-                                                    onClick={() => handleToggleAccordion(departmentId)}
-                                                    className={`ml-3 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 shrink-0 ${isOpen
-                                                        ? "bg-[var(--color-primary-dark)] text-white"
-                                                        : "text-[var(--color-primary-dark)] hover:bg-[var(--color-primary-lightest)] border border-[var(--color-border-secondary)]"
-                                                        }`}
-                                                    title={isOpen ? "Close settings" : "Open settings"}
-                                                >
-                                                    <Settings2 className="w-3.5 h-3.5" />
-                                                    Settings
-                                                    {isOpen
-                                                        ? <ChevronUp className="w-3.5 h-3.5" />
-                                                        : <ChevronDown className="w-3.5 h-3.5" />}
-                                                </button>
-                                            )}
-                                            {permissions['department_delete'] && (
-                                                <button
-                                                    onClick={() => handleDeleteClick(department)}
-                                                    className="w-9 h-9 flex items-center justify-center rounded-xl bg-red-50 text-red-500 hover:bg-red-100 hover:scale-110 hover:shadow-md transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
-                                                    title="Delete department"
-                                                >
-                                                    <Trash2 className="w-4 h-4" strokeWidth={2.5} />
-                                                </button>
-                                            )}
 
-
-                                        </div>
-
-
-
+                                        {/* Accordion body — smooth animated height */}
+                                        <AccordionPanel isOpen={isOpen}>
+                                            <div className="px-4 pb-4">
+                                                <DepartmentAccordion
+                                                    key={departmentId}
+                                                    department={department}
+                                                    onSave={handleSave}
+                                                    saving={isSaving}
+                                                />
+                                            </div>
+                                        </AccordionPanel>
                                     </div>
-
-                                    {/* Accordion body — smooth animated height */}
-                                    <AccordionPanel isOpen={isOpen}>
-                                        <div className="px-4 pb-4">
-                                            <DepartmentAccordion
-                                                key={departmentId}
-                                                department={department}
-                                                onSave={handleSave}
-                                                saving={isSaving}
-                                            />
-                                        </div>
-                                    </AccordionPanel>
-                                </div>
-                            );
-                        })}
+                                );
+                            })}
+                        </div>
                     </div>
                 )}
             </div>

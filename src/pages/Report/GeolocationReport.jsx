@@ -134,14 +134,41 @@ const useAnchoredPosition = (anchorRef, isOpen, opts = {}) => {
 
 /** ---------- Small building blocks ---------- **/
 
-const SummaryCard = ({ label, value, icon: Icon, tone = 'text-[var(--color-text-primary)]' }) => (
-    <div className="bg-[var(--color-bg-secondary)] rounded-xl p-8 shadow-sm border border-[var(--color-border-primary)]">
+// const SummaryCard = ({ label, value, icon: Icon, tone = 'text-[var(--color-text-primary)]' }) => (
+//     <div className="bg-[var(--color-bg-secondary)] rounded-xl p-8 shadow-sm border border-[var(--color-border-primary)]">
+//         <div className="flex items-center justify-between">
+//             <div>
+//                 <p className="text-sm text-[var(--color-text-secondary)] mb-1">{label}</p>
+//                 <p className={`text-2xl font-bold ${tone}`}>{value}</p>
+//             </div>
+//             <Icon className={`h-8 w-8 ${tone}`} />
+//         </div>
+//     </div>
+// );
+const SummaryCard = ({
+    label,
+    value,
+    icon: Icon,
+    tone = "text-primary-600",
+    borderColor = "border-primary-200"
+}) => (
+    <div
+        className={`bg-[var(--color-bg-secondary)] border ${borderColor} rounded-2xl p-5 transition-all duration-200 hover:shadow-md`}
+    >
         <div className="flex items-center justify-between">
             <div>
-                <p className="text-sm text-[var(--color-text-secondary)] mb-1">{label}</p>
-                <p className={`text-2xl font-bold ${tone}`}>{value}</p>
+                <p className="text-sm font-medium text-[var(--color-text-secondary)]">
+                    {label}
+                </p>
+
+                <h3 className={`text-4xl font-bold mt-2 ${tone}`}>
+                    {value}
+                </h3>
             </div>
-            <Icon className={`h-8 w-8 ${tone}`} />
+
+            <div className={`h-14 w-14 rounded-xl border flex items-center justify-center ${borderColor}`}>
+                <Icon className={`h-6 w-6 ${tone}`} />
+            </div>
         </div>
     </div>
 );
@@ -859,13 +886,62 @@ const GeolocationReport = () => {
 
 
                 {/* Summary cards (API-driven) */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 mb-6">
+                {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 mb-6">
                     <SummaryCard icon={Users} label="Total Employees" value={summaryStats.total} tone="text-primary-600" />
                     <SummaryCard icon={CheckCircle} label="Present" value={summaryStats.present} tone="text-green-600" />
                     <SummaryCard icon={XCircle} label="Absent" value={summaryStats.absent} tone="text-red-600" />
                     <SummaryCard icon={CalendarX} label="Week Off" value={summaryStats.weekOff} tone="text-purple-600" />
                     <SummaryCard icon={AlertCircle} label="Late Arrivals" value={summaryStats.late} tone="text-orange-600" />
                     <SummaryCard icon={TrendingUp} label="Overtime" value={summaryStats.overtime} tone="text-primary-600" />
+                </div> */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 mb-6">
+                    <SummaryCard
+                        icon={Users}
+                        label="Total Employees"
+                        value={summaryStats.total}
+                        tone="text-blue-600"
+                        borderColor="border-blue-200"
+                    />
+
+                    <SummaryCard
+                        icon={CheckCircle}
+                        label="Present"
+                        value={summaryStats.present}
+                        tone="text-green-600"
+                        borderColor="border-green-200"
+                    />
+
+                    <SummaryCard
+                        icon={XCircle}
+                        label="Absent"
+                        value={summaryStats.absent}
+                        tone="text-red-600"
+                        borderColor="border-red-200"
+                    />
+
+                    <SummaryCard
+                        icon={CalendarX}
+                        label="Week Off"
+                        value={summaryStats.weekOff}
+                        tone="text-purple-600"
+                        borderColor="border-purple-200"
+                    />
+
+                    <SummaryCard
+                        icon={AlertCircle}
+                        label="Late Arrivals"
+                        value={summaryStats.late}
+                        tone="text-orange-600"
+                        borderColor="border-orange-200"
+                    />
+
+                    <SummaryCard
+                        icon={TrendingUp}
+                        label="Overtime"
+                        value={summaryStats.overtime}
+                        tone="text-cyan-600"
+                        borderColor="border-cyan-200"
+                    />
                 </div>
 
                 {/* Main content */}

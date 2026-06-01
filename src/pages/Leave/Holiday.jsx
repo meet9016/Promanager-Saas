@@ -794,73 +794,151 @@ export default function HolidayManagement() {
                     </Modal>
                 )}
 
+
                 {/* View Modal */}
                 {viewModal.isOpen && viewModal.holidayData && (
                     <Modal onClose={() => setViewModal({ isOpen: false, holidayData: null })} title="Holiday Details">
-                        <div className="space-y-5">
-                            <div>
-                                <h3 className="text-2xl font-bold text-[var(--color-text-primary)] mb-2">
-                                    {viewModal.holidayData.holiday_name}
-                                </h3>
-                                <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium border ${getTypeColor(viewModal.holidayData.holiday_type_name)}`}>
-                                    {getTypeIcon(viewModal.holidayData.holiday_type_name)}
-                                    {viewModal.holidayData.holiday_type_name}
-                                </span>
-                            </div>
+                        <div className="space-y-6">
 
-                            <div className="bg-[var(--color-bg-primary)] rounded-lg p-4 border border-[var(--color-border-secondary)]">
-                                <div className="flex items-start gap-3">
-                                    <Calendar className="text-[var(--color-primary)] mt-1 flex-shrink-0" size={20} />
-                                    <div>
-                                        <p className="text-sm font-semibold text-[var(--color-text-primary)] mb-1">Holiday Dates</p>
-                                        <div className="flex flex-wrap gap-2">
-                                            {(() => {
-                                                const dates = Array.isArray(viewModal.holidayData.holiday_dates) ? viewModal.holidayData.holiday_dates : (viewModal.holidayData.holiday_dates ? viewModal.holidayData.holiday_dates.split(',') : []);
-                                                return dates.map((date, idx) => (
-                                                    <span key={idx} className="inline-block bg-[var(--color-bg-secondary)] px-3 py-1 rounded-md text-sm font-medium text-[var(--color-text-primary)] border border-[var(--color-border-secondary)]">
-                                                        {date}
-                                                    </span>
-                                                ));
-                                            })()}
+                            {/* Top Card */}
+                            <div className="border border-[var(--color-border-primary)] rounded-2xl overflow-hidden">
+
+                                <div className="px-6 py-5 bg-[var(--color-bg-primary)] border-b border-[var(--color-border-primary)]">
+                                    <div className="flex justify-between items-start gap-4">
+
+                                        <div>
+                                            <h3 className="text-2xl font-bold text-[var(--color-text-primary)]">
+                                                {viewModal.holidayData.holiday_name}
+                                            </h3>
+
+                                            <p className="text-sm text-[var(--color-text-secondary)] mt-1">
+                                                Holiday Information
+                                            </p>
                                         </div>
+
+                                        <span
+                                            className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium border ${getTypeColor(
+                                                viewModal.holidayData.holiday_type_name
+                                            )}`}
+                                        >
+                                            {getTypeIcon(viewModal.holidayData.holiday_type_name)}
+                                            {viewModal.holidayData.holiday_type_name}
+                                        </span>
+
                                     </div>
                                 </div>
+
+                                <div className="p-6">
+
+                                    <div className="grid lg:grid-cols-3 gap-5">
+
+                                        {/* Left Content */}
+                                        <div className="lg:col-span-2 space-y-5">
+
+                                            {/* Dates */}
+                                            <div>
+                                                <div className="flex items-center gap-2 mb-3">
+                                                    <Calendar
+                                                        size={18}
+                                                        className="text-[var(--color-primary)]"
+                                                    />
+                                                    <h4 className="font-semibold text-[var(--color-text-primary)]">
+                                                        Holiday Dates
+                                                    </h4>
+                                                </div>
+
+                                                <div className="flex flex-wrap gap-2">
+                                                    {(() => {
+                                                        const dates = Array.isArray(
+                                                            viewModal.holidayData.holiday_dates
+                                                        )
+                                                            ? viewModal.holidayData.holiday_dates
+                                                            : viewModal.holidayData.holiday_dates
+                                                                ? viewModal.holidayData.holiday_dates.split(",")
+                                                                : [];
+
+                                                        return dates.map((date, idx) => (
+                                                            <span
+                                                                key={idx}
+                                                                className="px-3 py-2 rounded-lg bg-[var(--color-bg-primary)] border border-[var(--color-border-secondary)] text-sm"
+                                                            >
+                                                                {date}
+                                                            </span>
+                                                        ));
+                                                    })()}
+                                                </div>
+                                            </div>
+
+                                            {/* Description */}
+                                            {viewModal.holidayData.description && (
+                                                <div>
+                                                    <h4 className="font-semibold text-[var(--color-text-primary)] mb-3">
+                                                        Description
+                                                    </h4>
+
+                                                    <div className="p-4 rounded-xl bg-[var(--color-bg-primary)] border border-[var(--color-border-secondary)] h-[150px]">
+                                                        <p className="leading-relaxed text-[var(--color-text-secondary)]">
+                                                            {viewModal.holidayData.description}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        {/* Right Stats */}
+                                        <div className="space-y-3">
+
+                                            <div className="rounded-xl border border-[var(--color-border-primary)] p-4">
+                                                <p className="text-xs uppercase tracking-wide text-[var(--color-text-secondary)]">
+                                                    Year
+                                                </p>
+                                                <h4 className="text-2xl font-bold text-[var(--color-text-primary)] mt-1">
+                                                    {viewModal.holidayData.year || currentYear}
+                                                </h4>
+                                            </div>
+
+                                            <div className="rounded-xl border border-[var(--color-border-primary)] p-4">
+                                                <p className="text-xs uppercase tracking-wide text-[var(--color-text-secondary)]">
+                                                    Total Days
+                                                </p>
+
+                                                <h4 className="text-2xl font-bold text-[var(--color-text-primary)] mt-1">
+                                                    {(() => {
+                                                        const dates = Array.isArray(
+                                                            viewModal.holidayData.holiday_dates
+                                                        )
+                                                            ? viewModal.holidayData.holiday_dates
+                                                            : viewModal.holidayData.holiday_dates
+                                                                ? viewModal.holidayData.holiday_dates.split(",")
+                                                                : [];
+
+                                                        return dates.length;
+                                                    })()}
+                                                </h4>
+                                            </div>
+
+                                            <div className="rounded-xl border border-[var(--color-border-primary)] p-4">
+                                                <p className="text-xs uppercase tracking-wide text-[var(--color-text-secondary)]">
+                                                    Payment
+                                                </p>
+
+                                                <h4 className="text-lg font-semibold mt-1">
+                                                    {viewModal.holidayData.holiday_paid === "1"
+                                                        ? "Paid Holiday"
+                                                        : "Unpaid Holiday"}
+                                                </h4>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                </div>
                             </div>
 
-                            {viewModal.holidayData.description && (
-                                <div>
-                                    <p className="text-sm font-semibold text-[var(--color-text-primary)] mb-2">Description</p>
-                                    <p className="text-[var(--color-text-secondary)] leading-relaxed bg-[var(--color-bg-primary)] p-4 rounded-lg border border-[var(--color-border-secondary)]">
-                                        {viewModal.holidayData.description}
-                                    </p>
-                                </div>
-                            )}
-
-                            <div className="grid grid-cols-2 gap-4 pt-4 border-t border-[var(--color-border-primary)]">
-                                <div>
-                                    <p className="text-xs font-medium text-[var(--color-text-secondary)] mb-1">Year</p>
-                                    <p className="text-lg font-semibold text-[var(--color-text-primary)]">{viewModal.holidayData.year || currentYear}</p>
-                                </div>
-                                <div>
-                                    <p className="text-xs font-medium text-[var(--color-text-secondary)] mb-1">Total Days</p>
-                                    <p className="text-lg font-semibold text-[var(--color-text-primary)]">
-                                        {(() => {
-                                            const dates = Array.isArray(viewModal.holidayData.holiday_dates) ? viewModal.holidayData.holiday_dates : (viewModal.holidayData.holiday_dates ? viewModal.holidayData.holiday_dates.split(',') : []);
-                                            return dates.length;
-                                        })()}
-                                    </p>
-                                </div>
-
-                                <div>
-                                    <p className="text-xs font-medium text-[var(--color-text-secondary)] mb-1">Paid</p>
-                                    <p className="text-lg font-semibold text-[var(--color-text-primary)]">
-                                        {viewModal.holidayData.holiday_paid === "1" ? "Paid" : "Unpaid"}
-                                    </p>
-                                </div>
-                            </div>
                         </div>
                     </Modal>
                 )}
+
 
                 <ConfirmDialog
                     isOpen={deleteDialog.isOpen}
@@ -1199,15 +1277,31 @@ function InputField({ label, value, onChange, placeholder, textarea, required, i
 /* --- Modal Component --- */
 function Modal({ onClose, title, children }) {
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-            <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-2xl w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto border border-[var(--color-border-primary)]">
-                <div className="flex justify-between items-center border-b border-[var(--color-border-primary)] px-6 py-4 sticky top-0 bg-[var(--color-bg-secondary)] rounded-t-2xl z-[9]">
-                    <h2 className="text-xl font-bold text-[var(--color-text-primary)]">{title}</h2>
-                    <button type="button" onClick={onClose} className="text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-hover)] rounded-lg p-1.5 transition-colors">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-[2px] p-4">
+            <div className="w-full max-w-3xl bg-[var(--color-bg-secondary)] rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.15)] overflow-hidden">
+
+                <div className="flex items-center justify-between px-8 py-5 border-b border-[var(--color-border-primary)] bg-[var(--color-primary-dark)]">
+                    <div>
+                        <h2 className="text-xl font-bold text-white">
+                            {title}
+                        </h2>
+                        <p className="text-sm text-white mt-1">
+                            View complete holiday information
+                        </p>
+                    </div>
+
+                    <button
+                        type="button"
+                        onClick={onClose}
+                        className="w-10 h-10 flex items-center justify-center rounded-xl bg-[var(--color-bg-hover)] transition-all"
+                    >
                         <X size={20} />
                     </button>
                 </div>
-                <div className="p-8">{children}</div>
+
+                <div className="p-8 max-h-[85vh] overflow-y-auto">
+                    {children}
+                </div>
             </div>
         </div>
     );
