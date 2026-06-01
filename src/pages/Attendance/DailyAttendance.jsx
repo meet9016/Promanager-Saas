@@ -37,6 +37,7 @@ import Pagination from '../../Components/Pagination';
 import { Table, TableHeader, TableBody, TableRow, TableHeaderRow, Th, Td } from '../../Components/ui/Table';
 import CustomDatePicker from '../../Components/comman/CustomDatePicker';
 import CustomInput from '../../Components/comman/CustomInput';
+import LoadingSpinner from '../../Components/Loader/LoadingSpinner';
 
 
 
@@ -734,7 +735,7 @@ const DailyAttendance = () => {
     earlyGoing: 0,
   });
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [toast, setToast] = useState(null);
@@ -936,6 +937,10 @@ const DailyAttendance = () => {
   const handleFilterClick = (filterKey) => {
     setActiveFilter((prev) => (prev === filterKey && filterKey !== 'total') ? 'total' : filterKey);
   };
+  
+  if (loading && attendanceData.length === 0) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <div className="h-100 overflow-hidden  bg-[var(--color-bg-primary)]">

@@ -9,6 +9,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { Toast } from '../../Components/ui/Toast';
 import CustomDatePicker from '../../Components/comman/CustomDatePicker';
 import CustomSelect from '../../Components/comman/CustomSelect';
+import LoadingSpinner from '../../Components/Loader/LoadingSpinner';
 
 /* ============ Anchored Position Utility ============ */
 const getScrollParents = (node) => {
@@ -222,7 +223,7 @@ const MonthlyAttendance = () => {
     };
 
     const [filters, setFilters] = useState(initialFilters);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [rows, setRows] = useState([]);
     const [error, setError] = useState('');
     const [branches, setBranches] = useState([]);
@@ -422,6 +423,11 @@ const MonthlyAttendance = () => {
             if (fullyOut) setShowFilters(false);
         }
     }, [showFilters, filterPos]);
+
+
+    if (loading && rows.length === 0) {
+        return <LoadingSpinner />;
+    }
 
     /* ===================== RENDER ===================== */
     return (
@@ -626,7 +632,7 @@ const MonthlyAttendance = () => {
                                         <RefreshCw size={14} />
                                         Reset
                                     </button>
-                                   
+
                                     <button
                                         onClick={applyFilters}
                                         disabled={loading}
