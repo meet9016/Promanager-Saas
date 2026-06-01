@@ -66,6 +66,7 @@ const ShiftManagement = () => {
     const ITEMS_PER_PAGE = 10;
 
     useEffect(() => {
+        if (!user?.user_id) return;
         const delayDebounce = setTimeout(() => {
             if (searchQuery !== '') {
                 setCurrentPage(1);
@@ -77,7 +78,7 @@ const ShiftManagement = () => {
 
         return () => clearTimeout(delayDebounce);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [searchQuery]);
+    }, [user, searchQuery]);
 
     // Fetch assigned employees for a shift
     const fetchAssignedEmployees = async (shiftId, shiftName) => {
@@ -350,13 +351,7 @@ const ShiftManagement = () => {
         fetchShifts(1, '');
     };
 
-    useEffect(() => {
-        if (!user?.user_id || hasInitialized.current) return;
 
-        hasInitialized.current = true;
-        fetchShifts(currentPage);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [user]);
 
     // Handle edit shift
     const handleEditShift = (shiftId) => {

@@ -265,32 +265,17 @@ export default function FinalizePayroll() {
     setToast(null);
   }, []);
 
-  // Handle search with debounce
+  // Handle filters and search with debounce
   useEffect(() => {
+    if (!isAuthenticated() || !user?.user_id) return;
+    
     const delayDebounce = setTimeout(() => {
-      if (searchQuery !== '') {
-        fetchSalaryRecords(1, searchQuery, true);
-      } else {
-        fetchSalaryRecords(1, '', true);
-      }
+      fetchSalaryRecords(1, searchQuery, true);
     }, 500);
 
     return () => clearTimeout(delayDebounce);
-  }, [searchQuery, fetchSalaryRecords]);
-
-  // Handle month/year filter changes
-  useEffect(() => {
-    if (isAuthenticated() && user?.user_id) {
-      fetchSalaryRecords(1, searchQuery, true);
-    }
-  }, [selectedMonth, selectedYear]);
-
-  // Initial load
-  useEffect(() => {
-    if (isAuthenticated() && user?.user_id) {
-      fetchSalaryRecords(1, '', true);
-    }
-  }, [isAuthenticated, user?.user_id]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchQuery, selectedMonth, selectedYear, isAuthenticated, user?.user_id]);
 
   // Handle pagination
   const handlePageChange = useCallback((page) => {

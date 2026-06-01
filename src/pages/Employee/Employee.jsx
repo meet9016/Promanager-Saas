@@ -442,28 +442,22 @@ export default function Employee() {
         }
     }, [showToast, employees]);
 
-    // Debounced search functionality - ONLY depends on searchQuery, NOT on filters
+    // Handle filters, search, and initial data load with debounce
     useEffect(() => {
+        if (!isAuthenticated() || !user?.user_id) return;
+        
         const delayDebounce = setTimeout(() => {
-            setCurrentPage(1);
-            fetchEmployees(1, searchQuery);
+            fetchEmployees(1, searchQuery, true);
         }, 500);
 
         return () => clearTimeout(delayDebounce);
-    }, [searchQuery]); // REMOVED filters from dependency
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [searchQuery, appliedFilters, isAuthenticated, user?.user_id]);
 
-    // Effect to fetch when appliedFilters change
-    useEffect(() => {
-        if (isAuthenticated() && user?.user_id) {
-            fetchEmployees(1, searchQuery, true);
-        }
-    }, [appliedFilters]); // Fetch when appliedFilters change
-
-    // Initial load and fetch dropdown data
+    // Initial load of dropdown data
     useEffect(() => {
         if (isAuthenticated() && user?.user_id) {
             fetchDropdownData();
-            fetchEmployees(1, '', true);
         }
     }, [isAuthenticated, user?.user_id, fetchDropdownData]);
 

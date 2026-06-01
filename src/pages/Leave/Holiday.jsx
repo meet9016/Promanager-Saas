@@ -61,7 +61,6 @@ export default function HolidayManagement() {
 
     useEffect(() => {
         if (user && user.user_id) {
-            fetchHolidays();
             fetchHolidayTypes();
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -133,7 +132,7 @@ export default function HolidayManagement() {
         const t = setTimeout(() => fetchHolidays(), 500);
         return () => clearTimeout(t);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [searchTerm, filterType]);
+    }, [user, searchTerm, filterType]);
 
     const stats = useMemo(() => {
         const activeHolidays = holidays.filter(h => h.is_active);

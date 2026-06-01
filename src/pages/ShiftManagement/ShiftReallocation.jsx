@@ -206,16 +206,10 @@ const ShiftReallocation = () => {
         }
     }, [user?.user_id, filters.branch_id, filters.department_id]);
 
-    // Initialize data
+    // Search debounce and initialization
     useEffect(() => {
-        if (!user?.user_id || hasInitialized.current) return;
-        hasInitialized.current = true;
-        fetchReallocationHistory(currentPage);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [user]);
-
-    // Search debounce
-    useEffect(() => {
+        if (!user?.user_id) return;
+        
         const delayDebounce = setTimeout(() => {
             if (view === 'list') {
                 if (searchQuery !== '') {
@@ -229,7 +223,7 @@ const ShiftReallocation = () => {
 
         return () => clearTimeout(delayDebounce);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [searchQuery]);
+    }, [user, searchQuery, view]);
 
     // Refetch employees when filters change
     useEffect(() => {
