@@ -117,7 +117,7 @@ const DeductionList = () => {
                             </p>
                         </div>
                     ) : (
-                        <div className="grid gap-4 h-[450px] overflow-y-auto custom-scrollbar">
+                        <div className="grid gap-4 max-h-[400px] overflow-y-auto custom-scrollbar">
                             {deductions.map((deduction) => {
                                 const deductionId = deduction.deduction_id || deduction.id;
                                 const isDeleting = deletingId === deductionId;

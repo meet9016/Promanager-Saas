@@ -1239,7 +1239,7 @@ const DetailedDailyReport = () => {
                     </div>
 
                     {/* Summary at bottom */}
-                    <div className="px-6 py-4 border-t border-[var(--color-border-secondary)] bg-[var(--color-bg-primary)]">
+                    {/* <div className="px-6 py-4 border-t border-[var(--color-border-secondary)] bg-[var(--color-bg-primary)]">
                         <div className="flex justify-end items-center text-sm text-[var(--color-text-secondary)]">
                             <div className="flex items-center space-x-4">
                                 <Legend color="bg-green-500" label={`Present (${summaryStats.present})`} />
@@ -1249,7 +1249,7 @@ const DetailedDailyReport = () => {
                                 <Legend color="bg-purple-600" label={`Week Off (${summaryStats.weekOff})`} />
                             </div>
                         </div>
-                    </div>
+                    </div> */}
                 </div>
             </div>
 
