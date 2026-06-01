@@ -158,7 +158,8 @@ const SummaryCard = ({
             group
             relative
             bg-[var(--color-bg-secondary)]
-            border ${borderColor}
+            border 
+            border-[var(--color-border-primary)]
             rounded-xl
             px-4 py-3
             transition-all duration-300
@@ -198,17 +199,17 @@ const SummaryCard = ({
                 </div>
 
                 <div>
-                    <p className="text-xs text-[var(--color-text-secondary)]">
+                    <p className="text-xs text-[10px] text-[var(--color-text-secondary)]">
                         {label}
                     </p>
 
-                    <h3 className={`text-3xl font-bold ${tone}`}>
+                    <h3 className={`text-lg font-bold ${tone}`}>
                         {value}
                     </h3>
                 </div>
             </div>
 
-            <div className={`w-2 h-2 rounded-full ${tone.replace('text', 'bg')}`} />
+            {/* <div className={`w-2 h-2 rounded-full ${tone.replace('text', 'bg')}`} /> */}
         </div>
     </div>
 );
