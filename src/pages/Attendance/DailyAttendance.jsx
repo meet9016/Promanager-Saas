@@ -1282,7 +1282,7 @@ const DailyAttendance = () => {
           )}
 
           {/* Summary legend at bottom */}
-          <div className="px-3 sm:px-6 py-3 sm:py-4 border-t border-[var(--color-border-secondary)] bg-[var(--color-bg-primary)]">
+          {/* <div className="px-3 sm:px-6 py-3 sm:py-4 border-t border-[var(--color-border-secondary)] bg-[var(--color-bg-primary)]">
             <div className="flex justify-center sm:justify-end items-center text-xs sm:text-sm text-[var(--color-text-secondary)]">
               <div className="flex items-center flex-wrap justify-center gap-2 sm:gap-4">
                 <Legend color="bg-green-500" label={`Present (${summaryStats.present})`} />
@@ -1295,7 +1295,7 @@ const DailyAttendance = () => {
                 <Legend color="bg-primary-400" label="Edited Entries" />
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
 

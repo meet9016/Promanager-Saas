@@ -1207,7 +1207,7 @@ const DailyReport = () => {
                                             </Th>
                                         </TableHeaderRow>
                                     </TableHeader>
-                                    <TableBody className="bg-[var(--color-bg-secondary)] divide-y divide-[var(--color-border-secondary)]">
+                                    <TableBody className="bg-[var(--color-bg-secondary)] divide-y divide-[var(--color-border-secondary)] ">
                                         {paginatedData.map((emp, idx) => {
                                             const timeColorClass = getTimeColor(emp);
                                             return (
@@ -1307,7 +1307,7 @@ const DailyReport = () => {
                     </div>
 
                     {/* Summary at bottom */}
-                    <div className="px-6 py-4 border-t border-[var(--color-border-secondary)] bg-[var(--color-bg-primary)]">
+                    {/* <div className="px-6 py-4 border-t border-[var(--color-border-secondary)] bg-[var(--color-bg-primary)]">
                         <div className="flex justify-end items-center text-sm text-[var(--color-text-secondary)]">
                             <div className="flex items-center space-x-4">
                                 <span className="flex items-center">
@@ -1332,7 +1332,7 @@ const DailyReport = () => {
                                 </span>
                             </div>
                         </div>
-                    </div>
+                    </div> */}
                 </div>
             </div>
 

@@ -1106,7 +1106,7 @@ const AttendanceExceptionReport = () => {
                     </div>
 
                     {/* ── Footer legend ── */}
-                    <div className="px-6 py-4 border-t border-[var(--color-border-secondary)] bg-[var(--color-bg-primary)]">
+                    {/* <div className="px-6 py-4 border-t border-[var(--color-border-secondary)] bg-[var(--color-bg-primary)]">
                         <div className="flex flex-wrap justify-end items-center gap-4 text-sm text-[var(--color-text-secondary)]">
                             {TABS.map((tab) => (
                                 <span key={tab.key} className="flex items-center gap-1.5">
@@ -1115,7 +1115,7 @@ const AttendanceExceptionReport = () => {
                                 </span>
                             ))}
                         </div>
-                    </div>
+                    </div> */}
                 </div>
             </div>
         </div>
