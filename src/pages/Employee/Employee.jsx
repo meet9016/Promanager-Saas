@@ -749,7 +749,7 @@ export default function Employee() {
     }
 
     return (
-        <div className="h-100 bg-[var(--color-bg-primary)]">
+        <div className="h-[calc(100vh-64px)] bg-[var(--color-bg-primary)] overflow-hidden">
             {/* Toast component */}
             {toast && (
                 <Toast
@@ -1303,7 +1303,7 @@ export default function Employee() {
                         <>
                             {/* Table */}
                             <div className="overflow-hidden">
-                                <Table wrapperClassName="max-h-[70vh] overflow-y-auto">
+                                <Table wrapperClassName="max-h-[80vh] overflow-y-auto">
                                     <TableHeader>
                                         <TableHeaderRow>
                                             {[

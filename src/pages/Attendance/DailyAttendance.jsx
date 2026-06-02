@@ -987,7 +987,7 @@ const DailyAttendance = () => {
 
 
         {/* Main content */}
-        <div className="bg-[var(--color-bg-secondary)] rounded-lg border border-[var(--color-primary-dark)] overflow-hidden shadow-sm">
+        <div className="bg-[var(--color-bg-secondary)] rounded-lg border border-[var(--color-primary-dark)] overflow-hidden shadow-sm flex flex-col h-[80vh]">
           <div className="px-3 sm:px-6 py-3 sm:py-4 border-b border-[var(--color-primary-light)] bg-[var(--color-primary-lighter)] ">
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
               <div className="flex items-center">
@@ -1107,7 +1107,7 @@ const DailyAttendance = () => {
                 <div className="p-8 text-center text-[var(--color-text-secondary)]">No records found</div>
               ) : (
                 <>
-                  <Table className="min-w-[1200px]" wrapperClassName="max-h-[64vh] overflow-y-auto">
+                  <Table className="min-w-[1200px]"  wrapperClassName="h-[72vh] overflow-y-auto custom-scrollbar">
                     <TableHeader>
                       <TableHeaderRow>
                         <Th>Employee</Th>

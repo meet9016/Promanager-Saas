@@ -406,7 +406,7 @@ const ShiftManagement = () => {
     };
 
     return (
-        <div className="h-full bg-[var(--color-bg-primary)] relative">
+        <div className="h-[calc(100vh-64px)] bg-[var(--color-bg-primary)] relative overflow-hidden">
             {/* Shift Management header - spans full width */}
             <div className=" mx-auto p-8">
 
@@ -414,7 +414,7 @@ const ShiftManagement = () => {
                 <div className="flex flex-row items-start gap-8">
                     <div className="flex-1">
                         {/* Available Shifts card and rest of your main content */}
-                        <div className="bg-[var(--color-bg-secondary)] rounded-lg border border-[var(--color-primary-dark)] overflow-hidden shadow-sm">
+                        <div className="bg-[var(--color-bg-secondary)] h-[89vh] rounded-lg border border-[var(--color-primary-dark)] overflow-hidden shadow-sm">
                             {/* Header section */}
                             <div className="px-6 py-4 border-b border-[var(--color-primary-light)] bg-[var(--color-primary-lighter)] ">
                                 <div className="flex justify-between items-center">

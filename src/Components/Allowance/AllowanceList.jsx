@@ -79,7 +79,7 @@ const AllowanceList = () => {
 
     return (
         <>
-            <div className="bg-[var(--color-bg-secondary)] rounded-xl shadow-sm border border-[var(--color-primary-dark)] overflow-hidden">
+            <div className="bg-[var(--color-bg-secondary)] h-[86vh] rounded-xl shadow-sm border border-[var(--color-primary-dark)] overflow-hidden">
                 <div className="relative">
                     <div className="bg-[var(--color-primary-dark)] px-6 py-4">
                         <div className="flex items-center space-x-3">
@@ -118,7 +118,7 @@ const AllowanceList = () => {
                             </p>
                         </div>
                     ) : (
-                        <div className="grid gap-4 max-h-[400px] overflow-y-auto custom-scrollbar">
+                        <div className="grid gap-4 max-h-[530px] overflow-y-auto custom-scrollbar">
                             {allowances.map((allowance) => {
                                 const allowanceId = allowance.allowance_id || allowance.id;
                                 const isDeleting = deletingId === allowanceId;

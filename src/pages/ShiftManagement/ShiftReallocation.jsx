@@ -481,7 +481,7 @@ const ShiftReallocation = () => {
     };
 
     return (
-        <div className="h-full bg-[var(--color-bg-primary)]">
+        <div className="h-[calc(100vh-64px)] bg-[var(--color-bg-primary)] overflow-hidden">
             <div className=" mx-auto p-8">
                 {/* Header */}
                 {/* <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-xl mb-8 overflow-hidden">
@@ -503,7 +503,7 @@ const ShiftReallocation = () => {
 
                 {/* List View */}
                 {view === 'list' && (
-                    <div className="bg-[var(--color-bg-secondary)] rounded-lg shadow-sm border border-[var(--color-primary-dark)]">
+                    <div className="bg-[var(--color-bg-secondary)]  h-[89vh]  rounded-lg shadow-sm border border-[var(--color-primary-dark)]">
                         <div className="px-6 py-4 border-b border-[var(--color-primary-light)] bg-[var(--color-primary-lighter)] ">
                             <div className="flex items-center justify-between">
                                 <h2 className="text-lg font-semibold text-[var(--color-primary-darker)] flex items-center gap-2">

@@ -1121,7 +1121,7 @@ const GeolocationReport = () => {
                     </div>
 
                     {/* Table */}
-                    <div className="overflow-x-auto">
+                    <div className="custom-scrollbar">
                         {loading ? (
                             <div className="p-8 text-center text-[var(--color-text-secondary)]">
                                 <div className="flex items-center justify-center">
@@ -1148,7 +1148,7 @@ const GeolocationReport = () => {
                                         </TableHeaderRow>
                                     </TableHeader>
 
-                                    <TableBody className="divide-y divide-[var(--color-border-secondary)]">
+                                    <TableBody className="divide-[var(--color-border-secondary)]">
                                         {paginatedData.map((emp, idx) => {
                                             const timeColorClass = getTimeColor(emp);
 
@@ -1261,6 +1261,7 @@ const GeolocationReport = () => {
                                     totalPages={totalPages}
                                     onPageChange={setCurrentPage}
                                     loading={loading}
+                                    
                                 />
                             </>
                         )}

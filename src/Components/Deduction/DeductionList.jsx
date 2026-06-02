@@ -78,7 +78,7 @@ const DeductionList = () => {
 
     return (
         <>
-            <div className=" bg-[var(--color-bg-secondary)] rounded-xl shadow-sm border border-[var(--color-primary-dark)] overflow-hidden">
+            <div className=" bg-[var(--color-bg-secondary)] h-[88vh] rounded-xl shadow-sm border border-[var(--color-primary-dark)] overflow-hidden">
                 <div className="relative">
                     <div className="bg-[var(--color-primary-dark)] px-6 py-4">
                         <div className="flex items-center space-x-3">
@@ -117,7 +117,7 @@ const DeductionList = () => {
                             </p>
                         </div>
                     ) : (
-                        <div className="grid gap-4 max-h-[400px] overflow-y-auto custom-scrollbar">
+                        <div className="grid gap-4 max-h-[540px] overflow-y-auto custom-scrollbar">
                             {deductions.map((deduction) => {
                                 const deductionId = deduction.deduction_id || deduction.id;
                                 const isDeleting = deletingId === deductionId;

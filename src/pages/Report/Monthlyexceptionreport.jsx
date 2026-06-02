@@ -342,8 +342,11 @@ const MonthlyExceptionReport = () => {
     useEffect(() => { fetchEmployees(); }, [fetchEmployees]);
 
     // ── Generate report ───────────────────────────────────────────────────────
-    const handleGenerateReport = async () => {
-        if (!user?.user_id || !monthYear) {
+    const handleGenerateReport = async (overrideFilters = null, overrideMonth = null) => {
+        const mYear = overrideMonth !== null ? overrideMonth : monthYear;
+        const currentFilters = overrideFilters || filters;
+
+        if (!user?.user_id || !mYear) {
             showToast('Please select a month and year', 'error');
             return;
         }
@@ -352,18 +355,17 @@ const MonthlyExceptionReport = () => {
             setError(null);
 
             const formData = new FormData();
-            formData.append('month_year', monthYear);
-            if (filters.branch_id) formData.append('branch_id', filters.branch_id);
-            if (filters.department_id) formData.append('department_id', filters.department_id);
-            if (filters.designation_id) formData.append('designation_id', filters.designation_id);
-            if (filters.employee_id) formData.append('employee_id', filters.employee_id);
+            formData.append('month_year', mYear);
+            if (currentFilters.branch_id) formData.append('branch_id', currentFilters.branch_id);
+            if (currentFilters.department_id) formData.append('department_id', currentFilters.department_id);
+            if (currentFilters.designation_id) formData.append('designation_id', currentFilters.designation_id);
+            if (currentFilters.employee_id) formData.append('employee_id', currentFilters.employee_id);
 
             const res = await api.post('monthly_attendance_report_list', formData);
             if (res.data?.success && res.data?.data) {
                 const rows = Array.isArray(res.data.data) ? res.data.data : [];
                 setRawData(rows);
                 setHasGenerated(true);
-                // showToast('Report generated successfully!', 'success');
             } else {
                 throw new Error(res.data?.message || 'Failed to fetch report');
             }
@@ -378,8 +380,9 @@ const MonthlyExceptionReport = () => {
     };
 
     useEffect(() => {
-        handleGenerateReport()
-    }, [])
+        handleGenerateReport();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     // ── Group raw daily records by employee, then classify exceptions ─────────
     /**
@@ -472,12 +475,13 @@ const MonthlyExceptionReport = () => {
     const getActiveFiltersCount = () => Object.values(filters).filter((v) => v !== '').length;
 
     const resetAll = () => {
-        setFilters({ branch_id: '', department_id: '', designation_id: '', employee_id: '' });
-        setMonthYear(new Date().toISOString().slice(0, 7));
-        setRawData([]);
-        setHasGenerated(false);
+        const defaultFilters = { branch_id: '', department_id: '', designation_id: '', employee_id: '' };
+        const defaultMonthYear = new Date().toISOString().slice(0, 7);
+        setFilters(defaultFilters);
+        setMonthYear(defaultMonthYear);
         setSearchQuery('');
         setFilterDropdown(false);
+        handleGenerateReport(defaultFilters, defaultMonthYear);
         showToast('Filters reset', 'success');
     };
 
@@ -1073,10 +1077,7 @@ const MonthlyExceptionReport = () => {
                                                                             const iso = date
                                                                                 ? `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`
                                                                                 : '';
-
                                                                             setMonthYear(iso);
-                                                                            setHasGenerated(false);
-                                                                            setRawData([]);
                                                                         }}
                                                                         dateFormat="MMMM yyyy"
                                                                         showMonthYearPicker

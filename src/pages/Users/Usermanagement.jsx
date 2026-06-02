@@ -206,7 +206,7 @@ const UserManagement = () => {
 
     return (
         <>
-            <div className="h-full bg-[var(--color-bg-primary)]">
+            <div className="h-[calc(100vh-64px)] overflow-hidden bg-[var(--color-bg-primary)]">
                 <div className="p-8  mx-auto">
                     {/* <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-xl mb-8 overflow-hidden">
                         <div className="bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] p-8">
@@ -242,7 +242,7 @@ const UserManagement = () => {
                         </div>
                     </div> */}
 
-                    <div className="bg-[var(--color-bg-secondary)] rounded-lg border border-[var(--color-primary-dark)] overflow-hidden shadow-sm">
+                    <div className="bg-[var(--color-bg-secondary)] h-[89vh] rounded-lg border border-[var(--color-primary-dark)] overflow-hidden shadow-sm">
                         <div className="px-6 py-4 border-b border-[var(--color-primary-light)] bg-[var(--color-primary-lighter)] flex items-center justify-between">
                             <h3 className="text-lg font-medium text-[var(--color-primary-darker)]">
                                 All Users

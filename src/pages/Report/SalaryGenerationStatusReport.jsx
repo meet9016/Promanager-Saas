@@ -442,10 +442,10 @@ const SalaryGenerationStatusReport = () => {
                             </div>
                         </div>
 
-                        <div className="overflow-x-auto">
+                        <div className="overflow-x-auto custom-scrollbar">
                             <Table className="w-full">
                                 <TableHeader>
-                                    <TableHeaderRow className="bg-[var(--color-primary-dark)] border-b border-[var(--color-border-primary)]">
+                                    <TableHeaderRow className="bg-[var(--color-primary-dark)] border-b border-[var(--color-border-primary)] ">
                                         <Th className="text-left font-semibold text-white w-8">#</Th>
                                         <Th className="text-left font-semibold text-white">
                                             <div className="flex items-center gap-2"><User className="h-4 w-4" />Employee</div>
@@ -459,7 +459,7 @@ const SalaryGenerationStatusReport = () => {
                                         <Th className="text-center font-semibold text-white">Status</Th>
                                     </TableHeaderRow>
                                 </TableHeader>
-                                <TableBody className="divide-y divide-[var(--color-border-primary)]">
+                                <TableBody className="divide-y divide-[var(--color-border-primary)]  ">
                                     {currentItems.map((emp, idx) => {
                                         const isPaid = String(emp.payment_status_label || '').toLowerCase() === 'paid';
                                         const isGenerated = String(emp.salary_generation_status || '').toLowerCase() === 'generated';

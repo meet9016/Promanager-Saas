@@ -1051,7 +1051,7 @@ const AttendanceExceptionReport = () => {
                     </div>
 
                     {/* ── Table ── */}
-                    <div className="overflow-x-auto flex flex-col flex-1 min-h-0">
+                    <div className="overflow-x-auto flex flex-col flex-1 min-h-0 custom-scrollbar">
                         {loading ? (
                             <div className="p-12 text-center text-[var(--color-text-secondary)]">
                                 <div className="flex items-center justify-center gap-3">
