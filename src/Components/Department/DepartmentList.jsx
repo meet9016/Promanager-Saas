@@ -390,7 +390,7 @@ const DepartmentList = () => {
     const filteredCount = filteredDepartments.length;
 
     return (
-        <div className="bg-[var(--color-bg-secondary)] rounded-xl shadow-sm border border-[var(--color-primary-dark)] overflow-hidden ">
+        <div className="bg-[var(--color-bg-secondary)] h-[89vh] rounded-xl shadow-sm border border-[var(--color-primary-dark)] overflow-hidden ">
             {/* Header */}
             <div className="relative">
                 <div className="bg-[var(--color-primary-dark)] px-6 py-4">
@@ -459,7 +459,7 @@ const DepartmentList = () => {
                     </div>
                 ) : (
 
-                    <div className="grid gap-3 max-h-[400px] overflow-y-auto custom-scrollbar ">
+                    <div className="grid gap-3 max-h-[480px] overflow-y-auto custom-scrollbar ">
                         {filteredDepartments.map((department) => {
                             const departmentId = department.department_id || department.id;
                             const isOpen = openId === departmentId;

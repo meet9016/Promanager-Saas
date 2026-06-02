@@ -710,7 +710,7 @@ const MonthlySalaryReport = () => {
                         </div>
 
                         {/* Table Container */}
-                        <div className="overflow-x-auto">
+                        <div className="overflow-x-auto custom-scrollbar">
                             <Table className="w-full">
                                 <TableHeader>
                                     <TableHeaderRow className="bg-[var(--color-primary-dark)] border-b border-[var(--color-border-primary)]">
@@ -758,7 +758,7 @@ const MonthlySalaryReport = () => {
                                         </Th>
                                     </TableHeaderRow>
                                 </TableHeader>
-                                <TableBody className="divide-y divide-[var(--color-border-primary)]">
+                                <TableBody className="divide-y divide-[var(--color-border-primary)] ">
                                     {currentItems.map((employee, index) => {
                                         const initials = employee.employee_name
                                             ? employee.employee_name.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase()

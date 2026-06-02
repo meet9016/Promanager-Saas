@@ -222,6 +222,12 @@ const MonthlyAttendance = () => {
         employee_id: '', month_year: new Date().toISOString().slice(0, 7),
     };
 
+    /* 
+     * SEPARATION OF CONCERNS:
+     * - filters: current values in the filter form (mutable by user)
+     * - appliedFilters: values that were last applied via "Apply Filters" button
+     * Table data only updates when appliedFilters changes, NOT when filters change.
+     */
     const [filters, setFilters] = useState(initialFilters);
     const [appliedFilters, setAppliedFilters] = useState(initialFilters);
     const [loading, setLoading] = useState(true);
@@ -242,17 +248,17 @@ const MonthlyAttendance = () => {
         minWidth: 420
     });
 
-    const activeFiltersCount = useMemo(() => getActiveFiltersCount(filters), [filters]);
+    const activeFiltersCount = useMemo(() => getActiveFiltersCount(appliedFilters), [appliedFilters]);
 
-    const daysInMonth = useMemo(() => getDaysInMonth(filters.month_year), [filters.month_year]);
+    const daysInMonth = useMemo(() => getDaysInMonth(appliedFilters.month_year), [appliedFilters.month_year]);
 
     const dayMeta = useMemo(() =>
         Array.from({ length: daysInMonth }, (_, i) => {
             const d = i + 1;
-            const dow = getDayOfWeek(filters.month_year, d);
+            const dow = getDayOfWeek(appliedFilters.month_year, d);
             return { day: d, dow, isSun: dow === 0, isSat: dow === 6, isWeekend: dow === 0 || dow === 6 };
         })
-        , [daysInMonth, filters.month_year]);
+        , [daysInMonth, appliedFilters.month_year]);
 
     const gridData = useMemo(() => {
         if (!rows?.length) return [];
@@ -292,7 +298,7 @@ const MonthlyAttendance = () => {
         return Array.from(byEmp.values());
     }, [rows, daysInMonth]);
 
-    /* Filtered by search */
+    /* Filtered by search (client-side search on current data) */
     const filteredData = useMemo(() => {
         if (!searchQuery.trim()) return gridData;
         const q = searchQuery.toLowerCase();
@@ -345,19 +351,28 @@ const MonthlyAttendance = () => {
         } catch (e) { console.error(e); } finally { setDropdownLoading(false); }
     }, [user?.user_id]);
 
+    /* 
+     * FIXED: Now consistently uses appliedFilters for ALL form data.
+     * This ensures the API call only uses filters that were explicitly applied.
+     */
     const fetchReportData = useCallback(async () => {
         if (!user?.user_id) throw new Error('User ID is required');
-        if (!filters.month_year) throw new Error('Please select Month & Year');
+        if (!appliedFilters.month_year) throw new Error('Please select Month & Year');
         const form = new FormData();
         form.append('month_year', appliedFilters.month_year);
-        if (filters.branch_id) form.append('branch_id', appliedFilters.branch_id);
-        if (filters.department_id) form.append('department_id', appliedFilters.department_id);
-        if (filters.designation_id) form.append('designation_id', appliedFilters.designation_id);
+        if (appliedFilters.branch_id) form.append('branch_id', appliedFilters.branch_id);
+        if (appliedFilters.department_id) form.append('department_id', appliedFilters.department_id);
+        if (appliedFilters.designation_id) form.append('designation_id', appliedFilters.designation_id);
         const res = await api.post('monthly_attendance_report_list', form);
         if (res.data?.success && Array.isArray(res.data.data)) return res.data.data;
         throw new Error(res.data?.message || 'Failed to fetch report data');
     }, [user?.user_id, appliedFilters]);
 
+    /*
+     * FIXED: Effect now ONLY triggers when appliedFilters changes.
+     * Changing filter form values (filters state) does NOT trigger this effect.
+     * Table data remains intact until user clicks "Apply Filters".
+     */
     const debTimer = useRef(null);
     useEffect(() => {
         if (debTimer.current) clearTimeout(debTimer.current);
@@ -378,8 +393,12 @@ const MonthlyAttendance = () => {
 
     useEffect(() => { fetchDropdownData(); }, [fetchDropdownData]);
 
+    /*
+     * FIXED: Removed setRows([]) and setError('') from here.
+     * Changing filter inputs no longer clears the table.
+     * Only applyFilters() will trigger a data refresh.
+     */
     const handleFilterChange = (key, value) => {
-        setRows([]); setError('');
         setFilters(prev => {
             const next = { ...prev, [key]: value };
             if (key === 'branch_id') { next.department_id = ''; next.designation_id = ''; next.employee_id = ''; }
@@ -390,14 +409,18 @@ const MonthlyAttendance = () => {
     };
 
     const resetFilters = () => {
-        setFilters({ branch_id: '', department_id: '', designation_id: '', employee_id: '', month_year: new Date().toISOString().slice(0, 7) });
-        setRows([]); setError('');
+        const reset = { branch_id: '', department_id: '', designation_id: '', employee_id: '', month_year: new Date().toISOString().slice(0, 7) };
+        setFilters(reset);
+        setAppliedFilters(reset); // This triggers the API call with reset filters
+        setError('');
         setToast({ message: 'Filters reset successfully', type: 'success' });
     };
 
-
+    /*
+     * FIXED: applyFilters now sets appliedFilters which triggers the useEffect above.
+     * Table data updates ONLY when this function is called.
+     */
     const applyFilters = () => {
-        /* Filters auto-apply via debounce; just close panel */
         setAppliedFilters(filters);
         setShowFilters(false);
     };
@@ -427,14 +450,13 @@ const MonthlyAttendance = () => {
         }
     }, [showFilters, filterPos]);
 
-
     if (loading && rows.length === 0) {
         return <LoadingSpinner />;
     }
 
     /* ===================== RENDER ===================== */
     return (
-        <div className="h-100 bg-slate-50 pb-8" style={{ fontFamily: "'Inter', sans-serif" }}>
+        <div className="h-[calc(100vh-64px)] bg-slate-50 pb-8" style={{ fontFamily: "'Inter', sans-serif" }}>
             {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
 
             <div className="p-3 sm:p-6 mx-auto max-w-[1900px] space-y-4">
@@ -457,7 +479,7 @@ const MonthlyAttendance = () => {
 
                                     <span className="flex items-center gap-1.5 text-[10px] font-bold text-emerald-600 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full uppercase tracking-widest">
                                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                                        Live &middot; {formatMonthYearShort(filters.month_year)}
+                                        Live &middot; {formatMonthYearShort(appliedFilters.month_year)}
                                     </span>
                                 </div>
 
@@ -546,30 +568,6 @@ const MonthlyAttendance = () => {
                                                 <Calendar size={14} className="inline mr-1" />
                                                 Month & Year <span className="text-red-400">*</span>
                                             </label>
-                                            {/* <CustomDatePicker
-                                                name="month_year"
-                                                value={
-                                                    filters.month_year
-                                                        ? new Date(`${filters.month_year}-01`)
-                                                        : null
-                                                }
-                                                onChange={(e) => {
-                                                    const value = e?.target?.value || '';
-                                                    if (!value) {
-                                                        handleFilterChange('month_year', '');
-                                                        return;
-                                                    }
-                                                    const [year, month] = value.split('-');
-                                                    handleFilterChange('month_year', `${year}-${month}`);
-                                                }}
-                                                placeholder="Select month and year"
-                                                maxDate={new Date()}
-                                                clearable={true}
-                                                showMonthYearPicker={true}
-                                                showFullMonthYearPicker={true}
-                                                showPopperArrow={false}
-                                                className="w-full h-[40px]"
-                                            /> */}
                                             <DatePicker
                                                 selected={
                                                     filters.month_year

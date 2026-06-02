@@ -29,7 +29,7 @@ const Department = () => {
 
 
     return (
-        <div className="h-full overflow-y-auto bg-[var(--color-bg-primary)]">
+        <div className="h-100 overflow-y-auto bg-[var(--color-bg-primary)]">
             <div className=" mx-auto">
 
 

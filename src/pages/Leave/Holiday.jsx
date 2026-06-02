@@ -307,7 +307,7 @@ export default function HolidayManagement() {
     }
 
     return (
-        <div className="min-h-screen bg-[var(--color-bg-primary)]">
+        <div className="h-[calc(100vh-64px)] overflow-hidden bg-[var(--color-bg-primary)]">
             {toast.show && (
                 <Toast
                     message={toast.message}
@@ -328,7 +328,7 @@ export default function HolidayManagement() {
 
 
 
-                <section className="bg-[var(--color-bg-secondary)] rounded-xl shadow-sm border border-[var(--color-border-primary)] overflow-hidden">
+                <section className="bg-[var(--color-bg-secondary)] h-[75vh] rounded-xl shadow-sm border border-[var(--color-border-primary)] overflow-hidden">
                     <div className="px-6 py-4 border-b border-[var(--color-border-primary)] bg-[var(--color-primary-lighter)] ">
                         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                             <h3 className="text-lg font-semibold text-[var(--color-primary-darker)] flex items-center gap-2">

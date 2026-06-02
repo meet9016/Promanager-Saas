@@ -510,7 +510,7 @@ export default function FinalizePayroll() {
 
 
   return (
-    <div className="h-full bg-[var(--color-bg-primary)]">
+    <div className="h-[calc(100vh-64px)] overflow-hidden bg-[var(--color-bg-primary)]">
       <div className="p-8  mx-auto">
         {/* Header Section */}
         {/* <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-xl mb-8 overflow-hidden">
@@ -540,7 +540,7 @@ export default function FinalizePayroll() {
         </div> */}
 
         {/* Main Content */}
-        <div className="bg-[var(--color-bg-secondary)] rounded-lg border border-[var(--color-primary-dark)] overflow-hidden shadow-sm">
+        <div className="bg-[var(--color-bg-secondary)] h-[89vh] rounded-lg border border-[var(--color-primary-dark)] overflow-hidden shadow-sm">
           {/* Header section */}
           <div className="px-6 py-4 border-b border-[var(--color-primary-light)] bg-[var(--color-primary-lighter)]">
             <div className="flex justify-between items-center">
@@ -684,7 +684,7 @@ export default function FinalizePayroll() {
             </div>
           ) : (
             <>
-              <div className="h-[650px] overflow-y-auto overflow-x-auto custom-scrollbar">
+              <div className="h-[770px] overflow-y-auto overflow-x-auto custom-scrollbar">
                 <table className="min-w-full divide-y divide-[var(--color-border-divider)]">
                   <thead className="sticky top-0 z-20 bg-[var(--color-primary-dark)]">
                     <tr>
@@ -723,7 +723,7 @@ export default function FinalizePayroll() {
                       )}
                     </tr>
                   </thead>
-                  <tbody className="bg-[var(--color-bg-secondary)] divide-y divide-[var(--color-border-divider)]">
+                  <tbody className="bg-[var(--color-bg-secondary)] divide-y divide-[var(--color-border-divider)] ">
                     {salaryRecords.map((record, index) => {
                       const recordId = record.employee_salary_id || `record-${index}`;
                       const paymentStatus = getPaymentStatusDisplay(record.payment_status);

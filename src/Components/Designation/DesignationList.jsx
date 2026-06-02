@@ -105,7 +105,7 @@ const DesignationList = () => {
 
     return (
         <>
-            <div className="bg-[var(--color-bg-secondary)] h-full rounded-xl shadow-sm border border-[var(--color-primary-dark)] overflow-hidden">
+            <div className="bg-[var(--color-bg-secondary)] h-[86vh] rounded-xl shadow-sm border border-[var(--color-primary-dark)] overflow-hidden">
                 <div className="relative">
                     <div className="bg-[var(--color-primary-dark)] px-6 py-4">
                         <div className="flex items-center justify-between">
@@ -166,7 +166,7 @@ const DesignationList = () => {
                             </button>
                         </div>
                     ) : (
-                        <div className="grid gap-4 max-h-[400px] overflow-y-auto custom-scrollbar">
+                        <div className="grid gap-4 max-h-[510px] overflow-y-auto custom-scrollbar">
                             {filteredDesignations.map((designation) => {
                                 const designationId = designation.designation_id || designation.id;
                                 const isDeleting = deletingId === designationId;

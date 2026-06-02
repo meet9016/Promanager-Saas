@@ -1166,7 +1166,7 @@ const DailyReport = () => {
                     </div>
 
                     {/* Table */}
-                    <div className="flex-1 min-h-0 overflow-auto">
+                    <div className="flex-1 min-h-0 custom-scrollbar">
                         {loading ? (
                             <div className="p-8 text-center text-[var(--color-text-secondary)]">
                                 <div className="flex items-center justify-center">
