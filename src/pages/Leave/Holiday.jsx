@@ -307,7 +307,7 @@ export default function HolidayManagement() {
     }
 
     return (
-        <div className="h-[calc(100vh-64px)] overflow-hidden bg-[var(--color-bg-primary)]">
+        <div className="h-full overflow-hidden bg-[var(--color-bg-primary)]">
             {toast.show && (
                 <Toast
                     message={toast.message}
@@ -328,7 +328,7 @@ export default function HolidayManagement() {
 
 
 
-                <section className="bg-[var(--color-bg-secondary)] h-[75vh] rounded-xl shadow-sm border border-[var(--color-border-primary)] overflow-hidden">
+                <section className="bg-[var(--color-bg-secondary)]  rounded-xl shadow-sm border border-[var(--color-border-primary)] overflow-hidden">
                     <div className="px-6 py-4 border-b border-[var(--color-border-primary)] bg-[var(--color-primary-lighter)] ">
                         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                             <h3 className="text-lg font-semibold text-[var(--color-primary-darker)] flex items-center gap-2">
@@ -438,30 +438,112 @@ export default function HolidayManagement() {
                     </div>
 
                     {showCalendarView ? (
-                        <div className="p-8">
-                            <CalendarComponent
-                                holidays={holidays}
-                                currentMonth={currentMonth}
-                                setCurrentMonth={setCurrentMonth}
-                                getHolidayForDate={getHolidayForDate}
-                            />
+                        <div className="relative">
+                            {/* Soft ambient backdrop */}
+                            <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-bg-secondary)] via-[var(--color-bg-primary)] to-[var(--color-bg-secondary)] pointer-events-none" />
+                            <div className="absolute top-0 left-1/3 w-72 h-72 bg-[var(--color-primary)]/5 rounded-full blur-3xl pointer-events-none" />
 
-                            <div className="mt-6 pt-6 border-t border-[var(--color-border-primary)]">
-                                <h4 className="text-sm font-semibold text-[var(--color-text-primary)] mb-3">Upcoming Holidays</h4>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                                    {holidays.slice(0, 4).map((holiday) => {
-                                        const dates = Array.isArray(holiday.holiday_dates) ? holiday.holiday_dates : (holiday.holiday_dates ? holiday.holiday_dates.split(',') : []);
-                                        return (
-                                            <div key={holiday.holiday_id} className="flex items-center gap-3 p-3 bg-[var(--color-bg-primary)] rounded-lg border border-[var(--color-border-secondary)] hover:border-[var(--color-primary)] transition-colors">
-                                                <div className={`w-2 h-2 rounded-full flex-shrink-0 ${holiday.holiday_type_name === "Public Holiday" ? "bg-primary-500" : holiday.holiday_type_name === "National" ? "bg-green-500" : holiday.holiday_type_name === "Festival" ? "bg-pink-500" : "bg-amber-500"}`}></div>
-                                                <div className="flex-1 min-w-0">
-                                                    <p className="text-sm font-semibold text-[var(--color-text-primary)] truncate">{holiday.holiday_name}</p>
-                                                    <p className="text-xs text-[var(--color-text-secondary)]">{dates[0]}</p>
-                                                </div>
-                                            </div>
-                                        );
-                                    })}
+                            <div className="relative grid grid-cols-1 lg:grid-cols-12 gap-10 p-8 lg:p-4">
+
+                                {/* LEFT — Editorial header + Calendar */}
+                                <div className="lg:col-span-8">
+                                    {/* Editorial month header */}
+                                    {/* <div className="flex items-end justify-between mb-10 pb-6 border-b border-[var(--color-border-primary)]">
+                                        <div>
+                                            <p className="text-xs uppercase tracking-[0.3em] text-[var(--color-text-muted)] mb-2">
+                                                Holiday Calendar
+                                            </p>
+                                            <h2 className="text-5xl lg:text-6xl font-light text-[var(--color-text-primary)] leading-none tracking-tight">
+                                                {currentMonth.toLocaleString('default', { month: 'long' })}
+                                                <span className="text-[var(--color-primary)] font-serif italic ml-3">
+                                                    {currentMonth.getFullYear()}
+                                                </span>
+                                            </h2>
+                                        </div>
+                                        <div className="hidden sm:flex items-center gap-1">
+                                            <button
+                                                type="button"
+                                                onClick={() => setCurrentMonth(new Date())}
+                                                className="px-4 py-2 text-xs uppercase tracking-widest text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] transition-colors"
+                                            >
+                                                Today
+                                            </button>
+                                        </div>
+                                    </div> */}
+
+                                    {/* Calendar */}
+                                    <CalendarComponent
+                                        holidays={holidays}
+                                        currentMonth={currentMonth}
+                                        setCurrentMonth={setCurrentMonth}
+                                        getHolidayForDate={getHolidayForDate}
+                                    />
                                 </div>
+
+                                {/* RIGHT — Agenda timeline */}
+                                <aside className="lg:col-span-4 lg:border-l lg:border-[var(--color-border-primary)] lg:pl-10">
+                                    <div className="sticky top-6">
+                                    
+
+                                        {/* Upcoming agenda — timeline style */}
+                                        <p className="text-md text-[var(--color-text-muted)] mb-5">
+                                            Upcoming
+                                        </p>
+                                        <div className="relative">
+                                            {/* vertical timeline line */}
+                                            <div className="absolute left-[11px] top-2 bottom-2 w-px bg-gradient-to-b from-[var(--color-primary)]/40 via-[var(--color-border-primary)] to-transparent" />
+
+                                            <div className="space-y-5">
+                                                {holidays.slice(0, 5).map((holiday) => {
+                                                    const dates = Array.isArray(holiday.holiday_dates) ? holiday.holiday_dates : (holiday.holiday_dates ? holiday.holiday_dates.split(',') : []);
+                                                    const dt = dates[0] ? new Date(dates[0]) : null;
+                                                    const dotColor = holiday.holiday_type_name === "Public Holiday" ? "bg-primary-500"
+                                                        : holiday.holiday_type_name === "National" ? "bg-green-500"
+                                                            : holiday.holiday_type_name === "Festival" ? "bg-pink-500"
+                                                                : "bg-amber-500";
+                                                    return (
+                                                        <div key={holiday.holiday_id} className="relative pl-8 group cursor-default">
+                                                            <span className={`absolute left-0 top-1.5 w-[22px] h-[22px] rounded-full ${dotColor} ring-4 ring-[var(--color-bg-primary)] group-hover:scale-110 transition-transform`} />
+                                                            <div className="flex items-baseline justify-between gap-2">
+                                                                <p className="text-sm font-semibold text-[var(--color-text-primary)] truncate group-hover:text-[var(--color-primary)] transition-colors">
+                                                                    {holiday.holiday_name}
+                                                                </p>
+                                                                {dt && (
+                                                                    <span className="text-xs font-mono text-[var(--color-text-muted)] flex-shrink-0">
+                                                                        {dt.toLocaleDateString('en-US', { day: '2-digit', month: 'short' })}
+                                                                    </span>
+                                                                )}
+                                                            </div>
+                                                            <p className="text-[11px] tracking-wider text-[var(--color-text-secondary)] mt-0.5">
+                                                                {holiday.holiday_type_name}
+                                                            </p>
+                                                        </div>
+                                                    );
+                                                })}
+                                            </div>
+                                        </div>
+
+                                        {/* Legend — inline pills */}
+                                        <div className="mt-10 pt-6 border-t border-[var(--color-border-primary)]">
+                                            <p className="text-sm text-[var(--color-text-muted)] mb-4">
+                                                Legend
+                                            </p>
+                                            <div className="flex flex-wrap gap-x-4 gap-y-2">
+                                                {[
+                                                    { label: "Public", c: "bg-primary-500" },
+                                                    { label: "National", c: "bg-green-500" },
+                                                    { label: "Festival", c: "bg-pink-500" },
+                                                    { label: "Other", c: "bg-amber-500" },
+                                                ].map((t) => (
+                                                    <span key={t.label} className="inline-flex items-center gap-2 text-xs text-[var(--color-text-secondary)]">
+                                                        <span className={`w-2 h-2 rounded-full ${t.c}`} />
+                                                        {t.label}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </aside>
                             </div>
                         </div>
                     ) : (
@@ -1013,59 +1095,157 @@ function CalendarComponent({ currentMonth, setCurrentMonth, getHolidayForDate })
 
     const nextMonth = () => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1));
     const prevMonth = () => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1));
+    const goToday = () => setCurrentMonth(new Date());
 
-    const getHolidayColor = (date) => {
+    const getHolidayGradient = (date) => {
         const holidaysOnDate = getHolidayForDate(date);
         if (holidaysOnDate.length === 0) return null;
         const type = holidaysOnDate[0].holiday_type_name;
-        if (type === "Public Holiday" || type === "Company Holiday") return "bg-primary-500";
-        if (type === "National") return "bg-green-500";
-        if (type === "Festival") return "bg-pink-500";
-        return "bg-amber-500";
+        if (type === "Public Holiday" || type === "Company Holiday") return "from-violet-500 to-purple-600";
+        if (type === "National") return "from-emerald-500 to-teal-600";
+        if (type === "Festival") return "from-pink-500 to-rose-600";
+        return "from-amber-500 to-orange-600";
     };
 
     return (
-        <div className="bg-[var(--color-bg-secondary)]">
-            <div className="flex items-center justify-between mb-6">
-                <button type="button" onClick={prevMonth} className="p-2 hover:bg-[var(--color-bg-hover)] rounded-lg transition-colors">
-                    <ChevronLeft size={20} className="text-[var(--color-text-secondary)]" />
-                </button>
-                <h3 className="text-lg font-semibold text-[var(--color-text-primary)]">
-                    {monthNames[currentMonth.getMonth()]} {currentMonth.getFullYear()}
-                </h3>
-                <button type="button" onClick={nextMonth} className="p-2 hover:bg-[var(--color-bg-hover)] rounded-lg transition-colors">
-                    <ChevronRight size={20} className="text-[var(--color-text-secondary)]" />
-                </button>
-            </div>
+        <div className="bg-white">
+           <div className="relative bg-[var(--color-primary-dark)] px-6 py-4 overflow-hidden">
+    <div className="absolute inset-0 opacity-20"></div>
 
-            <div className="grid grid-cols-7 gap-2">
-                {dayNames.map(day => (
-                    <div key={day} className="text-center font-semibold text-[var(--color-text-secondary)] text-sm py-2">
+    <div className="relative flex items-center justify-between">
+        <button
+            type="button"
+            onClick={prevMonth}
+            className="w-10 h-10 flex items-center justify-center rounded-xl bg-white/15 text-white"
+        >
+            <ChevronLeft size={20} />
+        </button>
+
+        <div className="flex items-center gap-4">
+            <span
+                className="text-3xl text-white"
+            >
+                {monthNames[currentMonth.getMonth()]}
+            </span>
+
+            <span className="text-white/80 text-lg font-medium">
+                {currentMonth.getFullYear()}
+            </span>
+
+            {/* <button
+                type="button"
+                onClick={goToday}
+                className="px-3 py-1 rounded-full bg-white/20 text-white text-xs"
+            >
+                Today
+            </button> */}
+        </div>
+
+        <button
+            type="button"
+            onClick={nextMonth}
+            className="w-10 h-10 flex items-center justify-center rounded-xl bg-white/15 text-white"
+        >
+            <ChevronRight size={20} />
+        </button>
+    </div>
+</div>
+
+            {/* Day name pills */}
+            <div className="grid grid-cols-7 gap-1.5 px-4 sm:px-6 pt-5 pb-2">
+                {dayNames.map((day, i) => (
+                    <div
+                        key={day}
+                        className={`text-center text-[11px] sm:text-sm font-bold  tracking-wider py-2 rounded-lg ${i === 0 || i === 6
+                            ? "text-rose-500 bg-rose-50/60"
+                            : "text-violet-700 bg-violet-50/60"
+                            }`}
+                    >
                         {day}
                     </div>
                 ))}
+            </div>
 
+            {/* Day grid */}
+            <div className="grid grid-cols-7 gap-1.5 px-4 sm:px-6 pb-6">
                 {days.map((date, idx) => {
-                    if (!date) return <div key={`empty-${idx}`} className="aspect-square"></div>;
+                    if (!date) return <div key={`empty-${idx}`} className="aspect-square sm:aspect-[1/0.95]"></div>;
+
                     const holidaysOnDate = getHolidayForDate(date);
-                    const holidayColor = getHolidayColor(date);
+                    const holidayGrad = getHolidayGradient(date);
+                    const hasHoliday = holidaysOnDate.length > 0;
                     const isToday = date.toDateString() === new Date().toDateString();
+                    const dow = date.getDay();
+                    const isWeekend = dow === 0 || dow === 6;
 
                     return (
                         <div
                             key={idx}
-                            className={`aspect-square p-2 border rounded-lg relative group cursor-pointer hover:bg-[var(--color-bg-hover)] transition-colors ${isToday ? 'border-[var(--color-primary)] border-2 bg-[var(--color-primary-lightest)]' : 'border-[var(--color-border-secondary)]'}`}
+                            className={`relative aspect-square sm:aspect-[1/0.95] rounded-xl border p-2 group cursor-pointer transition-all duration-300 overflow-hidden
+                                ${hasHoliday
+                                    ? `bg-gradient-to-br ${holidayGrad} text-white border-transparent shadow-md hover:shadow-xl hover:-translate-y-0.5`
+                                    : isToday
+                                        ? "border-violet-500 border-2 bg-gradient-to-br from-violet-50 to-purple-50 hover:shadow-md"
+                                        : isWeekend
+                                            ? "border-[var(--color-border-secondary)] bg-rose-50/30 hover:bg-rose-50 hover:border-rose-200"
+                                            : "border-[var(--color-border-secondary)] bg-white hover:bg-violet-50/40 hover:border-violet-200 hover:shadow-md hover:-translate-y-0.5"
+                                }`}
                         >
-                            <div className={`text-sm font-medium ${isToday ? 'text-[var(--color-primary)]' : 'text-[var(--color-text-primary)]'}`}>
-                                {date.getDate()}
+                            {/* Shine decoration for holidays */}
+                            {hasHoliday && (
+                                <div className="absolute inset-0 opacity-30 pointer-events-none" style={{
+                                    backgroundImage: "radial-gradient(circle at top right, rgba(255,255,255,0.4), transparent 60%)"
+                                }}></div>
+                            )}
+
+                            {/* Date number */}
+                            <div className="relative flex items-start justify-between">
+                                <div className={`text-sm sm:text-base font-bold leading-none
+                                    ${hasHoliday
+                                        ? "text-white"
+                                        : isToday
+                                            ? "text-violet-700"
+                                            : isWeekend
+                                                ? "text-rose-500"
+                                                : "text-[var(--color-text-primary)]"
+                                    }`}>
+                                    {date.getDate()}
+                                </div>
+                                {isToday && !hasHoliday && (
+                                    <span className="flex h-2 w-2 relative">
+                                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-violet-400 opacity-75"></span>
+                                        <span className="relative inline-flex rounded-full h-2 w-2 bg-violet-500"></span>
+                                    </span>
+                                )}
+                                {isToday && hasHoliday && (
+                                    <span className="text-[9px] font-bold uppercase tracking-wide bg-white/30 backdrop-blur-sm px-1.5 py-0.5 rounded-full">
+                                        Today
+                                    </span>
+                                )}
                             </div>
-                            {holidayColor && <div className={`w-2 h-2 ${holidayColor} rounded-full absolute bottom-2 right-2`}></div>}
-                            {holidaysOnDate.length > 0 && (
-                                <div className="hidden group-hover:block absolute z-10 bg-gray-900 text-white text-xs rounded-lg p-3 left-0 top-full mt-2 w-56 shadow-xl">
+
+                            {/* Holiday name chip */}
+                            {hasHoliday && (
+                                <div className="absolute bottom-1.5 left-1.5 right-1.5">
+                                    <div className="text-[10px] sm:text-[11px] font-semibold text-white truncate bg-white/20 backdrop-blur-sm rounded-md px-1.5 py-0.5">
+                                        {holidaysOnDate[0].holiday_name}
+                                    </div>
+                                    {holidaysOnDate.length > 1 && (
+                                        <div className="text-[9px] text-white/90 mt-0.5 font-medium pl-1">
+                                            +{holidaysOnDate.length - 1} more
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+
+                            {/* Hover tooltip */}
+                            {hasHoliday && (
+                                <div className="hidden group-hover:block absolute z-20 bg-gray-900 text-white text-xs rounded-xl p-3 left-1/2 -translate-x-1/2 top-full mt-2 w-56 shadow-2xl ring-1 ring-white/10">
+                                    <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-gray-900 rotate-45"></div>
                                     {holidaysOnDate.map(h => (
-                                        <div key={h.holiday_id} className="mb-2 last:mb-0">
-                                            <div className="font-semibold">{h.holiday_name}</div>
-                                            <div className="text-gray-300 text-xs mt-0.5">{h.holiday_type_name}</div>
+                                        <div key={h.holiday_id} className="mb-2 last:mb-0 pb-2 last:pb-0 border-b border-white/10 last:border-0">
+                                            <div className="font-semibold text-white">{h.holiday_name}</div>
+                                            <div className="text-gray-300 text-[11px] mt-0.5">{h.holiday_type_name}</div>
                                         </div>
                                     ))}
                                 </div>
