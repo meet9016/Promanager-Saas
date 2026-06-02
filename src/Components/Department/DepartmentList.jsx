@@ -291,6 +291,7 @@ const DepartmentList = () => {
     const permissions = useSelector((state) => state.permissions) || {};
     const { departments, loading, addDepartment, updateDepartment, deleteDepartment } = useDepartments();
 
+
     const [toast, setToast] = useState(null);
     const [confirmModal, setConfirmModal] = useState({
         isOpen: false,
@@ -405,7 +406,7 @@ const DepartmentList = () => {
                 </div>
             </div>
 
-            <div className="p-8 bg-[var(--color-bg-secondary)] flex flex-col gap-4 ">
+            <div className="p-8 bg-[var(--color-bg-secondary)] flex flex-col gap-4  ">
                 {/* Add Form */}
                 {permissions['department_create'] && (
                     <DepartmentForm onSubmit={handleAddDepartment} loading={loading} showToast={showToast} />
@@ -467,7 +468,7 @@ const DepartmentList = () => {
                             return (
                                 <div
                                     key={departmentId}
-                                    className={`border rounded-lg transition-all duration-200 overflow-hidden h-[65px] ${isOpen
+                                    className={`border rounded-lg transition-all duration-200 overflow-hidden min-h-[65px] ${isOpen
                                         ? "border-[var(--color-primary-dark)] shadow-md bg-[var(--color-bg-secondary)]"
                                         : "border-[var(--color-border-primary)] hover:border-primary-300 hover:shadow-sm bg-gradient-to-r from-primary-50/20 to-indigo-50/20 hover:from-primary-50/40 hover:to-indigo-50/40"
                                         }`}
@@ -511,8 +512,6 @@ const DepartmentList = () => {
                                                     <Trash2 className="w-4 h-4" strokeWidth={2.5} />
                                                 </button>
                                             )}
-
-
                                         </div>
 
 
@@ -552,8 +551,6 @@ const DepartmentList = () => {
                 />
             )}
         </div>
-
-
     );
 };
 
