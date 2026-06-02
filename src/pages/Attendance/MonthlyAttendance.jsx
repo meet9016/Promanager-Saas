@@ -188,11 +188,11 @@ const StatCard = ({ label, value, color, icon: Icon, iconBg }) => (
 );
 
 /* ============ Active Filters Badge ============ */
-const getActiveFiltersCount = (filters) => {
+const getActiveFiltersCount = (appliedFilters) => {
     let count = 0;
-    if (filters.branch_id) count++;
-    if (filters.department_id) count++;
-    if (filters.designation_id) count++;
+    if (appliedFilters.branch_id) count++;
+    if (appliedFilters.department_id) count++;
+    if (appliedFilters.designation_id) count++;
     return count;
 };
 
@@ -223,6 +223,7 @@ const MonthlyAttendance = () => {
     };
 
     const [filters, setFilters] = useState(initialFilters);
+    const [appliedFilters, setAppliedFilters] = useState(initialFilters);
     const [loading, setLoading] = useState(true);
     const [rows, setRows] = useState([]);
     const [error, setError] = useState('');
@@ -348,14 +349,14 @@ const MonthlyAttendance = () => {
         if (!user?.user_id) throw new Error('User ID is required');
         if (!filters.month_year) throw new Error('Please select Month & Year');
         const form = new FormData();
-        form.append('month_year', filters.month_year);
-        if (filters.branch_id) form.append('branch_id', filters.branch_id);
-        if (filters.department_id) form.append('department_id', filters.department_id);
-        if (filters.designation_id) form.append('designation_id', filters.designation_id);
+        form.append('month_year', appliedFilters.month_year);
+        if (filters.branch_id) form.append('branch_id', appliedFilters.branch_id);
+        if (filters.department_id) form.append('department_id', appliedFilters.department_id);
+        if (filters.designation_id) form.append('designation_id', appliedFilters.designation_id);
         const res = await api.post('monthly_attendance_report_list', form);
         if (res.data?.success && Array.isArray(res.data.data)) return res.data.data;
         throw new Error(res.data?.message || 'Failed to fetch report data');
-    }, [user?.user_id, filters]);
+    }, [user?.user_id, appliedFilters]);
 
     const debTimer = useRef(null);
     useEffect(() => {
@@ -394,8 +395,10 @@ const MonthlyAttendance = () => {
         setToast({ message: 'Filters reset successfully', type: 'success' });
     };
 
+
     const applyFilters = () => {
         /* Filters auto-apply via debounce; just close panel */
+        setAppliedFilters(filters);
         setShowFilters(false);
     };
 
@@ -543,7 +546,7 @@ const MonthlyAttendance = () => {
                                                 <Calendar size={14} className="inline mr-1" />
                                                 Month & Year <span className="text-red-400">*</span>
                                             </label>
-                                            <CustomDatePicker
+                                            {/* <CustomDatePicker
                                                 name="month_year"
                                                 value={
                                                     filters.month_year
@@ -566,6 +569,29 @@ const MonthlyAttendance = () => {
                                                 showFullMonthYearPicker={true}
                                                 showPopperArrow={false}
                                                 className="w-full h-[40px]"
+                                            /> */}
+                                            <DatePicker
+                                                selected={
+                                                    filters.month_year
+                                                        ? new Date(`${filters.month_year}-01`)
+                                                        : null
+                                                }
+                                                onChange={(date) => {
+                                                    const value = date
+                                                        ? `${date.getFullYear()}-${String(
+                                                            date.getMonth() + 1
+                                                        ).padStart(2, '0')}`
+                                                        : '';
+
+                                                    handleFilterChange('month_year', value);
+                                                }}
+                                                dateFormat="MMMM yyyy"
+                                                showMonthYearPicker
+                                                showFullMonthYearPicker
+                                                placeholderText="Select month and year"
+                                                maxDate={new Date()}
+                                                showPopperArrow={false}
+                                                className="w-full h-[40px] px-3 rounded-lg border border-[var(--color-border-secondary)] bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
                                             />
                                         </div>
 
@@ -844,7 +870,7 @@ const MonthlyAttendance = () => {
                     )}
 
                     {/* ── Scrollable Grid ── */}
-                    <div ref={containerRef} className="overflow-auto" style={{ maxHeight: '65vh' }}>
+                    <div ref={containerRef} className="overflow-auto" style={{ maxHeight: '70vh' }}>
                         <div style={{ minWidth: `${minInnerWidth}px` }}>
 
                             {/* Header row */}

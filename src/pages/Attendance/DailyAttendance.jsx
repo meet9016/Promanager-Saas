@@ -943,7 +943,7 @@ const DailyAttendance = () => {
   }
 
   return (
-    <div className="h-100 overflow-hidden  bg-[var(--color-bg-primary)]">
+    <div className="h-[calc(100vh-64px)] overflow-hidden  bg-[var(--color-bg-primary)]">
       {toast && <Toast message={toast.message} type={toast.type} onClose={closeToast} />}
 
       <div className="p-3 sm:p-8  mx-auto  ">
@@ -1107,7 +1107,7 @@ const DailyAttendance = () => {
                 <div className="p-8 text-center text-[var(--color-text-secondary)]">No records found</div>
               ) : (
                 <>
-                  <Table className="min-w-[1200px]" wrapperClassName="max-h-[55vh] overflow-y-auto">
+                  <Table className="min-w-[1200px]" wrapperClassName="max-h-[64vh] overflow-y-auto">
                     <TableHeader>
                       <TableHeaderRow>
                         <Th>Employee</Th>

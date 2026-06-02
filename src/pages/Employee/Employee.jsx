@@ -1309,7 +1309,7 @@ export default function Employee() {
                         <>
                             {/* Table */}
                             <div className="overflow-hidden">
-                                <Table>
+                                <Table wrapperClassName="max-h-[70vh] overflow-y-auto">
                                     <TableHeader>
                                         <TableHeaderRow>
                                             {[
