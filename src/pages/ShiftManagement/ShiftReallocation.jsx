@@ -10,6 +10,7 @@ import Pagination from '../../Components/Pagination';
 import CustomSelect from '../../Components/comman/CustomSelect';
 import CustomInput from '../../Components/comman/CustomInput';
 import { Table, TableHeader, TableBody, TableRow, TableHeaderRow, Th, Td } from '../../Components/ui/Table';
+import LoadingSpinner from '../../Components/Loader/LoadingSpinner';
 
 const ShiftReallocation = () => {
     const { user } = useAuth();
@@ -209,7 +210,7 @@ const ShiftReallocation = () => {
     // Search debounce and initialization
     useEffect(() => {
         if (!user?.user_id) return;
-        
+
         const delayDebounce = setTimeout(() => {
             if (view === 'list') {
                 if (searchQuery !== '') {
@@ -568,13 +569,17 @@ const ShiftReallocation = () => {
                             </div>
                         </div>
 
-                        {historyLoading ? (
-                            <div className="px-6 py-12 text-center">
+                        {!historyLoading ? (
+                            <div className="px-6 py-0 text-center">
                                 <div className="inline-flex items-center space-x-2 text-[var(--color-text-secondary)]">
-                                    <RefreshCw className="w-5 h-5 animate-spin" />
-                                    <span>Loading reallocation history...</span>
+                                    {/* <RefreshCw className="w-5 h-5 animate-spin" />
+                                    <span>Loading reallocation history...</span> */}
+                                    <LoadingSpinner />
                                 </div>
                             </div>
+                           
+
+
                         ) : historyError ? (
                             <div className="px-6 py-12 text-center">
                                 <div className="bg-[var(--color-error-light)] border border-[var(--color-border-error)] rounded-lg p-8">

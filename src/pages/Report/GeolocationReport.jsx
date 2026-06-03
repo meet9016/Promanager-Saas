@@ -47,6 +47,7 @@ import { Table, TableHeader, TableBody, TableRow, TableHeaderRow, Th, Td } from 
 import CustomDatePicker from '../../Components/comman/CustomDatePicker';
 import CustomSelect from '../../Components/comman/CustomSelect';
 import CustomInput from '../../Components/comman/CustomInput';
+import LoadingSpinner from '../../Components/Loader/LoadingSpinner';
 
 /** ---------- Floating Anchors ---------- **/
 const getScrollParents = (node) => {
@@ -1125,8 +1126,9 @@ const GeolocationReport = () => {
                         {loading ? (
                             <div className="p-8 text-center text-[var(--color-text-secondary)]">
                                 <div className="flex items-center justify-center">
-                                    <Loader2 className="h-8 w-8 animate-spin mr-3" />
-                                    Loading geolocation data...
+                                    {/* <Loader2 className="h-8 w-8 animate-spin mr-3" />
+                                    Loading geolocation data... */}
+                                    <LoadingSpinner />
                                 </div>
                             </div>
                         ) : (filteredData?.length || 0) === 0 ? (

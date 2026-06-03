@@ -10,6 +10,7 @@ import { ConfirmDialog } from '../../Components/comman/ConfirmDialog';
 import Pagination from '../../Components/Pagination';
 import { Table, TableHeader, TableBody, TableRow, TableHeaderRow, Th, Td } from '../../Components/ui/Table';
 import CustomInput from '../../Components/comman/CustomInput';
+import LoadingSpinner from '../../Components/Loader/LoadingSpinner';
 
 // Day Status Legend Component
 const DayStatusLegend = () => {
@@ -506,10 +507,15 @@ const ShiftManagement = () => {
 
                             {/* Content section */}
                             {loading ? (
-                                <div className="px-6 py-12 text-center">
+                                // <div className=" text-center">
+                                //     <div className="inline-flex items-center space-x-2 text-[var(--color-text-secondary)]">
+                                //         <RefreshCw className="w-5 h-5 animate-spin" />
+                                //         <span>Loading shifts...</span>                        
+                                //     </div>
+                                // </div>
+                                <div className="px-0 py-0 text-center">
                                     <div className="inline-flex items-center space-x-2 text-[var(--color-text-secondary)]">
-                                        <RefreshCw className="w-5 h-5 animate-spin" />
-                                        <span>Loading shifts...</span>
+                                        <LoadingSpinner />
                                     </div>
                                 </div>
                             ) : error ? (

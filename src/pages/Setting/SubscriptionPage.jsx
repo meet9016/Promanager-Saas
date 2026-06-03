@@ -181,83 +181,107 @@ const SubscriptionPage = () => {
                 />
             )}
 
-            {/* Header */}
-            <div className="bg-[var(--color-bg-secondary)] rounded-3xl shadow-sm border border-[var(--color-border-primary)] overflow-hidden mb-6">
-                <div className="bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] p-6">
-                    <div className="flex items-center justify-between flex-wrap gap-4">
-                        <div className="flex items-center gap-4">
+            {/* Modern Subscription Hero */}
+            <div
+                className={`relative overflow-hidden rounded-[32px] shadow-xl mb-6 bg-[var(--color-primary-dark)] ${getBannerStyle()}`}
+            >
+                {/* Background Effects */}
+                <div className="absolute -top-24 -right-24 w-80 h-80 rounded-full bg-white/10 blur-3xl"></div>
+                <div className="absolute -bottom-20 -left-20 w-72 h-72 rounded-full bg-white/10 blur-3xl"></div>
+
+                <div className="relative z-10 p-6 lg:p-8">
+
+                    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
+
+                        {/* Left Content */}
+                        <div className="flex gap-4 flex-1">
+
                             <button
                                 onClick={() => navigate(-1)}
-                                className="w-11 h-11 rounded-xl bg-white/10 hover:bg-white/20 transition-all flex items-center justify-center text-white backdrop-blur-sm"
+                                className="w-12 h-12 shrink-0 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 backdrop-blur-md flex items-center justify-center text-white transition-all"
                             >
                                 <ArrowLeft size={20} />
                             </button>
 
-                            <div>
-                                <div className="flex items-center gap-3 mb-1">
-                                    <Gift className="w-7 h-7 text-white" />
+                            <div className="flex-1">
 
-                                    <h1 className="text-2xl lg:text-3xl font-bold text-white">
+                                {/* Title */}
+                                <div className="flex items-center gap-3 flex-wrap">
+                                    <Gift className="w-8 h-8 text-white" />
+
+                                    <h1 className="text-3xl lg:text-4xl font-bold text-white">
                                         Subscription Management
                                     </h1>
                                 </div>
 
-                                <p className="text-white/80 text-sm">
+                                <p className="text-white/75 mt-2 text-sm lg:text-base">
                                     Manage your current plan and billing history
                                 </p>
+
+                                {/* Status + Renew Button */}
+                                <div className="mt-6 flex flex-wrap items-center gap-3">
+
+                                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/15 backdrop-blur-md border border-white/20">
+
+                                        {statusInfo.isExpired ? (
+                                            <AlertTriangle className="w-5 h-5 text-white" />
+                                        ) : (
+                                            <BadgeCheck className="w-5 h-5 text-white" />
+                                        )}
+
+                                        <span className="font-semibold text-white">
+                                            {statusInfo.text} Subscription
+                                        </span>
+                                    </div>
+
+                                    <button
+                                        onClick={() => navigate('/renew')}
+                                        className="bg-white text-[var(--color-primary-dark)] hover:bg-gray-100 px-5 py-2.5 rounded-xl font-semibold shadow-lg transition-all duration-300 hover:scale-105"
+                                    >
+                                        Renew Plan
+                                    </button>
+
+                                </div>
+
+                                {/* Description */}
+                                <p className="text-white/85 mt-4 max-w-2xl leading-relaxed">
+                                    {statusInfo.isExpired
+                                        ? 'Your subscription has expired. Renew now to continue using premium features.'
+                                        : statusInfo.isExpiringSoon
+                                            ? 'Your subscription will expire soon. Renew before interruption.'
+                                            : 'Your subscription is active and working properly.'}
+                                </p>
+
                             </div>
                         </div>
 
-                        <button
-                            onClick={() => navigate('/renew')}
-                            className="bg-white text-[var(--color-primary-dark)] hover:bg-gray-100 transition-all px-5 py-3 rounded-xl font-semibold shadow-lg"
-                        >
-                            Renew Plan
-                        </button>
-                    </div>
-                </div>
-            </div>
+                        {/* Days Remaining Circle */}
+                        <div className="flex justify-center lg:justify-end">
 
-            {/* Banner */}
-            <div
-                className={`bg-gradient-to-r ${getBannerStyle()} rounded-3xl p-6 lg:p-8 text-white shadow-xl mb-6 relative overflow-hidden`}
-            >
-                <div className="absolute top-0 right-0 opacity-10">
-                    <Sparkles className="w-40 h-40" />
-                </div>
+                            <div className="relative w-40 h-40">
 
-                <div className="relative z-10 flex items-center justify-between flex-wrap gap-6">
-                    <div>
-                        <div className="flex items-center gap-3 mb-3">
-                            {statusInfo.isExpired ? (
-                                <AlertTriangle className="w-8 h-8" />
-                            ) : (
-                                <BadgeCheck className="w-8 h-8" />
-                            )}
+                                <div className="absolute inset-0 rounded-full border-[10px] border-white/20"></div>
 
-                            <h2 className="text-2xl font-bold">
-                                {statusInfo.text} Subscription
-                            </h2>
+                                <div className="absolute inset-2 rounded-full bg-white/10 backdrop-blur-xl border border-white/20"></div>
+
+                                <div className="absolute inset-0 flex flex-col items-center justify-center">
+
+                                    <span className="text-5xl font-black text-white">
+                                        {subscriptionDays}
+                                    </span>
+
+                                    <span className="text-white/70 text-sm uppercase tracking-wider mt-1">
+                                        Days Left
+                                    </span>
+
+                                </div>
+
+                            </div>
+
                         </div>
 
-                        <p className="text-white/90 max-w-xl">
-                            {statusInfo.isExpired
-                                ? 'Your subscription has expired. Renew now to continue using premium features.'
-                                : statusInfo.isExpiringSoon
-                                ? 'Your subscription will expire soon. Renew before interruption.'
-                                : 'Your subscription is active and working properly.'}
-                        </p>
                     </div>
 
-                    <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl px-6 py-5 min-w-[220px]">
-                        <p className="text-sm text-white/70 mb-1">
-                            Days Remaining
-                        </p>
-
-                        <h3 className="text-4xl font-bold">
-                            {subscriptionDays}
-                        </h3>
-                    </div>
                 </div>
             </div>
 

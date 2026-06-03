@@ -38,6 +38,7 @@ import { Table, TableHeader, TableBody, TableRow, TableHeaderRow, Th, Td } from 
 import CustomDatePicker from '../../Components/comman/CustomDatePicker';
 import CustomSelect from '../../Components/comman/CustomSelect';
 import CustomInput from '../../Components/comman/CustomInput';
+import LoadingSpinner from '../../Components/Loader/LoadingSpinner';
 
 // ─── Floating anchor helpers (same pattern as DailyReport) ───────────────────
 const getScrollParents = (node) => {
@@ -1055,8 +1056,9 @@ const AttendanceExceptionReport = () => {
                         {loading ? (
                             <div className="p-12 text-center text-[var(--color-text-secondary)]">
                                 <div className="flex items-center justify-center gap-3">
-                                    <Loader2 className="h-8 w-8 animate-spin" />
-                                    Loading...
+                                    {/* <Loader2 className="h-8 w-8 animate-spin" />
+                                    Loading... */}
+                                    <LoadingSpinner />
                                 </div>
                             </div>
                         ) : activeData.length === 0 ? (
