@@ -16,7 +16,7 @@ const AboutPage = () => {
             </Helmet>
 
             {/* Hero Section */}
-            <section className="py-20 px-4 bg-gradient-to-br from-[#6C4CF1] via-[#5b3dd9] to-[#4B2EDB] text-white relative overflow-hidden">
+            <section className="py-20 px-4 bg-[var(--color-primary-dark)] text-white relative overflow-hidden">
                 {/* Decorative Background */}
                 <div className="absolute inset-0 opacity-10">
                     <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
@@ -120,7 +120,7 @@ const AboutPage = () => {
                                 transition={{ duration: 0.6, delay: 0.3 }}
                                 className="absolute -bottom-6 -right-6 bg-white rounded-2xl p-8 shadow-2xl border-2 border-[#6C4CF1]/20"
                             >
-                                <div className="text-3xl font-black bg-gradient-to-r from-[#6C4CF1] to-[#4B2EDB] bg-clip-text text-transparent">
+                                <div className="text-3xl font-black bg-[var(--color-primary-dark)] bg-clip-text text-transparent">
                                     99%
                                 </div>
                                 <div className="text-sm text-[var(--color-text-secondary)]">Accuracy Rate</div>
@@ -133,7 +133,7 @@ const AboutPage = () => {
                                 transition={{ duration: 0.6, delay: 0.5 }}
                                 className="absolute top-6 left-6 bg-white/90 backdrop-blur-sm rounded-xl p-4 shadow-xl"
                             >
-                                <div className="text-2xl font-bold text-[#6C4CF1]">10K+</div>
+                                <div className="text-2xl font-bold text-[var(--color-primary-darker)]">10K+</div>
                                 <div className="text-sm text-[var(--color-text-secondary)]">Users</div>
                             </motion.div>
                         </motion.div>
@@ -178,7 +178,7 @@ const AboutPage = () => {
 
                             <h2 className="text-3xl md:text-4xl font-extrabold text-[var(--color-text-primary)] mb-6 leading-tight">
                                 Revolutionizing Payroll for{" "}
-                                <span className="bg-gradient-to-r from-[#6C4CF1] to-[#4B2EDB] bg-clip-text text-transparent">
+                                <span className="bg-[var(--color-primary-dark)] bg-clip-text text-transparent">
                                     Modern Businesses
                                 </span>
                             </h2>
@@ -201,7 +201,7 @@ const AboutPage = () => {
                                         viewport={{ once: true }}
                                         className="flex items-start gap-3 p-4 rounded-xl hover:bg-[#6C4CF1]/5 transition-colors"
                                     >
-                                        <div className="w-6 h-6 rounded-full bg-gradient-to-br from-[#6C4CF1] to-[#4B2EDB] flex items-center justify-center flex-shrink-0 mt-1">
+                                        <div className="w-6 h-6 rounded-full bg-[var(--color-primary-dark)] flex items-center justify-center flex-shrink-0 mt-1">
                                             <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
                                                 <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                                             </svg>

@@ -281,7 +281,7 @@ const Increment = () => {
 
                 {/* Main Content */}
                 <div className="space-y-8 ">
-                    <div className="bg-[var(--color-bg-secondary)]  h-[89vh] rounded-xl shadow-sm border border-[var(--color-primary-dark)] overflow-visible w-full relative">
+                    <div className="bg-[var(--color-bg-secondary)]  h-[86vh] rounded-xl shadow-sm border border-[var(--color-primary-dark)] overflow-visible w-full relative">
                         <div className="relative">
                             <div className="bg-[var(--color-primary-dark)] px-6 py-4">
                                 <div className="flex items-center space-x-3">

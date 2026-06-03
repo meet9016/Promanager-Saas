@@ -765,11 +765,11 @@ export default function Employee() {
                 />
             )}
 
-            <div className="p-8 mx-auto">
+            <div className="p-8 mx-auto ">
 
                 <div className="bg-[var(--color-bg-secondary)] rounded-lg border border-[var(--color-primary-dark)] overflow-hidden shadow-sm">
                     {/* Header section */}
-                    <div className="px-6 py-4 border-b border-[var(--color-primary-light)] bg-[var(--color-primary-lighter)]">
+                    <div className="px-6 py-4 border-b border-[var(--color-primary-light)] bg-[var(--color-primary-lighter)] ">
                         <div className="flex justify-between items-center flex-wrap gap-3">
                             <div className="flex items-center">
                                 <Users className="h-6 w-6 text-[var(--color-primary-darker)] mr-2" />
@@ -1308,8 +1308,8 @@ export default function Employee() {
                     ) : (
                         <>
                             {/* Table */}
-                            <div className="overflow-hidden">
-                                <Table wrapperClassName="max-h-[80vh] overflow-y-auto">
+                            <div className="overflow-hidden ">
+                                <Table wrapperClassName="max-h-[75vh] overflow-y-auto ">
                                     <TableHeader>
                                         <TableHeaderRow>
                                             {[

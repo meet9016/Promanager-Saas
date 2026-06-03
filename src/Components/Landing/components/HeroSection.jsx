@@ -22,7 +22,7 @@ const HeroSection = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-[var(--color-primary-lightest)] via-white to-[var(--color-primary-lightest)] rounded-full border-2 border-[var(--color-primary-light)] shadow-lg backdrop-blur-sm"
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-[var(--color-primary-dark)]  rounded-full border-2 border-[var(--color-primary-dark)] shadow-lg backdrop-blur-sm"
             >
               <motion.div
                 animate={{ rotate: 360 }}
@@ -30,7 +30,7 @@ const HeroSection = () => {
               >
 
               </motion.div>
-              <span className="text-sm font-bold bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-primary-dark)] bg-clip-text text-transparent">
+              <span className="text-sm font-bold  text-white text-transparent">
                 Payroll Made Simple
               </span>
             </motion.div>
@@ -52,7 +52,7 @@ const HeroSection = () => {
                   ProManager
                 </motion.span>
                 <motion.span
-                  className="block bg-gradient-to-r from-[#6C4CF1] to-[#4B2EDB] bg-clip-text text-transparent"
+                  className="block bg-[var(--color-primary-dark)] bg-clip-text text-transparent"
                   initial={{ opacity: 0, x: 50 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.8, delay: 0.5 }}
@@ -60,7 +60,7 @@ const HeroSection = () => {
                   Ultimate Payroll
                 </motion.span>
                 <motion.span
-                  className="block bg-gradient-to-r from-[#4B2EDB] to-[#6C4CF1] bg-clip-text text-transparent"
+                  className="block bg-[var(--color-primary-dark)] bg-clip-text text-transparent"
                   initial={{ opacity: 0, x: -50 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.8, delay: 0.7 }}

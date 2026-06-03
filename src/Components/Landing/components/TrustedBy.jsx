@@ -46,7 +46,7 @@ const TrustedBy = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: 0.2 }}
-                className="text-3xl lg:text-4xl font-extrabold bg-gradient-to-r from-[#6C4CF1] to-[#4B2EDB] bg-clip-text text-transparent"
+                className="text-3xl lg:text-4xl font-extrabold bg-[var(--color-primary-dark)] bg-clip-text text-transparent"
               >
                 100+
               </motion.h3>

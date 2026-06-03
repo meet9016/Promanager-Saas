@@ -31,7 +31,7 @@ const CTASection = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
             >
-              <h3 className="text-xl lg:text-2xl font-bold text-[var(--color-primary)] mb-2">
+              <h3 className="text-xl lg:text-2xl font-bold text-black mb-2">
                 Start Your Journey Today
               </h3>
 

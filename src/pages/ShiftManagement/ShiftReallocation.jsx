@@ -509,7 +509,7 @@ const ShiftReallocation = () => {
 
                 {/* List View */}
                 {view === 'list' && (
-                    <div className="bg-[var(--color-bg-secondary)]  h-[89vh]  rounded-lg shadow-sm border border-[var(--color-primary-dark)]">
+                    <div className="bg-[var(--color-bg-secondary)]  h-[86vh]  rounded-lg shadow-sm border border-[var(--color-primary-dark)]">
                         <div className="px-6 py-4 border-b border-[var(--color-primary-light)] bg-[var(--color-primary-lighter)] ">
                             <div className="flex items-center justify-between">
                                 <h2 className="text-lg font-semibold text-[var(--color-primary-darker)] flex items-center gap-2">
