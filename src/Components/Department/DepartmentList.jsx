@@ -270,7 +270,7 @@ const AccordionPanel = ({ isOpen, children }) => {
         <div
             style={{
                 maxHeight: isOpen ? height : 0,
-                overflow: "hidden",
+                overflow: "visible",
                 transition: "max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1)",
             }}
         >
