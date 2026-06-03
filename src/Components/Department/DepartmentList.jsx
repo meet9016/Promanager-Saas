@@ -244,6 +244,7 @@ const DepartmentAccordion = ({ department, onSave, saving }) => {
     );
 };
 
+
 // ─── Animated accordion wrapper ───────────────────────────────────────────────
 // Uses a ref to measure real content height and animates max-height smoothly.
 
