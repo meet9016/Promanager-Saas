@@ -181,7 +181,7 @@ const FeaturesSection = ({ noMoreFeatures = false }) => {
             className="text-4xl lg:text-5xl font-extrabold text-[var(--color-text-primary)] mb-6"
           >
             Smarter Payroll,{" "}
-            <span className="bg-gradient-to-r from-[#6C4CF1] to-[#4B2EDB] bg-clip-text text-transparent">
+            <span className="bg-[var(--color-primary-dark)] bg-clip-text text-transparent">
               Better Business Outcomes
             </span>
           </motion.h2>
@@ -223,7 +223,7 @@ const FeaturesSection = ({ noMoreFeatures = false }) => {
                       <div className="relative w-14 h-14">
                         <div className="absolute inset-0 bg-gradient-to-br from-[#6C4CF1] to-[#4B2EDB] rounded-2xl opacity-10 group-hover:opacity-20 transition-opacity duration-300" />
                         <div className="absolute inset-0.5 bg-white rounded-2xl flex items-center justify-center">
-                          <div className="w-12 h-12 bg-gradient-to-br from-[#6C4CF1] to-[#4B2EDB] rounded-xl flex items-center justify-center">
+                          <div className="w-12 h-12 bg-[var(--color-primary-dark)] rounded-xl flex items-center justify-center">
                             <Icon className="w-6 h-6 text-white" />
                           </div>
                         </div>
@@ -232,7 +232,7 @@ const FeaturesSection = ({ noMoreFeatures = false }) => {
 
                     {/* Content */}
                     <div className="space-y-2 flex-1">
-                      <h3 className="text-xl font-bold text-[var(--color-text-primary)] group-hover:text-[#6C4CF1] transition-colors duration-300">
+                      <h3 className="text-xl font-bold text-[var(--color-text-primary)] group-hover:text-[var(--color-primary-darker)] transition-colors duration-300">
                         {benefit.title}
                       </h3>
                       <p className="text-[var(--color-text-secondary)] leading-relaxed">
@@ -297,7 +297,7 @@ const FeaturesSection = ({ noMoreFeatures = false }) => {
                   repeat: Infinity,
                   ease: "easeInOut",
                 }}
-                className="absolute top-12 -right-8 w-6 h-6 bg-gradient-to-br from-[#6C4CF1] to-[#4B2EDB] rounded opacity-70"
+                className="absolute top-12 -right-8 w-6 h-6 bg-[var(--color-primary-dark)] rounded opacity-70"
               />
               <motion.div
                 animate={{ y: [5, -5, 5], x: [-2, 2, -2] }}
@@ -307,7 +307,7 @@ const FeaturesSection = ({ noMoreFeatures = false }) => {
                   repeat: Infinity,
                   ease: "easeInOut",
                 }}
-                className="absolute bottom-20 -left-6 w-4 h-4 bg-gradient-to-br from-[#4B2EDB] to-[#6C4CF1] rounded opacity-70"
+                className="absolute bottom-20 -left-6 w-4 h-4 bg-[var(--color-primary-dark)] rounded opacity-70"
               />
             </div>
           </motion.div>
@@ -333,9 +333,9 @@ const FeaturesSection = ({ noMoreFeatures = false }) => {
                       className="flex-shrink-0 mt-1"
                     >
                       <div className="relative w-14 h-14">
-                        <div className="absolute inset-0 bg-gradient-to-br from-[#6C4CF1] to-[#4B2EDB] rounded-2xl opacity-10 group-hover:opacity-20 transition-opacity duration-300" />
+                        <div className="absolute inset-0 bg-[var(--color-primary-dark)] rounded-2xl opacity-10 group-hover:opacity-20 transition-opacity duration-300" />
                         <div className="absolute inset-0.5 bg-white rounded-2xl flex items-center justify-center">
-                          <div className="w-12 h-12 bg-gradient-to-br from-[#6C4CF1] to-[#4B2EDB] rounded-xl flex items-center justify-center">
+                          <div className="w-12 h-12 bg-[var(--color-primary-dark)] rounded-xl flex items-center justify-center">
                             <Icon className="w-6 h-6 text-white" />
                           </div>
                         </div>
@@ -344,7 +344,7 @@ const FeaturesSection = ({ noMoreFeatures = false }) => {
 
                     {/* Content */}
                     <div className="space-y-2 flex-1">
-                      <h3 className="text-xl font-bold text-[var(--color-text-primary)] group-hover:text-[#6C4CF1] transition-colors duration-300">
+                      <h3 className="text-xl font-bold text-[var(--color-text-primary)] group-hover:text-[var(--color-primary-darker)] transition-colors duration-300">
                         {benefit.title}
                       </h3>
                       <p className="text-[var(--color-text-secondary)] leading-relaxed">
@@ -419,7 +419,7 @@ const FeaturesSection = ({ noMoreFeatures = false }) => {
               className="text-4xl lg:text-5xl font-extrabold text-[var(--color-text-primary)] mb-6"
             >
               Everything You Need to{" "}
-              <span className="bg-gradient-to-r from-[#6C4CF1] to-[#4B2EDB] bg-clip-text text-transparent">
+              <span className="bg-[var(--color-primary-dark)] bg-clip-text text-transparent">
                 Manage Your Workforce
               </span>
             </motion.h2>
@@ -497,7 +497,7 @@ const FeaturesSection = ({ noMoreFeatures = false }) => {
                   >
                     {/* Feature number badge */}
                     <div className="inline-block">
-                      <span className="text-sm font-semibold text-[#6C4CF1] bg-[#6C4CF1]/10 px-4 py-2 rounded-full">
+                      <span className="text-sm font-semibold text-[var(--color-primary-darker)] bg-[var(--color-primary-lighter)] px-4 py-2 rounded-full">
                         Feature {String(index + 1).padStart(2, "0")}
                       </span>
                     </div>
@@ -517,7 +517,7 @@ const FeaturesSection = ({ noMoreFeatures = false }) => {
 
                       <motion.a
                         href="/login"
-                        className="inline-flex items-center gap-2 text-[#6C4CF1] font-semibold group mt-4"
+                        className="inline-flex items-center gap-2 text-[var(--color-primary-darker)] font-semibold group mt-4"
                         whileHover={{ x: 5 }}
                       >
                         Learn More

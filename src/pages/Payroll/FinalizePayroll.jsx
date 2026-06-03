@@ -525,7 +525,7 @@ export default function FinalizePayroll() {
         </div> */}
 
         {/* Main Content */}
-        <div className="bg-[var(--color-bg-secondary)] h-[89vh] rounded-lg border border-[var(--color-primary-dark)] overflow-hidden shadow-sm">
+        <div className="bg-[var(--color-bg-secondary)] h-[87vh] rounded-lg border border-[var(--color-primary-dark)] overflow-hidden shadow-sm">
           {/* Header section */}
           <div className="px-6 py-4 border-b border-[var(--color-primary-light)] bg-[var(--color-primary-lighter)]">
             <div className="flex justify-between items-center">

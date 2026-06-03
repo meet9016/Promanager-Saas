@@ -162,7 +162,7 @@ const TestimonialSection = () => {
 
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-[var(--color-text-primary)] mb-4">
             What Our{" "}
-            <span className="bg-gradient-to-r from-[#6C4CF1] to-[#4B2EDB] bg-clip-text text-transparent">
+            <span className="bg-[var(--color-primary-dark)] bg-clip-text text-transparent">
               Users Say
             </span>
           </h2>

@@ -133,8 +133,8 @@ const AboutSection = () => {
                 />
                 <defs>
                   <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" stopColor="#6C4CF1" />
-                    <stop offset="100%" stopColor="#4B2EDB" />
+                    <stop offset="0%" stopColor="#5917A8" />
+                    <stop offset="100%" stopColor="#7300ff" />
                   </linearGradient>
                 </defs>
               </motion.svg>
@@ -149,7 +149,7 @@ const AboutSection = () => {
               className="text-4xl lg:text-5xl font-extrabold text-[var(--color-text-primary)] leading-tight mb-6"
             >
               Simplify Payroll,{" "}
-              <span className="bg-gradient-to-r from-[#6C4CF1] to-[#4B2EDB] bg-clip-text text-transparent">
+              <span className="bg-[var(--color-primary-dark)] bg-clip-text text-transparent">
                 Empower Teams
               </span>
             </motion.h2>
@@ -163,7 +163,7 @@ const AboutSection = () => {
               className="text-lg text-[var(--color-text-secondary)] leading-relaxed"
             >
               At our core, we believe that seamless payroll builds stronger teams. 
-              That's why we created <span className="font-semibold text-[#6C4CF1]">ProManager</span> — an ultimate payroll software designed to simplify every aspect of workforce pay, 
+              That's why we created <span className="font-semibold text-[var(--color-primary-darker)]">ProManager</span> — an ultimate payroll software designed to simplify every aspect of workforce pay, 
               from salary and compliance to attendance, leave, and employee benefits.
             </motion.p>
 
@@ -187,7 +187,7 @@ const AboutSection = () => {
                     whileHover={{ scale: 1.05, y: -5 }}
                     className="flex items-start gap-3 p-4 rounded-xl bg-white border border-[var(--color-border-primary)] shadow-sm hover:shadow-md transition-all duration-300"
                   >
-                    <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#6C4CF1] to-[#4B2EDB] flex items-center justify-center flex-shrink-0">
+                    <div className="w-10 h-10 rounded-lg bg-[var(--color-primary-dark)] flex items-center justify-center flex-shrink-0">
                       <Icon className="w-5 h-5 text-white" />
                     </div>
                     <div>

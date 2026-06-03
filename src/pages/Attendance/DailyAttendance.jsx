@@ -946,7 +946,7 @@ const DailyAttendance = () => {
     <div className="h-[calc(100vh-64px)] overflow-hidden  bg-[var(--color-bg-primary)]">
       {toast && <Toast message={toast.message} type={toast.type} onClose={closeToast} />}
 
-      <div className="p-3 sm:p-8  mx-auto  ">
+      <div className="p-3 sm:p-6  mx-auto  ">
         {/* Header */}
         {/* <div className="bg-[var(--color-bg-secondary)] rounded-xl sm:rounded-2xl shadow-xl mb-4 sm:mb-8 overflow-hidden">
           <div className="bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] p-4 sm:p-8">
@@ -987,7 +987,7 @@ const DailyAttendance = () => {
 
 
         {/* Main content */}
-        <div className="bg-[var(--color-bg-secondary)] rounded-lg border border-[var(--color-primary-dark)] overflow-hidden shadow-sm flex flex-col h-[80vh]">
+        <div className="bg-[var(--color-bg-secondary)] rounded-lg border border-[var(--color-primary-dark)] overflow-hidden shadow-sm flex flex-col  mb-6">
           <div className="px-3 sm:px-6 py-3 sm:py-4 border-b border-[var(--color-primary-light)] bg-[var(--color-primary-lighter)] ">
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
               <div className="flex items-center">

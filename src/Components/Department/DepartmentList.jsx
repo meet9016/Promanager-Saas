@@ -391,7 +391,7 @@ const DepartmentList = () => {
     const filteredCount = filteredDepartments.length;
 
     return (
-        <div className="bg-[var(--color-bg-secondary)] h-[89vh] rounded-xl shadow-sm border border-[var(--color-primary-dark)] overflow-hidden ">
+        <div className="bg-[var(--color-bg-secondary)] h-[87vh] rounded-xl shadow-sm border border-[var(--color-primary-dark)] overflow-hidden ">
             {/* Header */}
             <div className="relative">
                 <div className="bg-[var(--color-primary-dark)] px-6 py-4">

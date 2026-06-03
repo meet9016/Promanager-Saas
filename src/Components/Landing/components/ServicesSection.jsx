@@ -92,7 +92,7 @@ const ServicesSection = () => {
               <h2 className="text-3xl lg:text-4xl font-extrabold text-[var(--color-text-primary)] leading-tight">
                 Future-Ready Payroll
                 <br />
-                <span className="bg-gradient-to-r from-[#6C4CF1] to-[#4B2EDB] bg-clip-text text-transparent">
+                <span className="bg-[var(--color-primary-dark)] bg-clip-text text-transparent">
                   Management Platform
                 </span>
               </h2>
@@ -197,7 +197,7 @@ const ServicesSection = () => {
 
                     <motion.div
                       whileHover={{ x: 10 }}
-                      className="inline-flex items-center gap-3 text-[#6C4CF1] font-bold text-lg cursor-pointer group"
+                      className="inline-flex items-center gap-3 text-[var(--color-primary-darker)] font-bold text-lg cursor-pointer group"
                     >
                       <span>Learn More</span>
                       <motion.div
@@ -216,7 +216,7 @@ const ServicesSection = () => {
                     whileInView={{ scaleX: 1 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.8, delay: 0.6 }}
-                    className="h-1 w-16 bg-gradient-to-r from-[#6C4CF1] to-[#4B2EDB] rounded-full origin-left"
+                    className="h-1 w-16 bg-[var(--color-primary-dark)] rounded-full origin-left"
                   />
                 </motion.div>
               </motion.div>

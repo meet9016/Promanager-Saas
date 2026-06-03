@@ -152,7 +152,7 @@ const PricingPage = () => {
 
         <h2 className="text-4xl lg:text-5xl font-extrabold text-[var(--color-text-primary)] mb-4">
           Choose The Best Plan,{" "}
-          <span className="bg-gradient-to-r from-[#6C4CF1] to-[#4B2EDB] bg-clip-text text-transparent">
+          <span className="bg-[var(--color-primary-dark)] bg-clip-text text-transparent">
             For Your Business
           </span>
         </h2>
@@ -205,7 +205,7 @@ const PricingPage = () => {
                     <div key={label} className="relative overflow-hidden rounded-xl bg-gradient-to-br from-gray-50 to-white border border-gray-100 px-3 py-3 text-center shadow-sm">
                       {accent && <div className="absolute inset-0 bg-gradient-to-br from-[#6C4CF1]/5 to-[#4B2EDB]/5 pointer-events-none" />}
                       <p className="text-[10px] uppercase tracking-widest mb-1">{label}</p>
-                      <p className={`font-black text-xl tracking-tight ${accent ? "text-[#6C4CF1]" : "text-gray-900"}`}>
+                      <p className={`font-black text-xl tracking-tight ${accent ? "text-[var(--color-primary-darker)]" : "text-gray-900"}`}>
                         {value}
                       </p>
                     </div>
@@ -225,7 +225,7 @@ const PricingPage = () => {
                     whileHover={{ y: -5 }}
                     transition={{ type: "spring", stiffness: 300, damping: 20 }}
                     className={`relative rounded-[1.75rem] p-7 transition-all duration-300 ${isActive
-                      ? "bg-gradient-to-b from-[#7C5CF5] to-[#4B2EDB] text-white shadow-[0_20px_60px_rgba(108,76,241,0.35)] scale-[1.03] border border-white/10"
+                      ? "bg-[var(--color-primary-dark)] text-white shadow-[0_20px_60px_rgba(108,76,241,0.35)] scale-[1.03] border border-white/10"
                       : "bg-white border border-gray-100 shadow-[0_4px_20px_rgba(0,0,0,0.06)] hover:shadow-[0_8px_32px_rgba(108,76,241,0.12)] hover:border-[#6C4CF1]/20"
                       }`}
                   >
@@ -233,7 +233,7 @@ const PricingPage = () => {
                       <>
                         {/* inner glow */}
                         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-px bg-gradient-to-r from-transparent via-white/40 to-transparent" />
-                        <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-white text-[#6C4CF1] text-[9px] font-black px-4 py-1 rounded-full shadow-md tracking-[0.15em] uppercase">
+                        <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-white text-[var(--color-primary-darker)] text-[9px] font-black px-4 py-1 rounded-full shadow-md tracking-[0.15em] uppercase">
                           Best Match
                         </span>
                       </>
@@ -245,16 +245,16 @@ const PricingPage = () => {
                         <h3 className={`text-lg font-black tracking-tight ${isActive ? "text-white" : "text-[var(--color-text-primary)]"}`}>
                           {plan.name}
                         </h3>
-                        <span className={`text-[10px] px-2 py-0.5 rounded-full font-semibold ${isActive ? "bg-white/15 text-white/80" : "bg-[#6C4CF1]/8 text-[#6C4CF1]"
+                        <span className={`text-[12px] px-2 py-0.5 rounded-full font-semibold ${isActive ? "bg-white/15 text-white/80" : "bg-[#6C4CF1]/8 text-[var(--color-primary-darker)]"
                           }`}>
                           {plan.user_range} users
                         </span>
                       </div>
                       <div className="mt-4 flex items-end gap-1">
-                        <span className={`text-[2.6rem] font-black leading-none tracking-tighter ${isActive ? "text-white" : "text-[#6C4CF1]"}`}>
+                        <span className={`text-[2.6rem] font-black leading-none tracking-tighter ${isActive ? "text-white" : "text-[var(--color-primary-darker)]"}`}>
                           ₹{plan.price_per_user}
                         </span>
-                        <span className={`text-xs pb-1.5 ${isActive ? "text-white/50" : "text-gray-400"}`}>/user/mo</span>
+                        <span className={`text-sm pb-1.5 ${isActive ? "text-white/50" : "text-gray-400"}`}>/user/mo</span>
                       </div>
                       {/* Divider */}
                       <div className={`mt-5 h-px ${isActive ? "bg-white/15" : "bg-gray-100"}`} />
@@ -264,7 +264,7 @@ const PricingPage = () => {
                     <div className="space-y-2.5 mb-7">
                       {plan.features.map((f, j) => (
                         <div key={j} className={`text-sm flex gap-2.5 items-center ${isActive ? "text-white/85" : "text-gray-500"}`}>
-                          <span className={`w-4 h-4 rounded-full flex-shrink-0 flex items-center justify-center text-[10px] font-black ${isActive ? "bg-white/20 text-white" : "bg-[#6C4CF1]/10 text-[#6C4CF1]"
+                          <span className={`w-4 h-4 rounded-full flex-shrink-0 flex items-center justify-center text-[10px] font-black ${isActive ? "bg-white/20 text-white" : "bg-[#6C4CF1]/10 text-[var(--color-primary-darker)]"
                             }`}>✓</span>
                           {f}
                         </div>
@@ -272,8 +272,8 @@ const PricingPage = () => {
                     </div>
 
                     <button className={`w-full py-3 rounded-xl font-bold text-sm tracking-wide transition-all duration-200 ${isActive
-                      ? "bg-white text-[#6C4CF1] hover:bg-white/90 shadow-md"
-                      : "bg-[#6C4CF1]/8 text-[#6C4CF1] border border-[#6C4CF1]/20 hover:bg-[#6C4CF1] hover:text-white hover:border-transparent"
+                      ? "bg-white text-[var(--color-primary-darker)] hover:bg-white/90 shadow-md"
+                      : "bg-[#6C4CF1]/8 text-[var(--color-primary-darker)] border border-[#6C4CF1]/20 hover:bg-[#6C4CF1] hover:text-white hover:border-transparent"
                       }`}
                       // PricingPage — button onClick
                       onClick={() => navigate("/payment", {

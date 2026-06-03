@@ -128,7 +128,7 @@ const ResourceTemplatesSection = () => {
               className="text-4xl lg:text-5xl font-extrabold text-[var(--color-text-primary)] mb-6 leading-tight"
             >
               Organize HR Workflows with{" "}
-              <span className="bg-gradient-to-r from-[#6C4CF1] to-[#4B2EDB] bg-clip-text text-transparent">
+              <span className="bg-[var(--color-primary-dark)] bg-clip-text text-transparent">
                 Ready-to-Use Templates
               </span>
             </motion.h2>
@@ -168,9 +168,9 @@ const ResourceTemplatesSection = () => {
                     transition={{ duration: 0.3 }}
                     className="relative w-20 h-20 mb-4"
                   >
-                    <div className="absolute inset-0 bg-gradient-to-br from-[#6C4CF1] to-[#4B2EDB] rounded-2xl opacity-10 group-hover:opacity-20 transition-opacity duration-300" />
+                    <div className="absolute inset-0 bg-[var(--color-primary-dark)] rounded-2xl opacity-10 group-hover:opacity-20 transition-opacity duration-300" />
                     <div className="absolute inset-0.5 bg-white rounded-2xl flex items-center justify-center">
-                      <div className="w-16 h-16 bg-gradient-to-br from-[#6C4CF1] to-[#4B2EDB] rounded-xl flex items-center justify-center">
+                      <div className="w-16 h-16 bg-[var(--color-primary-dark)] rounded-xl flex items-center justify-center">
                         <Icon className="w-8 h-8 text-white" />
                       </div>
                     </div>
@@ -178,7 +178,7 @@ const ResourceTemplatesSection = () => {
 
                   {/* Content */}
                   <div className="space-y-3">
-                    <h3 className="text-lg font-bold text-[var(--color-text-primary)] group-hover:text-[#6C4CF1] transition-colors duration-300">
+                    <h3 className="text-lg font-bold text-[var(--color-text-primary)] group-hover:text-[var(--color-primary-dark)] transition-colors duration-300">
                       {category.title}
                     </h3>
                     
@@ -192,7 +192,7 @@ const ResourceTemplatesSection = () => {
                       whileInView={{ scaleX: 1 }}
                       viewport={{ once: true }}
                       transition={{ duration: 0.6, delay: index * 0.08 + 0.3 }}
-                      className="h-0.5 w-12 bg-gradient-to-r from-[#6C4CF1] to-[#4B2EDB] origin-left group-hover:w-full transition-all duration-300"
+                      className="h-0.5 w-12 bg-[var(--color-primary-dark)] origin-left group-hover:w-full transition-all duration-300"
                     />
                   </div>
 
@@ -218,10 +218,10 @@ const ResourceTemplatesSection = () => {
           className="mt-16 text-center"
         >
           <div className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#6C4CF1]/10 to-[#4B2EDB]/10 rounded-full border border-[#6C4CF1]/20">
-            <span className="text-sm font-semibold text-[#6C4CF1]">
+            <span className="text-sm font-semibold text-[var(--color-primary-darker)]">
               8 Essential HR Categories
             </span>
-            <div className="w-2 h-2 bg-gradient-to-r from-[#6C4CF1] to-[#4B2EDB] rounded-full animate-pulse" />
+            <div className="w-2 h-2 bg-[var(--color-primary-dark)] rounded-full animate-pulse" />
           </div>
         </motion.div>
       </div>
