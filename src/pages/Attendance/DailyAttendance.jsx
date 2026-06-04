@@ -937,7 +937,7 @@ const DailyAttendance = () => {
   const handleFilterClick = (filterKey) => {
     setActiveFilter((prev) => (prev === filterKey && filterKey !== 'total') ? 'total' : filterKey);
   };
-  
+
   if (loading && attendanceData.length === 0) {
     return <LoadingSpinner />;
   }
@@ -966,7 +966,7 @@ const DailyAttendance = () => {
         </div> */}
 
         {/* Summary cards — 8 columns on large screens */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2 sm:gap-4 mb-4 sm:mb-6 ">
+        <div className="grid grid-cols-2 sm:grid-cols-4 xl:grid-cols-8 gap-2 sm:gap-4 mb-4 sm:mb-6">
           <SummaryCard icon={Users} label="Total" value={summaryStats.total} tone="text-[var(--color-primary-dark)]"
             onClick={() => handleFilterClick('total')} isActive={activeFilter === 'total'} />
           <SummaryCard icon={CheckCircle} label="Present" value={summaryStats.present} tone="text-green-600"
@@ -1107,7 +1107,7 @@ const DailyAttendance = () => {
                 <div className="p-8 text-center text-[var(--color-text-secondary)]">No records found</div>
               ) : (
                 <>
-                  <Table className="min-w-[1200px]"  wrapperClassName="h-[72vh] overflow-y-auto custom-scrollbar">
+                  <Table className="min-w-[1200px]" wrapperClassName="h-[45vh] xl:h-[70vh] overflow-y-auto custom-scrollbar" >
                     <TableHeader>
                       <TableHeaderRow>
                         <Th>Employee</Th>

@@ -166,7 +166,7 @@ const DesignationList = () => {
                             </button>
                         </div>
                     ) : (
-                        <div className="grid gap-4 max-h-[510px] overflow-y-auto custom-scrollbar">
+                        <div className="grid gap-4  max-h-[300px] md:max-h-[400px] xl:max-h-[510px] overflow-y-auto custom-scrollbar">
                             {filteredDesignations.map((designation) => {
                                 const designationId = designation.designation_id || designation.id;
                                 const isDeleting = deletingId === designationId;

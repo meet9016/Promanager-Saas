@@ -118,7 +118,7 @@ const AllowanceList = () => {
                             </p>
                         </div>
                     ) : (
-                        <div className="grid gap-4 max-h-[530px] overflow-y-auto custom-scrollbar">
+                        <div className="grid gap-4  max-h-[300px] md:max-h-[420px] xl:max-h-[520px] overflow-y-auto custom-scrollbar">
                             {allowances.map((allowance) => {
                                 const allowanceId = allowance.allowance_id || allowance.id;
                                 const isDeleting = deletingId === allowanceId;

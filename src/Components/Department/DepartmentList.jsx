@@ -460,7 +460,7 @@ const DepartmentList = () => {
                     </div>
                 ) : (
 
-                    <div className="grid gap-3 max-h-[480px] overflow-y-auto custom-scrollbar ">
+                    <div className="grid gap-3  max-h-[300px] md:max-h-[400px] xl:max-h-[480px] overflow-y-auto custom-scrollbar ">
                         {filteredDepartments.map((department) => {
                             const departmentId = department.department_id || department.id;
                             const isOpen = openId === departmentId;

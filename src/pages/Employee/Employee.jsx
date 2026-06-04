@@ -1303,7 +1303,7 @@ export default function Employee() {
                         <>
                             {/* Table */}
                             <div className="overflow-hidden ">
-                                <Table wrapperClassName="max-h-[75vh] overflow-y-auto ">
+                                <Table  wrapperClassName="h-[60vh] xl:h-[70vh] overflow-y-auto custom-scrollbar">
                                     <TableHeader>
                                         <TableHeaderRow>
                                             {[

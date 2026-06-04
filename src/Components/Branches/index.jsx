@@ -34,8 +34,8 @@ const Branch = () => {
     };
 
     return (
-        <div className="h-100 bg-[var(--color-bg-primary)]">
-            <div className=" mx-auto  ">
+      <div className="h-screen bg-[var(--color-bg-primary)] overflow-hidden">
+         <div className="h-full mx-auto">
 
 
                 {/* Main Content */}

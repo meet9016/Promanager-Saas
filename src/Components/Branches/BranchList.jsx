@@ -130,7 +130,7 @@ const BranchList = () => {
 
     return (
         <>
-            <div className="bg-[var(--color-bg-secondary)] rounded-xl shadow-sm border border-[var(--color-primary-dark)] overflow-hidden">
+            <div className="bg-[var(--color-bg-secondary)] rounded-xl shadow-sm border border-[var(--color-primary-dark)] overflow-hidden h-full flex flex-col">
                 <div className="relative">
                     <div className="bg-[var(--color-primary-dark)] px-6 py-4">
                         <div className="flex items-center justify-between">
@@ -148,7 +148,7 @@ const BranchList = () => {
                     </div>
                 </div>
 
-                <div className="p-8 bg-[var(--color-bg-secondary)] flex flex-col gap-4">
+                <div className="p-8 bg-[var(--color-bg-secondary)] flex-1 flex flex-col gap-4 overflow-hidden">
                     {permissions["branch_create"] && (
                         <BranchForm
                             onSubmit={editingBranch ? handleEditBranch : handleAddBranch}
@@ -221,7 +221,7 @@ const BranchList = () => {
                             </button>
                         </div>
                     ) : (
-                        <div className="space-y-2 h-[460px] overflow-y-auto custom-scrollbar">
+                      <div className="space-y-2 h-[460px] max-[1024px]:h-[250px] overflow-y-auto custom-scrollbar">
                             {filteredBranches.map((branch) => {
                                 const branchId = branch.branch_id || branch.id;
                                 const isDeleting = deletingId === branchId;
