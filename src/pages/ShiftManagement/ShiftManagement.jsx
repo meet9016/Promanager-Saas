@@ -15,13 +15,13 @@ import LoadingSpinner from '../../Components/Loader/LoadingSpinner';
 // Day Status Legend Component
 const DayStatusLegend = () => {
     return (
-        <div className="w-36 bg-[var(--color-bg-secondary)] border border-[var(--color-primary-dark)] rounded-lg shadow-sm flex flex-col items-stretch">
+        <div className="w-full lg:w-36 bg-[var(--color-bg-secondary)] border border-[var(--color-primary-dark)] rounded-lg shadow-sm flex flex-col items-stretch">
             {/* Header */}
             <div className="px-6 py-4 bg-[var(--color-primary-dark)] rounded-t-lg flex items-center justify-center" style={{ minHeight: '70px' }}>
                 <h3 className="text-lg font-medium text-[var(--color-text-white)] text-center m-0 p-0">Day Status</h3>
             </div>
             {/* Content */}
-            <div className="flex flex-col items-center gap-6 p-3">
+            <div className="flex flex-row lg:flex-col items-center justify-center lg:justify-start gap-6 p-3">
                 <div className="flex flex-col items-center gap-1">
                     <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center">
                         <span className="text-xs text-[var(--color-text-secondary)] font-medium">W</span>
@@ -294,7 +294,7 @@ const ShiftManagement = () => {
                     // If we received exactly ITEMS_PER_PAGE items, there might be more pages
 
 
-                    // Simple approach: if we get exactly 10 items, assume there might be more
+                    // Simple approach: if we get exactly 10 items, assume there might be more pages
                     // Show next page button, and disable it if next page returns 0 items
                     if (shiftsData.length === ITEMS_PER_PAGE) {
                         // Assume there might be more pages - show pagination
@@ -412,8 +412,8 @@ const ShiftManagement = () => {
             <div className=" mx-auto p-8">
 
                 {/* Flex row: Available Shifts card + Day Status Legend */}
-                <div className="flex flex-row items-start gap-8">
-                    <div className="flex-1">
+                <div className="flex flex-col lg:flex-row items-start gap-8">
+                    <div className="flex-1 w-full lg:w-auto order-1 overflow-x-auto">
                         {/* Available Shifts card and rest of your main content */}
                         <div className="bg-[var(--color-bg-secondary)] h-[86vh] rounded-lg border border-[var(--color-primary-dark)] overflow-hidden shadow-sm">
                             {/* Header section */}
@@ -427,29 +427,6 @@ const ShiftManagement = () => {
                                     </div>
 
                                     <div className="flex items-center gap-3">
-                                        {/* <div className="relative w-full sm:w-64">
-                                            <input
-                                                type="text"
-                                                placeholder="Search shifts..."
-                                                value={searchQuery}
-                                                onChange={handleSearchChange}
-                                                className="w-full pl-10 pr-10 py-2 border border-[var(--color-border-secondary)] rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-text-white)] focus:border-[var(--color-border-primary)] text-sm"
-                                            />
-                                            <Search className="absolute left-3 top-2.5 h-4 w-4 text-[var(--color-text-muted)]" />
-                                            {searchQuery && (
-                                                <button
-                                                    onClick={clearSearch}
-                                                    className="absolute right-3 top-2.5 h-4 w-4 text-[var(--color-text-muted)] hover:text-[var(--color-text-secondary)]"
-                                                >
-                                                    <X className="h-4 w-4" />
-                                                </button>
-                                            )}
-                                            {searchLoading && (
-                                                <div className="absolute right-3 top-2.5">
-                                                    <RefreshCw className="h-4 w-4 animate-spin text-[var(--color-text-muted)]" />
-                                                </div>
-                                            )}
-                                        </div> */}
                                         <div className="relative w-full sm:w-64">
 
                                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--color-text-muted)] z-10" />
@@ -507,12 +484,6 @@ const ShiftManagement = () => {
 
                             {/* Content section */}
                             {loading ? (
-                                // <div className=" text-center">
-                                //     <div className="inline-flex items-center space-x-2 text-[var(--color-text-secondary)]">
-                                //         <RefreshCw className="w-5 h-5 animate-spin" />
-                                //         <span>Loading shifts...</span>                        
-                                //     </div>
-                                // </div>
                                 <div className="px-0 py-0 text-center">
                                     <div className="inline-flex items-center space-x-2 text-[var(--color-text-secondary)]">
                                         <LoadingSpinner />
@@ -591,7 +562,7 @@ const ShiftManagement = () => {
                                                         </div>
                                                     </Td>
                                                     <Td className="px-6 py-4 text-left">
-                                                        <div className="flex flex-wrap gap-3">
+                                                        <div className="flex gap-3">
                                                             {shift.shift_days.map((day) => (
                                                                 <div key={day.day_id} className="relative group">
                                                                     <span
@@ -673,7 +644,9 @@ const ShiftManagement = () => {
                             )}
                         </div>
                     </div>
-                    <DayStatusLegend />
+                    <div className="w-full lg:w-auto order-2">
+                        <DayStatusLegend />
+                    </div>
                 </div>
             </div>
 

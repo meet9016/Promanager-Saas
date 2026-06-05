@@ -645,7 +645,12 @@ const DailyReport = () => {
                 {/* Main content */}
                 <div className="bg-[var(--color-bg-secondary)] rounded-lg border border-[var(--color-primary-dark)] overflow-hidden shadow-sm flex flex-col flex-1 min-h-0">
                     <div className="px-6 py-4 border-b border-[var(--color-primary-light)] bg-[var(--color-primary-lighter)] ">
-                        <div className="flex justify-between items-center">
+
+
+
+
+
+                        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0">
                             <div className="flex items-center">
                                 <Activity className="h-6 w-6 text-[var(--color-primary-darker)] mr-2" />
                                 <h3 className="text-lg font-medium text-[var(--color-primary-darker)]">Daily Attendance Report</h3>
@@ -657,7 +662,8 @@ const DailyReport = () => {
 
 
 
-                                <div className="relative w-full sm:w-64">
+
+                                <div className="relative flex items-center z-[40] w-full sm:w-[180px] xl:w-[250px] h-[40px]">
                                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--color-text-muted)] z-20" />
                                     <CustomInput
                                         type="text"
@@ -687,16 +693,18 @@ const DailyReport = () => {
                                     <button
                                         ref={filterBtnRef}
                                         onClick={() => setFilterDropdown((v) => !v)}
-                                        className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-lg font-medium transition-colors"
+                                        className="w-full sm:w-auto  flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-lg font-medium transition-colors"
                                     >
-                                        <Filter className="h-4 w-4" />
-                                        Filters
+                                        <Filter className="h-6 w-6" />
+                                        <span className="lg:hidden sm:hidden xl:inline">Filters</span>
+                                     
                                         {getActiveFiltersCount() > 0 && (
                                             <span className="bg-[var(--color-primary-dark)] text-white text-xs rounded-full px-2 py-1">
                                                 {getActiveFiltersCount()}
                                             </span>
                                         )}
-                                        <ChevronDown className="h-4 w-4" />
+                                        <ChevronDown className="h-4 w-4 lg:hidden sm:hidden xl:inline" />
+                                        
                                     </button>
 
                                     {filterDropdown &&
@@ -1122,9 +1130,9 @@ const DailyReport = () => {
                                         onClick={() => setExportDropdown((v) => !v)}
                                         className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-lg font-medium transition-colors"
                                     >
-                                        <Download className="h-4 w-4" />
-                                        Export
-                                        <ChevronDown className="h-4 w-4" />
+                                        <Download className="h-6 w-6" />
+                                      <span className='lg:hidden sm:hidden xl:inline'>Export</span>  
+                                        <ChevronDown className="h-4 w-4 lg:hidden sm:hidden xl:inline" />
                                     </button>
 
                                     {exportDropdown &&
@@ -1163,6 +1171,14 @@ const DailyReport = () => {
                                 </div>
                             </div>
                         </div>
+
+
+
+
+
+
+
+
                     </div>
 
                     {/* Table */}

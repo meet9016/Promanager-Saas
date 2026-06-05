@@ -311,14 +311,14 @@ const Filters = ({
                 onClick={() => setFilterDropdown((v) => !v)}
                 className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)]  px-4 py-2 rounded-lg font-medium transition-colors backdrop-blur-sm"
             >
-                <Filter className="h-4 w-4" />
-                Filters
+                <Filter className="h-6 w-6" />
+                  <span className="lg:hidden sm:hidden xl:inline">Filters</span>
                 {activeFiltersCount > 0 && (
                     <span className="bg-[var(--color-bg-secondary)] text-primary-600 text-xs rounded-full px-2 py-1">
                         {activeFiltersCount}
                     </span>
                 )}
-                <ChevronDown className="h-4 w-4" />
+                <ChevronDown className="h-4 w-4 lg:hidden sm:hidden xl:inline" />
             </button>
 
             {filterDropdown &&
@@ -936,7 +936,7 @@ const GeolocationReport = () => {
                     <SummaryCard icon={AlertCircle} label="Late Arrivals" value={summaryStats.late} tone="text-orange-600" />
                     <SummaryCard icon={TrendingUp} label="Overtime" value={summaryStats.overtime} tone="text-primary-600" />
                 </div> */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 mb-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6  gap-4 mb-6">
                     <SummaryCard
                         icon={Users}
                         label="Total Employees"
@@ -1080,9 +1080,9 @@ const GeolocationReport = () => {
                                         onClick={() => setExportDropdown((v) => !v)}
                                         className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-lg font-medium transition-colors"
                                     >
-                                        <Download className="h-4 w-4" />
-                                        Export
-                                        <ChevronDown className="h-4 w-4" />
+                                        <Download className="h-6 w-6" />
+                                         <span className='lg:hidden sm:hidden xl:inline'>Export</span>  
+                                        <ChevronDown className="h-4 w-4 lg:hidden sm:hidden xl:inline" />
                                     </button>
 
                                     {exportDropdown && exportPos.ready && createPortal(

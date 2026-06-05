@@ -569,7 +569,7 @@ const ShiftReallocation = () => {
                             </div>
                         </div>
 
-                        {!historyLoading ? (
+                        {historyLoading ? (
                             <div className="px-6 py-0 text-center">
                                 <div className="inline-flex items-center space-x-2 text-[var(--color-text-secondary)]">
                                     {/* <RefreshCw className="w-5 h-5 animate-spin" />

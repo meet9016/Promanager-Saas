@@ -782,13 +782,13 @@ const MonthlyReport = () => {
 
                 {/* Data Preview Section */}
                 <div className="bg-[var(--color-bg-secondary)] rounded-xl shadow-sm border border-[var(--color-border-primary)] overflow-hidden mb-8">
-                    <div className="px-4 py-4 border-b border-[var(--color-border-primary)] bg-[var(--color-bg-secondary)]">
+                    <div className="px-4 py-4 border-b border-[var(--color-border-primary)] bg-[var(--color-primary-lighter)]">
                         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                             <div>
-                                <h3 className="font-semibold text-[var(--color-text-primary)] mb-1">
+                                <h3 className="font-semibold text-[var(--color-primary-darker)]">
                                     Monthly Attendance Report - {formatMonthYear(filters.month_year)}
                                 </h3>
-                                <p className="text-sm text-[var(--color-text-secondary)]">
+                                <p className="text-sm text-[var(--color-primary-darker)]">
                                     {hasGenerated
                                         ? `${reportData.length} record${reportData.length !== 1 ? 's' : ''} found`
                                         : 'Click "Generate Report" to load data'
@@ -830,11 +830,11 @@ const MonthlyReport = () => {
                         )}
 
                         {hasGenerated && reportData.length > 0 && (
-                            <div className="overflow-auto max-h-[70vh] border border-[var(--color-border-secondary)] rounded-lg">
+                            <div className="overflow-auto max-h-[70vh] border border-[var(--color-border-secondary)] ">
                                 <table className="w-full border-collapse table-fixed">
                                     <thead>
-                                        <tr className="sticky top-0 bg-[var(--color-bg-surface)] border-b-2 border-[var(--color-border-primary)] z-20">
-                                            <th className="w-60 px-4 py-3 text-left text-sm font-semibold text-[var(--color-text-primary)]
+                                        <tr className="sticky top-0 bg-[var(--color-primary-dark)] border-b-2 border-[var(--color-border-primary)] z-20">
+                                            <th className="w-60 px-4 py-3 text-left text-sm font-semibold text-white
                                                 sticky top-0 left-0 z-30 bg-[var(--color-bg-surface)] border-r-2 border-[var(--color-border-primary)] shadow-lg">
                                                 Employee Details
                                             </th>
@@ -844,11 +844,11 @@ const MonthlyReport = () => {
                                                     parseInt(filters.month_year.slice(5, 7))
                                                 )
                                             }, (_, i) => (
-                                                <th key={i + 1} className="w-28 px-2 py-3 text-center text-sm font-semibold text-[var(--color-text-primary)] border-r border-[var(--color-border-secondary)]">
+                                                <th key={i + 1} className="w-28 px-2 py-3 text-center text-sm font-semibold text-white border-r border-[var(--color-border-secondary)]">
                                                     {i + 1}
                                                 </th>
                                             ))}
-                                            <th className="w-44 px-3 py-3 text-center text-sm font-semibold text-[var(--color-text-primary)]
+                                            <th className="w-44 px-3 py-3 text-center text-sm font-semibold text-white
                                                 sticky top-0 z-30 bg-[var(--color-bg-surface)] border-l-2 border-[var(--color-border-primary)] shadow-lg">
                                                 Total
                                             </th>

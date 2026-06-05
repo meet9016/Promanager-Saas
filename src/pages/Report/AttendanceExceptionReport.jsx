@@ -815,7 +815,7 @@ const AttendanceExceptionReport = () => {
 
                     {/* Table toolbar */}
                     <div className="px-6 py-4 border-b border-[var(--color-primary-light)] bg-[var(--color-primary-lighter)]">
-                        <div className="flex justify-between items-center flex-wrap gap-3">
+                       <div className="flex items-center justify-between flex-nowrap gap-3 w-full">
                             <div className="flex items-center gap-2">
                                 {currentTab && <currentTab.icon className="h-5 w-5 text-[var(--color-primary-dark)]" />}
                                 <h3 className="text-lg font-medium text-[var(--color-primary-dark)]">{currentTab?.label}</h3>
@@ -825,10 +825,7 @@ const AttendanceExceptionReport = () => {
                             </div>
 
                             <div className="flex items-center gap-3 flex-wrap">
-
                                 {/* Date Picker */}
-
-
 
                                 {/* Search */}
                                 {/* <div className="relative w-full sm:w-56">
@@ -887,12 +884,12 @@ const AttendanceExceptionReport = () => {
                                         onClick={() => setFilterDropdown((v) => !v)}
                                         className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-lg font-medium transition-colors"
                                     >
-                                        <Filter className="h-4 w-4" />
-                                        Filters
+                                        <Filter className="h-6 w-6" />
+                                          <span className="lg:hidden sm:hidden xl:inline">Filters</span>
                                         {getActiveFiltersCount() > 0 && (
                                             <span className="bg-[var(--color-primary-dark)] text-white text-xs rounded-full px-2 py-1">{getActiveFiltersCount()}</span>
                                         )}
-                                        <ChevronDown className="h-4 w-4" />
+                                        <ChevronDown className="h-4 w-4 lg:hidden sm:hidden xl:inline" />
                                     </button>
 
                                     {filterDropdown && createPortal(
@@ -1002,9 +999,9 @@ const AttendanceExceptionReport = () => {
                                         onClick={() => setExportDropdown((v) => !v)}
                                         className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-lg font-medium transition-colors"
                                     >
-                                        <Download className="h-4 w-4" />
-                                        Export
-                                        <ChevronDown className="h-4 w-4" />
+                                        <Download className="h-6 w-6" />
+                                      <span className='lg:hidden sm:hidden xl:inline'>Export</span>  
+                                        <ChevronDown className="h-4 w-4 lg:hidden sm:hidden xl:inline" />
                                     </button>
 
                                     {exportDropdown && exportPos.ready && createPortal(

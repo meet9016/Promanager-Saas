@@ -62,7 +62,7 @@ const useAnchoredPosition = (anchorRef, isOpen, opts = {}) => {
     const { placement = 'bottom-end', offset = 10, minWidth = 192 } = opts;
     const [pos, setPos] = useState({ top: -9999, left: -9999, width: 0, ready: false });
     const cleanupRef = useRef([]);
-   
+
 
     const compute = useCallback(() => {
         const el = anchorRef.current;
@@ -287,14 +287,14 @@ const Filters = ({
                 onClick={() => setFilterDropdown((v) => !v)}
                 className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-lg font-medium transition-colors"
             >
-                <Filter className="h-4 w-4" />
-                Filters
+                <Filter className="h-6 w-6" />
+                <span className="lg:hidden sm:hidden xl:inline">Filters</span>
                 {activeFiltersCount > 0 && (
                     <span className="bg-[var(--color-primary-dark)] text-white text-xs rounded-full px-2 py-1">
                         {activeFiltersCount}
                     </span>
                 )}
-                <ChevronDown className="h-4 w-4" />
+                <ChevronDown className="h-4 w-4 lg:hidden sm:hidden xl:inline" />
             </button>
 
             {filterDropdown &&
@@ -418,7 +418,7 @@ const Filters = ({
                                     // disabled={loading}
                                     className="w-auto sm:w-[140px] flex items-center justify-center gap-2 px-4 py-2 bg-[var(--color-primary-dark)] text-[var(--color-text-white)] rounded-lg hover:bg-[var(--color-primary-darker)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
                                 >
-                                  <Filter size={14} />
+                                    <Filter size={14} />
                                     Apply Filters
                                 </button>
                             </div>
@@ -567,7 +567,7 @@ const DetailedDailyReport = () => {
     const [departments, setDepartments] = useState([]);
     const [designations, setDesignations] = useState([]);
     const [shifts, setShifts] = useState([]);
-    
+
 
     const navigate = useNavigate();
     const { user } = useAuth();
@@ -921,7 +921,7 @@ const DetailedDailyReport = () => {
 
             <div className="p-8 mx-auto h-full flex flex-col overflow-hidden">
                 {/* Summary cards (API-driven) */}
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-4 mb-4 sm:mb-6">
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-6 gap-2 sm:gap-4 mb-4 sm:mb-6">
                     <SummaryCard
                         icon={Users}
                         label="Total Employees"
@@ -1044,9 +1044,9 @@ const DetailedDailyReport = () => {
                                         onClick={() => setExportDropdown((v) => !v)}
                                         className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-lg font-medium transition-colors"
                                     >
-                                        <Download className="h-4 w-4" />
-                                        Export
-                                        <ChevronDown className="h-4 w-4" />
+                                        <Download className="h-6 w-6" />
+                                         <span className='lg:hidden sm:hidden xl:inline'>Export</span>  
+                                        <ChevronDown className="h-4 w-4 lg:hidden sm:hidden xl:inline" />
                                     </button>
 
                                     {exportDropdown && exportPos.ready && createPortal(

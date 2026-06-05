@@ -299,9 +299,7 @@ const SettingsPage = () => {
 
 
 
-/* =====================
-   PROFILE & INFO (TAB)
-   ===================== */
+/* ===================== PROFILE & INFO (TAB) ===================== */
 const ProfileInfoTab = () => {
     const { user } = useAuth();
 
@@ -315,7 +313,7 @@ const ProfileInfoTab = () => {
     ];
 
     return (
-        <div className="grid lg:grid-cols-3 gap-6">
+        <div className="grid xl:grid-cols-3 lg:grid-cols-2 gap-6">
             {/* User Card */}
             <div className="lg:col-span-2">
                 <SectionCard titleIcon={<User className="w-6 h-6 text-[var(--color-text-white)]" />} title="User Profile">
@@ -333,7 +331,7 @@ const ProfileInfoTab = () => {
                         </div>
                     </div>
 
-                    <div className="grid md:grid-cols-2 gap-4">
+                    <div className="grid sm:grid-cols-1 md:grid-cols-2 gap-4">
                         <InfoTile label="Full Name">
                             {pretty(user?.full_name || user?.name || user?.username)}
                         </InfoTile>
@@ -380,7 +378,7 @@ const ProfileInfoTab = () => {
    SMALL UI
    =========== */
 const SectionCard = ({ title, titleIcon, children, tight = false }) => (
-    <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-xl overflow-hidden">
+    <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-xl overflow-hidden ">
         <div className="bg-[var(--color-primary-lighter)]  p-5">
             <div className="flex items-center gap-3">
                 <div className="rounded-lg text-[var(--color-primary-darker)]">{titleIcon}</div>
