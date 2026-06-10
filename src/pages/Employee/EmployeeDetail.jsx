@@ -112,24 +112,29 @@ const EmployeeDetail = () => {
         if (!validateDate(lastWorkingDay)) {
             return;
         }
-
+        
         const userId = getUserId();
         if (!userId) {
             showToast('User not authenticated. Please login again.', 'error');
             return;
         }
-
+        
         setLoading(true);
-
+        
         try {
             const formData = new FormData();
             formData.append('employee_id', employee_id);
-
+            
             // Format date for API (YYYY-MM-DD)
-            const formattedDate = lastWorkingDay.toISOString().split('T')[0];
+            const dateObj = new Date(lastWorkingDay);
+            const year = dateObj.getFullYear();
+            const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+            const day = String(dateObj.getDate()).padStart(2, '0');
+            const formattedDate = `${year}-${month}-${day}`;
+            
             formData.append('last_working_date', formattedDate);
             formData.append('deactivate_reason', deactivateReason);
-
+            
             const response = await api.post('/employee_deactivate', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
