@@ -660,9 +660,6 @@ const DailyReport = () => {
                                 {/* Export */}
 
 
-
-
-
                                 <div className="relative flex items-center z-[40] w-full sm:w-[180px] xl:w-[250px] h-[40px]">
                                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--color-text-muted)] z-20" />
                                     <CustomInput
@@ -675,7 +672,6 @@ const DailyReport = () => {
                                         className="!h-[39px] [&_input]:!h-[39px] [&_input]:!pl-10"
                                     />
                                 </div>
-
 
                                 <div className="relative flex items-center z-[40] min-w-[140px] sm:min-w-[160px] h-[40px]">
                                     <CustomDatePicker
@@ -1182,7 +1178,7 @@ const DailyReport = () => {
                     </div>
 
                     {/* Table */}
-                    <div className="flex-1 min-h-0 custom-scrollbar">
+                    <div className="flex-1 custom-scrollbar">
                         {loading ? (
                             <div className="p-8 text-center text-[var(--color-text-secondary)]">
                                 <div className="flex items-center justify-center">
@@ -1312,6 +1308,8 @@ const DailyReport = () => {
                                 </Table>
 
                                 {/* ⬇️ Pagination controls */}
+                                
+                                
                                 <Pagination
                                     currentPage={currentPage}
                                     totalPages={totalPages}

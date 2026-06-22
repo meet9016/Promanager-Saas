@@ -7,7 +7,7 @@ export function cn(...inputs) {
 }
 
 const Table = React.forwardRef(({ className, wrapperClassName, ...props }, ref) => (
-  <div className={cn("relative w-full overflow-auto max-h-[600px]", wrapperClassName)}>
+  <div className={cn("relative w-full overflow-auto max-h-[585px]", wrapperClassName)}>
     <table
       ref={ref}
       className={cn("w-full border-separate border-spacing-0 caption-bottom text-sm", className)}
