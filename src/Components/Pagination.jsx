@@ -7,7 +7,8 @@ const Pagination = ({
     onPageChange,
     loading = false,
     className = '',
-    maxVisiblePages = 5
+    maxVisiblePages = 5,
+    alwaysShow = false
 }) => {
     // Generate page numbers for pagination
     const getPageNumbers = () => {
@@ -63,7 +64,7 @@ const Pagination = ({
     };
 
     // Don't render if there's only one page or no pages
-    if (totalPages <= 1) {
+    if (totalPages <= 1 && !alwaysShow) {
         return null;
     }
 

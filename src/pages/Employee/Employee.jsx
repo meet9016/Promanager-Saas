@@ -73,7 +73,6 @@ const LOCATION_TYPES = {
     HOME: 2
 };
 
-const ITEMS_PER_PAGE = 10;
 
 // ─── Floating anchor helpers ──────────────────────────────────────────────────
 const getScrollParents = (node) => {
@@ -157,6 +156,7 @@ export default function Employee() {
     const [totalEmployees, setTotalEmployees] = useState(0);
     const [paginationLoading, setPaginationLoading] = useState(false);
     const [searchLoading, setSearchLoading] = useState(false);
+    const [itemsPerPage, setItemsPerPage] = useState(10);
 
     // Attendance type change loading state
     const [attendanceChangingIds, setAttendanceChangingIds] = useState(new Set());
@@ -169,6 +169,11 @@ export default function Employee() {
     const [filterDropdown, setFilterDropdown] = useState(false);
     const filterBtnRef = useRef(null);
     const filterPos = useAnchoredPosition(filterBtnRef, filterDropdown, { placement: 'bottom-end', offset: 10, minWidth: 420 });
+
+    // Bulk Edit popup states
+    const [bulkEditDropdown, setBulkEditDropdown] = useState(false);
+    const bulkEditBtnRef = useRef(null);
+    const bulkEditPos = useAnchoredPosition(bulkEditBtnRef, bulkEditDropdown, { placement: 'bottom-end', offset: 10, minWidth: 520 });
 
     // ===== FILTER STATE FIX =====
     // appliedFilters: jo actually API call me jata hai
@@ -201,7 +206,19 @@ export default function Employee() {
     const [salaryTypes, setSalaryTypes] = useState([]);
     const [genders, setGenders] = useState([]);
     const [status, setStatus] = useState([]);
+    const [companies, setCompanies] = useState([]);
     const [dropdownLoading, setDropdownLoading] = useState(false);
+
+    // Bulk Edit state
+    const [selectedEmployeeIds, setSelectedEmployeeIds] = useState([]);
+    const [bulkFields, setBulkFields] = useState({
+        branch_id: '',
+        department_id: '',
+        designation_id: '',
+        company_id: ''
+    });
+    const [bulkUpdating, setBulkUpdating] = useState(false);
+
 
     const navigate = useNavigate();
     const { user, isAuthenticated, logout } = useAuth();
@@ -237,6 +254,7 @@ export default function Employee() {
                 setSalaryTypes((data.salary_type_list || []).map(st => ({ id: st.salary_type_id, name: st.name })));
                 setGenders((data.gender_list || []).map(g => ({ id: g.gender_id, name: g.name })));
                 setStatus((data.emp_status_list || []).map(s => ({ id: s.status_id, name: s.name })));
+                setCompanies((data.company_list || []).map(c => ({ id: c.company_id, name: c.company_name })));
             } else {
                 throw new Error(response.data?.message || 'Failed to load filter options');
             }
@@ -250,7 +268,7 @@ export default function Employee() {
     }, [user?.user_id, showToast]);
 
     // Fetch employees data with pagination, search, and filters
-    const fetchEmployees = useCallback(async (page = 1, search = '', resetData = false) => {
+    const fetchEmployees = useCallback(async (page = 1, search = '', resetData = false, customLimit = null) => {
         try {
             if (resetData) {
                 setLoading(true);
@@ -268,61 +286,86 @@ export default function Employee() {
                 throw new Error('User ID is required');
             }
 
-            const formData = new FormData();
-            formData.append('page', page.toString());
+            const currentLimit = customLimit || itemsPerPage;
 
-            // Add search parameter if search query exists
-            if (search && search.trim() !== '') {
-                formData.append('search', search.trim());
-            }
+            // Calculate which backend pages we need to fetch (backend size is 10)
+            const startBackendPage = Math.floor(((page - 1) * currentLimit) / 10) + 1;
+            const endBackendPage = Math.floor((page * currentLimit - 1) / 10) + 1;
 
-            // ===== USE appliedFilters INSTEAD OF filters =====
-            if (appliedFilters.branch_id) {
-                formData.append('branch_id', appliedFilters.branch_id);
-            }
-            if (appliedFilters.department_id) {
-                formData.append('department_id', appliedFilters.department_id);
-            }
-            if (appliedFilters.designation_id) {
-                formData.append('designation_id', appliedFilters.designation_id);
-            }
-            if (appliedFilters.employee_type_id) {
-                formData.append('employee_type_id', appliedFilters.employee_type_id);
-            }
-            if (appliedFilters.salary_type_id) {
-                formData.append('salary_type_id', appliedFilters.salary_type_id);
-            }
-            if (appliedFilters.gender_id) {
-                formData.append('gender_id', appliedFilters.gender_id);
-            }
-            if (appliedFilters.status_id) {
-                formData.append('status_id', appliedFilters.status_id);
-            }
-            // ================================================
+            let mergedEmployees = [];
+            let reachedEnd = false;
+            let actualTotalEmployees = null;
 
-            const response = await api.post('employee_list', formData);
+            for (let apiPage = startBackendPage; apiPage <= endBackendPage; apiPage++) {
+                if (reachedEnd) break;
 
-            if (response.data?.success && response.data.data) {
-                const newEmployees = response.data.data;
-                setEmployees(newEmployees);
+                const formData = new FormData();
+                formData.append('page', apiPage.toString());
 
-                // Calculate total pages based on response
-                const itemsCount = newEmployees.length;
-                if (itemsCount < ITEMS_PER_PAGE && page === 1) {
-                    setTotalPages(1);
-                    setTotalEmployees(itemsCount);
-                } else if (itemsCount < ITEMS_PER_PAGE && page > 1) {
-                    setTotalPages(page);
-                    setTotalEmployees((page - 1) * ITEMS_PER_PAGE + itemsCount);
-                } else {
-                    setTotalPages(page + 1);
-                    setTotalEmployees(page * ITEMS_PER_PAGE);
+                // Add search parameter if search query exists
+                if (search && search.trim() !== '') {
+                    formData.append('search', search.trim());
                 }
 
-                setCurrentPage(page);
-            } else {
-                throw new Error(response.data?.message || 'Failed to fetch employees');
+                // ===== USE appliedFilters INSTEAD OF filters =====
+                if (appliedFilters.branch_id) {
+                    formData.append('branch_id', appliedFilters.branch_id);
+                }
+                if (appliedFilters.department_id) {
+                    formData.append('department_id', appliedFilters.department_id);
+                }
+                if (appliedFilters.designation_id) {
+                    formData.append('designation_id', appliedFilters.designation_id);
+                }
+                if (appliedFilters.employee_type_id) {
+                    formData.append('employee_type_id', appliedFilters.employee_type_id);
+                }
+                if (appliedFilters.salary_type_id) {
+                    formData.append('salary_type_id', appliedFilters.salary_type_id);
+                }
+                if (appliedFilters.gender_id) {
+                    formData.append('gender_id', appliedFilters.gender_id);
+                }
+                if (appliedFilters.status_id) {
+                    formData.append('status_id', appliedFilters.status_id);
+                }
+
+                const response = await api.post('employee_list', formData);
+
+                if (response.data?.success && response.data.data) {
+                    const pageData = response.data.data;
+                    mergedEmployees = [...mergedEmployees, ...pageData];
+
+                    if (pageData.length < 10) {
+                        reachedEnd = true;
+                        actualTotalEmployees = (apiPage - 1) * 10 + pageData.length;
+                    }
+                } else {
+                    throw new Error(response.data?.message || 'Failed to fetch employees');
+                }
             }
+
+            if (resetData) {
+                setSelectedEmployeeIds([]); // Only clear selection when data reset/fresh search
+            }
+
+            // Extract the slice for the current client page
+            const startOffset = (page - 1) * currentLimit - (startBackendPage - 1) * 10;
+            const slicedEmployees = mergedEmployees.slice(startOffset, startOffset + currentLimit);
+
+            setEmployees(slicedEmployees);
+
+            // Calculate total pages and employees based on whether we reached the end
+            if (reachedEnd) {
+                setTotalPages(Math.ceil(actualTotalEmployees / currentLimit) || 1);
+                setTotalEmployees(actualTotalEmployees);
+            } else {
+                // Speculative total pages: assume at least one more page exists
+                setTotalPages(page + 1);
+                setTotalEmployees(endBackendPage * 10);
+            }
+
+            setCurrentPage(page);
 
         } catch (error) {
             console.error("Fetch employees error:", error);
@@ -343,7 +386,7 @@ export default function Employee() {
             setPaginationLoading(false);
             setSearchLoading(false);
         }
-    }, [user, logout, searchQuery, appliedFilters]);
+    }, [user, logout, searchQuery, appliedFilters, itemsPerPage]);
 
     // Handle filter changes - ONLY updates tempFilters, NOT appliedFilters
     const handleFilterChange = useCallback((key, value) => {
@@ -445,7 +488,7 @@ export default function Employee() {
     // Handle filters, search, and initial data load with debounce
     useEffect(() => {
         if (!isAuthenticated() || !user?.user_id) return;
-        
+
         const delayDebounce = setTimeout(() => {
             fetchEmployees(1, searchQuery, true);
         }, 500);
@@ -505,6 +548,75 @@ export default function Employee() {
     const handleEditEmployee = useCallback((employee_id) => {
         navigate(`/add-employee?edit=${employee_id}`);
     }, [navigate]);
+
+    // Checkbox selection handlers
+    const handleSelectAll = useCallback((e) => {
+        if (e.target.checked) {
+            const pageEmployeeIds = employees.map(emp => emp.employee_id);
+            setSelectedEmployeeIds(prev => {
+                const newSelection = [...prev];
+                pageEmployeeIds.forEach(id => {
+                    if (!newSelection.includes(id)) {
+                        newSelection.push(id);
+                    }
+                });
+                return newSelection;
+            });
+        } else {
+            const pageEmployeeIds = employees.map(emp => emp.employee_id);
+            setSelectedEmployeeIds(prev => prev.filter(id => !pageEmployeeIds.includes(id)));
+        }
+    }, [employees]);
+
+    const handleSelectEmployee = useCallback((employeeId) => {
+        setSelectedEmployeeIds((prev) =>
+            prev.includes(employeeId)
+                ? prev.filter((id) => id !== employeeId)
+                : [...prev, employeeId]
+        );
+    }, []);
+
+    // Bulk update handler
+    const handleBulkUpdate = useCallback(async () => {
+        if (selectedEmployeeIds.length === 0) {
+            showToast('Please select at least one employee.', 'error');
+            return;
+        }
+
+        const { branch_id, department_id, designation_id, company_id } = bulkFields;
+        if (!branch_id && !department_id && !designation_id && !company_id) {
+            showToast('Please select at least one field to update.', 'error');
+            return;
+        }
+
+        setBulkUpdating(true);
+
+        try {
+            const formData = new FormData();
+            formData.append('employee_ids', selectedEmployeeIds.join(','));
+            formData.append('branch_id', branch_id || '');
+            formData.append('department_id', department_id || '');
+            formData.append('designation_id', designation_id || '');
+            formData.append('company_id', company_id || '');
+
+            const response = await api.post('bulk_employee_update', formData);
+
+            if (response.data?.success) {
+                showToast(response.data?.message || 'Employees updated successfully!', 'success');
+                setSelectedEmployeeIds([]);
+                setBulkFields({ branch_id: '', department_id: '', designation_id: '', company_id: '' });
+                setBulkEditDropdown(false);
+                fetchEmployees(currentPage, searchQuery);
+            } else {
+                throw new Error(response.data?.message || 'Failed to update employees');
+            }
+        } catch (error) {
+            console.error("Bulk update error:", error);
+            showToast(error.response?.data?.message || error.message || 'Failed to update employees', 'error');
+        } finally {
+            setBulkUpdating(false);
+        }
+    }, [selectedEmployeeIds, bulkFields, fetchEmployees, currentPage, searchQuery, showToast]);
 
     // Clear search
     const handleClearSearch = useCallback(() => {
@@ -805,6 +917,335 @@ export default function Employee() {
                                         className="!h-[37px] [&_input]:!h-[37px] [&_input]:!pl-10 [&_input]:!pr-10 [&_input]:!rounded-md"
                                     />
 
+                                </div>
+
+                                {/* Bulk Edit Toggle Button */}
+                                <div className="relative">
+                                    <button
+                                        ref={bulkEditBtnRef}
+                                        onClick={() => {
+                                            if (!bulkEditDropdown) {
+                                                setBulkEditDropdown(true);
+                                            } else {
+                                                setBulkEditDropdown(false);
+                                            }
+                                        }}
+                                        disabled={selectedEmployeeIds.length === 0}
+                                        className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors ${selectedEmployeeIds.length === 0
+                                            ? 'opacity-50 cursor-not-allowed bg-[var(--color-bg-secondary)] text-[var(--color-text-muted)] border border-[var(--color-border-secondary)]'
+                                            : bulkEditDropdown
+                                                ? 'bg-[var(--color-primary-dark)] text-white hover:bg-[var(--color-primary-darker)] shadow-sm'
+                                                : 'bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] border border-[var(--color-primary-light)] hover:bg-[var(--color-bg-primary)]'
+                                            }`}
+                                    >
+                                        <Edit className="h-4 w-4" />
+                                        Bulk Edit
+                                        {selectedEmployeeIds.length > 0 && (
+                                            <span className="bg-[var(--color-primary-dark)] text-white text-xs rounded-full px-2 py-0.5 ml-1">
+                                                {selectedEmployeeIds.length}
+                                            </span>
+                                        )}
+                                    </button>
+
+                                    {bulkEditDropdown && createPortal(
+                                        <>
+                                            {/* Overlay backdrop */}
+                                            <div
+                                                className="fixed inset-0 z-[100] bg-black/40"
+                                                onClick={() => setBulkEditDropdown(false)}
+                                            />
+                                            {/* Desktop popup */}
+                                            <div
+                                                className="hidden sm:flex flex-col absolute z-[110] bg-[var(--color-bg-secondary)] rounded-lg shadow-2xl border border-[var(--color-border-secondary)] max-h-[80vh]"
+                                                style={{
+                                                    position: 'absolute',
+                                                    top: bulkEditPos.ready ? bulkEditPos.top : -9999,
+                                                    left: bulkEditPos.ready ? Math.max(12, bulkEditPos.left) : -9999,
+                                                    width: Math.max(520, bulkEditPos.width),
+                                                    minWidth: 520
+                                                }}
+                                            >
+                                                {/* Popup header */}
+                                                <div className="flex items-center justify-between p-4 border-b border-[var(--color-border-secondary)]">
+                                                    <div className="flex items-center gap-3">
+                                                        <div className="p-2 bg-[var(--color-primary-lightest)] rounded-lg">
+                                                            <Edit className="h-5 w-5 text-[var(--color-primary)]" />
+                                                        </div>
+                                                        <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">Bulk Edit Details</h2>
+                                                    </div>
+                                                    <button
+                                                        onClick={() => setBulkEditDropdown(false)}
+                                                        className="text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] p-1 rounded-lg hover:bg-[var(--color-bg-hover)]"
+                                                    >
+                                                        <X className="h-4 w-4" />
+                                                    </button>
+                                                </div>
+
+                                                {/* Popup body */}
+                                                <div className="flex-1 overflow-visible p-4">
+                                                    {selectedEmployeeIds.length === 0 ? (
+                                                        <div className="text-center py-6 text-sm text-[var(--color-text-muted)]">
+                                                            Please select one or more employees first to bulk edit.
+                                                        </div>
+                                                    ) : (
+                                                        <>
+
+                                                            <div className="grid grid-cols-2 gap-4">
+                                                                {/* Company */}
+                                                                <div>
+                                                                    <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                                        <Building className="inline h-4 w-4 mr-1" />
+                                                                        Company
+                                                                    </label>
+                                                                    <CustomSelect
+                                                                        name="bulk_company_id"
+                                                                        value={bulkFields.company_id}
+                                                                        onChange={(e) => setBulkFields(prev => ({ ...prev, company_id: e.target.value }))}
+                                                                        options={companies.map((c) => ({
+                                                                            value: c.id,
+                                                                            label: c.name,
+                                                                        }))}
+                                                                        placeholder="Keep Existing"
+                                                                        searchable={true}
+                                                                        disabled={bulkUpdating}
+                                                                    />
+                                                                </div>
+
+                                                                {/* Branch */}
+                                                                <div>
+                                                                    <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                                        <Building className="inline h-4 w-4 mr-1" />
+                                                                        Branch
+                                                                    </label>
+                                                                    <CustomSelect
+                                                                        name="bulk_branch_id"
+                                                                        value={bulkFields.branch_id}
+                                                                        onChange={(e) => setBulkFields(prev => ({ ...prev, branch_id: e.target.value }))}
+                                                                        options={branches.map((b) => ({
+                                                                            value: b.id,
+                                                                            label: b.name,
+                                                                        }))}
+                                                                        placeholder="Keep Existing"
+                                                                        searchable={true}
+                                                                        disabled={bulkUpdating}
+                                                                    />
+                                                                </div>
+
+                                                                {/* Department */}
+                                                                <div>
+                                                                    <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                                        <Users className="inline h-4 w-4 mr-1" />
+                                                                        Department
+                                                                    </label>
+                                                                    <CustomSelect
+                                                                        name="bulk_department_id"
+                                                                        value={bulkFields.department_id}
+                                                                        onChange={(e) => setBulkFields(prev => ({ ...prev, department_id: e.target.value }))}
+                                                                        options={departments.map((d) => ({
+                                                                            value: d.id,
+                                                                            label: d.name,
+                                                                        }))}
+                                                                        placeholder="Keep Existing"
+                                                                        searchable={true}
+                                                                        disabled={bulkUpdating}
+                                                                    />
+                                                                </div>
+
+                                                                {/* Designation */}
+                                                                <div>
+                                                                    <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                                        <Award className="inline h-4 w-4 mr-1" />
+                                                                        Designation
+                                                                    </label>
+                                                                    <CustomSelect
+                                                                        name="bulk_designation_id"
+                                                                        value={bulkFields.designation_id}
+                                                                        onChange={(e) => setBulkFields(prev => ({ ...prev, designation_id: e.target.value }))}
+                                                                        options={designations.map((d) => ({
+                                                                            value: d.id,
+                                                                            label: d.name,
+                                                                        }))}
+                                                                        placeholder="Keep Existing"
+                                                                        searchable={true}
+                                                                        disabled={bulkUpdating}
+                                                                    />
+                                                                </div>
+                                                            </div>
+                                                        </>
+                                                    )}
+                                                </div>
+
+                                                {/* Popup footer */}
+                                                <div className="flex flex-col sm:flex-row justify-end gap-2 p-4 border-t border-[var(--color-border-secondary)] rounded-b-2xl">
+                                                    <button
+                                                        onClick={() => {
+                                                            setBulkFields({ branch_id: '', department_id: '', designation_id: '', company_id: '' });
+                                                        }}
+                                                        disabled={bulkUpdating}
+                                                        className="flex items-center justify-center gap-2 px-5 py-2
+               whitespace-nowrap flex-shrink-0
+               bg-transparent text-[var(--color-primary)]
+               border-2 hover:bg-[var(--color-primary-lightest)]
+               border-[var(--color-primary)]
+               rounded-lg transition-colors text-sm font-medium
+               min-w-[140px]"
+                                                    >
+                                                        <RefreshCw size={14} />
+                                                        Reset
+                                                    </button>
+
+                                                    <button
+                                                        onClick={handleBulkUpdate}
+                                                        disabled={bulkUpdating || selectedEmployeeIds.length === 0}
+                                                        className="flex items-center justify-center gap-2 px-5 py-2
+               whitespace-nowrap flex-shrink-0
+               bg-[var(--color-primary-dark)]
+               text-[var(--color-text-white)]
+               rounded-lg hover:bg-[var(--color-primary-darker)]
+               transition-colors disabled:opacity-50 disabled:cursor-not-allowed
+               text-sm font-medium
+               min-w-[170px]"
+                                                    >
+                                                        {bulkUpdating ? <RefreshCw size={14} className="animate-spin" /> : <Edit size={14} />}
+                                                        {bulkUpdating ? 'Updating...' : 'Update Selected'}
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                            {/* Mobile popup */}
+                                            <div className="sm:hidden fixed inset-0 z-[110] flex">
+                                                <div className="ml-auto h-full w-full bg-[var(--color-bg-secondary)] flex flex-col">
+                                                    <div className="flex items-center justify-between p-4 border-b border-[var(--color-border-secondary)]">
+                                                        <div className="flex items-center gap-3">
+                                                            <div className="p-2 bg-[var(--color-primary-lightest)] rounded-lg">
+                                                                <Edit className="h-5 w-5 text-[var(--color-primary)]" />
+                                                            </div>
+                                                            <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">Bulk Edit</h2>
+                                                        </div>
+                                                        <button
+                                                            onClick={() => setBulkEditDropdown(false)}
+                                                            className="text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] p-1 rounded-lg hover:bg-[var(--color-bg-hover)]"
+                                                        >
+                                                            <X className="h-5 w-5" />
+                                                        </button>
+                                                    </div>
+                                                    <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-4">
+                                                        {selectedEmployeeIds.length === 0 ? (
+                                                            <div className="text-center py-6 text-sm text-[var(--color-text-muted)]">
+                                                                Please select one or more employees first to bulk edit.
+                                                            </div>
+                                                        ) : (
+                                                            <>
+                                                                <div className="text-xs font-semibold text-[var(--color-primary-dark)]">
+                                                                    Selected: {selectedEmployeeIds.length} employee(s)
+                                                                </div>
+                                                                {/* Company */}
+                                                                <div>
+                                                                    <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                                        <Building className="inline h-4 w-4 mr-1" />
+                                                                        Company
+                                                                    </label>
+                                                                    <CustomSelect
+                                                                        name="bulk_company_id"
+                                                                        value={bulkFields.company_id}
+                                                                        onChange={(e) => setBulkFields(prev => ({ ...prev, company_id: e.target.value }))}
+                                                                        options={companies.map((c) => ({
+                                                                            value: c.id,
+                                                                            label: c.name,
+                                                                        }))}
+                                                                        placeholder="Keep Existing"
+                                                                        searchable={true}
+                                                                        disabled={bulkUpdating}
+                                                                    />
+                                                                </div>
+
+                                                                {/* Branch */}
+                                                                <div>
+                                                                    <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                                        <Building className="inline h-4 w-4 mr-1" />
+                                                                        Branch
+                                                                    </label>
+                                                                    <CustomSelect
+                                                                        name="bulk_branch_id"
+                                                                        value={bulkFields.branch_id}
+                                                                        onChange={(e) => setBulkFields(prev => ({ ...prev, branch_id: e.target.value }))}
+                                                                        options={branches.map((b) => ({
+                                                                            value: b.id,
+                                                                            label: b.name,
+                                                                        }))}
+                                                                        placeholder="Keep Existing"
+                                                                        searchable={true}
+                                                                        disabled={bulkUpdating}
+                                                                    />
+                                                                </div>
+
+                                                                {/* Department */}
+                                                                <div>
+                                                                    <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                                        <Users className="inline h-4 w-4 mr-1" />
+                                                                        Department
+                                                                    </label>
+                                                                    <CustomSelect
+                                                                        name="bulk_department_id"
+                                                                        value={bulkFields.department_id}
+                                                                        onChange={(e) => setBulkFields(prev => ({ ...prev, department_id: e.target.value }))}
+                                                                        options={departments.map((d) => ({
+                                                                            value: d.id,
+                                                                            label: d.name,
+                                                                        }))}
+                                                                        placeholder="Keep Existing"
+                                                                        searchable={true}
+                                                                        disabled={bulkUpdating}
+                                                                    />
+                                                                </div>
+
+                                                                {/* Designation */}
+                                                                <div>
+                                                                    <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                                        <Award className="inline h-4 w-4 mr-1" />
+                                                                        Designation
+                                                                    </label>
+                                                                    <CustomSelect
+                                                                        name="bulk_designation_id"
+                                                                        value={bulkFields.designation_id}
+                                                                        onChange={(e) => setBulkFields(prev => ({ ...prev, designation_id: e.target.value }))}
+                                                                        options={designations.map((d) => ({
+                                                                            value: d.id,
+                                                                            label: d.name,
+                                                                        }))}
+                                                                        placeholder="Keep Existing"
+                                                                        searchable={true}
+                                                                        disabled={bulkUpdating}
+                                                                    />
+                                                                </div>
+                                                            </>
+                                                        )}
+                                                    </div>
+                                                    <div className="p-4 border-t border-[var(--color-border-secondary)] flex flex-col gap-2">
+                                                        <button
+                                                            onClick={handleBulkUpdate}
+                                                            disabled={bulkUpdating || selectedEmployeeIds.length === 0}
+                                                            className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-[var(--color-primary-dark)] text-[var(--color-text-white)] rounded-lg hover:bg-[var(--color-primary-darker)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
+                                                        >
+                                                            {bulkUpdating ? <RefreshCw size={14} className="animate-spin" /> : <Edit size={14} />}
+                                                            {bulkUpdating ? 'Updating...' : 'Update Selected'}
+                                                        </button>
+                                                        <button
+                                                            onClick={() => {
+                                                                setBulkFields({ branch_id: '', department_id: '', designation_id: '', company_id: '' });
+                                                                setBulkEditDropdown(false);
+                                                            }}
+                                                            disabled={bulkUpdating}
+                                                            className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-[var(--color-bg-gray-light)] text-[var(--color-text-secondary)] rounded-lg hover:bg-[var(--color-bg-hover)] transition-colors text-sm font-medium"
+                                                        >
+                                                            Cancel
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </>,
+                                        document.body
+                                    )}
                                 </div>
 
                                 {/* Filter button with popup */}
@@ -1303,14 +1744,31 @@ export default function Employee() {
                         <>
                             {/* Table */}
                             <div className="overflow-hidden ">
-                                <Table  wrapperClassName="h-[60vh] xl:h-[70vh] overflow-y-auto custom-scrollbar">
+                                <Table wrapperClassName="max-h-[70vh] overflow-y-auto custom-scrollbar">
                                     <TableHeader>
                                         <TableHeaderRow>
+                                            {/* Select All Checkbox Th */}
+                                            <Th className="w-[4%] text-center">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={employees.length > 0 && employees.every(emp => selectedEmployeeIds.includes(emp.employee_id))}
+                                                    ref={input => {
+                                                        if (input) {
+                                                            const isAllPageSelected = employees.length > 0 && employees.every(emp => selectedEmployeeIds.includes(emp.employee_id));
+                                                            input.indeterminate = employees.length > 0 && employees.some(emp => selectedEmployeeIds.includes(emp.employee_id)) && !isAllPageSelected;
+                                                        }
+                                                    }}
+                                                    onChange={handleSelectAll}
+                                                    className="w-4 h-4 rounded border-gray-300 cursor-pointer"
+                                                    style={{ accentColor: 'var(--color-primary-dark)' }}
+                                                />
+                                            </Th>
+
                                             {[
                                                 { key: COLUMN_KEYS.NAME, label: 'Full Name', width: 'w-[14%]' },
                                                 { key: COLUMN_KEYS.ID, label: 'Employee ID', width: 'w-[8%]' },
                                                 { key: COLUMN_KEYS.DEPARTMENT, label: 'Department', width: 'w-[9%]' },
-                                                { key: COLUMN_KEYS.DESIGNATION, label: 'Designation', width: 'w-[9%]' },
+                                                { key: COLUMN_KEYS.branch_name, label: 'Branch Name', width: 'w-[9%]' },
                                             ].map(({ key, label, width }) => (
                                                 <Th
                                                     key={`header-${key}`}
@@ -1359,7 +1817,7 @@ export default function Employee() {
                                             const employeeId = employee.employee_id || `employee-${index}`;
                                             const truncatedName = truncateText(employee.full_name, 15);
                                             const truncatedDepartment = truncateText(employee.department_name, 10);
-                                            const truncatedDesignation = truncateText(employee.designation_name, 10);
+                                            const truncatedDesignation = truncateText(employee.branch_name, 10);
 
                                             return (
                                                 <TableRow
@@ -1369,6 +1827,17 @@ export default function Employee() {
                                                         : ''
                                                         }`}
                                                 >
+                                                    {/* Row Checkbox Td */}
+                                                    <Td className="text-center">
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={selectedEmployeeIds.includes(employee.employee_id)}
+                                                            onChange={() => handleSelectEmployee(employee.employee_id)}
+                                                            className="w-4 h-4 rounded border-gray-300 cursor-pointer"
+                                                            style={{ accentColor: 'var(--color-primary-dark)' }}
+                                                        />
+                                                    </Td>
+
                                                     {/* Full Name */}
                                                     <Td className="text-center">
                                                         <div className="flex items-center justify-start gap-3">
@@ -1483,17 +1952,41 @@ export default function Employee() {
                                 </Table>
                             </div>
 
-                            {/* Pagination Component */}
-                            <Pagination
-                                currentPage={currentPage}
-                                totalPages={totalPages}
-                                totalItems={totalEmployees}
-                                itemsPerPage={ITEMS_PER_PAGE}
-                                onPageChange={handlePageChange}
-                                loading={paginationLoading || searchLoading}
-                                showInfo={true}
-                                maxVisiblePages={5}
-                            />
+                            {/* Pagination and Rows per page */}
+                            <div className="flex flex-col sm:flex-row items-center justify-between px-6 py-4 border-t border-[var(--color-border-primary)] bg-[var(--color-bg-gray)] gap-4">
+                                <div className="flex items-center gap-2">
+                                    <span className="text-sm font-medium text-[var(--color-text-secondary)]">
+                                        Rows per page:
+                                    </span>
+                                    <select
+                                        value={itemsPerPage}
+                                        onChange={(e) => {
+                                            const val = parseInt(e.target.value);
+                                            setItemsPerPage(val);
+                                            setCurrentPage(1);
+                                            fetchEmployees(1, searchQuery, false, val);
+                                        }}
+                                        className="h-[35px] border border-[var(--color-border-secondary)] rounded-md text-sm text-[var(--color-text-secondary)] bg-white px-2 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] cursor-pointer"
+                                    >
+                                        <option value={10}>10</option>
+                                        <option value={15}>15</option>
+                                        <option value={25}>25</option>
+                                        <option value={40}>40</option>
+                                    </select>
+                                </div>
+                                <div className="flex-1 flex justify-end">
+                                    <Pagination
+                                        currentPage={currentPage}
+                                        totalPages={totalPages}
+                                        totalItems={totalEmployees}
+                                        itemsPerPage={itemsPerPage}
+                                        onPageChange={handlePageChange}
+                                        loading={paginationLoading || searchLoading}
+                                        alwaysShow={true}
+                                        className="!border-t-0 !bg-transparent !p-0"
+                                    />
+                                </div>
+                            </div>
                         </>
                     )}
                 </div>
