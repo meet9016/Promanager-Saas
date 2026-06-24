@@ -1969,9 +1969,9 @@ export default function Employee() {
                                         className="h-[35px] border border-[var(--color-border-secondary)] rounded-md text-sm text-[var(--color-text-secondary)] bg-white px-2 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] cursor-pointer"
                                     >
                                         <option value={10}>10</option>
-                                        <option value={15}>15</option>
-                                        <option value={25}>25</option>
-                                        <option value={40}>40</option>
+                                        <option value={20}>20</option>
+                                        <option value={50}>50</option>
+                                        <option value={100}>100</option>
                                     </select>
                                 </div>
                                 <div className="flex-1 flex justify-end">
