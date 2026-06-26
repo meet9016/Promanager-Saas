@@ -159,7 +159,10 @@ const CreateShift = () => {
             from_time: day.from_time || '09:00 PM',
             to_time: day.to_time || '06:00 AM',
             shift_type: day.shift_type || '1',
-            occasional_days: day.occasional_day || '' // Map occasional_day to occasional_days
+            occasional_days: day.occasional_day || '', // Map occasional_day to occasional_days
+            min_half_day: day.min_half_day || '04:00',
+            max_half_day: day.max_half_day || '06:00',
+            max_full_day: day.max_full_day || '08:00'
         }));
     };
 
@@ -197,7 +200,10 @@ const CreateShift = () => {
                         from_time: sourceDayData.from_time,
                         to_time: sourceDayData.to_time,
                         shift_type: sourceDayData.shift_type,
-                        occasional_days: sourceDayData.occasional_days
+                        occasional_days: sourceDayData.occasional_days,
+                        min_half_day: sourceDayData.min_half_day || '04:00',
+                        max_half_day: sourceDayData.max_half_day || '06:00',
+                        max_full_day: sourceDayData.max_full_day || '08:00'
                     };
                 }
 
@@ -301,7 +307,10 @@ const CreateShift = () => {
             // Process the day list - map occasional_day to occasional_days for consistency
             const processedDayList = shiftDayData.dayList.map(day => ({
                 ...day,
-                occasional_days: day.occasional_day || '' // Map occasional_day to occasional_days
+                occasional_days: day.occasional_day || '', // Map occasional_day to occasional_days
+                min_half_day: day.min_half_day || '04:00',
+                max_half_day: day.max_half_day || '06:00',
+                max_full_day: day.max_full_day || '08:00'
             }));
 
             // Reorder days to put Sunday at the end
@@ -417,172 +426,250 @@ const CreateShift = () => {
         return true;
     };
 
-    // Enhanced Time Selector Component with separate Hour and Minute dropdowns
-    const TimeSelector = ({ value, onChange, label, required = false, disabled = false }) => {
-        // Parse the current time value (e.g., "09:30 AM" or "")
-        const parseTimeValue = (timeStr) => {
-            if (!timeStr) return { hour: '', minute: '', period: '' };
+    // Enhanced Time Selector Component with a custom 2 or 3 column scrollable popover
+    const TimeSelector = ({ value, onChange, label, required = false, disabled = false, mode = 'time' }) => {
+        const [isOpen, setIsOpen] = useState(false);
+        const dropdownRef = useRef(null);
 
-            const match = timeStr.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i);
-            if (match) {
-                return {
-                    hour: match[1].padStart(2, '0'),
-                    minute: match[2],
-                    period: match[3].toUpperCase()
-                };
+        // Refs for each scroll column to control scroll-into-view
+        const hourColRef = useRef(null);
+        const minuteColRef = useRef(null);
+        const periodColRef = useRef(null);
+
+        // Parse value (e.g. "09:30 AM" for time mode, or "04:00" for duration mode)
+        const parseTimeValue = (timeStr) => {
+            if (mode === 'duration') {
+                if (!timeStr) return { hour: '00', minute: '00', period: '' };
+                const match = timeStr.match(/^(\d{1,2}):(\d{2})$/);
+                if (match) {
+                    return {
+                        hour: match[1].padStart(2, '0'),
+                        minute: match[2],
+                        period: ''
+                    };
+                }
+                return { hour: '00', minute: '00', period: '' };
+            } else {
+                if (!timeStr) return { hour: '12', minute: '00', period: 'AM' };
+                const match = timeStr.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i);
+                if (match) {
+                    return {
+                        hour: match[1].padStart(2, '0'),
+                        minute: match[2],
+                        period: match[3].toUpperCase()
+                    };
+                }
+                return { hour: '12', minute: '00', period: 'AM' };
             }
-            return { hour: '', minute: '', period: '' };
         };
 
         const { hour, minute, period } = parseTimeValue(value);
 
-        // Generate hour options (1-12 for 12-hour format)
-        const generateHourOptions = () => {
-            const hours = [];
-            for (let i = 1; i <= 12; i++) {
-                hours.push({
-                    value: i.toString().padStart(2, '0'),
-                    label: i.toString()
-                });
+        // Local state for interactive editing before clicking "Set" or direct change
+        const [tempHour, setTempHour] = useState(hour);
+        const [tempMinute, setTempMinute] = useState(minute);
+        const [tempPeriod, setTempPeriod] = useState(period);
+
+        // Keep local state in sync when value changes or dropdown opens
+        useEffect(() => {
+            const parsed = parseTimeValue(value);
+            setTempHour(parsed.hour);
+            setTempMinute(parsed.minute);
+            setTempPeriod(parsed.period);
+        }, [value, isOpen]);
+
+        // Scroll selected values into view when popover opens
+        useEffect(() => {
+            if (isOpen) {
+                const scrollSelected = (colRef, val) => {
+                    if (colRef.current) {
+                        const selectedBtn = colRef.current.querySelector(`[data-value="${val}"]`);
+                        if (selectedBtn) {
+                            colRef.current.scrollTop = selectedBtn.offsetTop - (colRef.current.clientHeight / 2) + (selectedBtn.clientHeight / 2);
+                        }
+                    }
+                };
+                setTimeout(() => {
+                    scrollSelected(hourColRef, tempHour);
+                    scrollSelected(minuteColRef, tempMinute);
+                    if (mode === 'time') {
+                        scrollSelected(periodColRef, tempPeriod);
+                    }
+                }, 50);
             }
-            return hours;
-        };
+        }, [isOpen, tempHour, tempMinute, tempPeriod]);
 
-        // Generate minute options (0-59)
-        const generateMinuteOptions = () => {
-            const minutes = [];
-            for (let i = 0; i < 60; i++) {
-                minutes.push({
-                    value: i.toString().padStart(2, '0'),
-                    label: i.toString().padStart(2, '0')
-                });
-            }
-            return minutes;
-        };
-
-        const hourOptions = generateHourOptions();
-        const minuteOptions = generateMinuteOptions();
-        const periodOptions = [
-            { value: 'AM', label: 'AM' },
-            { value: 'PM', label: 'PM' }
-        ];
-
-        // Handle individual field changes
-        const handleFieldChange = (field, fieldValue) => {
-            const currentParsed = parseTimeValue(value);
-
-            const newTime = {
-                hour: field === 'hour' ? fieldValue : currentParsed.hour,
-                minute: field === 'minute' ? fieldValue : currentParsed.minute,
-                period: field === 'period' ? fieldValue : currentParsed.period
+        // Close dropdown when clicking outside
+        useEffect(() => {
+            const handleClickOutside = (e) => {
+                if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+                    setIsOpen(false);
+                }
             };
-
-            // Only call onChange if all fields have values
-            if (newTime.hour && newTime.minute && newTime.period) {
-                const formattedTime = `${parseInt(newTime.hour).toString().padStart(2, '0')}:${newTime.minute} ${newTime.period}`;
-                onChange(formattedTime);
-            } else if (!newTime.hour && !newTime.minute && !newTime.period) {
-                // If all fields are empty, pass empty string
-                onChange('');
+            if (isOpen) {
+                document.addEventListener('mousedown', handleClickOutside);
             }
+            return () => document.removeEventListener('mousedown', handleClickOutside);
+        }, [isOpen]);
+
+        // Generated options list
+        const hours = mode === 'duration'
+            ? Array.from({ length: 24 }, (_, i) => i.toString().padStart(2, '0'))
+            : ['12', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11'];
+        const minutes = Array.from({ length: 60 }, (_, i) => i.toString().padStart(2, '0'));
+        const periods = ['AM', 'PM'];
+
+        // Confirm Selection
+        const handleConfirm = () => {
+            const formattedTime = mode === 'duration'
+                ? `${tempHour}:${tempMinute}`
+                : `${tempHour}:${tempMinute} ${tempPeriod}`;
+            onChange(formattedTime);
+            setIsOpen(false);
         };
 
         return (
-            <div>
-                <label className="block text-sm font-semibold text-[var(--color-text-secondary)] mb-2">
-                    {label} {required && <span className="text-[var(--color-error)]">*</span>}
-                </label>
-                <div className="flex gap-1">
-                    {/* Hour Dropdown */}
-                    {/* <select
-                        value={hour}
-                        onChange={(e) => handleFieldChange('hour', e.target.value)}
-                        className="flex-1 px-3 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-all duration-200 text-sm bg-[var(--color-bg-secondary)] shadow-sm"
-                        required={required}
-                        disabled={disabled}
-                    >
-                        <option value="">Hr</option>
-                        {hourOptions.map(h => (
-                            <option key={h.value} value={h.value}>
-                                {h.label}
-                            </option>
-                        ))}
-                    </select> */}
-                    <CustomSelect
-                        name="hour"
-                        value={hour}
-                        onChange={(e) => handleFieldChange('hour', e.target.value)}
-                        options={hourOptions.map(h => ({
-                            value: h.value,
-                            label: h.label,
-                        }))}
-                        placeholder="Hr"
-                        required={required}
-                        searchable={true}
-                        disabled={disabled}
-                    />
+            <div className="relative w-full" ref={dropdownRef}>
+                {(label || required) && (
+                    <label className="block text-sm font-semibold text-[var(--color-text-secondary)] mb-2">
+                        {label} {required && <span className="text-[var(--color-error)]">*</span>}
+                    </label>
+                )}
 
-
-                    <span className="flex items-center px-1 text-slate-500 font-medium">:</span>
-
-                    {/* Minute Dropdown */}
-                    {/* <select
-                        value={minute}
-                        onChange={(e) => handleFieldChange('minute', e.target.value)}
-                        className="flex-1 px-3 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-all duration-200 text-sm bg-[var(--color-bg-secondary)] shadow-sm"
-                        required={required}
-                        disabled={disabled}
-                    >
-                        <option value="">Min</option>
-                        {minuteOptions.map(m => (
-                            <option key={m.value} value={m.value}>
-                                {m.label}
-                            </option>
-                        ))}
-                    </select> */}
-                    <CustomSelect
-                        name="minute"
-                        value={minute}
-                        onChange={(e) => handleFieldChange('minute', e.target.value)}
-                        options={minuteOptions.map(m => ({
-                            value: m.value,
-                            label: m.label,
-                        }))}
-                        placeholder="Min"
-                        required={required}
-                        searchable={true}
-                        disabled={disabled}
-                    />
-
-                    {/* AM/PM Dropdown */}
-                    {/* <select
-                        value={period}
-                        onChange={(e) => handleFieldChange('period', e.target.value)}
-                        className="px-3 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-all duration-200 text-sm bg-[var(--color-bg-secondary)] shadow-sm"
-                        required={required}
-                        disabled={disabled}
-                    >
-                        <option value="">--</option>
-                        {periodOptions.map(p => (
-                            <option key={p.value} value={p.value}>
-                                {p.label}
-                            </option>
-                        ))}
-                    </select> */}
-                    <CustomSelect
-                        name="period"
-                        value={period}
-                        onChange={(e) => handleFieldChange('period', e.target.value)}
-                        options={periodOptions.map(p => ({
-                            value: p.value,
-                            label: p.label,
-                        }))}
-                        placeholder="--"
-                        required={required}
-                        searchable={true}
-                        disabled={disabled}
-                    />
+                {/* Clickable Display Input */}
+                <div
+                    onClick={() => !disabled && setIsOpen(!isOpen)}
+                    className={`
+                        w-full flex items-center justify-between
+                        px-4 py-2.5 border rounded-xl text-sm cursor-pointer
+                        bg-[var(--color-bg-secondary)]
+                        text-[var(--color-text-primary)]
+                        transition-all duration-200 shadow-sm
+                        ${disabled
+                            ? 'opacity-50 cursor-not-allowed border-[var(--color-border-primary)] bg-slate-50'
+                            : 'hover:border-[var(--color-primary)] border-slate-200'
+                        }
+                        ${isOpen ? 'ring-2 ring-[var(--color-primary-light)] border-[var(--color-primary)]' : ''}
+                    `}
+                >
+                    <span className={value ? 'text-[var(--color-text-primary)] font-medium' : 'text-[var(--color-text-secondary)]'}>
+                        {value || (mode === 'duration' ? '00:00' : 'Select Time')}
+                    </span>
+                    <Clock size={16} className="text-[var(--color-text-secondary)] flex-shrink-0 ml-2" />
                 </div>
+
+                {/* Dropdown Picker */}
+                {isOpen && !disabled && (
+                    <div className="absolute left-0 mt-2 w-64 bg-white border border-slate-200 rounded-2xl shadow-xl z-[9999] overflow-hidden transition-all duration-200 transform origin-top-left animate-in fade-in slide-in-from-top-1">
+                        {/* Header preview row */}
+                        <div className="grid grid-cols-2 gap-2 bg-slate-50 p-3 border-b border-slate-100">
+                            <div className="bg-slate-100 text-slate-800 text-center py-1.5 font-bold text-sm rounded-lg border border-slate-200">
+                                {mode === 'duration' ? `${tempHour} hr` : tempHour}
+                            </div>
+                            <div className="bg-slate-100 text-slate-800 text-center py-1.5 font-bold text-sm rounded-lg border border-slate-200">
+                                {mode === 'duration' ? `${tempMinute} min` : `${tempMinute} ${tempPeriod}`}
+                            </div>
+                        </div>
+
+                        {/* Scroll Lists Container */}
+                        <div className={`grid ${mode === 'duration' ? 'grid-cols-2' : 'grid-cols-3'} divide-x divide-slate-100 h-44 select-none bg-white`}>
+                            {/* Hours Column */}
+                            <div 
+                                ref={hourColRef} 
+                                className="overflow-y-auto py-1 flex flex-col scroll-smooth"
+                                style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+                            >
+                                {hours.map((h) => {
+                                    const isSelected = h === tempHour;
+                                    return (
+                                        <button
+                                            key={h}
+                                            type="button"
+                                            data-value={h}
+                                            onClick={() => setTempHour(h)}
+                                            className={`py-2 text-center text-sm transition-colors duration-150 font-medium ${isSelected
+                                                ? 'bg-[var(--color-primary-lightest)] text-[var(--color-primary-darker)] font-semibold'
+                                                : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                                                }`}
+                                        >
+                                            {h}
+                                        </button>
+                                    );
+                                })}
+                            </div>
+
+                            {/* Minutes Column */}
+                            <div 
+                                ref={minuteColRef} 
+                                className="overflow-y-auto py-1 flex flex-col scroll-smooth"
+                                style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+                            >
+                                {minutes.map((m) => {
+                                    const isSelected = m === tempMinute;
+                                    return (
+                                        <button
+                                            key={m}
+                                            type="button"
+                                            data-value={m}
+                                            onClick={() => setTempMinute(m)}
+                                            className={`py-2 text-center text-sm transition-colors duration-150 font-medium ${isSelected
+                                                ? 'bg-[var(--color-primary-lightest)] text-[var(--color-primary-darker)] font-semibold'
+                                                : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                                                }`}
+                                        >
+                                            {m}
+                                        </button>
+                                    );
+                                })}
+                            </div>
+
+                            {/* Period Column */}
+                            {mode === 'time' && (
+                                <div 
+                                    ref={periodColRef} 
+                                    className="overflow-y-auto py-1 flex flex-col scroll-smooth"
+                                    style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+                                >
+                                    {periods.map((p) => {
+                                        const isSelected = p === tempPeriod;
+                                        return (
+                                            <button
+                                                key={p}
+                                                type="button"
+                                                data-value={p}
+                                                onClick={() => setTempPeriod(p)}
+                                                className={`py-2 text-center text-sm transition-colors duration-150 font-medium ${isSelected
+                                                    ? 'bg-[var(--color-primary-lightest)] text-[var(--color-primary-darker)] font-semibold'
+                                                    : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                                                    }`}
+                                            >
+                                                {p}
+                                            </button>
+                                        );
+                                    })}
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Confirmation Footer */}
+                        <div className="flex items-center justify-between gap-2 p-2 border-t border-slate-100 bg-slate-50">
+                            <button
+                                type="button"
+                                onClick={() => setIsOpen(false)}
+                                className="w-1/2 py-1.5 text-center text-xs font-semibold text-slate-500 hover:text-slate-700 bg-white border border-slate-200 rounded-lg hover:bg-slate-100 transition-colors"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                type="button"
+                                onClick={handleConfirm}
+                                className="w-1/2 py-1.5 text-center text-xs font-semibold text-white bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] rounded-lg shadow-sm transition-colors"
+                            >
+                                Set Time
+                            </button>
+                        </div>
+                    </div>
+                )}
             </div>
         );
     };
@@ -622,6 +709,9 @@ const CreateShift = () => {
                 formData.append('from_time[]', day.from_time);
                 formData.append('to_time[]', day.to_time);
                 formData.append('shift_type[]', day.shift_type);
+                formData.append('min_half_day[]', day.min_half_day || '04:00');
+                formData.append('max_half_day[]', day.max_half_day || '06:00');
+                formData.append('max_full_day[]', day.max_full_day || '08:00');
 
                 const occasionalKey = `occasional_day_${day.day_id}`;
                 formData.append(occasionalKey, day.occasional_days || '');
@@ -673,7 +763,7 @@ const CreateShift = () => {
                                 className="flex items-center gap-2 text-[var(--color-text-white)] hover:text-[var(--color-text-white)] transition-colors bg-[var(--color-bg-secondary-20)] hover:bg-[var(--color-bg-secondary-30)] px-2 py-2 rounded-lg backdrop-blur-sm"
                             >
                                 <ArrowLeft size={18} />
-                                
+
                             </button>
                             <div className="flex items-center gap-3">
                                 <div>
@@ -787,8 +877,8 @@ const CreateShift = () => {
                                             </div>
 
                                             {/* Day Content */}
-                                            <div className="p-8">
-                                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                            <div className="p-6">
+                                                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 items-start">
                                                     {/* From Time */}
                                                     <div className="space-y-2">
                                                         <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">
@@ -823,18 +913,6 @@ const CreateShift = () => {
                                                             Shift Type
                                                         </label>
                                                         <div className="relative">
-                                                            {/* <select
-                                                                value={day.shift_type}
-                                                                onChange={(e) => handleDayChange(day.day_id, 'shift_type', e.target.value)}
-                                                                className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-all duration-200 text-sm bg-[var(--color-bg-secondary)] shadow-sm hover:border-slate-400"
-                                                            >
-                                                                <option value="">Select Type</option>
-                                                                {shiftTypes.map(type => (
-                                                                    <option key={type.shift_type_id} value={type.shift_type_id}>
-                                                                        {type.shift_type_name}
-                                                                    </option>
-                                                                ))}
-                                                            </select> */}
                                                             <CustomSelect
                                                                 name="shift_type"
                                                                 value={day.shift_type}
@@ -848,11 +926,52 @@ const CreateShift = () => {
                                                                 placeholder="Select Type"
                                                                 searchable={true}
                                                             />
+                                                        </div>
+                                                    </div>
 
-                                                           
+                                                    {/* Half Day Min */}
+                                                    <div className="space-y-2">
+                                                        <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">
+                                                            Half Day Min
+                                                        </label>
+                                                        <div className="relative">
+                                                            <TimeSelector
+                                                                value={day.min_half_day || '04:00'}
+                                                                onChange={(value) => handleDayChange(day.day_id, 'min_half_day', value)}
+                                                                mode="duration"
+                                                            />
+                                                        </div>
+                                                    </div>
+
+                                                    {/* Half Day Max */}
+                                                    <div className="space-y-2">
+                                                        <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">
+                                                            Half Day Max
+                                                        </label>
+                                                        <div className="relative">
+                                                            <TimeSelector
+                                                                value={day.max_half_day || '06:00'}
+                                                                onChange={(value) => handleDayChange(day.day_id, 'max_half_day', value)}
+                                                                mode="duration"
+                                                            />
+                                                        </div>
+                                                    </div>
+
+                                                    {/* Full Day Min */}
+                                                    <div className="space-y-2">
+                                                        <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">
+                                                            Full Day Min
+                                                        </label>
+                                                        <div className="relative">
+                                                            <TimeSelector
+                                                                value={day.max_full_day || '08:00'}
+                                                                onChange={(value) => handleDayChange(day.day_id, 'max_full_day', value)}
+                                                                mode="duration"
+                                                            />
                                                         </div>
                                                     </div>
                                                 </div>
+                                            </div>
 
                                                 {/* Occasional Days Section */}
                                                 {isOccasionalType && (
@@ -927,9 +1046,8 @@ const CreateShift = () => {
                                                     </div>
                                                 )}
                                             </div>
-                                        </div>
-                                    );
-                                })}
+                                        );
+                                    })}
                             </div>
                         </div>
                     </div>
