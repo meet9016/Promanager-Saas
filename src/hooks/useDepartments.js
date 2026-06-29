@@ -6,10 +6,10 @@ const FORMULA_KEYS = [
     "name",
     "ot_formula", "overtime",
     "late_coming", "early_going",
-    "half_day_work_formula", "half_day_work_min",
-    "absent_formula", "absent_min",
-    "par_half_day_work_formula", "par_half_day_work_min",
-    "par_absent_formula", "par_absent_min",
+    // "half_day_work_formula", "half_day_work_min",
+    // "absent_formula", "absent_min",
+    // "par_half_day_work_formula", "par_half_day_work_min",
+    // "par_absent_formula", "par_absent_min",
 ];
 
 const useDepartments = () => {
@@ -71,14 +71,14 @@ const useDepartments = () => {
                     fd.append("overtime", "0");
                     fd.append("late_coming", "15");
                     fd.append("early_going", "15");
-                    fd.append("half_day_work_formula", "1");
-                    fd.append("half_day_work_min", "0");
-                    fd.append("absent_formula", "1");
-                    fd.append("absent_min", "0");
-                    fd.append("par_half_day_work_formula", "1");
-                    fd.append("par_half_day_work_min", "0");
-                    fd.append("par_absent_formula", "1");
-                    fd.append("par_absent_min", "0");
+                    // fd.append("half_day_work_formula", "1");
+                    // fd.append("half_day_work_min", "0");
+                    // fd.append("absent_formula", "1");
+                    // fd.append("absent_min", "0");
+                    // fd.append("par_half_day_work_formula", "1");
+                    // fd.append("par_half_day_work_min", "0");
+                    // fd.append("par_absent_formula", "1");
+                    // fd.append("par_absent_min", "0");
                     return fd;
                 })();
 

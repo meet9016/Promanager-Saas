@@ -16,7 +16,7 @@ import {
   Eye,
   HandCoins
 } from 'lucide-react';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import api from '../../api/axiosInstance';
 import { Toast } from '../../Components/ui/Toast';
@@ -89,6 +89,7 @@ export default function FinalizePayroll() {
   console.log(permissions, "a")
 
   const navigate = useNavigate();
+  const location = useLocation();
   const [toast, setToast] = useState(null);
 
   // Set default to current month and year
@@ -104,6 +105,17 @@ export default function FinalizePayroll() {
   });
 
   const { user, isAuthenticated, logout } = useAuth();
+
+  // Auto-open salary details modal when navigated from Navbar search
+  useEffect(() => {
+    const state = location.state;
+    if (state?.openViewModal && state?.salaryDetailsData) {
+      setSalaryDetails(state.salaryDetailsData);
+      setShowSalaryDetailsModal(true);
+      // Clear the navigation state so refreshing doesn't re-open the modal
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state]);
 
   // Generate month options
   const monthOptions = [

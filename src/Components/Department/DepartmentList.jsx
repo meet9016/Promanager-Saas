@@ -189,7 +189,7 @@ const DepartmentAccordion = ({ department, onSave, saving }) => {
                     disabled={saving}
                 />
 
-                <SectionDivider label="Half Day" />
+                {/* <SectionDivider label="Half Day" />
                 <CheckboxRow
                     checked={checked("half_day_work_formula")}
                     onCheck={(v) => handleCheck("half_day_work_formula", "half_day_work_min", "240", v)}
@@ -225,7 +225,7 @@ const DepartmentAccordion = ({ department, onSave, saving }) => {
                     value={d.par_absent_min}
                     onChange={(v) => set("par_absent_min", v)}
                     disabled={saving}
-                />
+                /> */}
             </div>
 
             {/* Save button */}

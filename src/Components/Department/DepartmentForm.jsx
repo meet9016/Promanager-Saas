@@ -265,6 +265,8 @@ const DepartmentForm = ({ onSubmit, loading = false, showToast }) => {
 
                             {/* ── Late / Early ── */}
                             <SectionDivider label="Late Coming & Early Going" />
+
+                            
                             <AlwaysRow
                                 label="Grace Time for Late Coming"
                                 value={f.late_coming}

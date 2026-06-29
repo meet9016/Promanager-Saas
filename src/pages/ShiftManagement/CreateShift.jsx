@@ -574,8 +574,8 @@ const CreateShift = () => {
                         {/* Scroll Lists Container */}
                         <div className={`grid ${mode === 'duration' ? 'grid-cols-2' : 'grid-cols-3'} divide-x divide-slate-100 h-44 select-none bg-white`}>
                             {/* Hours Column */}
-                            <div 
-                                ref={hourColRef} 
+                            <div
+                                ref={hourColRef}
                                 className="overflow-y-auto py-1 flex flex-col scroll-smooth"
                                 style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
                             >
@@ -599,8 +599,8 @@ const CreateShift = () => {
                             </div>
 
                             {/* Minutes Column */}
-                            <div 
-                                ref={minuteColRef} 
+                            <div
+                                ref={minuteColRef}
                                 className="overflow-y-auto py-1 flex flex-col scroll-smooth"
                                 style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
                             >
@@ -625,8 +625,8 @@ const CreateShift = () => {
 
                             {/* Period Column */}
                             {mode === 'time' && (
-                                <div 
-                                    ref={periodColRef} 
+                                <div
+                                    ref={periodColRef}
                                     className="overflow-y-auto py-1 flex flex-col scroll-smooth"
                                     style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
                                 >
@@ -973,88 +973,88 @@ const CreateShift = () => {
                                                 </div>
                                             </div>
 
-                                                {/* Occasional Days Section */}
-                                                {isOccasionalType && (
-                                                    <div className="mt-6 pt-6 border-t border-slate-200">
-                                                        <div className="space-y-4">
-                                                            <div className="flex items-center gap-2">
-                                                                <div className="w-2 h-2 bg-[var(--color-primary-lightest)]0 rounded-full"></div>
-                                                                <label className="text-sm font-semibold text-[var(--color-text-secondary)]">
-                                                                    Occasional Days <span className="text-[var(--color-error)]">*</span>
-                                                                </label>
+                                            {/* Occasional Days Section */}
+                                            {isOccasionalType && (
+                                                <div className="mt-6 pt-6 border-t border-slate-200">
+                                                    <div className="space-y-4">
+                                                        <div className="flex items-center gap-2">
+                                                            <div className="w-2 h-2 bg-[var(--color-primary-lightest)]0 rounded-full"></div>
+                                                            <label className="text-sm font-semibold text-[var(--color-text-secondary)]">
+                                                                Occasional Days <span className="text-[var(--color-error)]">*</span>
+                                                            </label>
+                                                        </div>
+                                                        <div className="bg-slate-50 rounded-xl p-4 border border-slate-200">
+                                                            <div className="max-h-40 overflow-y-auto">
+                                                                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                                                                    {occasionalDayList.map(occasionalDay => {
+                                                                        const isSelected = selectedOccasionalDays.includes(occasionalDay.occasional_day_id);
+                                                                        return (
+                                                                            <label
+                                                                                key={occasionalDay.occasional_day_id}
+                                                                                className={`flex items-center px-3 py-2.5 rounded-lg cursor-pointer transition-all duration-200 text-sm ${isSelected
+                                                                                    ? 'bg-[var(--color-primary-lighter)] border-2 border-primary-300 text-[var(--color-primary-darkest)] shadow-sm'
+                                                                                    : 'bg-[var(--color-bg-secondary)] border-2 border-slate-200 hover:border-slate-300 hover:bg-slate-50'
+                                                                                    }`}
+                                                                            >
+                                                                                <input
+                                                                                    type="checkbox"
+                                                                                    checked={isSelected}
+                                                                                    onChange={(e) => handleOccasionalDayChange(
+                                                                                        day.day_id,
+                                                                                        occasionalDay.occasional_day_id,
+                                                                                        e.target.checked
+                                                                                    )}
+                                                                                    className="w-4 h-4 text-[var(--color-primary-dark)] border-slate-300 rounded focus:ring-[var(--color-primary)] focus:ring-2 mr-2"
+                                                                                />
+                                                                                <span className="font-medium truncate">
+                                                                                    {occasionalDay.occasional_day_name}
+                                                                                </span>
+                                                                            </label>
+                                                                        );
+                                                                    })}
+                                                                </div>
                                                             </div>
-                                                            <div className="bg-slate-50 rounded-xl p-4 border border-slate-200">
-                                                                <div className="max-h-40 overflow-y-auto">
-                                                                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-                                                                        {occasionalDayList.map(occasionalDay => {
-                                                                            const isSelected = selectedOccasionalDays.includes(occasionalDay.occasional_day_id);
-                                                                            return (
-                                                                                <label
-                                                                                    key={occasionalDay.occasional_day_id}
-                                                                                    className={`flex items-center px-3 py-2.5 rounded-lg cursor-pointer transition-all duration-200 text-sm ${isSelected
-                                                                                        ? 'bg-[var(--color-primary-lighter)] border-2 border-primary-300 text-[var(--color-primary-darkest)] shadow-sm'
-                                                                                        : 'bg-[var(--color-bg-secondary)] border-2 border-slate-200 hover:border-slate-300 hover:bg-slate-50'
-                                                                                        }`}
-                                                                                >
-                                                                                    <input
-                                                                                        type="checkbox"
-                                                                                        checked={isSelected}
-                                                                                        onChange={(e) => handleOccasionalDayChange(
-                                                                                            day.day_id,
-                                                                                            occasionalDay.occasional_day_id,
-                                                                                            e.target.checked
-                                                                                        )}
-                                                                                        className="w-4 h-4 text-[var(--color-primary-dark)] border-slate-300 rounded focus:ring-[var(--color-primary)] focus:ring-2 mr-2"
-                                                                                    />
-                                                                                    <span className="font-medium truncate">
-                                                                                        {occasionalDay.occasional_day_name}
-                                                                                    </span>
-                                                                                </label>
-                                                                            );
-                                                                        })}
+
+                                                            {/* Selection Counter */}
+                                                            {selectedOccasionalDays.length > 0 && (
+                                                                <div className="mt-4 pt-3 border-t border-slate-200">
+                                                                    <div className="flex items-center gap-2">
+                                                                        <div className="w-2 h-2 bg-[var(--color-success-light)]0 rounded-full animate-pulse"></div>
+                                                                        <span className="text-sm font-medium text-green-700">
+                                                                            {selectedOccasionalDays.length} day{selectedOccasionalDays.length > 1 ? 's' : ''} selected
+                                                                        </span>
                                                                     </div>
                                                                 </div>
-
-                                                                {/* Selection Counter */}
-                                                                {selectedOccasionalDays.length > 0 && (
-                                                                    <div className="mt-4 pt-3 border-t border-slate-200">
-                                                                        <div className="flex items-center gap-2">
-                                                                            <div className="w-2 h-2 bg-[var(--color-success-light)]0 rounded-full animate-pulse"></div>
-                                                                            <span className="text-sm font-medium text-green-700">
-                                                                                {selectedOccasionalDays.length} day{selectedOccasionalDays.length > 1 ? 's' : ''} selected
-                                                                            </span>
-                                                                        </div>
-                                                                    </div>
-                                                                )}
-                                                            </div>
+                                                            )}
                                                         </div>
                                                     </div>
-                                                )}
+                                                </div>
+                                            )}
 
-                                                {/* Warning Message for Occasional Days */}
-                                                {isOccasionalType && selectedOccasionalDays.length === 0 && (
-                                                    <div className="mt-4 bg-[var(--color-primary-lightest)] border border-[var(--color-primary-light)] rounded-xl p-4">
-                                                        <div className="flex items-start gap-3">
-                                                            <div className="flex-shrink-0">
-                                                                <AlertCircle className="w-5 h-5 text-[var(--color-primary-dark)] mt-0.5" />
-                                                            </div>
-                                                            <div>
-                                                                <h4 className="text-sm font-semibold text-[var(--color-primary-darkest)]">Selection Required</h4>
-                                                                <p className="text-sm text-[var(--color-primary-darker)] mt-1">Please select at least one occasional day for this shift type.</p>
-                                                            </div>
+                                            {/* Warning Message for Occasional Days */}
+                                            {isOccasionalType && selectedOccasionalDays.length === 0 && (
+                                                <div className="mt-4 bg-[var(--color-primary-lightest)] border border-[var(--color-primary-light)] rounded-xl p-4">
+                                                    <div className="flex items-start gap-3">
+                                                        <div className="flex-shrink-0">
+                                                            <AlertCircle className="w-5 h-5 text-[var(--color-primary-dark)] mt-0.5" />
+                                                        </div>
+                                                        <div>
+                                                            <h4 className="text-sm font-semibold text-[var(--color-primary-darkest)]">Selection Required</h4>
+                                                            <p className="text-sm text-[var(--color-primary-darker)] mt-1">Please select at least one occasional day for this shift type.</p>
                                                         </div>
                                                     </div>
-                                                )}
-                                            </div>
-                                        );
-                                    })}
+                                                </div>
+                                            )}
+                                        </div>
+                                    );
+                                })}
                             </div>
                         </div>
                     </div>
 
                     {/* Enhanced Action Buttons */}
-                    <div className="bg-[var(--color-bg-secondary)] backdrop-blur-sm rounded-2xl border border-slate-200 shadow-lg">
-                        <div className="p-8">
+                    <div className="">
+                        <div className="p-0">
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-3">
                                 </div>
