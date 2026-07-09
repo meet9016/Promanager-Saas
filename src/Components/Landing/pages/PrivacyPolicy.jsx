@@ -276,6 +276,18 @@ const PrivacyPolicy = () => {
                         ]
                     },
                     {
+                        num: "8.1",
+                        title: "Face Data and Biometric Information",
+                        content: "Our application uses facial recognition solely for employee attendance verification.",
+                        items: [
+                            <span><strong>What Face Data We Collect:</strong> When an employee registers or verifies attendance, the application captures facial data using the device camera. A biometric face template is generated only for identity verification during attendance.</span>,
+                            <span><strong>Purpose of Collection:</strong> Face data is used exclusively for employee attendance verification, including clock-in and clock-out. It is not used for marketing, advertising, analytics, profiling, or any other purpose.</span>,
+                            <span><strong>Storage of Face Data:</strong> Face data is processed and stored locally on the user's device. The application does not upload, transmit, or store face images, biometric templates, or facial recognition data on our servers.</span>,
+                            <span><strong>Sharing of Face Data:</strong> We do not sell, share, or disclose face data to any third party.</span>,
+                            <span><strong>Retention of Face Data:</strong> Face data remains only on the user's device and is retained until the user clears the application data, unregisters the face, or uninstalls the application.</span>
+                        ]
+                    },
+                    {
                         num: 9,
                         title: "Camera Permission Disclosure",
                         subtitle: "(App Store Requirement)",

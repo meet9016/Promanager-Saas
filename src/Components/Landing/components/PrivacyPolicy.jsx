@@ -171,6 +171,61 @@ function PrivacyPolicyPage() {
               </div>
             </div>
 
+            {/* Face Data and Biometric Information */}
+            <div className="space-y-4">
+              <h2 className="text-2xl md:text-3xl font-bold text-gray-900 pb-3">
+                Face Data and Biometric Information
+              </h2>
+              <p className="text-gray-600">
+                Our application uses facial recognition solely for employee attendance verification.
+              </p>
+
+              <div className="space-y-3">
+                <h3 className="text-xl font-semibold text-gray-700">
+                  What Face Data We Collect
+                </h3>
+                <p className="text-gray-600">
+                  When an employee registers or verifies attendance, the application captures facial data using the device camera. A biometric face template is generated only for identity verification during attendance.
+                </p>
+              </div>
+
+              <div className="space-y-3">
+                <h3 className="text-xl font-semibold text-gray-700">
+                  Purpose of Collection
+                </h3>
+                <p className="text-gray-600">
+                  Face data is used exclusively for employee attendance verification, including clock-in and clock-out. It is not used for marketing, advertising, analytics, profiling, or any other purpose.
+                </p>
+              </div>
+
+              <div className="space-y-3">
+                <h3 className="text-xl font-semibold text-gray-700">
+                  Storage of Face Data
+                </h3>
+                <p className="text-gray-600">
+                  Face data is processed and stored locally on the user's device. The application does not upload, transmit, or store face images, biometric templates, or facial recognition data on our servers.
+                </p>
+              </div>
+
+              <div className="space-y-3">
+                <h3 className="text-xl font-semibold text-gray-700">
+                  Sharing of Face Data
+                </h3>
+                <p className="text-gray-600">
+                  We do not sell, share, or disclose face data to any third party.
+                </p>
+              </div>
+
+              <div className="space-y-3">
+                <h3 className="text-xl font-semibold text-gray-700">
+                  Retention of Face Data
+                </h3>
+                <p className="text-gray-600">
+                  Face data remains only on the user's device and is retained until the user clears the application data, unregisters the face, or uninstalls the application.
+                </p>
+              </div>
+            </div>
+
             {/* How We Use Your Information */}
             <div className="space-y-4">
               <h2 className="text-2xl md:text-3xl font-bold text-gray-900 pb-3">
