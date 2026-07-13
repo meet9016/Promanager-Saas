@@ -43,6 +43,7 @@ const DeductionPage = lazy(() => import("./pages/Employee/Deduction"));
 const AllowancePage = lazy(() => import("./pages/Employee/Allowance"));
 const CompanyPage = lazy(() => import("./pages/Employee/Company"));
 const IncrementPage = lazy(() => import("./pages/Employee/Increment"));
+const PaidLeavePage = lazy(() => import("./pages/Employee/PaidLeave"));
 
 // Lazy Loaded User Management Pages
 const Role = lazy(() => import("./pages/Users/Role"));
@@ -586,6 +587,19 @@ const App = () => {
                   ) : (
                     <PermissionRoute permission="employee_create">
                       <IncrementPage />
+                    </PermissionRoute>
+                  )
+                }
+              />
+
+              <Route
+                path="/paid-leave"
+                element={
+                  isMobileOrTablet ? (
+                    <Navigate to="/paid-leave" replace />
+                  ) : (
+                    <PermissionRoute permission="employee_create">
+                      <PaidLeavePage />
                     </PermissionRoute>
                   )
                 }
