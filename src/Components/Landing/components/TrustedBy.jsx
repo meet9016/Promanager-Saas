@@ -14,7 +14,7 @@ const COMPANY_LOGOS = [
   { name: "Spotify", logo: "https://insuraa.in/assets/website/imgs/8.png" },
   { name: "Adobe", logo: "https://insuraa.in/assets/website/imgs/9.png" },
   { name: "Intel", logo: "https://insuraa.in/assets/website/imgs/10.png" },
-  { name: "Intel", logo: "hhttps://insuraa.in/assets/website/imgs/19.png" },
+  { name: "Intel", logo: "https://insuraa.in/assets/website/imgs/19.png" },
   { name: "Intel", logo: "https://insuraa.in/assets/website/imgs/12.png" },
   { name: "Intel", logo: "https://insuraa.in/assets/website/imgs/14.png" },
   { name: "Intel", logo: "https://insuraa.in/assets/website/imgs/16.png" },

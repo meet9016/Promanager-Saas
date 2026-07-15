@@ -104,7 +104,14 @@ export const SoftwareConfigProvider = ({ children }) => {
         email: '',
         themeColor: '',
         themeColorSecond: '',
-    });
+        bankDetails: null,
+        address: '',
+        appstoreLink: '',
+        playstoreLink: '',
+        gstNumber: '',
+        mobile_number: '',
+    });console.log("config****",config);
+    
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
@@ -129,6 +136,12 @@ export const SoftwareConfigProvider = ({ children }) => {
                     email:                d.email                  || '',
                     themeColor:           (d.theme_color           || '').trim(),
                     themeColorSecond:     (d['theme_color_second '] || d.theme_color_second || '').trim(),
+                    bankDetails:          d.bank_detais || d.bank_details || d.bankDetails || d.bank_detail || d.bankdetails || null,
+                    address:              d.address || '',
+                    appstoreLink:         d.appstore_link || '',
+                    playstoreLink:        d.playstore_link || '',
+                    gstNumber:            d.gst_number || '',
+                    mobile_number:         d.mobile_number || '',
                 };
 
                 setConfig(parsed);

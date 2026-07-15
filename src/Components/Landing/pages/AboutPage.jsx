@@ -184,7 +184,7 @@ const AboutPage = () => {
                             </h2>
 
                             <p className="text-[var(--color-text-secondary)] mb-8 leading-relaxed text-lg">
-                                At ProManager, we believe that simplified payroll builds stronger businesses. Our mission is to transform how organizations handle salary disbursement, compliance, and workforce payments — with speed, accuracy, and transparency.
+                                At <span className="font-bold text-[#4B2EDB] px-1.5 py-0.5 rounded-md bg-[#6C4CF1]/10">DIGITALKS TECHNO LLP</span>, we believe that simplified payroll builds stronger businesses. Our flagship product, <span className="font-bold text-[#4B2EDB] px-1.5 py-0.5 rounded-md bg-[#6C4CF1]/10">ProManager</span>, is built with a mission to transform how organizations handle salary disbursement, compliance, and workforce payments — with speed, accuracy, and transparency.
                             </p>
 
                             {/* Feature Points */}

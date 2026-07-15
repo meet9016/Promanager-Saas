@@ -1,8 +1,12 @@
+import { useSoftwareConfig } from "../../../context/SoftwareConfigContext";
+
 function TermsAndConditionsPage() {
     // Reusable dot component for list items (matching PrivacyPolicyPage style)
     const Dot = () => (
         <span className="inline-block w-2 h-2 mt-2 rounded-full bg-gray-600 flex-shrink-0"></span>
     );
+
+    const { config } = useSoftwareConfig() as any;
 
     return (
         <div className="bg-gray-50">
@@ -258,11 +262,11 @@ function TermsAndConditionsPage() {
                             <div className="bg-gray-50 p-8 rounded-lg space-y-3">
                                 <p className="text-gray-700 flex items-center gap-3">
                                     <span className="text-xl" role="img" aria-label="phone">📞</span>
-                                    <span><strong>Support Number:</strong> +91-84600-49161</span>
+                                    <span><strong>Support Number:</strong> +91 {config?.mobileNumber || "8866779008"}</span>
                                 </p>
                                 <p className="text-gray-700 flex items-center gap-3">
                                     <span className="text-xl" role="img" aria-label="email">📧</span>
-                                    <span><strong>Email:</strong> support@promanager.in</span>
+                                    <span><strong>Email:</strong> {config?.email || "contact@promanager.in"}</span>
                                 </p>
                                 <p className="text-gray-600 mt-2">
                                     Our support team will assist you with onboarding, troubleshooting, and technical queries.

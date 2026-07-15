@@ -1,35 +1,40 @@
+import { useSoftwareConfig } from "../../../context/SoftwareConfigContext";
+
 function PrivacyPolicyPage() {
   const Dot = () => (
     <span className="inline-block w-2 h-2 mt-2 rounded-full bg-gray-600 flex-shrink-0"></span>
   );
+
+  const { config } = useSoftwareConfig();
+
   return (
     <div className="bg-gray-50">
       {/* Hero Section */}
       <section className="relative overflow-hidden bg-[#6c4cf1] text-white py-20">
-  
-  {/* Dots Background */}
-  <div className="absolute inset-0 opacity-20 pointer-events-none">
-    <div className="w-full h-full bg-[radial-gradient(circle,_white_1.5px,_transparent_1.5px)] bg-[size:24px_24px]" />
-  </div>
 
-  <div className="container relative mx-auto px-4 sm:px-6 lg:px-8">
-    <div className="flex flex-col items-center text-center max-w-3xl mx-auto">
-      
-      <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
-        Privacy & Policy
-      </h1>
+        {/* Dots Background */}
+        <div className="absolute inset-0 opacity-20 pointer-events-none">
+          <div className="w-full h-full bg-[radial-gradient(circle,_white_1.5px,_transparent_1.5px)] bg-[size:24px_24px]" />
+        </div>
 
-      <p className="text-lg md:text-xl text-white/80">
-        Your privacy matters to us. Learn how we collect, use, and protect your
-        information while delivering secure and reliable services.
-      </p>
+        <div className="container relative mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col items-center text-center max-w-3xl mx-auto">
 
-    </div>
-  </div>
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+              Privacy & Policy
+            </h1>
 
-  {/* Bottom Fade */}
-  <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-[#6c4cf1] to-transparent"></div>
-</section>
+            <p className="text-lg md:text-xl text-white/80">
+              Your privacy matters to us. Learn how we collect, use, and protect your
+              information while delivering secure and reliable services.
+            </p>
+
+          </div>
+        </div>
+
+        {/* Bottom Fade */}
+        <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-[#6c4cf1] to-transparent"></div>
+      </section>
 
       {/* Content Section */}
       <section className=" bg-white">
@@ -432,7 +437,7 @@ function PrivacyPolicyPage() {
               <div className="p-4 rounded-lg">
                 <p className="font-semibold text-primary-700 flex items-center gap-2">
                   <span className="text-xl">📧</span>
-                  contact@promanager.in
+                  {config?.email}
                 </p>
               </div>
               <p className="text-gray-600">
@@ -463,15 +468,15 @@ function PrivacyPolicyPage() {
               <div className="bg-gray-50 p-8 rounded-lg space-y-2">
                 <p className="text-gray-700">
                   <span className="font-semibold">Email:</span>{" "}
-                  contact@promanager.in
+                  {/* contact@promanager.in */}
+                  {config?.email}
                 </p>
                 <p className="text-gray-700">
-                  <span className="font-semibold">Phone:</span> +91 92747 89008
+                  <span className="font-semibold">Phone:</span> +91 {config?.mobile_number}
+
                 </p>
                 <p className="text-gray-700">
-                  <span className="font-semibold">Address:</span> Shreenathji
-                  Bungalow, 6, Peddar Rd, near Raghuvir <br />
-                  Shoppers, Mota Varachha, Surat, Gujarat 394101
+                  <span className="font-semibold">Address:</span> {config?.address}
                 </p>
               </div>
             </div>
