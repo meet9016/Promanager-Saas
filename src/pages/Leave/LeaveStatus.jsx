@@ -22,6 +22,8 @@ import {
     Users,
     ChevronDown,
     ChevronUp,
+    ChevronLeft,
+    ChevronRight,
     FileText,
     AlertCircle,
     Plus,
@@ -154,6 +156,8 @@ const LeaveManagement = () => {
     const [selectedEmployeeName, setSelectedEmployeeName] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isLoadingData, setIsLoadingData] = useState(false);
+    const [selectedDates, setSelectedDates] = useState([]);
+    const [isPaidMap, setIsPaidMap] = useState({});
 
     // Toast state
     const [toast, setToast] = useState({
@@ -289,6 +293,8 @@ const LeaveManagement = () => {
         });
         setSelectedEmployeeName('');
         setEmployeeSearch('');
+        setSelectedDates([]);
+        setIsPaidMap({});
 
         // Fetch data
         await Promise.all([fetchEmployees(), fetchLeaveTypes()]);
@@ -373,6 +379,8 @@ const LeaveManagement = () => {
         });
         setSelectedEmployeeName('');
         setEmployeeSearch('');
+        setSelectedDates([]);
+        setIsPaidMap({});
     }, [user]);
 
     // Submit leave form
@@ -384,15 +392,37 @@ const LeaveManagement = () => {
             return;
         }
 
+        if (selectedDates.length === 0) {
+            showToast('Please select at least one date', 'error');
+            return;
+        }
+
         setIsSubmitting(true);
 
         try {
             const submitData = new FormData();
             submitData.append('employee_id', leaveFormData.employee_id);
             submitData.append('leave_type', leaveFormData.leave_type);
-            submitData.append('start_date', formatDateForAPI(leaveFormData.start_date));
-            submitData.append('end_date', formatDateForAPI(leaveFormData.end_date));
+
+            const earliestDate = selectedDates[0];
+            const latestDate = selectedDates[selectedDates.length - 1];
+
+            const formatDDMMYYYY = (dateStr) => {
+                if (!dateStr) return '';
+                return dateStr.replace(/\//g, '-');
+            };
+
+            // submitData.append('start_date', formatDDMMYYYY(earliestDate));
+            // submitData.append('end_date', formatDDMMYYYY(latestDate));
             submitData.append('reason', leaveFormData.reason);
+
+            // Add leave_dates and is_paid arrays to FormData
+            selectedDates.forEach((date, index) => {
+                const formattedDate = formatDDMMYYYY(date);
+                const isPaidVal = isPaidMap[date] === 2 ? 2 : 1;
+                submitData.append(`leave_dates[${index}]`, formattedDate);
+                submitData.append(`is_paid[${index}]`, isPaidVal);
+            });
 
             const response = await api.post('/add_leave', submitData);
 
@@ -410,7 +440,7 @@ const LeaveManagement = () => {
         } finally {
             setIsSubmitting(false);
         }
-    }, [leaveFormData, formatDateForAPI, showToast, resetLeaveForm, handleCloseAddLeave, fetchLeaveRequests]);
+    }, [leaveFormData, showToast, resetLeaveForm, handleCloseAddLeave, fetchLeaveRequests, selectedDates, isPaidMap]);
 
     // Get today's date at midnight for comparison
     const today = useMemo(() => {
@@ -1110,32 +1140,78 @@ const LeaveManagement = () => {
                                             />
                                         </div>
 
-                                        {/* Start Date */}
-                                        <div className="space-y-2">
+                                        {/* Select Dates Calendar & Right Side */}
+                                        <div className="space-y-2 md:col-span-2">
                                             <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">
-                                                Start Date <span className="text-[var(--color-error)]">*</span>
+                                                Select Dates <span className="text-[var(--color-error)]">*</span>
                                             </label>
-                                            <CustomDatePicker
-                                                name="start_date"
-                                                value={leaveFormData.start_date}
-                                                onChange={(e) => handleStartDateChange(new Date(e.target.value))}
-                                                minDate={today}
-                                                placeholder="DD-MM-YYYY"
-                                            />
-                                        </div>
 
-                                        {/* End Date */}
-                                        <div className="space-y-2">
-                                            <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">
-                                                End Date <span className="text-[var(--color-error)]">*</span>
-                                            </label>
-                                            <CustomDatePicker
-                                                name="end_date"
-                                                value={leaveFormData.end_date}
-                                                onChange={(e) => handleEndDateChange(new Date(e.target.value))}
-                                                minDate={leaveFormData.start_date || today}
-                                                placeholder="DD-MM-YYYY"
-                                            />
+                                            <div className="grid grid-cols-1 md:grid-cols-12 gap-5">
+                                                {/* Calendar Left Side */}
+                                                <div className="md:col-span-7 border border-[var(--color-border-secondary)] rounded-xl p-2 bg-[var(--color-bg-primary)] shadow-sm transition-all flex justify-center">
+                                                    <DatePickerComponent
+                                                        selectedDates={selectedDates}
+                                                        setSelectedDates={setSelectedDates}
+                                                    />
+                                                </div>
+
+                                                {/* Selected Dates Right Side */}
+                                                <div className="md:col-span-5 bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] rounded-xl p-4 shadow-sm flex flex-col h-[300px]">
+                                                    <div className="flex items-center justify-between pb-3 mb-3 border-b border-[var(--color-border-primary)]">
+                                                        <h4 className="text-sm font-semibold text-[var(--color-text-primary)]">
+                                                            Selected Dates
+                                                        </h4>
+                                                        <span className="bg-[var(--color-primary-lighter)] text-[var(--color-primary-dark)] py-0.5 px-2.5 rounded-full text-xs font-bold">
+                                                            {selectedDates.length}
+                                                        </span>
+                                                    </div>
+
+                                                    {selectedDates.length === 0 ? (
+                                                        <div className="flex-1 flex flex-col items-center justify-center text-center p-4">
+                                                            <div className="w-12 h-12 bg-[var(--color-primary-lightest)] rounded-full flex items-center justify-center mb-3">
+                                                                <CalendarDays className="w-6 h-6 text-[var(--color-primary-light)]" />
+                                                            </div>
+                                                            <p className="text-sm text-[var(--color-text-secondary)] font-medium">No dates selected</p>
+                                                            <p className="text-xs text-[var(--color-text-secondary)] mt-1 opacity-70">Click on the calendar to select leave dates</p>
+                                                        </div>
+                                                    ) : (
+                                                        <div className="flex-1 overflow-y-auto pr-1 space-y-2 custom-scrollbar">
+                                                            {selectedDates.map((d) => (
+                                                                <div
+                                                                    key={d}
+                                                                    className="flex items-center justify-between bg-[var(--color-bg-primary)] border border-[var(--color-border-secondary)] hover:border-[var(--color-primary-light)] px-3 py-2 rounded-lg text-sm transition-all group shadow-sm hover:shadow"
+                                                                >
+                                                                    <div className="flex items-center gap-2.5 text-[var(--color-text-primary)] font-medium">
+                                                                        <CalendarDays size={16} className="text-[var(--color-primary)]" />
+                                                                        <span>{d}</span>
+                                                                    </div>
+
+                                                                    <div className="flex items-center gap-1.5">
+                                                                        <input
+                                                                            type="checkbox"
+                                                                            id={`is-paid-${d}`}
+                                                                            checked={isPaidMap[d] !== 2}
+                                                                            onChange={(e) => {
+                                                                                setIsPaidMap(prev => ({
+                                                                                    ...prev,
+                                                                                    [d]: e.target.checked ? 1 : 2
+                                                                                }));
+                                                                            }}
+                                                                            className="rounded border-[var(--color-border-secondary)] text-[var(--color-primary)] focus:ring-[var(--color-primary)] w-4 h-4 cursor-pointer"
+                                                                        />
+                                                                        <label
+                                                                            htmlFor={`is-paid-${d}`}
+                                                                            className="text-xs font-semibold text-[var(--color-text-secondary)] cursor-pointer select-none"
+                                                                        >
+                                                                            {isPaidMap[d] !== 2 ? 'Paid' : 'Unpaid'}
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </div>
                                         </div>
 
                                         {/* Reason */}
@@ -1200,5 +1276,186 @@ const LeaveManagement = () => {
         </div>
     );
 };
+
+/* --- Date Picker Component for Modal --- */
+function DatePickerComponent({ selectedDates, setSelectedDates }) {
+    const [currentMonth, setCurrentMonth] = useState(new Date());
+
+    const today = useMemo(() => {
+        const d = new Date();
+        d.setHours(0, 0, 0, 0);
+        return d;
+    }, []);
+
+    const formatDate = (date) => {
+        const d = String(date.getDate()).padStart(2, "0");
+        const m = String(date.getMonth() + 1).padStart(2, "0");
+        const y = date.getFullYear();
+        return `${d}/${m}/${y}`;
+    };
+
+    const monthNames = [
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+    ];
+
+    const dayNames = ["S", "M", "T", "W", "T", "F", "S"];
+
+    const getDaysInMonth = (date) => {
+        const year = date.getFullYear();
+        const month = date.getMonth();
+
+        const firstDay = new Date(year, month, 1);
+        const lastDay = new Date(year, month + 1, 0);
+
+        const daysInMonth = lastDay.getDate();
+        const startingDayOfWeek = firstDay.getDay();
+
+        const days = [];
+
+        for (let i = 0; i < startingDayOfWeek; i++) {
+            days.push(null);
+        }
+
+        for (let day = 1; day <= daysInMonth; day++) {
+            days.push(new Date(year, month, day));
+        }
+
+        return days;
+    };
+
+    const days = getDaysInMonth(currentMonth);
+
+    const nextMonth = () => {
+        setCurrentMonth(
+            new Date(
+                currentMonth.getFullYear(),
+                currentMonth.getMonth() + 1,
+                1
+            )
+        );
+    };
+
+    const prevMonth = () => {
+        setCurrentMonth(
+            new Date(
+                currentMonth.getFullYear(),
+                currentMonth.getMonth() - 1,
+                1
+            )
+        );
+    };
+
+    const handleDateClick = (date) => {
+        const dateCopy = new Date(date);
+        dateCopy.setHours(0, 0, 0, 0);
+        if (dateCopy < today) return;
+
+        const formatted = formatDate(date);
+
+        setSelectedDates((prev) => {
+            let newDates;
+
+            if (prev.includes(formatted)) {
+                newDates = prev.filter((d) => d !== formatted);
+            } else {
+                newDates = [...prev, formatted];
+            }
+
+            return newDates.sort((a, b) => {
+                const [dayA, monthA, yearA] = a.split("/").map(Number);
+                const [dayB, monthB, yearB] = b.split("/").map(Number);
+
+                if (yearA !== yearB) return yearA - yearB;
+                if (monthA !== monthB) return monthA - monthB;
+
+                return dayA - dayB;
+            });
+        });
+    };
+
+    return (
+        <div className="w-full max-w-[280px]">
+            {/* Header */}
+            <div className="flex items-center justify-between mb-3">
+                <button
+                    onClick={prevMonth}
+                    type="button"
+                    className="p-1 hover:bg-[var(--color-bg-hover)] rounded-md transition-colors"
+                >
+                    <ChevronLeft
+                        size={16}
+                        className="text-[var(--color-text-secondary)]"
+                    />
+                </button>
+
+                <h3 className="text-xs font-semibold text-[var(--color-text-primary)]">
+                    {monthNames[currentMonth.getMonth()]}{" "}
+                    {currentMonth.getFullYear()}
+                </h3>
+
+                <button
+                    onClick={nextMonth}
+                    type="button"
+                    className="p-1 hover:bg-[var(--color-bg-hover)] rounded-md transition-colors"
+                >
+                    <ChevronRight
+                        size={16}
+                        className="text-[var(--color-text-secondary)]"
+                    />
+                </button>
+            </div>
+
+            {/* Days */}
+            <div className="grid grid-cols-7 gap-1 text-center">
+                {dayNames.map((day, idx) => (
+                    <div
+                        key={idx}
+                        className="text-[10px] font-semibold text-[var(--color-text-secondary)] py-1"
+                    >
+                        {day}
+                    </div>
+                ))}
+
+                {days.map((date, idx) => {
+                    if (!date) {
+                        return (
+                            <div
+                                key={`empty-${idx}`}
+                                className="w-8 h-8"
+                            ></div>
+                        );
+                    }
+
+                    const formatted = formatDate(date);
+                    const isSelected = selectedDates.includes(formatted);
+
+                    const dateCopy = new Date(date);
+                    dateCopy.setHours(0, 0, 0, 0);
+                    const isPast = dateCopy < today;
+
+                    return (
+                        <button
+                            key={idx}
+                            type="button"
+                            onClick={() => !isPast && handleDateClick(date)}
+                            disabled={isPast}
+                            className={`w-8 h-8 text-xs rounded-md border flex items-center justify-center transition-all font-medium
+                            
+                            ${isPast
+                                    ? "border-transparent text-[var(--color-text-muted)] opacity-40 cursor-not-allowed"
+                                    : isSelected
+                                        ? "bg-[var(--color-primary)] text-white border-[var(--color-primary)]"
+                                        : "border-[var(--color-border-secondary)] hover:bg-[var(--color-bg-hover)] text-[var(--color-text-primary)]"
+                                }`}
+                        >
+                            {date.getDate()}
+                        </button>
+                    );
+                })}
+            </div>
+        </div>
+    );
+}
 
 export default LeaveManagement;

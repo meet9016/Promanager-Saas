@@ -1,5 +1,6 @@
 // api.js
 import axios from 'axios';
+import Cookies from 'js-cookie';
 
 const API = axios.create({
     timeout: 30000,
@@ -25,14 +26,36 @@ API.interceptors.request.use((config) => {
     return config;
 });
 
+// Flag to prevent multiple simultaneous logout redirects
+let isLoggingOut = false;
+
 API.interceptors.response.use(
     (res) => res,
     (error) => {
+        const status = error.response?.status;
+
         console.error('API Error:', {
-            status: error.response?.status,
+            status,
             message: error.response?.data?.message || error.message,
             url: error.config?.url
         });
+
+        // 🔐 401 Unauthorized - auto logout and redirect to HeroSection (/)
+        if (status === 401 && !isLoggingOut) {
+            isLoggingOut = true;
+
+            // Clear all auth-related cookies
+            Cookies.remove('auth_user');
+            Cookies.remove('permissions');
+
+            // Clear all storage
+            localStorage.clear();
+            sessionStorage.clear();
+
+            // Redirect to HeroSection (Landing Page)
+            window.location.href = '/';
+        }
+
         return Promise.reject(error);
     }
 );
