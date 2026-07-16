@@ -158,6 +158,9 @@ const LeaveManagement = () => {
     const [isLoadingData, setIsLoadingData] = useState(false);
     const [selectedDates, setSelectedDates] = useState([]);
     const [isPaidMap, setIsPaidMap] = useState({});
+    const [calendarData, setCalendarData] = useState(null);
+    const [calendarLoading, setCalendarLoading] = useState(false);
+    const [leaveBalanceData, setLeaveBalanceData] = useState(null);
 
     // Toast state
     const [toast, setToast] = useState({
@@ -276,6 +279,43 @@ const LeaveManagement = () => {
         }
     }, [showToast]);
 
+    // Fetch leave calendar data for selected employee
+    const fetchLeaveCalendar = useCallback(async (employeeId) => {
+        if (!employeeId) return;
+        setCalendarLoading(true);
+        setCalendarData(null);
+        setSelectedDates([]);
+        setIsPaidMap({});
+        try {
+            const formData = new FormData();
+            formData.append('employee_id', employeeId);
+            const response = await api.post('/leave_calendar', formData);
+            if (response.data.success) {
+                setCalendarData(response.data.data || null);
+            }
+        } catch (error) {
+            console.error('Error fetching leave calendar:', error);
+        } finally {
+            setCalendarLoading(false);
+        }
+    }, []);
+
+    // Fetch leave balance data for selected employee
+    const fetchLeaveBalance = useCallback(async (employeeId) => {
+        if (!employeeId) return;
+        setLeaveBalanceData(null);
+        try {
+            const formData = new FormData();
+            formData.append('employee_id', employeeId);
+            const response = await api.post('/employee_leave_balance', formData);
+            if (response.data.success) {
+                setLeaveBalanceData(response.data.data || null);
+            }
+        } catch (error) {
+            console.error('Error fetching leave balance:', error);
+        }
+    }, []);
+
     // Open Add Leave Popup - SMOOTH ANIMATION
     const handleOpenAddLeave = useCallback(async () => {
         // First set the modal data state
@@ -295,6 +335,7 @@ const LeaveManagement = () => {
         setEmployeeSearch('');
         setSelectedDates([]);
         setIsPaidMap({});
+        setCalendarData(null);
 
         // Fetch data
         await Promise.all([fetchEmployees(), fetchLeaveTypes()]);
@@ -338,7 +379,11 @@ const LeaveManagement = () => {
 
         setSelectedEmployeeName(selectedEmployee.full_name);
         setEmployeeSearch(selectedEmployee.full_name);
-    }, [employees]);
+
+        // Fetch calendar data for selected employee
+        fetchLeaveCalendar(selectedEmployee.employee_id);
+        fetchLeaveBalance(selectedEmployee.employee_id);
+    }, [employees, fetchLeaveCalendar, fetchLeaveBalance]);
 
     // Format date for API
     const formatDateForAPI = useCallback((dateString) => {
@@ -381,7 +426,44 @@ const LeaveManagement = () => {
         setEmployeeSearch('');
         setSelectedDates([]);
         setIsPaidMap({});
+        setCalendarData(null);
+        setLeaveBalanceData(null);
     }, [user]);
+
+    // Validate and toggle paid leave status
+    const handlePaidToggle = useCallback((dateStr, isChecked) => {
+        if (!isChecked) {
+            setIsPaidMap(prev => ({ ...prev, [dateStr]: 2 }));
+            return;
+        }
+
+        // Validate if we can set it to paid based on leaveBalanceData
+        if (leaveBalanceData && leaveBalanceData.month_wise) {
+            const [day, month, year] = dateStr.split('/');
+            const monthKey = `${year}-${month}`; // matches API format e.g. "2026-07"
+
+            const monthData = leaveBalanceData.month_wise.find(m => m.month === monthKey);
+
+            if (monthData) {
+                const remaining = parseInt(monthData.remaining_paid_leave || '0', 10);
+
+                // Count how many currently selected dates are marked as paid in this month
+                let currentPaidCountForMonth = 0;
+                selectedDates.forEach(d => {
+                    if (isPaidMap[d] === 1 && d.endsWith(`/${month}/${year}`)) {
+                        currentPaidCountForMonth++;
+                    }
+                });
+
+                if (currentPaidCountForMonth >= remaining) {
+                    showToast(`You have only ${remaining} paid leave(s) remaining for ${monthKey}`, 'error');
+                    return; // Prevent checking
+                }
+            }
+        }
+
+        setIsPaidMap(prev => ({ ...prev, [dateStr]: 1 }));
+    }, [leaveBalanceData, selectedDates, isPaidMap, showToast]);
 
     // Submit leave form
     const handleSubmitLeave = useCallback(async (e) => {
@@ -417,18 +499,25 @@ const LeaveManagement = () => {
             submitData.append('reason', leaveFormData.reason);
 
             // Add leave_dates and is_paid arrays to FormData
+            // Default is unpaid (2), checked = paid (1)
             selectedDates.forEach((date, index) => {
                 const formattedDate = formatDDMMYYYY(date);
-                const isPaidVal = isPaidMap[date] === 2 ? 2 : 1;
+                const isPaidVal = isPaidMap[date] === 1 ? 1 : 2;
                 submitData.append(`leave_dates[${index}]`, formattedDate);
                 submitData.append(`is_paid[${index}]`, isPaidVal);
             });
 
             const response = await api.post('/add_leave', submitData);
 
+            if (response.data.success === false) {
+                // API returned success: false - show error toast, keep popup open
+                showToast(response.data.message || 'Failed to submit leave request', 'error');
+                return;
+            }
+
             showToast(response.data.message || 'Leave request submitted successfully!', 'success');
 
-            // Reset form and close popup
+            // Reset form and close popup only on actual success
             resetLeaveForm();
             handleCloseAddLeave();
 
@@ -1142,17 +1231,44 @@ const LeaveManagement = () => {
 
                                         {/* Select Dates Calendar & Right Side */}
                                         <div className="space-y-2 md:col-span-2">
-                                            <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">
-                                                Select Dates <span className="text-[var(--color-error)]">*</span>
-                                            </label>
+                                            <div className="flex items-center justify-between">
+                                                <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">
+                                                    Select Dates <span className="text-[var(--color-error)]">*</span>
+                                                </label>
+                                                {/* Legend inline with label */}
+                                                <div className="flex items-center gap-3">
+                                                    <div className="flex items-center gap-1.5">
+                                                        <span className="w-2.5 h-2.5 rounded-full bg-green-500 inline-block flex-shrink-0" />
+                                                        <span className="text-[10px] text-[var(--color-text-secondary)] font-medium">Holiday</span>
+                                                    </div>
+                                                    <div className="flex items-center gap-1.5">
+                                                        <span className="w-2.5 h-2.5 rounded-full bg-amber-400 inline-block flex-shrink-0" />
+                                                        <span className="text-[10px] text-[var(--color-text-secondary)] font-medium">Leave Applied</span>
+                                                    </div>
+                                                    <div className="flex items-center gap-1.5">
+                                                        <span className="w-2.5 h-2.5 rounded-full bg-indigo-600 inline-block flex-shrink-0" />
+                                                        <span className="text-[10px] text-[var(--color-text-secondary)] font-medium">Selected</span>
+                                                    </div>
+                                                </div>
+                                            </div>
 
                                             <div className="grid grid-cols-1 md:grid-cols-12 gap-5">
                                                 {/* Calendar Left Side */}
                                                 <div className="md:col-span-7 border border-[var(--color-border-secondary)] rounded-xl p-2 bg-[var(--color-bg-primary)] shadow-sm transition-all flex justify-center">
-                                                    <DatePickerComponent
-                                                        selectedDates={selectedDates}
-                                                        setSelectedDates={setSelectedDates}
-                                                    />
+                                                    {calendarLoading ? (
+                                                        <div className="flex items-center justify-center h-[260px] w-full">
+                                                            <div className="flex flex-col items-center gap-2">
+                                                                <div className="w-8 h-8 border-2 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin"></div>
+                                                                <span className="text-xs text-[var(--color-text-secondary)]">Loading calendar...</span>
+                                                            </div>
+                                                        </div>
+                                                    ) : (
+                                                        <DatePickerComponent
+                                                            selectedDates={selectedDates}
+                                                            setSelectedDates={setSelectedDates}
+                                                            calendarData={calendarData}
+                                                        />
+                                                    )}
                                                 </div>
 
                                                 {/* Selected Dates Right Side */}
@@ -1176,38 +1292,42 @@ const LeaveManagement = () => {
                                                         </div>
                                                     ) : (
                                                         <div className="flex-1 overflow-y-auto pr-1 space-y-2 custom-scrollbar">
-                                                            {selectedDates.map((d) => (
-                                                                <div
-                                                                    key={d}
-                                                                    className="flex items-center justify-between bg-[var(--color-bg-primary)] border border-[var(--color-border-secondary)] hover:border-[var(--color-primary-light)] px-3 py-2 rounded-lg text-sm transition-all group shadow-sm hover:shadow"
-                                                                >
-                                                                    <div className="flex items-center gap-2.5 text-[var(--color-text-primary)] font-medium">
-                                                                        <CalendarDays size={16} className="text-[var(--color-primary)]" />
-                                                                        <span>{d}</span>
-                                                                    </div>
+                                                            {selectedDates.map((d) => {
+                                                                const isPaid = isPaidMap[d] === 1;
+                                                                return (
+                                                                    <div
+                                                                        key={d}
+                                                                        className="flex items-center justify-between bg-[var(--color-bg-primary)] border border-[var(--color-border-secondary)] hover:border-[var(--color-primary-light)] px-3 py-2 rounded-lg text-sm transition-all group shadow-sm hover:shadow"
+                                                                    >
+                                                                        <div className="flex items-center gap-2.5 text-[var(--color-text-primary)] font-medium">
+                                                                            <CalendarDays size={16} className="text-[var(--color-primary)]" />
+                                                                            <span>{d}</span>
+                                                                        </div>
 
-                                                                    <div className="flex items-center gap-1.5">
-                                                                        <input
-                                                                            type="checkbox"
-                                                                            id={`is-paid-${d}`}
-                                                                            checked={isPaidMap[d] !== 2}
-                                                                            onChange={(e) => {
-                                                                                setIsPaidMap(prev => ({
-                                                                                    ...prev,
-                                                                                    [d]: e.target.checked ? 1 : 2
-                                                                                }));
-                                                                            }}
-                                                                            className="rounded border-[var(--color-border-secondary)] text-[var(--color-primary)] focus:ring-[var(--color-primary)] w-4 h-4 cursor-pointer"
-                                                                        />
+                                                                        {/* Paid toggle - default Unpaid, fixed width to prevent layout shift */}
                                                                         <label
                                                                             htmlFor={`is-paid-${d}`}
-                                                                            className="text-xs font-semibold text-[var(--color-text-secondary)] cursor-pointer select-none"
+                                                                            className="flex items-center gap-2 cursor-pointer select-none flex-shrink-0"
                                                                         >
-                                                                            {isPaidMap[d] !== 2 ? 'Paid' : 'Unpaid'}
+                                                                            <input
+                                                                                type="checkbox"
+                                                                                id={`is-paid-${d}`}
+                                                                                checked={isPaid}
+                                                                                onChange={(e) => {
+                                                                                    handlePaidToggle(d, e.target.checked);
+                                                                                }}
+                                                                                className="w-4 h-4 text-[var(--color-primary-dark)] border-2 border-[var(--color-border-secondary)] rounded focus:ring-[var(--color-primary)] focus:ring-2 transition-colors duration-150 cursor-pointer flex-shrink-0"
+                                                                            />
+                                                                            <span className={`text-xs font-semibold w-10 text-right ${isPaid
+                                                                                ? 'text-[var(--color-primary-dark)]'
+                                                                                : 'text-[var(--color-text-secondary)]'
+                                                                                }`}>
+                                                                                {isPaid ? 'Paid' : 'Unpaid'}
+                                                                            </span>
                                                                         </label>
                                                                     </div>
-                                                                </div>
-                                                            ))}
+                                                                );
+                                                            })}
                                                         </div>
                                                     )}
                                                 </div>
@@ -1278,14 +1398,74 @@ const LeaveManagement = () => {
 };
 
 /* --- Date Picker Component for Modal --- */
-function DatePickerComponent({ selectedDates, setSelectedDates }) {
-    const [currentMonth, setCurrentMonth] = useState(new Date());
-
+function DatePickerComponent({ selectedDates, setSelectedDates, calendarData }) {
     const today = useMemo(() => {
         const d = new Date();
         d.setHours(0, 0, 0, 0);
         return d;
     }, []);
+
+    // Parse available months from API: e.g. ["2025-07", "2025-08"]
+    const availableMonths = useMemo(() => {
+        if (!calendarData?.months) return null;
+        return calendarData.months.map(m => {
+            const [y, mo] = m.split('-').map(Number);
+            return { year: y, month: mo - 1 }; // month is 0-indexed
+        });
+    }, [calendarData]);
+
+    // Determine starting month: first available month from API, or current month
+    const initialMonth = useMemo(() => {
+        if (availableMonths && availableMonths.length > 0) {
+            const first = availableMonths[0];
+            return new Date(first.year, first.month, 1);
+        }
+        return new Date(today.getFullYear(), today.getMonth(), 1);
+    }, [availableMonths, today]);
+
+    const [currentMonth, setCurrentMonth] = useState(initialMonth);
+
+    // Reset to initialMonth when calendarData changes
+    useEffect(() => {
+        setCurrentMonth(initialMonth);
+    }, [initialMonth]);
+
+    // Build sets for O(1) lookup
+    // API returns YYYY-MM-DD format, formatDate() returns DD/MM/YYYY
+    // Helper: convert "YYYY-MM-DD" → "DD/MM/YYYY"
+    const apiDateToFormatted = (raw) => {
+        if (!raw) return null;
+        const parts = raw.split('-');
+        if (parts.length === 3) {
+            const [y, m, d] = parts;
+            return `${d}/${m}/${y}`; // DD/MM/YYYY
+        }
+        return null;
+    };
+
+    const holidaySet = useMemo(() => {
+        const set = new Set();
+        if (calendarData?.holidays) {
+            calendarData.holidays.forEach(h => {
+                // API field: holiday_date, format: YYYY-MM-DD
+                const formatted = apiDateToFormatted(h.holiday_date || h.date);
+                if (formatted) set.add(formatted);
+            });
+        }
+        return set;
+    }, [calendarData]);
+
+    const leaveDateSet = useMemo(() => {
+        const set = new Set();
+        if (calendarData?.leave_dates) {
+            calendarData.leave_dates.forEach(d => {
+                // API field: leave_date, format: YYYY-MM-DD
+                const formatted = apiDateToFormatted(d.leave_date || d.date);
+                if (formatted) set.add(formatted);
+            });
+        }
+        return set;
+    }, [calendarData]);
 
     const formatDate = (date) => {
         const d = String(date.getDate()).padStart(2, "0");
@@ -1301,159 +1481,156 @@ function DatePickerComponent({ selectedDates, setSelectedDates }) {
 
     const dayNames = ["S", "M", "T", "W", "T", "F", "S"];
 
+    // Check if prev/next navigation is allowed based on available months
+    const canGoPrev = useMemo(() => {
+        if (!availableMonths) return true;
+        const prevDate = new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1);
+        return availableMonths.some(m => m.year === prevDate.getFullYear() && m.month === prevDate.getMonth());
+    }, [availableMonths, currentMonth]);
+
+    const canGoNext = useMemo(() => {
+        if (!availableMonths) return true;
+        const nextDate = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1);
+        return availableMonths.some(m => m.year === nextDate.getFullYear() && m.month === nextDate.getMonth());
+    }, [availableMonths, currentMonth]);
+
     const getDaysInMonth = (date) => {
         const year = date.getFullYear();
         const month = date.getMonth();
-
         const firstDay = new Date(year, month, 1);
         const lastDay = new Date(year, month + 1, 0);
-
         const daysInMonth = lastDay.getDate();
         const startingDayOfWeek = firstDay.getDay();
-
         const days = [];
-
-        for (let i = 0; i < startingDayOfWeek; i++) {
-            days.push(null);
-        }
-
-        for (let day = 1; day <= daysInMonth; day++) {
-            days.push(new Date(year, month, day));
-        }
-
+        for (let i = 0; i < startingDayOfWeek; i++) days.push(null);
+        for (let day = 1; day <= daysInMonth; day++) days.push(new Date(year, month, day));
         return days;
     };
 
     const days = getDaysInMonth(currentMonth);
 
     const nextMonth = () => {
-        setCurrentMonth(
-            new Date(
-                currentMonth.getFullYear(),
-                currentMonth.getMonth() + 1,
-                1
-            )
-        );
+        if (!canGoNext) return;
+        setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1));
     };
 
     const prevMonth = () => {
-        setCurrentMonth(
-            new Date(
-                currentMonth.getFullYear(),
-                currentMonth.getMonth() - 1,
-                1
-            )
-        );
+        if (!canGoPrev) return;
+        setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1));
     };
 
     const handleDateClick = (date) => {
         const dateCopy = new Date(date);
         dateCopy.setHours(0, 0, 0, 0);
-        if (dateCopy < today) return;
-
         const formatted = formatDate(date);
+        // Only disable holidays and already applied leave dates (past dates are selectable)
+        if (holidaySet.has(formatted) || leaveDateSet.has(formatted)) return;
 
         setSelectedDates((prev) => {
             let newDates;
-
             if (prev.includes(formatted)) {
                 newDates = prev.filter((d) => d !== formatted);
             } else {
                 newDates = [...prev, formatted];
             }
-
             return newDates.sort((a, b) => {
                 const [dayA, monthA, yearA] = a.split("/").map(Number);
                 const [dayB, monthB, yearB] = b.split("/").map(Number);
-
                 if (yearA !== yearB) return yearA - yearB;
                 if (monthA !== monthB) return monthA - monthB;
-
                 return dayA - dayB;
             });
         });
     };
 
+    // Legend
+    const hasCalendarData = calendarData && (holidaySet.size > 0 || leaveDateSet.size > 0);
+
     return (
-        <div className="w-full max-w-[280px]">
+        <div className="w-full max-w-[290px]">
             {/* Header */}
             <div className="flex items-center justify-between mb-3">
                 <button
                     onClick={prevMonth}
                     type="button"
-                    className="p-1 hover:bg-[var(--color-bg-hover)] rounded-md transition-colors"
+                    disabled={!canGoPrev}
+                    className={`p-1 rounded-md transition-colors ${canGoPrev
+                        ? 'hover:bg-[var(--color-bg-hover)] text-[var(--color-text-secondary)]'
+                        : 'opacity-30 cursor-not-allowed text-[var(--color-text-muted)]'
+                        }`}
                 >
-                    <ChevronLeft
-                        size={16}
-                        className="text-[var(--color-text-secondary)]"
-                    />
+                    <ChevronLeft size={16} />
                 </button>
 
                 <h3 className="text-xs font-semibold text-[var(--color-text-primary)]">
-                    {monthNames[currentMonth.getMonth()]}{" "}
-                    {currentMonth.getFullYear()}
+                    {monthNames[currentMonth.getMonth()]}{" "}{currentMonth.getFullYear()}
                 </h3>
 
                 <button
                     onClick={nextMonth}
                     type="button"
-                    className="p-1 hover:bg-[var(--color-bg-hover)] rounded-md transition-colors"
+                    disabled={!canGoNext}
+                    className={`p-1 rounded-md transition-colors ${canGoNext
+                        ? 'hover:bg-[var(--color-bg-hover)] text-[var(--color-text-secondary)]'
+                        : 'opacity-30 cursor-not-allowed text-[var(--color-text-muted)]'
+                        }`}
                 >
-                    <ChevronRight
-                        size={16}
-                        className="text-[var(--color-text-secondary)]"
-                    />
+                    <ChevronRight size={16} />
                 </button>
             </div>
 
-            {/* Days */}
-            <div className="grid grid-cols-7 gap-1 text-center">
+            {/* Day names */}
+            <div className="grid grid-cols-7 gap-1 text-center mb-1">
                 {dayNames.map((day, idx) => (
-                    <div
-                        key={idx}
-                        className="text-[10px] font-semibold text-[var(--color-text-secondary)] py-1"
-                    >
+                    <div key={idx} className="text-[10px] font-semibold text-[var(--color-text-secondary)] py-1">
                         {day}
                     </div>
                 ))}
+            </div>
 
+            {/* Days grid */}
+            <div className="grid grid-cols-7 gap-1 text-center">
                 {days.map((date, idx) => {
-                    if (!date) {
-                        return (
-                            <div
-                                key={`empty-${idx}`}
-                                className="w-8 h-8"
-                            ></div>
-                        );
-                    }
+                    if (!date) return <div key={`empty-${idx}`} className="w-8 h-8" />;
 
                     const formatted = formatDate(date);
                     const isSelected = selectedDates.includes(formatted);
-
-                    const dateCopy = new Date(date);
-                    dateCopy.setHours(0, 0, 0, 0);
-                    const isPast = dateCopy < today;
+                    const isHoliday = holidaySet.has(formatted);
+                    const isLeaveDate = leaveDateSet.has(formatted);
+                    // Only holidays and existing leave dates are disabled (no past date restriction)
+                    const isDisabled = isHoliday || isLeaveDate;
 
                     return (
-                        <button
-                            key={idx}
-                            type="button"
-                            onClick={() => !isPast && handleDateClick(date)}
-                            disabled={isPast}
-                            className={`w-8 h-8 text-xs rounded-md border flex items-center justify-center transition-all font-medium
-                            
-                            ${isPast
-                                    ? "border-transparent text-[var(--color-text-muted)] opacity-40 cursor-not-allowed"
-                                    : isSelected
-                                        ? "bg-[var(--color-primary)] text-white border-[var(--color-primary)]"
-                                        : "border-[var(--color-border-secondary)] hover:bg-[var(--color-bg-hover)] text-[var(--color-text-primary)]"
-                                }`}
-                        >
-                            {date.getDate()}
-                        </button>
+                        <div key={idx} className="relative flex flex-col items-center">
+                            <button
+                                type="button"
+                                onClick={() => !isDisabled && handleDateClick(date)}
+                                disabled={isDisabled}
+                                title={
+                                    isHoliday ? 'Holiday' :
+                                        isLeaveDate ? 'Leave applied' : ''
+                                }
+                                className={`w-8 h-8 text-xs rounded-md border flex items-center justify-center transition-all font-medium
+                                    ${isDisabled
+                                        ? isHoliday
+                                            ? 'border-transparent bg-green-100 text-green-700 opacity-80 cursor-not-allowed'
+                                            : isLeaveDate
+                                                ? 'border-transparent bg-amber-100 text-amber-700 opacity-80 cursor-not-allowed'
+                                                : 'border-transparent text-[var(--color-text-muted)] opacity-40 cursor-not-allowed'
+                                        : isSelected
+                                            ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm'
+                                            : 'border-[var(--color-border-secondary)] hover:bg-[var(--color-bg-hover)] text-[var(--color-text-primary)]'
+                                    }`}
+                            >
+                                {date.getDate()}
+                            </button>
+                            {/* No dots - bg color is sufficient indicator */}
+                        </div>
                     );
                 })}
             </div>
+
+
         </div>
     );
 }

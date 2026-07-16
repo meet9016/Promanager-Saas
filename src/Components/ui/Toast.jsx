@@ -36,7 +36,7 @@ export const Toast = ({ message, type, onClose }) => {
     };
 
     return (
-        <div className={`fixed top-4 right-4 z-50 p-4 rounded-lg border shadow-lg transition-all duration-300 ${getToastStyles()}`}>
+        <div className={`fixed top-4 right-4 z-[9999] p-4 rounded-lg border shadow-lg transition-all duration-300 ${getToastStyles()}`}>
             <div className="flex items-center space-x-3">
                 {getIcon()}
                 <span className="font-medium">{message}</span>
