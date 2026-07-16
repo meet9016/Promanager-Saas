@@ -132,6 +132,10 @@ const LeaveManagement = () => {
         isOpen: false,
         leaveData: null
     });
+    const [approvalModal, setApprovalModal] = useState({
+        isOpen: false,
+        leaveId: null
+    });
 
     // ====== ADD LEAVE POPUP STATES (From LeaveApplication) ======
     const [addLeaveModal, setAddLeaveModal] = useState({
@@ -870,29 +874,6 @@ const LeaveManagement = () => {
                                                             >
                                                                 <Eye className="w-4 h-4" strokeWidth={2.5} />
                                                             </button>
-
-                                                            {leave.status === '1' && (
-                                                                <>
-                                                                    {permissions['leave_approved'] && (
-                                                                        <button
-                                                                            onClick={() => handleApprove(leave.leave_id)}
-                                                                            className="w-9 h-9 flex items-center justify-center rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-100 hover:scale-110 hover:shadow-md transition-all duration-200"
-                                                                            title="Approve Leave"
-                                                                        >
-                                                                            <CheckCircle className="w-4 h-4" strokeWidth={2.5} />
-                                                                        </button>
-                                                                    )}
-                                                                    {permissions['leave_rejected'] && (
-                                                                        <button
-                                                                            onClick={() => handleReject(leave)}
-                                                                            className="w-9 h-9 flex items-center justify-center rounded-xl bg-red-50 text-red-500 hover:bg-red-100 hover:scale-110 hover:shadow-md transition-all duration-200"
-                                                                            title="Reject Leave"
-                                                                        >
-                                                                            <XCircle className="w-4 h-4" strokeWidth={2.5} />
-                                                                        </button>
-                                                                    )}
-                                                                </>
-                                                            )}
                                                         </div>
                                                     </Td>
                                                 </TableRow>
@@ -955,10 +936,84 @@ const LeaveManagement = () => {
                     </div>
                 )}
 
+                {/* Approval Modal */}
+                {approvalModal.isOpen && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+                        <div className="w-full max-w-md overflow-hidden rounded-2xl bg-[var(--color-bg-secondary)] shadow-2xl border border-[var(--color-border-primary)] animate-in fade-in zoom-in-95 duration-200">
+
+                            {/* Header */}
+                            <div className="relative bg-[var(--color-primary-dark)] px-6 py-6">
+                                <div className="flex items-center gap-4">
+                                    <div className="flex h-14 w-14 items-center justify-center rounded-full bg-white/20 backdrop-blur">
+                                        <CheckCircle className="h-7 w-7 text-white" />
+                                    </div>
+
+                                    <div>
+                                        <h2 className="text-xl font-semibold text-white">
+                                            Approve Leave
+                                        </h2>
+                                        <p className="text-sm text-green-100">
+                                            Please confirm your action
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Body */}
+                            <div className="px-6 py-8">
+                                <div className="flex items-start gap-4">
+
+
+                                    <div>
+                                        <h3 className="text-lg font-semibold text-[var(--color-text-primary)]">
+                                            Approve this leave request?
+                                        </h3>
+
+                                        <p className="mt-2 text-sm leading-6 text-[var(--color-text-secondary)]">
+                                            This action will approve the employee's leave request.
+                                            Once approved, the employee will be notified.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Footer */}
+                            <div className="flex justify-end gap-3 border-t border-[var(--color-border-primary)] bg-[var(--color-bg-primary)] px-6 py-5">
+
+                                <button
+                                    onClick={() =>
+                                        setApprovalModal({
+                                            isOpen: false,
+                                            leaveId: null,
+                                        })
+                                    }
+                                    className="rounded-xl border border-[var(--color-border-secondary)] bg-[var(--color-bg-secondary)] px-5 py-2.5 text-sm font-medium text-[var(--color-text-secondary)] transition-all duration-200 hover:bg-[var(--color-bg-hover)] hover:shadow"
+                                >
+                                    Cancel
+                                </button>
+
+                                <button
+                                    onClick={() => {
+                                        handleApprove(approvalModal.leaveId);
+                                        setApprovalModal({
+                                            isOpen: false,
+                                            leaveId: null,
+                                        });
+                                    }}
+                                    className="rounded-xl bg-[var(--color-primary-dark)] px-5 py-2.5 text-sm font-semibold text-white shadow-lg transition-all duration-200"
+                                >
+                                    Yes, Approve
+                                </button>
+
+                            </div>
+                        </div>
+                    </div>
+                )}
+
                 {/* View Modal Section */}
                 {viewModal.isOpen && viewModal.leaveData && (
                     <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 backdrop-blur-sm">
-                        <div className="bg-[var(--color-bg-secondary)] rounded-3xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden ">
+                        <div className="bg-[var(--color-bg-secondary)] rounded-3xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden ">
 
                             {/* Header */}
                             <div className="bg-[var(--color-bg-secondary)] px-6 py-5 relative overflow-hidden">
@@ -984,130 +1039,73 @@ const LeaveManagement = () => {
 
                             {/* Content */}
                             <div className="p-8 overflow-y-auto flex-1 custom-scrollbar bg-[var(--color-bg-primary)]">
-
-                                {/* Employee Info */}
-                                <div className="bg-[var(--color-card-info-bg)] border border-[var(--color-card-info-border)] rounded-2xl p-5 mb-6 shadow-sm">
-                                    <div className="flex items-center justify-between">
-                                        <div className="flex items-center space-x-4">
-                                            <div className="w-14 h-14 bg-[var(--color-primary-dark)] rounded-2xl flex items-center justify-center shadow-lg">
-                                                <User className="w-7 h-7 text-white" />
-                                            </div>
-                                            <div>
-                                                <h3 className="text-xl font-bold text-[var(--color-text-primary)]">
-                                                    {viewModal.leaveData.full_name}
-                                                </h3>
-                                                <p className="text-sm text-[var(--color-text-secondary)] font-medium">Employee</p>
-                                            </div>
-                                        </div>
-                                        <div className="transform hover:scale-105 transition-transform duration-200">
-                                            <StatusChip status={viewModal.leaveData.status} />
-                                        </div>
-                                    </div>
+                                <div className="bg-[var(--color-bg-secondary)] border border-[var(--color-border-divider)] rounded-xl overflow-x-auto shadow-sm">
+                                    <Table>
+                                        <TableHeader className="bg-[var(--color-primary-dark)]">
+                                            <TableHeaderRow>
+                                                <Th className="px-6 py-4 text-left text-white font-semibold whitespace-nowrap">Employee Name</Th>
+                                                <Th className="px-6 py-4 text-left text-white font-semibold whitespace-nowrap">Leave Type</Th>
+                                                <Th className="px-6 py-4 text-left text-white font-semibold whitespace-nowrap">Start Date</Th>
+                                                <Th className="px-6 py-4 text-left text-white font-semibold whitespace-nowrap">End Date</Th>
+                                                <Th className="px-6 py-4 text-left text-white font-semibold whitespace-nowrap">Total Days</Th>
+                                                <Th className="px-6 py-4 text-left text-white font-semibold whitespace-nowrap">Status</Th>
+                                            </TableHeaderRow>
+                                        </TableHeader>
+                                        <TableBody className="divide-y divide-[var(--color-border-divider)]">
+                                            <TableRow className="hover:bg-[var(--color-bg-hover)]">
+                                                <Td className="px-6 py-4 font-bold text-[var(--color-text-primary)] whitespace-nowrap">{viewModal.leaveData.full_name}</Td>
+                                                <Td className="px-6 py-4 font-semibold text-[var(--color-text-primary)] whitespace-nowrap">
+                                                    <span className="px-2.5 py-1 bg-[var(--color-bg-primary)] rounded-md text-xs font-medium border border-[var(--color-border-secondary)]">
+                                                        {viewModal.leaveData.leave_type}
+                                                    </span>
+                                                </Td>
+                                                <Td className="px-6 py-4 font-semibold text-[var(--color-text-primary)] whitespace-nowrap">
+                                                    <div className="flex items-center">
+                                                        <Calendar className="w-4 h-4 mr-2 text-[var(--color-text-muted)]" />
+                                                        {formatDate(viewModal.leaveData.start_date)}
+                                                    </div>
+                                                </Td>
+                                                <Td className="px-6 py-4 font-semibold text-[var(--color-text-primary)] whitespace-nowrap">
+                                                    <div className="flex items-center">
+                                                        <Calendar className="w-4 h-4 mr-2 text-[var(--color-text-muted)]" />
+                                                        {formatDate(viewModal.leaveData.end_date)}
+                                                    </div>
+                                                </Td>
+                                                <Td className="px-6 py-4 font-semibold text-[var(--color-text-primary)] whitespace-nowrap">
+                                                    <span className="font-semibold">{viewModal.leaveData.totalDays || 0}</span>
+                                                    <span className="text-[var(--color-text-muted)] ml-1 text-xs">days</span>
+                                                </Td>
+                                                <Td className="px-6 py-4 whitespace-nowrap"><StatusChip status={viewModal.leaveData.status} /></Td>
+                                            </TableRow>
+                                        </TableBody>
+                                    </Table>
                                 </div>
 
-                                {/* Leave Details */}
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                                    {/* Leave Type */}
-                                    <div className="bg-[var(--color-card-detail-bg)] border border-[var(--color-card-detail-border)] rounded-2xl p-4 hover:shadow-md transition-all duration-200">
-                                        <div className="flex items-center space-x-3 mb-2">
-                                            <div className="w-10 h-10 bg-[var(--color-primary-dark)] rounded-xl flex items-center justify-center">
-                                                <FileText className="w-5 h-5 text-[var(--color-text-white)]" />
-                                            </div>
-                                            <div>
-                                                <p className="text-sm font-medium text-[var(--color-text-secondary)]">Leave Type</p>
-                                                <p className="text-lg font-bold text-[var(--color-text-primary)]">{viewModal.leaveData.leave_type}</p>
-                                            </div>
+                                {/* Reason and Extra Info Section */}
+                                <div className="mt-6 space-y-4">
+                                    {viewModal.leaveData.reason && (
+                                        <div className="bg-[var(--color-bg-secondary)] border border-[var(--color-border-divider)] rounded-xl p-5 shadow-sm">
+                                            <h4 className="text-sm font-bold text-[var(--color-text-secondary)] mb-2 uppercase tracking-wider">Leave Reason</h4>
+                                            <p className="text-[var(--color-text-primary)] leading-relaxed bg-[var(--color-bg-primary)] p-3 rounded-lg border border-[var(--color-border-secondary)] whitespace-pre-wrap">{viewModal.leaveData.reason}</p>
                                         </div>
-                                    </div>
+                                    )}
 
-                                    {/* Total Duration */}
-                                    <div className="bg-[var(--color-card-detail-bg)] border border-[var(--color-card-detail-border)] rounded-2xl p-4 hover:shadow-md transition-all duration-200">
-                                        <div className="flex items-center space-x-3 mb-2">
-                                            <div className="w-10 h-10 bg-[var(--color-primary-dark)] rounded-xl flex items-center justify-center">
-                                                <Timer className="w-5 h-5 text-[var(--color-text-white)]" />
-                                            </div>
-                                            <div>
-                                                <p className="text-sm font-medium text-[var(--color-text-secondary)]">Total Duration</p>
-                                                <p className="text-lg font-bold text-[var(--color-text-primary)]">
-                                                    {viewModal.leaveData.totalDays} {viewModal.leaveData.totalDays === 1 ? 'Day' : 'Days'}
-                                                </p>
-                                            </div>
+                                    {viewModal.leaveData.status === '3' && viewModal.leaveData.reject_reason && (
+                                        <div className="bg-red-50 border border-red-200 rounded-xl p-5 shadow-sm">
+                                            <h4 className="text-sm font-bold text-red-700 mb-2 uppercase tracking-wider">Rejection Reason</h4>
+                                            <p className="text-red-700 leading-relaxed bg-white p-3 rounded-lg border border-red-200 whitespace-pre-wrap">{viewModal.leaveData.reject_reason}</p>
                                         </div>
-                                    </div>
+                                    )}
 
-                                    {/* Start Date */}
-                                    <div className="bg-[var(--color-card-detail-bg)] border border-[var(--color-card-detail-border)] rounded-2xl p-4 hover:shadow-md transition-all duration-200">
-                                        <div className="flex items-center space-x-3 mb-2">
-                                            <div className="w-10 h-10 bg-[var(--color-primary-dark)] rounded-xl flex items-center justify-center">
-                                                <CalendarDays className="w-5 h-5 text-[var(--color-text-white)]" />
-                                            </div>
-                                            <div>
-                                                <p className="text-sm font-medium text-[var(--color-text-secondary)]">Start Date</p>
-                                                <p className="text-lg font-bold text-[var(--color-text-primary)]">{formatDate(viewModal.leaveData.start_date)}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {/* End Date */}
-                                    <div className="bg-[var(--color-card-detail-bg)] border border-[var(--color-card-detail-border)] rounded-2xl p-4 hover:shadow-md transition-all duration-200">
-                                        <div className="flex items-center space-x-3 mb-2">
-                                            <div className="w-10 h-10 bg-[var(--color-primary-dark)] rounded-xl flex items-center justify-center">
-                                                <CalendarDays className="w-5 h-5 text-[var(--color-text-white)]" />
-                                            </div>
-                                            <div>
-                                                <p className="text-sm font-medium text-[var(--color-text-secondary)]">End Date</p>
-                                                <p className="text-lg font-bold text-[var(--color-text-primary)]">{formatDate(viewModal.leaveData.end_date)}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Reason */}
-                                {viewModal.leaveData.reason && (
-                                    <div className="bg-[var(--color-card-detail-bg)] border border-[var(--color-status-warning-border)] rounded-2xl p-5 mb-6 shadow-sm">
-                                        <div className="flex items-start space-x-3">
-                                            <div className="w-10 h-10 bg-[var(--color-primary-dark)] rounded-xl flex items-center justify-center mt-1">
-                                                <MessageSquare className="w-5 h-5 text-[var(--color-text-white)]" />
-                                            </div>
-                                            <div className="flex-1">
-                                                <h4 className="text-lg font-bold text-[var(--color-text-primary)] mb-2">Leave Reason</h4>
-                                                <p className="text-[var(--color-text-primary)] leading-relaxed">{viewModal.leaveData.reason}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                )}
-
-                                {/* Rejection Reason */}
-                                {viewModal.leaveData.status === '3' && viewModal.leaveData.reject_reason && (
-                                    <div className="bg-[var(--color-status-error-bg)] border border-[var(--color-status-error-border)] rounded-2xl p-5 mb-6 shadow-sm">
-                                        <div className="flex items-start space-x-3">
-                                            <div className="w-10 h-10 bg-[var(--color-icon-error-bg)] rounded-xl flex items-center justify-center mt-1">
-                                                <AlertTriangle className="w-5 h-5 text-[var(--color-error)]" />
-                                            </div>
-                                            <div className="flex-1">
-                                                <h4 className="text-lg font-bold text-[var(--color-text-primary)] mb-2">Rejection Reason</h4>
-                                                <p className="text-[var(--color-text-primary)] leading-relaxed">{viewModal.leaveData.reject_reason}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                )}
-
-                                {/* Application Date */}
-                                {viewModal.leaveData.applied_date && (
-                                    <div className="border-t border-[var(--color-border-primary)] pt-5 mt-6">
-                                        <div className="flex items-center justify-between text-sm">
-                                            <div className="flex items-center space-x-2">
-                                                <div className="w-8 h-8 bg-[var(--color-bg-gray-light)] rounded-lg flex items-center justify-center">
-                                                    <Calendar className="w-4 h-4 text-[var(--color-text-secondary)]" />
-                                                </div>
-                                                <span className="text-[var(--color-text-secondary)] font-medium">Application submitted on:</span>
-                                            </div>
-                                            <span className="font-bold text-[var(--color-text-primary)] px-3 py-1 bg-[var(--color-bg-gray-light)] rounded-lg">
+                                    {viewModal.leaveData.applied_date && (
+                                        <div className="border-t border-[var(--color-border-primary)] pt-4 mt-6 flex justify-between items-center text-xs text-[var(--color-text-secondary)]">
+                                            <span>Application submitted on:</span>
+                                            <span className="font-bold text-[var(--color-text-primary)] px-2.5 py-1 bg-[var(--color-bg-primary)] rounded-md border border-[var(--color-border-secondary)]">
                                                 {formatDate(viewModal.leaveData.applied_date)}
                                             </span>
                                         </div>
-                                    </div>
-                                )}
+                                    )}
+                                </div>
                             </div>
 
                             {/* Footer */}
@@ -1118,8 +1116,8 @@ const LeaveManagement = () => {
                                             {permissions['leave_approved'] && (
                                                 <button
                                                     onClick={() => {
-                                                        handleApprove(viewModal.leaveData.leave_id);
                                                         setViewModal({ isOpen: false, leaveData: null });
+                                                        setApprovalModal({ isOpen: true, leaveId: viewModal.leaveData.leave_id });
                                                     }}
                                                     className="flex items-center px-6 py-3 text-sm font-bold text-white bg-[var(--color-primary-dark)] rounded-xl shadow-lg duration-200 transform"
                                                 >
@@ -1364,16 +1362,16 @@ const LeaveManagement = () => {
                                             </button>
                                             <button
                                                 type="submit"
-                                                className="px-6 py-2.5 text-sm font-medium text-[var(--color-text-white)] bg-[var(--color-primary-dark)] hover:bg-[var(--color-primary-darker)] rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--color-primary)] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                                className="px-6 py-2.5 min-w-[150px] flex justify-center text-sm font-medium text-[var(--color-text-white)] bg-[var(--color-primary-dark)] hover:bg-[var(--color-primary-darker)] rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--color-primary)] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                                                 disabled={isSubmitting}
                                             >
                                                 {isSubmitting ? (
                                                     <span className="flex items-center gap-2">
-                                                        <LoadingSpinner size="sm" />
-                                                        Submitting...
+                                                        <RefreshCw className="w-4 h-4 animate-spin" />
+                                                        <span>Submitting...</span>
                                                     </span>
                                                 ) : (
-                                                    'Submit Request'
+                                                    <span>Submit Request</span>
                                                 )}
                                             </button>
                                         </div>
