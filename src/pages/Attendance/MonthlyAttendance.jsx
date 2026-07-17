@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState, useLayoutEffect } from 'react';
+import NoDataFound from '../../Components/comman/NoDataFound';
 import { createPortal } from 'react-dom';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
@@ -817,7 +818,7 @@ const MonthlyAttendance = () => {
                 )}
 
                 {/* ══ MAIN GRID CARD ══ */}
-                <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+                <div className="bg-white rounded-2xl shadow-sm  overflow-hidden border border-[var(--color-primary-dark)]">
 
                     {/* Search + Legend toolbar */}
                     <div className="flex flex-col sm:flex-row sm:items-center gap-3 px-4 sm:px-5 py-3 border-b border-slate-100">
@@ -868,7 +869,7 @@ const MonthlyAttendance = () => {
                     )}
 
                     {/* ── Scrollable Grid ── */}
-                    <div ref={containerRef} className="overflow-auto" style={{ maxHeight: '70vh' }}>
+                    <div ref={containerRef} className="overflow-auto" style={{ maxHeight: '100vh' }}>
                         <div style={{ minWidth: `${minInnerWidth}px` }}>
 
                             {/* Header row */}
@@ -917,12 +918,12 @@ const MonthlyAttendance = () => {
 
                             {/* Empty state */}
                             {filteredData.length === 0 && !loading && (
-                                <div className="py-20 text-center">
-                                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-slate-100 mb-4">
-                                        <Users size={28} className="text-slate-400" />
-                                    </div>
-                                    <p className="text-slate-600 font-semibold text-sm">No attendance data found</p>
-                                    <p className="text-slate-400 text-xs mt-1">Try adjusting the filters or selecting a different month</p>
+                                // <NoDataFound title="No data found" subtitle="Try adjusting the filters or selecting a different month." />
+                                <div className="flex items-center justify-center bg-[#FBF9FD] h-[62vh]">
+                                    <NoDataFound
+                                        title="No Attendance Records Found"
+                                        subtitle="There are no attendance records for the selected date."
+                                    />
                                 </div>
                             )}
 

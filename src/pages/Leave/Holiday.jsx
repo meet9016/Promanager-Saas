@@ -29,6 +29,7 @@ import { Toast } from "../../Components/ui/Toast";
 import CustomSelect from "../../Components/comman/CustomSelect";
 import { Table, TableHeader, TableBody, TableRow, TableHeaderRow, Th, Td } from '../../Components/ui/Table';
 import CustomInput from "../../Components/comman/CustomInput";
+import NoDataFound from "../../Components/comman/NoDataFound";
 
 export default function HolidayManagement() {
     const { user } = useAuth();
@@ -482,7 +483,7 @@ export default function HolidayManagement() {
                                 {/* RIGHT — Agenda timeline */}
                                 <aside className="lg:col-span-4 lg:border-l lg:border-[var(--color-border-primary)] lg:pl-10">
                                     <div className="sticky top-6">
-                                    
+
 
                                         {/* Upcoming agenda — timeline style */}
                                         <p className="text-md text-[var(--color-text-muted)] mb-5">
@@ -660,22 +661,24 @@ export default function HolidayManagement() {
                                             })
                                         ) : (
                                             <TableRow>
-                                                <Td colSpan="6" className="py-16 text-center">
-                                                    <Calendar className="h-12 w-12 mx-auto mb-4 text-[var(--color-text-muted)]" />
-                                                    <p className="font-semibold text-[var(--color-text-primary)] text-lg mb-1">No holidays found</p>
-                                                    <p className="text-[var(--color-text-secondary)] text-sm mb-4">Get started by adding your first holiday</p>
-                                                    {permissions['holiday_create'] && (
-                                                        <button
-                                                            onClick={() => {
-                                                                resetForm();
-                                                                setCreateModal(true);
-                                                            }}
-                                                            className="inline-flex items-center gap-2 bg-[var(--color-primary)] text-white px-5 py-2.5 rounded-lg hover:bg-[var(--color-primary-dark)] transition-colors font-medium"
-                                                        >
-                                                            <Plus size={18} />
-                                                            Add Holiday
-                                                        </button>
-                                                    )}
+                                                <Td colSpan="6" className="py-4 text-center">
+                                                    <NoDataFound
+                                                        title="No Holidays Found"
+                                                        subtitle="Get started by adding your first holiday."
+                                                    >
+                                                        {permissions['holiday_create'] && (
+                                                            <button
+                                                                onClick={() => {
+                                                                    resetForm();
+                                                                    setCreateModal(true);
+                                                                }}
+                                                                className="inline-flex items-center gap-2 bg-[var(--color-primary)] text-white px-5 py-2.5 rounded-lg hover:bg-[var(--color-primary-dark)] transition-colors font-medium"
+                                                            >
+                                                                <Plus size={18} />
+                                                                Add Holiday
+                                                            </button>
+                                                        )}
+                                                    </NoDataFound>
                                                 </Td>
                                             </TableRow>
                                         )}
@@ -1108,47 +1111,47 @@ function CalendarComponent({ currentMonth, setCurrentMonth, getHolidayForDate })
 
     return (
         <div className="bg-white">
-           <div className="relative bg-[var(--color-primary-dark)] px-6 py-4 overflow-hidden">
-    <div className="absolute inset-0 opacity-20"></div>
+            <div className="relative bg-[var(--color-primary-dark)] px-6 py-4 overflow-hidden">
+                <div className="absolute inset-0 opacity-20"></div>
 
-    <div className="relative flex items-center justify-between">
-        <button
-            type="button"
-            onClick={prevMonth}
-            className="w-10 h-10 flex items-center justify-center rounded-xl bg-white/15 text-white"
-        >
-            <ChevronLeft size={20} />
-        </button>
+                <div className="relative flex items-center justify-between">
+                    <button
+                        type="button"
+                        onClick={prevMonth}
+                        className="w-10 h-10 flex items-center justify-center rounded-xl bg-white/15 text-white"
+                    >
+                        <ChevronLeft size={20} />
+                    </button>
 
-        <div className="flex items-center gap-4">
-            <span
-                className="text-3xl text-white"
-            >
-                {monthNames[currentMonth.getMonth()]}
-            </span>
+                    <div className="flex items-center gap-4">
+                        <span
+                            className="text-3xl text-white"
+                        >
+                            {monthNames[currentMonth.getMonth()]}
+                        </span>
 
-            <span className="text-white/80 text-lg font-medium">
-                {currentMonth.getFullYear()}
-            </span>
+                        <span className="text-white/80 text-lg font-medium">
+                            {currentMonth.getFullYear()}
+                        </span>
 
-            {/* <button
+                        {/* <button
                 type="button"
                 onClick={goToday}
                 className="px-3 py-1 rounded-full bg-white/20 text-white text-xs"
             >
                 Today
             </button> */}
-        </div>
+                    </div>
 
-        <button
-            type="button"
-            onClick={nextMonth}
-            className="w-10 h-10 flex items-center justify-center rounded-xl bg-white/15 text-white"
-        >
-            <ChevronRight size={20} />
-        </button>
-    </div>
-</div>
+                    <button
+                        type="button"
+                        onClick={nextMonth}
+                        className="w-10 h-10 flex items-center justify-center rounded-xl bg-white/15 text-white"
+                    >
+                        <ChevronRight size={20} />
+                    </button>
+                </div>
+            </div>
 
             {/* Day name pills */}
             <div className="grid grid-cols-7 gap-1.5 px-4 sm:px-6 pt-5 pb-2">

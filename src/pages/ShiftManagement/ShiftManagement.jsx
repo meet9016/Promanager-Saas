@@ -11,6 +11,7 @@ import Pagination from '../../Components/Pagination';
 import { Table, TableHeader, TableBody, TableRow, TableHeaderRow, Th, Td } from '../../Components/ui/Table';
 import CustomInput from '../../Components/comman/CustomInput';
 import LoadingSpinner from '../../Components/Loader/LoadingSpinner';
+import NoDataFound from "../../Components/comman/NoDataFound";
 
 // Day Status Legend Component
 const DayStatusLegend = () => {
@@ -505,26 +506,20 @@ const ShiftManagement = () => {
                                     </div>
                                 </div>
                             ) : shifts.length === 0 ? (
-                                <div className="px-6 py-12 text-center">
-                                    <div className="bg-[var(--color-bg-primary)] border border-[var(--color-border-primary)] rounded-lg p-8">
-                                        <div className="w-16 h-16 bg-[var(--color-bg-gray-light)] rounded-full flex items-center justify-center mx-auto mb-4">
-                                            <Calendar className="w-8 h-8 text-[var(--color-text-muted)]" />
-                                        </div>
-                                        <p className="text-[var(--color-text-secondary)] text-lg font-medium mb-2">No Shifts Found</p>
-                                        <p className="text-[var(--color-text-secondary)] text-sm mb-4">
-                                            {searchQuery ? 'No shifts match your search criteria.' : 'You haven\'t created any shifts yet. Create your first shift to get started with shift management.'}
-                                        </p>
-                                        {permissions['shift_create'] && !searchQuery && (
-                                            <button
-                                                onClick={handleCreateShift}
-                                                className="inline-flex items-center space-x-2 bg-[var(--color-primary-dark)] text-[var(--color-text-white)] px-4 py-2 rounded-md hover:bg-[var(--color-primary-darker)] transition-colors"
-                                            >
-                                                <Plus className="w-4 h-4" />
-                                                <span>Create First Shift</span>
-                                            </button>
-                                        )}
-                                    </div>
-                                </div>
+                                <NoDataFound
+                                    title="No Shifts Found"
+                                    subtitle={searchQuery ? 'No shifts match your search criteria.' : 'You haven\'t created any shifts yet. Create your first shift to get started with shift management.'}
+                                >
+                                    {permissions['shift_create'] && !searchQuery && (
+                                        <button
+                                            onClick={handleCreateShift}
+                                            className="inline-flex items-center space-x-2 bg-[var(--color-primary-dark)] text-[var(--color-text-white)] px-4 py-2 rounded-md hover:bg-[var(--color-primary-darker)] transition-colors"
+                                        >
+                                            <Plus className="w-4 h-4" />
+                                            <span>Create First Shift</span>
+                                        </button>
+                                    )}
+                                </NoDataFound>
                             ) : (
                                 <div className="overflow-x-auto">
                                     <Table className="min-w-full divide-y divide-[var(--color-border-divider)]">

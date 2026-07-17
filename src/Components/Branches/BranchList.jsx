@@ -16,6 +16,7 @@ import BranchForm from "./BranchForm";
 import useBranches from "../../hooks/useBranches";
 import LoadingSpinner from "../Loader/LoadingSpinner";
 import { Toast } from "../ui/Toast";
+import NoDataFound from "../comman/NoDataFound";
 
 const BranchList = () => {
     const [deletingId, setDeletingId] = useState(null);
@@ -187,39 +188,15 @@ const BranchList = () => {
                     )}
 
                     {totalBranches === 0 ? (
-                        <div className="text-center py-12">
-                            <div className="mx-auto w-16 h-16 bg-[var(--color-primary-lighter)] rounded-full flex items-center justify-center mb-4">
-                                <Building2 className="w-8 h-8 text-[var(--color-primary)]" />
-                            </div>
-                            <h4 className="text-lg font-medium text-[var(--color-text-primary)] mb-2">
-                                No branches found
-                            </h4>
-                            <p className="text-[var(--color-text-secondary)] mb-1">
-                                Get started by adding your first branch
-                            </p>
-                            <p className="text-sm text-[var(--color-text-muted)]">
-                                Use the form above to create a new branch
-                            </p>
-                        </div>
+                        <NoDataFound
+                            title="No Branches Found"
+                            subtitle="Get started by adding your first branch."
+                        />
                     ) : filteredCount === 0 ? (
-                        <div className="text-center py-12">
-                            <div className="mx-auto w-16 h-16 bg-[var(--color-primary-lighter)] rounded-full flex items-center justify-center mb-4">
-                                <Search className="w-8 h-8 text-[var(--color-primary)]" />
-                            </div>
-                            <h4 className="text-lg font-medium text-[var(--color-text-primary)] mb-2">
-                                No branches match your search
-                            </h4>
-                            <p className="text-[var(--color-text-secondary)] mb-4">
-                                Try adjusting your search terms or
-                            </p>
-                            <button
-                                onClick={clearSearch}
-                                className="inline-flex items-center px-4 py-2 bg-[var(--color-primary-dark)] text-[var(--color-text-white)] font-medium rounded-lg hover:bg-[var(--color-primary-darker)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--color-primary)] transition-colors"
-                            >
-                                <X className="w-4 h-4 mr-2" />
-                                Clear Search
-                            </button>
-                        </div>
+                        <NoDataFound
+                            title="No Branches Match Your Search"
+                            subtitle="Try adjusting your search terms."
+                        />
                     ) : (
                       <div className="space-y-2 h-[460px] max-[1024px]:h-[250px] overflow-y-auto custom-scrollbar">
                             {filteredBranches.map((branch) => {

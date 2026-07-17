@@ -10,6 +10,7 @@ import { ConfirmDialog } from '../../Components/comman/ConfirmDialog';
 import Pagination from '../../Components/Pagination';
 import LoadingSpinner from "../../Components/Loader/LoadingSpinner"
 import { Table, TableHeader, TableBody, TableRow, TableHeaderRow, Th, Td } from '../../Components/ui/Table';
+import NoDataFound from '../../Components/comman/NoDataFound';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -274,18 +275,14 @@ const UserManagement = () => {
                                 </div>
                             </div>
                         ) : users.length === 0 ? (
-                            <div className="px-6 py-12 text-center">
-                                <div className="bg-[var(--color-bg-primary)] border border-[var(--color-border-primary)] rounded-lg p-8">
-                                    <div className="w-16 h-16 bg-[var(--color-bg-gray-light)] rounded-full flex items-center justify-center mx-auto mb-4">
-                                        <Plus className="w-8 h-8 text-[var(--color-text-muted)]" />
-                                    </div>
-                                    <p className="text-[var(--color-text-secondary)] text-lg font-medium mb-2">No Users Found</p>
-                                    <p className="text-[var(--color-text-secondary)] text-sm mb-4">
-                                        {currentPage > 1
-                                            ? "No users found on this page. Try going back to previous pages."
-                                            : "You haven't created any users yet. Create your first user to get started with user management."
-                                        }
-                                    </p>
+                            <div className="flex items-center justify-center h-[70vh]">
+                                <NoDataFound
+                                    title="No Users Found"
+                                    subtitle={currentPage > 1
+                                        ? "No users found on this page. Try going back to previous pages."
+                                        : "You haven't created any users yet."
+                                    }
+                                >
                                     {currentPage === 1 && permissions['user_create'] && (
                                         <button
                                             onClick={() => navigate('/add-user')}
@@ -295,7 +292,7 @@ const UserManagement = () => {
                                             <span>Create First User</span>
                                         </button>
                                     )}
-                                </div>
+                                </NoDataFound>
                             </div>
                         ) : (
                             <>

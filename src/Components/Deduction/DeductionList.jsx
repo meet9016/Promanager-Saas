@@ -5,6 +5,7 @@ import { ConfirmDialog } from '../comman/ConfirmDialog';
 import DeductionForm from "./DeductionForm";
 import useDeductions from "../../hooks/useDeductions";
 import LoadingSpinner from "../Loader/LoadingSpinner"
+import NoDataFound from "../comman/NoDataFound";
 
 const DeductionList = () => {
     const [deletingId, setDeletingId] = useState(null);
@@ -102,20 +103,10 @@ const DeductionList = () => {
                     )}
 
                     {!deductions || deductions.length === 0 ? (
-                        <div className="text-center py-12">
-                            <div className="mx-auto w-16 h-16 bg-[var(--color-primary-lighter)] rounded-full flex items-center justify-center mb-4">
-                                <Calculator className="w-8 h-8 text-[var(--color-primary)]" />
-                            </div>
-                            <h4 className="text-lg font-medium text-[var(--color-text-primary)] mb-2">
-                                No deductions found
-                            </h4>
-                            <p className="text-[var(--color-text-secondary)] mb-1">
-                                Get started by adding your first deduction
-                            </p>
-                            <p className="text-sm text-[var(--color-text-muted)]">
-                                Use the form above to create a new deduction
-                            </p>
-                        </div>
+                        <NoDataFound
+                            title="No Deductions Found"
+                            subtitle="Get started by adding your first deduction using the form above."
+                        />
                     ) : (
                         <div className="grid gap-4  max-h-[300px] md:max-h-[420px] xl:max-h-[540px] overflow-y-auto custom-scrollbar">
                             {deductions.map((deduction) => {

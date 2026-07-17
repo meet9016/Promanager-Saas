@@ -23,6 +23,7 @@ import {
 } from 'lucide-react';
 import { SearchableDropdown } from '../../Components/Report/ReportComponents';
 import { Toast } from '../../Components/ui/Toast';
+import NoDataFound from '../../Components/comman/NoDataFound';
 import { exportMonthlyReportToPDF } from '../../utils/exportUtils/MonthlyReport/pdfExportMonthly';
 import { exportToExcel } from '../../utils/exportUtils/MonthlyReport/excelExportMonthly';
 import DatePicker from 'react-datepicker';
@@ -805,27 +806,21 @@ const MonthlyReport = () => {
                     )}
 
                     <div className="overflow-auto max-h-[70vh]">
-                        {!hasGenerated && !loading && (
-                            <div className="p-12 text-center">
-                                <div className="text-[var(--color-text-muted)] mb-4">
-                                    <Calendar size={64} className="mx-auto" />
-                                </div>
-                                <p className="text-[var(--color-text-primary)] font-medium text-lg mb-2">Ready to Generate Report</p>
-                                <p className="text-sm text-[var(--color-text-muted)]">
-                                    Select your filters and click "Generate Report" to view attendance data
-                                </p>
+                        {!hasGenerated && (
+                            <div className="flex items-center justify-center p-8 bg-[var(--color-bg-secondary)] rounded-xl  shadow-sm">
+                                <NoDataFound
+                                    title="Ready to Generate Report"
+                                    subtitle="Select your filters and click 'Generate Report' to view attendance data."
+                                />
                             </div>
                         )}
 
                         {hasGenerated && reportData.length === 0 && !loading && (
-                            <div className="p-8 text-center">
-                                <div className="text-[var(--color-text-muted)] mb-2">
-                                    <Users size={48} className="mx-auto" />
-                                </div>
-                                <p className="text-[var(--color-text-secondary)] font-medium">No attendance data found</p>
-                                <p className="text-sm text-[var(--color-text-muted)] mt-1">
-                                    Try adjusting your filters or select a different month
-                                </p>
+                            <div className="flex items-center justify-center p-8 bg-[var(--color-bg-secondary)] rounded-xl shadow-sm">
+                                <NoDataFound
+                                    title="No attendance data found"
+                                    subtitle="Try adjusting your filters or select a different month."
+                                />
                             </div>
                         )}
 

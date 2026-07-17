@@ -5,6 +5,7 @@ import { ConfirmDialog } from '../comman/ConfirmDialog';
 import AllowanceForm from "./AllowanceForm";
 import useAllowances from "../../hooks/useAllowances";
 import LoadingSpinner from "../Loader/LoadingSpinner"
+import NoDataFound from "../comman/NoDataFound";
 
 const AllowanceList = () => {
     const [deletingId, setDeletingId] = useState(null);
@@ -103,20 +104,10 @@ const AllowanceList = () => {
                     )}
 
                     {!allowances || allowances.length === 0 ? (
-                        <div className="text-center py-12">
-                            <div className="mx-auto w-16 h-16 bg-[var(--color-primary-lighter)] rounded-full flex items-center justify-center mb-4">
-                                <IndianRupee className="w-8 h-8 text-[var(--color-primary)]" />
-                            </div>
-                            <h4 className="text-lg font-medium text-[var(--color-text-primary)] mb-2">
-                                No allowances found
-                            </h4>
-                            <p className="text-[var(--color-text-secondary)] mb-1">
-                                Get started by adding your first allowance
-                            </p>
-                            <p className="text-sm text-[var(--color-text-muted)]">
-                                Use the form above to create a new allowance
-                            </p>
-                        </div>
+                        <NoDataFound
+                            title="No Allowances Found"
+                            subtitle="Get started by adding your first allowance using the form above."
+                        />
                     ) : (
                         <div className="grid gap-4  max-h-[300px] md:max-h-[420px] xl:max-h-[520px] overflow-y-auto custom-scrollbar">
                             {allowances.map((allowance) => {

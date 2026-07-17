@@ -33,6 +33,7 @@ import { handlePayrollExportExcel } from '../../utils/exportUtils/salary/exportS
 import CustomSelect from '../../Components/comman/CustomSelect';
 import { Table, TableHeader, TableBody, TableRow, TableHeaderRow, Th, Td } from '../../Components/ui/Table';
 import CustomDatePicker from '../../Components/comman/CustomDatePicker';
+import NoDataFound from '../../Components/comman/NoDataFound';
 
 /** ------------------- Robust anchored positioning helpers ------------------- **/
 const getScrollParents = (node) => {
@@ -506,15 +507,6 @@ const MonthlySalaryReport = () => {
                                 <Building className="inline h-4 w-4 mr-1" />
                                 Branch
                             </label>
-                            {/* <select
-                                value={filters.branch_id}
-                                onChange={(e) => handleFilterChange('branch_id', e.target.value)}
-                                className="w-full px-3 py-2 bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-border-focus)] focus:border-transparent text-[var(--color-text-primary)]"
-                                disabled={dropdownLoading}
-                            >
-                                <option value="">All Branches</option>
-                                {branches.map(b => <option key={b.id} value={b.id}>{b.name}</option>)}
-                            </select> */}
                             <CustomSelect
                                 name="branch_id"
                                 value={filters.branch_id}
@@ -535,15 +527,6 @@ const MonthlySalaryReport = () => {
                                 <Users className="inline h-4 w-4 mr-1" />
                                 Department
                             </label>
-                            {/* <select
-                                value={filters.department_id}
-                                onChange={(e) => handleFilterChange('department_id', e.target.value)}
-                                className="w-full px-3 py-2 bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-border-focus)] focus:border-transparent text-[var(--color-text-primary)]"
-                                disabled={dropdownLoading}
-                            >
-                                <option value="">All Departments</option>
-                                {departments.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
-                            </select> */}
                             <CustomSelect
                                 name="department_id"
                                 value={filters.department_id}
@@ -564,15 +547,6 @@ const MonthlySalaryReport = () => {
                                 <Award className="inline h-4 w-4 mr-1" />
                                 Designation
                             </label>
-                            {/* <select
-                                value={filters.designation_id}
-                                onChange={(e) => handleFilterChange('designation_id', e.target.value)}
-                                className="w-full px-3 py-2 bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-border-focus)] focus:border-transparent text-[var(--color-text-primary)]"
-                                disabled={dropdownLoading}
-                            >
-                                <option value="">All Designations</option>
-                                {designations.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
-                            </select> */}
                             <CustomSelect
                                 name="designation_id"
                                 value={filters.designation_id}
@@ -593,15 +567,6 @@ const MonthlySalaryReport = () => {
                                 <User className="inline h-4 w-4 mr-1" />
                                 Employee (optional)
                             </label>
-                            {/* <select
-                                value={filters.employee_id}
-                                onChange={(e) => handleFilterChange('employee_id', e.target.value)}
-                                className="w-full px-3 py-2 bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-border-focus)] focus:border-transparent text-[var(--color-text-primary)]"
-                                disabled={dropdownLoading}
-                            >
-                                <option value="">All Employees</option>
-                                {employees.map(emp => <option key={emp.id} value={emp.id}>{emp.name}</option>)}
-                            </select> */}
                             <CustomSelect
                                 name="employee_id"
                                 value={filters.employee_id}
@@ -882,38 +847,21 @@ const MonthlySalaryReport = () => {
 
                 {/* No Data Message */}
                 {!reportData && !reportGenerating && !error && filters.month_year && (
-                    <div className="bg-[var(--color-bg-secondary)] rounded-xl shadow-sm border border-[var(--color-border-primary)] p-12 text-center">
-                        <div className="flex flex-col items-center justify-center">
-                            <div className="p-3 bg-[var(--color-bg-hover)] rounded-full mb-4">
-                                <IndianRupee className="h-8 w-8 text-[var(--color-text-secondary)]" />
-                            </div>
-                            <h3 className="text-lg font-medium text-[var(--color-text-primary)] mb-2">No Salary Data Found</h3>
-                            <p className="text-[var(--color-text-secondary)] mb-4">
-                                No salary data available for {getMonthYearDisplay(filters.month_year)}.
-                            </p>
-                            <div className="text-sm text-[var(--color-text-secondary)] space-y-1">
-                                <p>• Try selecting a different month</p>
-                                <p>• Or check if payroll has been processed</p>
-                            </div>
-                        </div>
+                    <div className="flex items-center justify-center p-12 bg-[var(--color-bg-secondary)] rounded-xl border border-[var(--color-border-primary)] shadow-sm">
+                        <NoDataFound
+                            title="No Salary Data Found"
+                            subtitle={`No salary data available for ${getMonthYearDisplay(filters.month_year)}. Try selecting a different month or check if payroll has been processed.`}
+                        />
                     </div>
                 )}
 
                 {/* Initial Message */}
                 {!reportData && !reportGenerating && !error && !filters.month_year && (
-                    <div className="bg-[var(--color-bg-secondary)] rounded-xl shadow-sm border border-[var(--color-border-primary)] p-12 text-center">
-                        <div className="flex flex-col items-center justify-center">
-                            <div className="p-3 bg-[var(--color-primary-lightest)] rounded-full mb-4">
-                                <Calendar className="h-8 w-8 text-[var(--color-primary-dark)]" />
-                            </div>
-                            <h3 className="text-lg font-medium text-[var(--color-text-primary)] mb-2">Select Month to Generate Report</h3>
-                            <p className="text-[var(--color-text-secondary)] mb-4">
-                                Please select a month and year to generate the salary report.
-                            </p>
-                            <div className="text-sm text-[var(--color-text-secondary)]">
-                                <p>Choose the month from the filter above and click "Generate Report"</p>
-                            </div>
-                        </div>
+                    <div className="flex items-center justify-center p-12 bg-[var(--color-bg-secondary)] rounded-xl border border-[var(--color-border-primary)] shadow-sm">
+                        <NoDataFound
+                            title="Select Month to Generate Report"
+                            subtitle="Choose a month above and click 'Generate Report'."
+                        />
                     </div>
                 )}
 

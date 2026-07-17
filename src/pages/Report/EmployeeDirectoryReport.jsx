@@ -30,6 +30,7 @@ import { Table, TableHeader, TableBody, TableRow, TableHeaderRow, Th, Td } from 
 import { exportEmployeeDirectoryToPDF } from '../../utils/exportUtils/EmployeeReport/employeeDirectoryPdfExport';
 import { exportToExcel } from '../../utils/exportUtils/EmployeeReport/excelExportEmployeeDirectory';
 import CustomSelect from '../../Components/comman/CustomSelect';
+import NoDataFound from '../../Components/comman/NoDataFound';
 
 /** ---------- Floating Anchors: robust positioning utilities ---------- **/
 const getScrollParents = (node) => {
@@ -526,15 +527,6 @@ const EmployeeDirectoryReport = () => {
                                                         }}
                                                     >
                                                         {/* Header */}
-                                                        {/* <div className="flex items-center justify-between p-4 border-b border-[var(--color-border-secondary)] bg-[var(--color-bg-secondary)]">
-                                                            <h3 className="text-lg font-semibold text-[var(--color-text-primary)]">Filter</h3>
-                                                            <button
-                                                                onClick={() => setFilterDropdown(false)}
-                                                                className="text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] p-1 rounded-lg hover:bg-[var(--color-bg-hover)]"
-                                                            >
-                                                                <X className="h-4 w-4" />
-                                                            </button>
-                                                        </div> */}
                                                         <div className="flex items-center justify-between p-4 border-b border-[var(--color-border-secondary)]">
                                                             <div className="flex items-center gap-3">
                                                                 <div className="p-2 bg-[var(--color-primary-lightest)] rounded-lg">
@@ -565,17 +557,6 @@ const EmployeeDirectoryReport = () => {
                                                                         <Building className="inline h-4 w-4 mr-1" />
                                                                         Branch
                                                                     </label>
-                                                                    {/* <select
-                                                                        value={filters.branch_id}
-                                                                        onChange={(e) => handleFilterChange('branch_id', e.target.value)}
-                                                                        className="w-full px-3 py-2 bg-[var(--color-bg-primary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent text-[var(--color-text-primary)] text-sm"
-                                                                        disabled={dropdownLoading}
-                                                                    >
-                                                                        <option value="">All Branches</option>
-                                                                        {branches.map((b) => (
-                                                                            <option key={b.id} value={b.id}>{b.name}</option>
-                                                                        ))}
-                                                                    </select> */}
                                                                     <CustomSelect
                                                                         name="branch_id"
                                                                         value={filters.branch_id}
@@ -598,17 +579,6 @@ const EmployeeDirectoryReport = () => {
                                                                         <Users className="inline h-4 w-4 mr-1" />
                                                                         Department
                                                                     </label>
-                                                                    {/* <select
-                                                                        value={filters.department_id}
-                                                                        onChange={(e) => handleFilterChange('department_id', e.target.value)}
-                                                                        className="w-full px-3 py-2 bg-[var(--color-bg-primary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent text-[var(--color-text-primary)] text-sm"
-                                                                        disabled={dropdownLoading}
-                                                                    >
-                                                                        <option value="">All Departments</option>
-                                                                        {departments.map((d) => (
-                                                                            <option key={d.id} value={d.id}>{d.name}</option>
-                                                                        ))}
-                                                                    </select> */}
                                                                     <CustomSelect
                                                                         name="department_id"
                                                                         value={filters.department_id}
@@ -631,17 +601,6 @@ const EmployeeDirectoryReport = () => {
                                                                         <Award className="inline h-4 w-4 mr-1" />
                                                                         Designation
                                                                     </label>
-                                                                    {/* <select
-                                                                        value={filters.designation_id}
-                                                                        onChange={(e) => handleFilterChange('designation_id', e.target.value)}
-                                                                        className="w-full px-3 py-2 bg-[var(--color-bg-primary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent text-[var(--color-text-primary)] text-sm"
-                                                                        disabled={dropdownLoading}
-                                                                    >
-                                                                        <option value="">All Designations</option>
-                                                                        {designations.map((g) => (
-                                                                            <option key={g.id} value={g.id}>{g.name}</option>
-                                                                        ))}
-                                                                    </select> */}
                                                                     <CustomSelect
                                                                         name="designation_id"
                                                                         value={filters.designation_id}
@@ -664,17 +623,6 @@ const EmployeeDirectoryReport = () => {
                                                                         <Briefcase className="inline h-4 w-4 mr-1" />
                                                                         Employee Type
                                                                     </label>
-                                                                    {/* <select
-                                                                        value={filters.employee_type_id}
-                                                                        onChange={(e) => handleFilterChange('employee_type_id', e.target.value)}
-                                                                        className="w-full px-3 py-2 bg-[var(--color-bg-primary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent text-[var(--color-text-primary)] text-sm"
-                                                                        disabled={dropdownLoading}
-                                                                    >
-                                                                        <option value="">All Employee Types</option>
-                                                                        {employeeTypes.map((t) => (
-                                                                            <option key={t.id} value={t.id}>{t.name}</option>
-                                                                        ))}
-                                                                    </select> */}
                                                                     <CustomSelect
                                                                         name="employee_type_id"
                                                                         value={filters.employee_type_id}
@@ -697,17 +645,6 @@ const EmployeeDirectoryReport = () => {
                                                                         <IndianRupee className="inline h-4 w-4 mr-1" />
                                                                         Salary Type
                                                                     </label>
-                                                                    {/* <select
-                                                                        value={filters.salary_type_id}
-                                                                        onChange={(e) => handleFilterChange('salary_type_id', e.target.value)}
-                                                                        className="w-full px-3 py-2 bg-[var(--color-bg-primary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent text-[var(--color-text-primary)] text-sm"
-                                                                        disabled={dropdownLoading}
-                                                                    >
-                                                                        <option value="">All Salary Types</option>
-                                                                        {salaryTypes.map((t) => (
-                                                                            <option key={t.id} value={t.id}>{t.name}</option>
-                                                                        ))}
-                                                                    </select> */}
                                                                     <CustomSelect
                                                                         name="salary_type_id"
                                                                         value={filters.salary_type_id}
@@ -730,17 +667,6 @@ const EmployeeDirectoryReport = () => {
                                                                         <User className="inline h-4 w-4 mr-1" />
                                                                         Gender
                                                                     </label>
-                                                                    {/* <select
-                                                                        value={filters.gender_id}
-                                                                        onChange={(e) => handleFilterChange('gender_id', e.target.value)}
-                                                                        className="w-full px-3 py-2 bg-[var(--color-bg-primary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent text-[var(--color-text-primary)] text-sm"
-                                                                        disabled={dropdownLoading}
-                                                                    >
-                                                                        <option value="">All Genders</option>
-                                                                        {genders.map((g) => (
-                                                                            <option key={g.id} value={g.id}>{g.name}</option>
-                                                                        ))}
-                                                                    </select> */}
                                                                     <CustomSelect
                                                                         name="gender_id"
                                                                         value={filters.gender_id}
@@ -763,17 +689,6 @@ const EmployeeDirectoryReport = () => {
                                                                         <UserCheck className="inline h-4 w-4 mr-1" />
                                                                         Status
                                                                     </label>
-                                                                    {/* <select
-                                                                        value={filters.status_id}
-                                                                        onChange={(e) => handleFilterChange('status_id', e.target.value)}
-                                                                        className="w-full px-3 py-2 bg-[var(--color-bg-primary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent text-[var(--color-text-primary)] text-sm"
-                                                                        disabled={dropdownLoading}
-                                                                    >
-                                                                        <option value="">All Status</option>
-                                                                        {status.map((s) => (
-                                                                            <option key={s.id} value={s.id}>{s.name}</option>
-                                                                        ))}
-                                                                    </select> */}
                                                                     <CustomSelect
                                                                         name="status_id"
                                                                         value={filters.status_id}
@@ -792,24 +707,6 @@ const EmployeeDirectoryReport = () => {
                                                             </div>
                                                         </div>
 
-                                                        {/* Footer */}
-                                                        {/* <div className="flex flex-col sm:flex-row gap-2 p-4 border-t border-[var(--color-border-secondary)] bg-[var(--color-bg-secondary)]">
-                                                            <button
-                                                                onClick={applyFilters}
-                                                                disabled={reportGenerating}
-                                                                className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-[var(--color-primary-dark)] text-[var(--color-text-white)] rounded-lg hover:bg-[var(--color-primary-darker)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
-                                                            >
-                                                                {reportGenerating ? <Loader2 className="h-8 w-4 animate-spin" /> : <Filter className="h-4 w-4" />}
-                                                                {reportGenerating ? 'Loading...' : 'Apply Filters'}
-                                                            </button>
-                                                            <button
-                                                                onClick={resetFilters}
-                                                                className="flex items-center justify-center gap-2 px-4 py-2 bg-[var(--color-bg-gray-light)] text-[var(--color-text-secondary)] rounded-lg hover:bg-[var(--color-bg-hover)] transition-colors text-sm font-medium min-w-[100px]"
-                                                            >
-                                                                <RefreshCw className="h-4 w-4" />
-                                                                Reset
-                                                            </button>
-                                                        </div> */}
                                                         <div className="flex flex-col sm:flex-row justify-end gap-2 p-4 border-t border-[var(--color-border-secondary)] rounded-b-2xl">
                                                             <button
                                                                 onClick={resetFilters}
@@ -1043,7 +940,6 @@ const EmployeeDirectoryReport = () => {
                         </div>
 
                         {/* Table */}
-                        {/* <div className="custom-scrollbar  min-h-0 overflow-auto"> */}
                         <Table className="w-full min-w-[1200px] ">
                             <TableHeader className=" bg-[var(--color-primary-dark)] border-b border-[var(--color-border-secondary)]">
                                 <TableHeaderRow>
@@ -1079,7 +975,6 @@ const EmployeeDirectoryReport = () => {
                                                     />
                                                 </div>
                                                 <div className="ml-4">
-                                                    {/* Employee Name with truncate */}
                                                     <div
                                                         className="text-sm font-medium text-[var(--color-text-primary)]"
                                                         title={employee.full_name || '--'}
@@ -1087,7 +982,6 @@ const EmployeeDirectoryReport = () => {
                                                         {truncateText(employee.full_name, 15)}
                                                     </div>
 
-                                                    {/* Gender (no truncate) */}
                                                     <div className="text-sm text-[var(--color-text-muted)]">
                                                         {employee.gender || '--'}
                                                     </div>
@@ -1154,7 +1048,6 @@ const EmployeeDirectoryReport = () => {
                                 ))}
                             </TableBody>
                         </Table>
-                        {/* </div> */}
 
                         <Pagination
                             currentPage={currentPage}
@@ -1167,18 +1060,11 @@ const EmployeeDirectoryReport = () => {
 
                 {/* States */}
                 {!reportData && !reportGenerating && !error && (
-                    <div className="bg-[var(--color-bg-secondary)] rounded-xl shadow-sm border border-[var(--color-border-secondary)] p-12 text-center">
-                        <div className="flex flex-col items-center justify-center">
-                            <div className="p-3 bg-[var(--color-bg-gray-light)] rounded-full mb-4">
-                                <Users className="h-8 w-8 text-[var(--color-text-muted)]" />
-                            </div>
-                            <h3 className="text-lg font-medium text-[var(--color-text-primary)] mb-2">No Employees Found</h3>
-                            <p className="text-[var(--color-text-secondary)] mb-4">No employees match your current filter criteria.</p>
-                            <div className="text-sm text-[var(--color-text-muted)]">
-                                <p>• Try adjusting your filters</p>
-                                <p>• Or reset filters to see all employees</p>
-                            </div>
-                        </div>
+                    <div className="flex items-center justify-center p-12 bg-[var(--color-bg-secondary)] rounded-xl border border-[var(--color-border-primary)] shadow-sm">
+                        <NoDataFound
+                            title="No Employees Found"
+                            subtitle="No employees match your current filter criteria. Try adjusting your filters or resetting them to see all employees."
+                        />
                     </div>
                 )}
 

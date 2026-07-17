@@ -25,6 +25,7 @@ import Pagination from '../../Components/Pagination';
 import LoadingSpinner from "../../Components/Loader/LoadingSpinner"
 import CustomSelect from '../../Components/comman/CustomSelect';
 import CustomInput from '../../Components/comman/CustomInput';
+import NoDataFound from '../../Components/comman/NoDataFound';
 
 const SORT_DIRECTIONS = {
   ASCENDING: 'ascending',
@@ -668,16 +669,11 @@ export default function FinalizePayroll() {
               </div>
             </div>
           ) : salaryRecords.length === 0 ? (
-            <div className="px-6 py-12 text-center">
-              <div className="bg-[var(--color-bg-primary)] border border-[var(--color-border-primary)] rounded-lg p-8">
-                <div className="w-16 h-16 bg-[var(--color-bg-gray-light)] rounded-full flex items-center justify-center mx-auto mb-4">
-                  <IndianRupee className="w-8 h-8 text-[var(--color-text-muted)]" />
-                </div>
-                <p className="text-[var(--color-text-secondary)] text-lg font-medium mb-2">No Salary Records Found</p>
-                <p className="text-[var(--color-text-secondary)] text-sm mb-4">
-                  {searchQuery ? 'No records match your search criteria.' : 'No salary records have been generated yet.'}
-                </p>
-              </div>
+            <div className="flex items-center justify-center h-[65vh]">
+              <NoDataFound
+                title="No Salary Records Found"
+                subtitle={searchQuery ? 'No records match your search criteria.' : 'No salary records have been generated yet.'}
+              />
             </div>
           ) : (
             <>

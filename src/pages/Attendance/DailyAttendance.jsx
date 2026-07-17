@@ -38,6 +38,7 @@ import { Table, TableHeader, TableBody, TableRow, TableHeaderRow, Th, Td } from 
 import CustomDatePicker from '../../Components/comman/CustomDatePicker';
 import CustomInput from '../../Components/comman/CustomInput';
 import LoadingSpinner from '../../Components/Loader/LoadingSpinner';
+import NoDataFound from '../../Components/comman/NoDataFound';
 
 
 
@@ -1072,7 +1073,7 @@ const DailyAttendance = () => {
                   </div>
                 </div>
               ) : (filteredData?.length || 0) === 0 ? (
-                <div className="p-8 text-center text-[var(--color-text-secondary)] text-sm">No records found</div>
+                <NoDataFound title="No Attdance Records Found" subtitle="There are no attendance records for the selected date." imgSize="w-36 h-36" />
               ) : (
                 <>
                   {paginatedData.map((emp, idx) => (
@@ -1095,7 +1096,7 @@ const DailyAttendance = () => {
             </div>
           ) : (
             /* Desktop Table View */
-            <div className="overflow-x-auto ">
+            <div className="overflow-x-auto   min-h-[65vh]">
               {loading ? (
                 <div className="p-8 text-center text-[var(--color-text-secondary)]">
                   <div className="flex items-center justify-center">
@@ -1104,7 +1105,12 @@ const DailyAttendance = () => {
                   </div>
                 </div>
               ) : (filteredData?.length || 0) === 0 ? (
-                <div className="p-8 text-center text-[var(--color-text-secondary)]">No records found</div>
+                <div className="h-[70vh] flex items-center justify-center bg-[#FBF9FD]">
+                  <NoDataFound
+                    title="No Attendance Records Found"
+                    subtitle="There are no attendance records for the selected date."
+                  />
+                </div>
               ) : (
                 <>
                   <Table className="min-w-[1200px]" wrapperClassName="h-[45vh] xl:h-[70vh] overflow-y-auto custom-scrollbar" >

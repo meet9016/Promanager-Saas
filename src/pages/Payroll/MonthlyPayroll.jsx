@@ -34,6 +34,7 @@ import { ConfirmDialog } from '../../Components/comman/ConfirmDialog';
 import LoadingSpinner from '../../Components/Loader/LoadingSpinner';
 import CustomSelect from '../../Components/comman/CustomSelect';
 import CustomInput from '../../Components/comman/CustomInput';
+import NoDataFound from '../../Components/comman/NoDataFound';
 
 // ---------------------------------------------------------------------------
 // Multi-Select Searchable Dropdown (chips)
@@ -1674,12 +1675,11 @@ const MonthlyPayroll = () => {
               </button>
             </div>
           ) : allPayrollData.length === 0 ? (
-            <div className="px-6 py-12 text-center bg-[var(--color-bg-secondary)] rounded-xl border">
-              <div className="w-16 h-16 bg-[var(--color-bg-gray-light)] rounded-full flex items-center justify-center mx-auto mb-4">
-                <FileText className="w-8 h-8 text-[var(--color-text-muted)]" />
-              </div>
-              <p className="text-[var(--color-text-secondary)] text-lg font-medium mb-2">No Payroll Data</p>
-              <p className="text-[var(--color-text-secondary)] text-sm">Select Branch, Department, Month and Year, then click Generate Payroll.</p>
+            <div className="flex items-center justify-center py-8 bg-[var(--color-bg-secondary)] rounded-xl border">
+              <NoDataFound
+                title="No Payroll Data"
+                subtitle="Select Branch, Department, Month and Year, then click Generate Payroll."
+              />
             </div>
           ) : (
             <div className="space-y-4">

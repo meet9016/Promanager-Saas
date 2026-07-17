@@ -5,6 +5,7 @@ import { ConfirmDialog } from '../comman/ConfirmDialog';
 import DesignationForm from "./DesignationForm";
 import useDesignations from "../../hooks/useDesignations";
 import LoadingSpinner from "../Loader/LoadingSpinner"
+import NoDataFound from "../comman/NoDataFound";
 
 const DesignationList = () => {
     const [deletingId, setDeletingId] = useState(null);
@@ -132,38 +133,18 @@ const DesignationList = () => {
                         />
                     }
                     {totalDesignations === 0 ? (
-                        <div className="text-center py-12">
-                            <div className="mx-auto w-16 h-16 bg-[var(--color-primary-lighter)] rounded-full flex items-center justify-center mb-4">
-                                <Briefcase className="w-8 h-8 text-[var(--color-primary)]" />
-                            </div>
-                            <h4 className="text-lg font-medium text-[var(--color-text-primary)] mb-2">
-                                No designations found
-                            </h4>
-                            <p className="text-[var(--color-text-secondary)] mb-1">
-                                Get started by adding your first designation
-                            </p>
-                            <p className="text-sm text-[var(--color-text-muted)]">
-                                Use the form above to create a new designation
-                            </p>
+                        <div className="min-h-[500px] flex items-center justify-center">
+                            <NoDataFound
+                                title="No Designations Found"
+                                subtitle="Get started by adding your first designation using the form above."
+                            />
                         </div>
                     ) : filteredCount === 0 ? (
-                        <div className="text-center py-12">
-                            <div className="mx-auto w-16 h-16 bg-[var(--color-primary-lighter)] rounded-full flex items-center justify-center mb-4">
-                                <Search className="w-8 h-8 text-[var(--color-primary)]" />
-                            </div>
-                            <h4 className="text-lg font-medium text-[var(--color-text-primary)] mb-2">
-                                No designations match your search
-                            </h4>
-                            <p className="text-[var(--color-text-secondary)] mb-4">
-                                Try adjusting your search terms or
-                            </p>
-                            <button
-                                onClick={clearSearch}
-                                className="inline-flex items-center px-4 py-2 bg-[var(--color-primary-dark)] text-[var(--color-text-white)] font-medium rounded-lg hover:bg-[var(--color-primary-darker)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--color-primary)] transition-colors"
-                            >
-                                <X className="w-4 h-4 mr-2" />
-                                Clear Search
-                            </button>
+                        <div className="min-h-[500px] flex items-center justify-center">
+                            <NoDataFound
+                                title="No Designations Match Your Search"
+                                subtitle="Try adjusting your search terms."
+                            />
                         </div>
                     ) : (
                         <div className="grid gap-4  max-h-[300px] md:max-h-[400px] xl:max-h-[510px] overflow-y-auto custom-scrollbar">

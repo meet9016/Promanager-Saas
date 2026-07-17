@@ -23,8 +23,10 @@ import {
     LogOut,
     Activity,
     CheckCircle,
-    RefreshCw
+    RefreshCw,
+    User
 } from 'lucide-react';
+import NoDataFound from '../../Components/comman/NoDataFound';
 import { useAuth } from '../../context/AuthContext';
 import api from '../../api/axiosInstance';
 import { createPortal } from 'react-dom';
@@ -815,7 +817,7 @@ const AttendanceExceptionReport = () => {
 
                     {/* Table toolbar */}
                     <div className="px-6 py-4 border-b border-[var(--color-primary-light)] bg-[var(--color-primary-lighter)]">
-                       <div className="flex items-center justify-between flex-nowrap gap-3 w-full">
+                        <div className="flex items-center justify-between flex-nowrap gap-3 w-full">
                             <div className="flex items-center gap-2">
                                 {currentTab && <currentTab.icon className="h-5 w-5 text-[var(--color-primary-dark)]" />}
                                 <h3 className="text-lg font-medium text-[var(--color-primary-dark)]">{currentTab?.label}</h3>
@@ -885,7 +887,7 @@ const AttendanceExceptionReport = () => {
                                         className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-lg font-medium transition-colors"
                                     >
                                         <Filter className="h-6 w-6" />
-                                          <span className="lg:hidden sm:hidden xl:inline">Filters</span>
+                                        <span className="lg:hidden sm:hidden xl:inline">Filters</span>
                                         {getActiveFiltersCount() > 0 && (
                                             <span className="bg-[var(--color-primary-dark)] text-white text-xs rounded-full px-2 py-1">{getActiveFiltersCount()}</span>
                                         )}
@@ -1000,7 +1002,7 @@ const AttendanceExceptionReport = () => {
                                         className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-lg font-medium transition-colors"
                                     >
                                         <Download className="h-6 w-6" />
-                                      <span className='lg:hidden sm:hidden xl:inline'>Export</span>  
+                                        <span className='lg:hidden sm:hidden xl:inline'>Export</span>
                                         <ChevronDown className="h-4 w-4 lg:hidden sm:hidden xl:inline" />
                                     </button>
 
@@ -1059,16 +1061,11 @@ const AttendanceExceptionReport = () => {
                                 </div>
                             </div>
                         ) : activeData.length === 0 ? (
-                            <div className="p-12 text-center">
-                                <div className={`inline-flex p-4 rounded-full ${currentTab?.bg || 'bg-gray-50'} mb-4`}>
-                                    {currentTab && <currentTab.icon className={`h-8 w-8 ${currentTab.color}`} />}
-                                </div>
-                                <p className="text-[var(--color-text-secondary)] font-medium">
-                                    {activeTab === 'all_employees' ? 'No employees found' : `No ${currentTab?.label} exceptions found`}
-                                </p>
-                                <p className="text-sm text-[var(--color-text-muted)] mt-1">
-                                    {searchQuery ? 'Try a different search term' : `No data for ${formatDate(selectedDate)}`}
-                                </p>
+                            <div className="flex items-center justify-center p-8 bg-[var(--color-bg-secondary)] rounded-xl shadow-sm">
+                                <NoDataFound
+                                    title={activeTab === 'all_employees' ? 'No employees found' : `No ${currentTab?.label} exceptions found`}
+                                    subtitle={searchQuery ? 'Try a different search term' : `No data for ${formatDate(selectedDate)}`}
+                                />
                             </div>
                         ) : (
                             <>

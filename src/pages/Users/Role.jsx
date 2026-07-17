@@ -10,6 +10,7 @@ import { ConfirmDialog } from '../../Components/comman/ConfirmDialog';
 import Pagination from '../../Components/Pagination'; // Import the Pagination component
 import LoadingSpinner from "../../Components/Loader/LoadingSpinner"
 import { Table, TableHeader, TableBody, TableRow, TableHeaderRow, Th, Td } from '../../Components/ui/Table';
+import NoDataFound from '../../Components/comman/NoDataFound';
 
 const Role = () => {
     const navigate = useNavigate();
@@ -257,23 +258,21 @@ const Role = () => {
                                 </div>
                             </div>
                         ) : roles.length === 0 ? (
-                            <div className="px-6 py-12 text-center">
-                                <div className="bg-[var(--color-bg-primary)] border border-[var(--color-border-primary)] rounded-lg p-8">
-                                    <div className="w-16 h-16 bg-[var(--color-bg-gray-light)] rounded-full flex items-center justify-center mx-auto mb-4">
-                                        <Plus className="w-8 h-8 text-[var(--color-text-muted)]" />
-                                    </div>
-                                    <p className="text-[var(--color-text-secondary)] text-lg font-medium mb-2">No Roles Found</p>
-                                    <p className="text-[var(--color-text-secondary)] text-sm mb-4">
-                                        You haven't created any roles yet. Create your first role to get started with role management.
-                                    </p>
-                                    <button
-                                        onClick={handleCreateRole}
-                                        className="inline-flex items-center space-x-2 bg-[var(--color-primary-dark)] text-[var(--color-text-white)] px-4 py-2 rounded-md hover:bg-[var(--color-primary-darker)] transition-colors"
-                                    >
-                                        <Plus className="w-4 h-4" />
-                                        <span>Create First Role</span>
-                                    </button>
-                                </div>
+                            <div className="flex items-center justify-center h-[70vh]">
+                                <NoDataFound
+                                    title="No Roles Found"
+                                    subtitle="You haven't created any roles yet."
+                                >
+                                    {permissions['user_roles_create'] && (
+                                        <button
+                                            onClick={handleCreateRole}
+                                            className="inline-flex items-center space-x-2 bg-[var(--color-primary-dark)] text-[var(--color-text-white)] px-4 py-2 rounded-md hover:bg-[var(--color-primary-darker)] transition-colors"
+                                        >
+                                            <Plus className="w-4 h-4" />
+                                            <span>Create First Role</span>
+                                        </button>
+                                    )}
+                                </NoDataFound>
                             </div>
                         ) : (
                             <>

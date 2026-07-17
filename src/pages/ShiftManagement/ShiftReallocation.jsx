@@ -9,6 +9,7 @@ import { Toast } from '../../Components/ui/Toast';
 import Pagination from '../../Components/Pagination';
 import CustomSelect from '../../Components/comman/CustomSelect';
 import CustomInput from '../../Components/comman/CustomInput';
+import NoDataFound from '../../Components/comman/NoDataFound';
 import { Table, TableHeader, TableBody, TableRow, TableHeaderRow, Th, Td } from '../../Components/ui/Table';
 import LoadingSpinner from '../../Components/Loader/LoadingSpinner';
 
@@ -577,7 +578,7 @@ const ShiftReallocation = () => {
                                     <LoadingSpinner />
                                 </div>
                             </div>
-                           
+
 
 
                         ) : historyError ? (
@@ -596,25 +597,25 @@ const ShiftReallocation = () => {
                                 </div>
                             </div>
                         ) : reallocationHistory.length === 0 ? (
-                            <div className="px-6 py-12 text-center">
-                                <div className="bg-[var(--color-bg-primary)] border border-[var(--color-border-primary)] rounded-lg p-8">
-                                    <div className="w-16 h-16 bg-[var(--color-bg-gray-light)] rounded-full flex items-center justify-center mx-auto mb-4">
-                                        <Calendar className="w-8 h-8 text-[var(--color-text-muted)]" />
-                                    </div>
-                                    <p className="text-[var(--color-text-secondary)] text-lg font-medium mb-2">No Reallocation History</p>
-                                    <p className="text-[var(--color-text-secondary)] text-sm mb-4">
-                                        {searchQuery ? 'No reallocations match your search criteria.' : 'You haven\'t made any shift reallocations yet.'}
-                                    </p>
+                            <div className="h-[70vh] flex items-center justify-center bg-[#FBF9FD]">
+                                <NoDataFound
+                                    title="No Reallocation History"
+                                    subtitle={
+                                        searchQuery
+                                            ? 'No reallocations match your search criteria.'
+                                            : 'You haven\'t made any shift reallocations yet.'
+                                    }
+                                >
                                     {!searchQuery && permissions['shift_reallocation_create'] && (
                                         <button
                                             onClick={handleOpenForm}
                                             className="inline-flex items-center space-x-2 bg-[var(--color-primary-dark)] text-[var(--color-text-white)] px-4 py-2 rounded-md hover:bg-[var(--color-primary-darker)] transition-colors"
                                         >
-                                            <Plus className="w-4 w-4" />
+                                            <Plus className="w-4 h-4" />
                                             <span>Create First Reallocation</span>
                                         </button>
                                     )}
-                                </div>
+                                </NoDataFound>
                             </div>
                         ) : (
                             <>

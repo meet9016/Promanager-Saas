@@ -9,6 +9,7 @@ import { Table, TableHeader, TableBody, TableRow, TableHeaderRow, Th, Td } from 
 import CustomDatePicker from '../../Components/comman/CustomDatePicker';
 import CustomInput from '../../Components/comman/CustomInput';
 import CustomSelect from '../../Components/comman/CustomSelect';
+import NoDataFound from '../../Components/comman/NoDataFound';
 
 // Lucide React Icons
 import {
@@ -777,16 +778,11 @@ const LeaveManagement = () => {
                             </div>
                         </div>
                     ) : leaveRequests.length === 0 ? (
-                        <div className="px-6 py-12 text-center">
-                            <div className="bg-[var(--color-bg-primary)] border border-[var(--color-border-primary)] rounded-xl p-8 max-w-md mx-auto">
-                                <div className="w-16 h-16 bg-[var(--color-bg-gray-light)] rounded-full flex items-center justify-center mx-auto mb-4">
-                                    <FileText className="w-8 h-8 text-[var(--color-text-muted)]" />
-                                </div>
-                                <p className="text-[var(--color-text-primary)] text-lg font-semibold mb-2">No {STATUS_CONFIG[selectedStatus]?.name} Leave Requests</p>
-                                <p className="text-[var(--color-text-secondary)] text-sm mb-4">
-                                    There are no leave requests with {STATUS_CONFIG[selectedStatus]?.name.toLowerCase()} status.
-                                </p>
-                            </div>
+                        <div className="flex items-center justify-center h-[65vh]">
+                            <NoDataFound
+                                title={`No ${STATUS_CONFIG[selectedStatus]?.name} Leave Requests`}
+                                subtitle={`There are no leave requests with ${STATUS_CONFIG[selectedStatus]?.name.toLowerCase()} status.`}
+                            />
                         </div>
                     ) : (
                         <div className="overflow-x-auto">
@@ -819,10 +815,11 @@ const LeaveManagement = () => {
                                 <TableBody className="bg-[var(--color-bg-secondary)] divide-y divide-[var(--color-border-divider)]">
                                     {!sortedLeaveRequests || sortedLeaveRequests.length === 0 ? (
                                         <TableRow>
-                                            <Td colSpan="8" className="px-6 py-8 text-center text-[var(--color-text-secondary)]">
-                                                <FileText className="h-12 w-12 mx-auto mb-4 text-[var(--color-text-muted)]" />
-                                                <p className="text-lg font-semibold">No leave requests found</p>
-                                                <p className="text-sm">Try adjusting your search or filters</p>
+                                            <Td colSpan="8" className="py-4 text-center">
+                                                <NoDataFound
+                                                    title="No Leave Requests Found"
+                                                    subtitle="Try adjusting your search or filters."
+                                                />
                                             </Td>
                                         </TableRow>
                                     ) : (

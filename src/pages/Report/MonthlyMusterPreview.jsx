@@ -17,6 +17,7 @@ import { Toast } from '../../Components/ui/Toast';
 import { exportMusterToPDF } from '../../utils/exportUtils/MonthlyMuster/pdfExport';
 import { exportMusterToExcel } from '../../utils/exportUtils/MonthlyMuster/excelExport';
 import CustomSelect from '../../Components/comman/CustomSelect';
+import NoDataFound from '../../Components/comman/NoDataFound';
 
 /** ------------------- Anchored positioning helpers ------------------- **/
 const getScrollParents = (node) => {
@@ -155,33 +156,33 @@ const TOTALS_ORDER = ['P', 'A', 'WO', '½P', 'H', 'INC', 'OT'];
 
 /* Circular cell pill colors */
 const CELL_CIRCLE = {
-    P:   'bg-emerald-100  text-emerald-700',
-    A:   'bg-red-100      text-red-500',
-    WO:  'bg-slate-200    text-slate-500',
-    '½P':'bg-amber-100    text-amber-600',
-    H:   'bg-violet-100   text-violet-600',
+    P: 'bg-emerald-100  text-emerald-700',
+    A: 'bg-red-100      text-red-500',
+    WO: 'bg-slate-200    text-slate-500',
+    '½P': 'bg-amber-100    text-amber-600',
+    H: 'bg-violet-100   text-violet-600',
     INC: 'bg-orange-100   text-orange-600',
-    OT:  'bg-purple-100   text-purple-600',
-    L:   'bg-orange-50    text-orange-500',
+    OT: 'bg-purple-100   text-purple-600',
+    L: 'bg-orange-50    text-orange-500',
 };
 
 /* Legend badge colors */
 const CODE_COLORS = {
-    P:   'bg-emerald-50  text-emerald-700 border-emerald-200',
-    A:   'bg-red-50      text-red-500     border-red-200',
-    WO:  'bg-slate-100   text-slate-500   border-slate-300',
-    '½P':'bg-amber-50    text-amber-600   border-amber-200',
-    H:   'bg-violet-50   text-violet-600  border-violet-200',
+    P: 'bg-emerald-50  text-emerald-700 border-emerald-200',
+    A: 'bg-red-50      text-red-500     border-red-200',
+    WO: 'bg-slate-100   text-slate-500   border-slate-300',
+    '½P': 'bg-amber-50    text-amber-600   border-amber-200',
+    H: 'bg-violet-50   text-violet-600  border-violet-200',
     INC: 'bg-orange-50   text-orange-600  border-orange-200',
-    OT:  'bg-purple-50   text-purple-600  border-purple-200',
-    L:   'bg-orange-50   text-orange-500  border-orange-200',
+    OT: 'bg-purple-50   text-purple-600  border-purple-200',
+    L: 'bg-orange-50   text-orange-500  border-orange-200',
 };
 
 /* Avatar palette */
 const AVATAR_COLORS = [
-    'bg-violet-500','bg-blue-500','bg-emerald-500','bg-rose-500',
-    'bg-amber-500','bg-cyan-500','bg-fuchsia-500','bg-teal-500',
-    'bg-indigo-500','bg-orange-500',
+    'bg-violet-500', 'bg-blue-500', 'bg-emerald-500', 'bg-rose-500',
+    'bg-amber-500', 'bg-cyan-500', 'bg-fuchsia-500', 'bg-teal-500',
+    'bg-indigo-500', 'bg-orange-500',
 ];
 const avatarColor = (name = '') => {
     const idx = (name.charCodeAt(0) || 0) % AVATAR_COLORS.length;
@@ -866,27 +867,21 @@ const MonthlyMusterPreview = () => {
 
                     {/* Data Grid Container */}
                     <div ref={containerRef} className="overflow-auto" style={{ maxHeight: '65vh' }}>
-                        {!hasGenerated && !loading && (
-                            <div className="py-20 text-center">
-                                <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-slate-100 mb-4">
-                                    <Calendar size={28} className="text-slate-400" />
-                                </div>
-                                <p className="text-slate-600 font-semibold text-sm mb-1">Ready to Generate Report</p>
-                                <p className="text-slate-400 text-xs">
-                                    Select your filters and click "Generate Report" to view muster data
-                                </p>
+                        {!hasGenerated && (
+                            <div className="flex items-center justify-center p-8 bg-[var(--color-bg-secondary)] rounded-xl border border-[var(--color-border-primary)] shadow-sm">
+                                <NoDataFound
+                                    title="Ready to Generate Report"
+                                    subtitle="Select your filters and click 'Generate Report' to view muster data."
+                                />
                             </div>
                         )}
 
                         {hasGenerated && gridData.length === 0 && !loading && (
-                            <div className="py-20 text-center">
-                                <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-slate-100 mb-4">
-                                    <Users size={28} className="text-slate-400" />
-                                </div>
-                                <p className="text-slate-600 font-semibold text-sm mb-1">No attendance data found</p>
-                                <p className="text-slate-400 text-xs">
-                                    Try adjusting your filters or select a different month
-                                </p>
+                            <div className="flex items-center justify-center p-8 bg-[var(--color-bg-secondary)] rounded-xl border border-[var(--color-border-primary)] shadow-sm">
+                                <NoDataFound
+                                    title="No attendance data found"
+                                    subtitle="Try adjusting your filters or select a different month."
+                                />
                             </div>
                         )}
 
@@ -1012,13 +1007,13 @@ const MonthlyMusterPreview = () => {
                                             >
                                                 {TOTALS_ORDER.filter(k => r.totals[k] > 0).map(k => {
                                                     const colorMap = {
-                                                        P:   'bg-emerald-100 text-emerald-700 border-emerald-200',
-                                                        A:   'bg-red-100 text-red-500 border-red-200',
-                                                        WO:  'bg-slate-200 text-slate-500 border-slate-300',
-                                                        '½P':'bg-amber-100 text-amber-600 border-amber-200',
-                                                        H:   'bg-violet-100 text-violet-600 border-violet-200',
+                                                        P: 'bg-emerald-100 text-emerald-700 border-emerald-200',
+                                                        A: 'bg-red-100 text-red-500 border-red-200',
+                                                        WO: 'bg-slate-200 text-slate-500 border-slate-300',
+                                                        '½P': 'bg-amber-100 text-amber-600 border-amber-200',
+                                                        H: 'bg-violet-100 text-violet-600 border-violet-200',
                                                         INC: 'bg-orange-100 text-orange-600 border-orange-200',
-                                                        OT:  'bg-purple-100 text-purple-600 border-purple-200',
+                                                        OT: 'bg-purple-100 text-purple-600 border-purple-200',
                                                     };
                                                     return (
                                                         <span key={k}

@@ -27,6 +27,7 @@ import {
     RefreshCw,
     User
 } from 'lucide-react';
+import NoDataFound from '../../Components/comman/NoDataFound';
 import { useAuth } from '../../context/AuthContext';
 import api from '../../api/axiosInstance';
 import { createPortal } from 'react-dom';
@@ -1126,7 +1127,7 @@ const MonthlyExceptionReport = () => {
                                                         </div> */}
                                                         <div className="flex flex-col sm:flex-row justify-end gap-2 p-4 border-t border-[var(--color-border-secondary)] rounded-b-2xl">
                                                             <button
-                                                                 onClick={() => { resetAll(); setFilterDropdown(false); }}
+                                                                onClick={() => { resetAll(); setFilterDropdown(false); }}
                                                                 className="flex items-center justify-center gap-2 px-4 py-2 bg-transparent text-[var(--color-primary)] border-2 hover:bg-[var(--color-primary-lightest)] border-[var(--color-primary)] rounded-lg hover:bg-[var(--color-bg-hover)] transition-colors text-sm font-medium min-w-[100px]"
                                                             >
                                                                 <RefreshCw size={14} />
@@ -1199,7 +1200,7 @@ const MonthlyExceptionReport = () => {
                             </div>
 
                             {/* ── Table ── */}
-                           <div className="flex flex-col flex-1 min-h-0">
+                            <div className="flex flex-col flex-1 min-h-0">
                                 {loading ? (
                                     <div className="p-12 text-center text-[var(--color-text-secondary)]">
                                         <div className="flex items-center justify-center gap-3">
@@ -1208,16 +1209,11 @@ const MonthlyExceptionReport = () => {
                                         </div>
                                     </div>
                                 ) : activeData.length === 0 ? (
-                                    <div className="p-12 text-center">
-                                        <div className={`inline-flex p-4 rounded-full ${currentTab?.bg || 'bg-gray-50'} mb-4`}>
-                                            {currentTab && <currentTab.icon className={`h-8 w-8 ${currentTab.color}`} />}
-                                        </div>
-                                        <p className="text-[var(--color-text-secondary)] font-medium">
-                                            {activeTab === 'all_employees' ? 'No employees found' : `No ${currentTab?.label} exceptions found`}
-                                        </p>
-                                        <p className="text-sm text-[var(--color-text-muted)] mt-1">
-                                            {searchQuery ? 'Try a different search term' : `No exceptions for ${formatMonthYear(monthYear)}`}
-                                        </p>
+                                    <div className="flex items-center justify-center p-8 bg-[var(--color-bg-secondary)] rounded-xl  shadow-sm">
+                                        <NoDataFound
+                                            title={activeTab === 'all_employees' ? 'No employees found' : `No ${currentTab?.label} exceptions found`}
+                                            subtitle={searchQuery ? 'Try a different search term' : `No exceptions for ${formatMonthYear(monthYear)}`}
+                                        />
                                     </div>
                                 ) : (
                                     <>

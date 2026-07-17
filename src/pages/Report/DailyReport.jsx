@@ -24,6 +24,7 @@ import {
     Activity,
     RefreshCw
 } from 'lucide-react';
+import NoDataFound from '../../Components/comman/NoDataFound';
 import { useAuth } from '../../context/AuthContext';
 import api from '../../api/axiosInstance';
 import { createPortal } from 'react-dom';
@@ -693,14 +694,14 @@ const DailyReport = () => {
                                     >
                                         <Filter className="h-6 w-6" />
                                         <span className="lg:hidden sm:hidden xl:inline">Filters</span>
-                                     
+
                                         {getActiveFiltersCount() > 0 && (
                                             <span className="bg-[var(--color-primary-dark)] text-white text-xs rounded-full px-2 py-1">
                                                 {getActiveFiltersCount()}
                                             </span>
                                         )}
                                         <ChevronDown className="h-4 w-4 lg:hidden sm:hidden xl:inline" />
-                                        
+
                                     </button>
 
                                     {filterDropdown &&
@@ -1127,7 +1128,7 @@ const DailyReport = () => {
                                         className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-lg font-medium transition-colors"
                                     >
                                         <Download className="h-6 w-6" />
-                                      <span className='lg:hidden sm:hidden xl:inline'>Export</span>  
+                                        <span className='lg:hidden sm:hidden xl:inline'>Export</span>
                                         <ChevronDown className="h-4 w-4 lg:hidden sm:hidden xl:inline" />
                                     </button>
 
@@ -1187,7 +1188,12 @@ const DailyReport = () => {
                                 </div>
                             </div>
                         ) : (filteredData?.length || 0) === 0 ? (
-                            <div className="p-8 text-center text-[var(--color-text-secondary)]">No records found</div>
+                            <div className="flex items-center justify-center p-8 bg-[var(--color-bg-secondary)] rounded-xl  shadow-sm">
+                                <NoDataFound
+                                    title="No records found"
+                                    subtitle="Try adjusting your filters or select a different date."
+                                />
+                            </div>
                         ) : (
                             <>
                                 <Table className="w-full min-w-[1200px] border-separate border-spacing-0">
@@ -1308,8 +1314,8 @@ const DailyReport = () => {
                                 </Table>
 
                                 {/* ⬇️ Pagination controls */}
-                                
-                                
+
+
                                 <Pagination
                                     currentPage={currentPage}
                                     totalPages={totalPages}

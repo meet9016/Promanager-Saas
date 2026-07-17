@@ -16,6 +16,7 @@ import { Toast } from '../../Components/ui/Toast';
 import { exportPaySalaryToPDF } from '../../utils/exportUtils/salary/pdfExportPayMonthlySalary';
 import { exportPaySalaryToExcel } from '../../utils/exportUtils/salary/excelExportPayMonthlySalary';
 import CustomSelect from '../../Components/comman/CustomSelect';
+import NoDataFound from '../../Components/comman/NoDataFound';
 
 /** ─── Anchored position helpers ─────────────────────────────────────────── **/
 const getScrollParents = (node) => {
@@ -688,21 +689,19 @@ const PayMonthlySalaryReport = () => {
 
                 {/* States */}
                 {!reportData && !loading && filters.month_year && (
-                    <div className="bg-[var(--color-bg-secondary)] rounded-xl shadow-sm border border-[var(--color-border-primary)] p-12 text-center">
-                        <div className="flex flex-col items-center">
-                            <div className="p-3 bg-[var(--color-bg-hover)] rounded-full mb-4"><IndianRupee className="h-8 w-8 text-[var(--color-text-secondary)]" /></div>
-                            <h3 className="text-lg font-medium text-[var(--color-text-primary)] mb-2">No Paid Salary Data Found</h3>
-                            <p className="text-[var(--color-text-secondary)]">No salary payment records for {getMonthYearDisplay(filters.month_year)}.</p>
-                        </div>
+                    <div className="flex items-center justify-center p-12 bg-[var(--color-bg-secondary)] rounded-xl border border-[var(--color-border-primary)] shadow-sm">
+                        <NoDataFound
+                            title="No Paid Salary Data Found"
+                            subtitle={`No salary payment records for ${getMonthYearDisplay(filters.month_year)}.`}
+                        />
                     </div>
                 )}
                 {!reportData && !loading && !filters.month_year && (
-                    <div className="bg-[var(--color-bg-secondary)] rounded-xl shadow-sm border border-[var(--color-border-primary)] p-12 text-center">
-                        <div className="flex flex-col items-center">
-                            <div className="p-3 bg-[var(--color-primary-lightest)] rounded-full mb-4"><Calendar className="h-8 w-8 text-[var(--color-primary-dark)]" /></div>
-                            <h3 className="text-lg font-medium text-[var(--color-text-primary)] mb-2">Select Month to Generate Report</h3>
-                            <p className="text-[var(--color-text-secondary)]">Choose a month above and click "Generate Report".</p>
-                        </div>
+                    <div className="flex items-center justify-center p-12 bg-[var(--color-bg-secondary)] rounded-xl border border-[var(--color-border-primary)] shadow-sm">
+                        <NoDataFound
+                            title="Select Month to Generate Report"
+                            subtitle="Choose a month above and click 'Generate Report'."
+                        />
                     </div>
                 )}
                 {loading && (

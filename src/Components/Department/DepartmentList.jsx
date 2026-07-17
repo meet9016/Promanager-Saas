@@ -7,6 +7,7 @@ import LoadingSpinner from "../Loader/LoadingSpinner";
 import { Toast } from "../ui/Toast";
 import DeleteModal from "../comman/DeleteModal";
 import CustomSelect from "../comman/CustomSelect";
+import NoDataFound from "../comman/NoDataFound";
 
 // ─── Shared layout primitives (same as DepartmentForm) ────────────────────────
 
@@ -437,27 +438,15 @@ const DepartmentList = () => {
 
                 {/* Empty states */}
                 {totalDepartments === 0 ? (
-                    <div className="text-center py-12">
-                        <div className="mx-auto w-16 h-16 bg-[var(--color-primary-lighter)] rounded-full flex items-center justify-center mb-4">
-                            <Users className="w-8 h-8 text-[var(--color-primary)]" />
-                        </div>
-                        <h4 className="text-lg font-medium text-[var(--color-text-primary)] mb-2">No departments found</h4>
-                        <p className="text-[var(--color-text-secondary)] mb-1">Get started by adding your first department</p>
-                        <p className="text-sm text-[var(--color-text-muted)]">Use the form above to create a new department</p>
-                    </div>
+                    <NoDataFound
+                        title="No Departments Found"
+                        subtitle="Get started by adding your first department."
+                    />
                 ) : filteredCount === 0 ? (
-                    <div className="text-center py-12">
-                        <div className="mx-auto w-16 h-16 bg-[var(--color-primary-lighter)] rounded-full flex items-center justify-center mb-4">
-                            <Search className="w-8 h-8 text-[var(--color-primary)]" />
-                        </div>
-                        <h4 className="text-lg font-medium text-[var(--color-text-primary)] mb-2">No departments match your search</h4>
-                        <button
-                            onClick={() => setSearchTerm("")}
-                            className="inline-flex items-center px-4 py-2 mt-2 bg-[var(--color-primary-dark)] text-[var(--color-text-white)] font-medium rounded-lg hover:bg-[var(--color-primary-darker)] transition-colors"
-                        >
-                            <X className="w-4 h-4 mr-2" />Clear Search
-                        </button>
-                    </div>
+                    <NoDataFound
+                        title="No Departments Match Your Search"
+                        subtitle="Try adjusting your search terms."
+                    />
                 ) : (
 
                     <div className="grid gap-3  max-h-[300px] md:max-h-[400px] xl:max-h-[480px] overflow-y-auto custom-scrollbar ">

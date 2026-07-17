@@ -41,6 +41,8 @@ import {
 } from '../../Components/ui/Table';
 import CustomSelect from '../../Components/comman/CustomSelect';
 import CustomInput from '../../Components/comman/CustomInput';
+import NoDataFound from '../../Components/comman/NoDataFound';
+
 
 const SORT_DIRECTIONS = {
     ASCENDING: 'ascending',
@@ -873,7 +875,7 @@ export default function Employee() {
 
             <div className="p-8 mx-auto ">
 
-                <div className="bg-[var(--color-bg-secondary)] rounded-lg border border-[var(--color-primary-dark)] overflow-hidden shadow-sm">
+                <div className="bg-[var(--color-bg-secondary)] rounded-lg border border-[var(--color-primary-dark)] overflow-hidden shadow-sm min-h-[87vh]">
                     {/* Header section */}
                     <div className="px-6 py-4 border-b border-[var(--color-primary-light)] bg-[var(--color-primary-lighter)] ">
                         <div className="flex justify-between items-center flex-wrap gap-3">
@@ -1704,26 +1706,22 @@ export default function Employee() {
                             </div>
                         </div>
                     ) : employees.length === 0 ? (
-                        <div className="px-6 py-12 text-center">
-                            <div className="bg-[var(--color-bg-primary)] border border-[var(--color-border-primary)] rounded-lg p-8">
-                                <div className="w-16 h-16 bg-[var(--color-bg-gray-light)] rounded-full flex items-center justify-center mx-auto mb-4">
-                                    <Users className="w-8 h-8 text-[var(--color-text-muted)]" />
-                                </div>
-                                <p className="text-[var(--color-text-secondary)] text-lg font-medium mb-2">
-                                    {searchQuery ? 'No employees found' : 'No Employees Found'}
-                                </p>
-                                <p className="text-[var(--color-text-secondary)] text-sm mb-4">
-                                    {searchQuery
+                        <div className="flex flex-col items-center justify-center min-h-[70vh] px-6 bg-[#FBF9FD]">
+                            <NoDataFound
+                                title={searchQuery ? 'No Employees Found' : 'No Employees Found'}
+                                subtitle={
+                                    searchQuery
                                         ? `No employees match your search "${searchQuery}". Try different search terms.`
                                         : currentPage > 1
                                             ? 'No employees found on this page.'
-                                            : 'You haven\'t added any employees yet.'
-                                    }
-                                </p>
+                                            : "You haven't added any employees yet."
+                                }
+                            />
+                            <div className="flex gap-3 mt-2">
                                 {searchQuery && (
                                     <button
                                         onClick={handleClearSearch}
-                                        className="inline-flex items-center space-x-2 bg-[var(--color-bg-gradient-start)] text-[var(--color-text-secondary)] px-4 py-2 rounded-md hover:bg-[var(--color-bg-gray-light)] transition-colors mr-2"
+                                        className="inline-flex items-center space-x-2 bg-[var(--color-bg-gradient-start)] text-[var(--color-text-secondary)] px-4 py-2 rounded-md hover:bg-[var(--color-bg-gray-light)] transition-colors"
                                     >
                                         <XCircle className="w-4 h-4" />
                                         <span>Clear Search</span>
