@@ -14,13 +14,14 @@ export const agreementSchema = yup.object().shape({
         .trim()
         .min(2, "Company Name must be at least 2 characters")
         .max(100, "Company Name must be maximum 100 characters")
+        .matches(/^[A-Za-z0-9\s\-&.,']+$/, "Only business characters (letters, numbers, spaces, and - & . , ') are allowed")
         .required("Company Name is required"),
 
     email: yup
         .string()
         .trim()
         .matches(
-            /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+            /^[a-zA-Z0-9._%+-]+@(gmail\.com|yahoo\.com|outlook\.com|hotmail\.com)$/i,
             "Enter valid email address"
         )
         .required("Email is required"),
@@ -28,26 +29,22 @@ export const agreementSchema = yup.object().shape({
     mobile: yup
         .string()
         .trim()
-        .matches(/^[0-9]+$/, "Only numbers are allowed")
-        // .min(10, "Mobile number must be at least 10 digits")
-        .max(10, "Mobile number must be maximum 15 digits")
+        .matches(/^[6-9]\d{9}$/, "Mobile number must be a valid 10-digit number")
         .required("Mobile number is required"),
 
     gst_number: yup
         .string()
         .trim()
         .matches(
-            /^([0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1})?$/,
+            /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/,
             "Enter valid GST number"
         )
-        .nullable(),
+        .required("GST number is required"),
 
     whatsapp: yup
         .string()
         .trim()
-        .matches(/^[0-9]+$/, "Only numbers are allowed")
-        // .min(10, "WhatsApp number must be at least 10 digits")
-        .max(10, "WhatsApp number must be maximum 15 digits")
+        .matches(/^[6-9]\d{9}$/, "WhatsApp number must be a valid 10-digit number")
         .required("WhatsApp number is required"),
 
     address: yup
@@ -55,5 +52,6 @@ export const agreementSchema = yup.object().shape({
         .trim()
         .min(10, "Address must be at least 10 characters")
         .max(300, "Address must be maximum 300 characters")
+        .matches(/^[a-zA-Z0-9\s\-,./()#]+$/, "Only letters, numbers, spaces, and special characters -,./()# are allowed")
         .required("Address is required"),
 });
