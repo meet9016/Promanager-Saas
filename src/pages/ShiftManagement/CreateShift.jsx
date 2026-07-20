@@ -752,8 +752,8 @@ const CreateShift = () => {
         navigate('/unauthorized')
     }
     return (
-        <div className="min-h-screen bg-gradient-to-br from-[var(--color-bg-gradient-start)] to-[var(--color-bg-secondary)]">
-            <div className="p-8 mx-auto px-4 py-8">
+        <div className="h-[calc(100vh-64px)] overflow-hidden bg-gradient-to-br from-[var(--color-bg-gradient-start)] to-[var(--color-bg-secondary)] flex flex-col">
+            <div className="flex-1 flex flex-col p-8 px-4 overflow-hidden h-0">
                 {/* Enhanced Header */}
                 <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-xl mb-8 overflow-hidden">
                     <div className="bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] p-6">
@@ -776,11 +776,11 @@ const CreateShift = () => {
                     </div>
                 </div>
 
-                <form onSubmit={handleSubmit} className="space-y-8">
+                <form onSubmit={handleSubmit} className="flex-1 flex flex-col overflow-hidden min-h-0">
                     {/* Enhanced Weekly Schedule Configuration */}
-                    <div className="bg-[var(--color-bg-secondary)] backdrop-blur-sm rounded-2xl border border-slate-200 shadow-lg">
+                    <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden custom-scrollbar bg-[var(--color-bg-secondary)] backdrop-blur-sm rounded-2xl border border-slate-200 shadow-lg">
                         {/* Enhanced Basic Information */}
-                        <div className="px-8 py-6 border-b border-slate-200 bg-gradient-to-r from-[var(--color-bg-primary)] to-[var(--color-bg-secondary)] rounded-t-2xl">
+                        {/* <div className="px-8 py-6 border-b border-slate-200 bg-gradient-to-r from-[var(--color-bg-primary)] to-[var(--color-bg-secondary)] rounded-t-2xl">
                             <div className="flex items-center gap-3">
                                 <div className="w-10 h-10 bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-dark)] rounded-xl flex items-center justify-center">
                                     <Settings className="w-5 h-5 text-[var(--color-text-white)]" />
@@ -794,7 +794,7 @@ const CreateShift = () => {
                                     </span>
                                 )}
                             </div>
-                        </div>
+                        </div> */}
                         <div className="p-8">
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                                 <div>
@@ -1053,7 +1053,7 @@ const CreateShift = () => {
                     </div>
 
                     {/* Enhanced Action Buttons */}
-                    <div className="">
+                    <div className="flex-shrink-0 bg-[var(--color-bg-secondary)] border-t border-slate-200 pt-5">
                         <div className="p-0">
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-3">

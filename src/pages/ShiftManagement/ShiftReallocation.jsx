@@ -483,8 +483,8 @@ const ShiftReallocation = () => {
     };
 
     return (
-        <div className="h-[calc(100vh-64px)] bg-[var(--color-bg-primary)] overflow-hidden">
-            <div className=" mx-auto p-8">
+        <div className="h-[calc(100vh-64px)] bg-[var(--color-bg-primary)] overflow-hidden flex flex-col">
+            <div className="flex-1 flex flex-col mx-auto p-8 overflow-hidden h-0 w-full">
                 {/* Header */}
                 {/* <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-xl mb-8 overflow-hidden">
                     <div className="bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] p-8">
@@ -505,7 +505,7 @@ const ShiftReallocation = () => {
 
                 {/* List View */}
                 {view === 'list' && (
-                    <div className="bg-[var(--color-bg-secondary)]  h-[86vh]  rounded-lg shadow-sm border border-[var(--color-primary-dark)]">
+                    <div className="bg-[var(--color-bg-secondary)]  h-[86vh] rounded-[5px] shadow-sm border border-[var(--color-primary-dark)]">
                         <div className="px-6 py-4 border-b border-[var(--color-primary-light)] bg-[var(--color-primary-lighter)] ">
                             <div className="flex items-center justify-between">
                                 <h2 className="text-lg font-semibold text-[var(--color-primary-darker)] flex items-center gap-2">
@@ -593,7 +593,7 @@ const ShiftReallocation = () => {
                                 </div>
                             </div>
                         ) : reallocationHistory.length === 0 ? (
-                            <div className="h-[70vh] flex items-center justify-center bg-[#FBF9FD]">
+                            <div className="h-[70vh] flex items-center justify-center bg-[#FBF9FD]" style={{ height: "calc(86vh - 73px)" }}>
                                 <NoDataFound
                                     title="No Reallocation History"
                                     subtitle={
@@ -715,22 +715,23 @@ const ShiftReallocation = () => {
                                 </div>
                             </div>
                         ) : (
-                            <div className="space-y-6">
-                                {/* Shift Selection */}
-                                <div className="bg-[var(--color-bg-secondary)] rounded-lg shadow-sm border border-[var(--color-primary-dark)] ">
-                                    <div className="px-6 py-4 border-b border-[var(--color-primary-light)] bg-[var(--color-primary-dark)]">
-                                        <h2 className="text-lg font-semibold text-[var(--color-text-white)] flex items-center gap-2">
-                                            <Calendar className="w-5 h-5" />
-                                            Shift Selection
-                                        </h2>
-                                    </div>
-                                    <div className="p-8">
-                                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                            <div>
-                                                <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
-                                                    From Shift <span className="text-[var(--color-error)]">*</span>
-                                                </label>
-                                                {/* <select
+                            <div className="flex-1 flex flex-col overflow-hidden min-h-0">
+                                <div className="flex-1 overflow-y-auto overflow-x-hidden min-h-0 space-y-6 scrollbar-hide">
+                                    {/* Shift Selection */}
+                                    <div className="bg-[var(--color-bg-secondary)] rounded-[5px] shadow-sm border border-[var(--color-primary-dark)] ">
+                                        <div className="px-6 py-4 border-b border-[var(--color-primary-light)] bg-[var(--color-primary-dark)]">
+                                            <h2 className="text-lg font-semibold text-[var(--color-text-white)] flex items-center gap-2">
+                                                <Calendar className="w-5 h-5" />
+                                                Shift Selection
+                                            </h2>
+                                        </div>
+                                        <div className="p-8">
+                                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                                <div>
+                                                    <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                        From Shift <span className="text-[var(--color-error)]">*</span>
+                                                    </label>
+                                                    {/* <select
                                                     value={sourceShift}
                                                     onChange={(e) => handleSourceShiftChange(e.target.value)}
                                                     className="w-full px-3 py-2 border border-[var(--color-border-secondary)] rounded-md focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)]"
@@ -742,24 +743,24 @@ const ShiftReallocation = () => {
                                                         </option>
                                                     ))}
                                                 </select> */}
-                                                <CustomSelect
-                                                    name="sourceShift"
-                                                    value={sourceShift}
-                                                    onChange={(e) => handleSourceShiftChange(e.target.value)}
-                                                    options={shifts.map((shift) => ({
-                                                        value: shift.shift_id,
-                                                        label: shift.shift_name,
-                                                    }))}
-                                                    placeholder="Select source shift"
-                                                    searchable={true}
-                                                />
-                                            </div>
+                                                    <CustomSelect
+                                                        name="sourceShift"
+                                                        value={sourceShift}
+                                                        onChange={(e) => handleSourceShiftChange(e.target.value)}
+                                                        options={shifts.map((shift) => ({
+                                                            value: shift.shift_id,
+                                                            label: shift.shift_name,
+                                                        }))}
+                                                        placeholder="Select source shift"
+                                                        searchable={true}
+                                                    />
+                                                </div>
 
-                                            <div>
-                                                <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
-                                                    To Shift <span className="text-[var(--color-error)]">*</span>
-                                                </label>
-                                                {/* <select
+                                                <div>
+                                                    <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                        To Shift <span className="text-[var(--color-error)]">*</span>
+                                                    </label>
+                                                    {/* <select
                                                     value={targetShift}
                                                     onChange={(e) => setTargetShift(e.target.value)}
                                                     disabled={!sourceShift}
@@ -772,65 +773,65 @@ const ShiftReallocation = () => {
                                                         </option>
                                                     ))}
                                                 </select> */}
-                                                <CustomSelect
-                                                    name="targetShift"
-                                                    value={targetShift}
-                                                    onChange={(e) => setTargetShift(e.target.value)}
-                                                    disabled={!sourceShift}
-                                                    options={shifts
-                                                        .filter(s => s.shift_id !== sourceShift)
-                                                        .map((shift) => ({
-                                                            value: shift.shift_id,
-                                                            label: shift.shift_name,
-                                                        }))}
-                                                    placeholder="Select target shift"
-                                                    searchable={true}
-                                                />
-                                            </div>
+                                                    <CustomSelect
+                                                        name="targetShift"
+                                                        value={targetShift}
+                                                        onChange={(e) => setTargetShift(e.target.value)}
+                                                        disabled={!sourceShift}
+                                                        options={shifts
+                                                            .filter(s => s.shift_id !== sourceShift)
+                                                            .map((shift) => ({
+                                                                value: shift.shift_id,
+                                                                label: shift.shift_name,
+                                                            }))}
+                                                        placeholder="Select target shift"
+                                                        searchable={true}
+                                                    />
+                                                </div>
 
-                                            <div>
-                                                <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
-                                                    Effective Date <span className="text-[var(--color-error)]">*</span>
-                                                </label>
-                                                <CustomDatePicker
-                                                    name="effectiveDate"
-                                                    value={effectiveDate}
-                                                    onChange={(e) => setEffectiveDate(new Date(e.target.value))}
-                                                    minDate={minDate}
-                                                    disabled={!sourceShift || !targetShift}
-                                                    placeholder="Select date"
-                                                />
+                                                <div>
+                                                    <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                        Effective Date <span className="text-[var(--color-error)]">*</span>
+                                                    </label>
+                                                    <CustomDatePicker
+                                                        name="effectiveDate"
+                                                        value={effectiveDate}
+                                                        onChange={(e) => setEffectiveDate(new Date(e.target.value))}
+                                                        minDate={minDate}
+                                                        disabled={!sourceShift || !targetShift}
+                                                        placeholder="Select date"
+                                                    />
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
 
-                                {/* Filters */}
-                                {sourceShift && (
-                                    <div className="bg-[var(--color-bg-secondary)] rounded-lg shadow-sm border border-[var(--color-primary-dark)]">
-                                        <div className="px-6 py-4 border-b border-[var(--color-primary-light)] bg-[var(--color-primary-dark)] flex items-center justify-between">
-                                            <h2 className="text-lg font-semibold text-[var(--color-text-white)] flex items-center gap-2">
-                                                <Filter className="w-5 h-5" />
-                                                Filters
-                                            </h2>
-                                            {(filters.branch_id || filters.department_id || searchTerm) && (
-                                                <button
-                                                    type="button"
-                                                    onClick={resetFilters}
-                                                    className="text-sm text-[var(--color-bg-secondary)] hover:text-[var(--color-text-white)] font-medium"
-                                                >
-                                                    Reset Filters
-                                                </button>
-                                            )}
-                                        </div>
-                                        <div className="p-8">
-                                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                                <div>
-                                                    <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
-                                                        <Building className="w-4 h-4 inline mr-1" />
-                                                        Branch
-                                                    </label>
-                                                    {/* <select
+                                    {/* Filters */}
+                                    {sourceShift && (
+                                        <div className="bg-[var(--color-bg-secondary)] rounded-[5px] shadow-sm border border-[var(--color-primary-dark)]">
+                                            <div className="px-6 py-4 border-b border-[var(--color-primary-light)] bg-[var(--color-primary-dark)] flex items-center justify-between">
+                                                <h2 className="text-lg font-semibold text-[var(--color-text-white)] flex items-center gap-2">
+                                                    <Filter className="w-5 h-5" />
+                                                    Filters
+                                                </h2>
+                                                {(filters.branch_id || filters.department_id || searchTerm) && (
+                                                    <button
+                                                        type="button"
+                                                        onClick={resetFilters}
+                                                        className="text-sm text-[var(--color-bg-secondary)] hover:text-[var(--color-text-white)] font-medium"
+                                                    >
+                                                        Reset Filters
+                                                    </button>
+                                                )}
+                                            </div>
+                                            <div className="p-8">
+                                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                            <Building className="w-4 h-4 inline mr-1" />
+                                                            Branch
+                                                        </label>
+                                                        {/* <select
                                                         value={filters.branch_id}
                                                         onChange={(e) => handleFilterChange('branch_id', e.target.value)}
                                                         disabled={dropdownLoading}
@@ -843,26 +844,26 @@ const ShiftReallocation = () => {
                                                             </option>
                                                         ))}
                                                     </select> */}
-                                                    <CustomSelect
-                                                        name="branch_id"
-                                                        value={filters.branch_id}
-                                                        onChange={(e) => handleFilterChange('branch_id', e.target.value)}
-                                                        disabled={dropdownLoading}
-                                                        options={branches.map(branch => ({
-                                                            value: branch.id,
-                                                            label: branch.name,
-                                                        }))}
-                                                        placeholder="All Branches"
-                                                        searchable={true}
-                                                    />
-                                                </div>
+                                                        <CustomSelect
+                                                            name="branch_id"
+                                                            value={filters.branch_id}
+                                                            onChange={(e) => handleFilterChange('branch_id', e.target.value)}
+                                                            disabled={dropdownLoading}
+                                                            options={branches.map(branch => ({
+                                                                value: branch.id,
+                                                                label: branch.name,
+                                                            }))}
+                                                            placeholder="All Branches"
+                                                            searchable={true}
+                                                        />
+                                                    </div>
 
-                                                <div>
-                                                    <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
-                                                        <Users className="w-4 h-4 inline mr-1" />
-                                                        Department
-                                                    </label>
-                                                    {/* <select
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                            <Users className="w-4 h-4 inline mr-1" />
+                                                            Department
+                                                        </label>
+                                                        {/* <select
                                                         value={filters.department_id}
                                                         onChange={(e) => handleFilterChange('department_id', e.target.value)}
                                                         disabled={dropdownLoading}
@@ -875,139 +876,142 @@ const ShiftReallocation = () => {
                                                             </option>
                                                         ))}
                                                     </select> */}
-                                                    <CustomSelect
-                                                        name="department_id"
-                                                        value={filters.department_id}
-                                                        onChange={(e) => handleFilterChange('department_id', e.target.value)}
-                                                        disabled={dropdownLoading}
-                                                        options={departments.map(dept => ({
-                                                            value: dept.id,
-                                                            label: dept.name,
-                                                        }))}
-                                                        placeholder="All Departments"
-                                                        searchable={true}
-                                                    />
-                                                </div>
+                                                        <CustomSelect
+                                                            name="department_id"
+                                                            value={filters.department_id}
+                                                            onChange={(e) => handleFilterChange('department_id', e.target.value)}
+                                                            disabled={dropdownLoading}
+                                                            options={departments.map(dept => ({
+                                                                value: dept.id,
+                                                                label: dept.name,
+                                                            }))}
+                                                            placeholder="All Departments"
+                                                            searchable={true}
+                                                        />
+                                                    </div>
 
-                                                <div>
-                                                    <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
-                                                        Search Employee
-                                                    </label>
-                                                    {/* <input
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                            Search Employee
+                                                        </label>
+                                                        {/* <input
                                                         type="text"
                                                         placeholder="Name..."
                                                         value={searchTerm}
                                                         onChange={(e) => setSearchTerm(e.target.value)}
                                                         className="w-full px-3 py-2 border border-[var(--color-border-secondary)] rounded-md focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)]"
                                                     /> */}
-                                                    <CustomInput
-                                                        type="text"
-                                                        name="search"
-                                                        placeholder="Name..."
-                                                        value={searchTerm}
-                                                        onChange={(e) => setSearchTerm(e.target.value)}
-                                                    />
+                                                        <CustomInput
+                                                            type="text"
+                                                            name="search"
+                                                            placeholder="Name..."
+                                                            value={searchTerm}
+                                                            onChange={(e) => setSearchTerm(e.target.value)}
+                                                        />
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                )}
+                                    )}
 
-                                {/* Employee Selection */}
-                                {sourceShift && (
-                                    <div className="bg-[var(--color-bg-secondary)] rounded-lg shadow-sm border border-[var(--color-primary-dark)]">
-                                        <div className="px-6 py-4 border-b border-[var(--color-primary-light)] bg-[var(--color-primary-dark)]">
-                                            <div className="flex items-center justify-between">
-                                                <h2 className="text-lg font-semibold text-[var(--color-text-white)] flex items-center gap-2">
-                                                    <Users className="w-5 h-5" />
-                                                    Select Employees ({eligibleEmployees.length} available)
-                                                </h2>
-                                                <div className="flex gap-2">
-                                                    <button
-                                                        type="button"
-                                                        onClick={selectAllFiltered}
-                                                        disabled={eligibleEmployees.length === 0}
-                                                        className="px-3 py-1.5 text-sm border border-[var(--color-text-white)] text-[var(--color-text-white)] rounded-md hover:bg-[var(--color-bg-secondary-20)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                                                    >
-                                                        Select All
-                                                    </button>
-                                                    {selectedEmployees.length > 0 && (
+                                    {/* Employee Selection */}
+                                    {sourceShift && (
+                                        <div className="bg-[var(--color-bg-secondary)] rounded-[5px] shadow-sm border border-[var(--color-primary-dark)]">
+                                            <div className="px-6 py-4 border-b border-[var(--color-primary-light)] bg-[var(--color-primary-dark)]">
+                                                <div className="flex items-center justify-between">
+                                                    <h2 className="text-lg font-semibold text-[var(--color-text-white)] flex items-center gap-2">
+                                                        <Users className="w-5 h-5" />
+                                                        Select Employees ({eligibleEmployees.length} available)
+                                                    </h2>
+                                                    <div className="flex gap-2">
                                                         <button
                                                             type="button"
-                                                            onClick={clearAllSelected}
-                                                            className="px-3 py-1.5 text-sm border border-[var(--color-text-white)] text-[var(--color-text-white)] rounded-md hover:bg-[var(--color-bg-secondary-20)] transition-colors"
+                                                            onClick={selectAllFiltered}
+                                                            disabled={eligibleEmployees.length === 0}
+                                                            className="px-3 py-1.5 text-sm border border-[var(--color-text-white)] text-[var(--color-text-white)] rounded-md hover:bg-[var(--color-bg-secondary-20)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                                                         >
-                                                            Clear All
+                                                            Select All
                                                         </button>
-                                                    )}
+                                                        {selectedEmployees.length > 0 && (
+                                                            <button
+                                                                type="button"
+                                                                onClick={clearAllSelected}
+                                                                className="px-3 py-1.5 text-sm border border-[var(--color-text-white)] text-[var(--color-text-white)] rounded-md hover:bg-[var(--color-bg-secondary-20)] transition-colors"
+                                                            >
+                                                                Clear All
+                                                            </button>
+                                                        )}
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div className="p-8">
-                                            {employeesLoading ? (
-                                                <div className="text-center py-8">
-                                                    <div className="inline-flex items-center space-x-2 text-[var(--color-text-secondary)]">
-                                                        <RefreshCw className="w-5 h-5 animate-spin" />
-                                                        <span>Loading employees...</span>
-                                                    </div>
-                                                </div>
-                                            ) : eligibleEmployees.length > 0 ? (
-                                                <>
-                                                    <div className="max-h-96 overflow-y-auto space-y-2 mb-4">
-                                                        {eligibleEmployees.map((emp) => (
-                                                            <label
-                                                                key={emp.employee_id}
-                                                                className="flex items-center gap-3 p-3 hover:bg-[var(--color-bg-primary)] rounded-md cursor-pointer border border-[var(--color-border-secondary)]"
-                                                            >
-                                                                <input
-                                                                    type="checkbox"
-                                                                    checked={selectedEmployees.includes(emp.employee_id)}
-                                                                    onChange={() => toggleEmployee(emp.employee_id)}
-                                                                    className="w-4 h-4 rounded border-[var(--color-border-secondary)] text-[var(--color-primary-dark)] focus:ring-[var(--color-primary-dark)]"
-                                                                />
-                                                                <div className="flex-1">
-                                                                    <div className="font-medium text-[var(--color-text-primary)]">{emp.full_name}</div>
-                                                                </div>
-                                                            </label>
-                                                        ))}
-                                                    </div>
-
-                                                    {selectedEmployeeObjects.length > 0 && (
-                                                        <div className="pt-4 border-t border-[var(--color-border-divider)]">
-                                                            <p className="text-sm font-medium text-[var(--color-text-secondary)] mb-2">
-                                                                Selected ({selectedEmployeeObjects.length}):
-                                                            </p>
-                                                            <div className="flex flex-wrap gap-2">
-                                                                {selectedEmployeeObjects.map((emp) => (
-                                                                    <span
-                                                                        key={emp.employee_id}
-                                                                        className="inline-flex items-center gap-2 px-3 py-1 bg-[var(--color-primary-lightest)] text-[var(--color-primary-dark)] rounded-full text-sm border border-[var(--color-primary-light)]"
-                                                                    >
-                                                                        {emp.full_name}
-                                                                        <button
-                                                                            type="button"
-                                                                            onClick={() => toggleEmployee(emp.employee_id)}
-                                                                            className="hover:text-[var(--color-primary-darkest)]"
-                                                                        >
-                                                                            <X className="w-3 h-3" />
-                                                                        </button>
-                                                                    </span>
-                                                                ))}
-                                                            </div>
+                                            <div className="p-8">
+                                                {employeesLoading ? (
+                                                    <div className="text-center py-8">
+                                                        <div className="inline-flex items-center space-x-2 text-[var(--color-text-secondary)]">
+                                                            <RefreshCw className="w-5 h-5 animate-spin" />
+                                                            <span>Loading employees...</span>
                                                         </div>
-                                                    )}
-                                                </>
-                                            ) : (
-                                                <div className="text-center py-8 text-[var(--color-text-secondary)]">
-                                                    No employees found matching the filters
-                                                </div>
-                                            )}
+                                                    </div>
+                                                ) : eligibleEmployees.length > 0 ? (
+                                                    <>
+                                                        <div className="max-h-96 overflow-y-auto space-y-2 mb-4">
+                                                            {eligibleEmployees.map((emp) => (
+                                                                <label
+                                                                    key={emp.employee_id}
+                                                                    className="flex items-center gap-3 p-3 hover:bg-[var(--color-bg-primary)] rounded-md cursor-pointer border border-[var(--color-border-secondary)]"
+                                                                >
+                                                                    <input
+                                                                        type="checkbox"
+                                                                        checked={selectedEmployees.includes(emp.employee_id)}
+                                                                        onChange={() => toggleEmployee(emp.employee_id)}
+                                                                        className="w-4 h-4 rounded border-[var(--color-border-secondary)] text-[var(--color-primary-dark)] focus:ring-[var(--color-primary-dark)]"
+                                                                    />
+                                                                    <div className="flex-1">
+                                                                        <div className="font-medium text-[var(--color-text-primary)]">{emp.full_name}</div>
+                                                                    </div>
+                                                                </label>
+                                                            ))}
+                                                        </div>
+
+                                                        {selectedEmployeeObjects.length > 0 && (
+                                                            <div className="pt-4 border-t border-[var(--color-border-divider)]">
+                                                                <p className="text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                                    Selected ({selectedEmployeeObjects.length}):
+                                                                </p>
+                                                                <div className="flex flex-wrap gap-2">
+                                                                    {selectedEmployeeObjects.map((emp) => (
+                                                                        <span
+                                                                            key={emp.employee_id}
+                                                                            className="inline-flex items-center gap-2 px-3 py-1 bg-[var(--color-primary-lightest)] text-[var(--color-primary-dark)] rounded-full text-sm border border-[var(--color-primary-light)]"
+                                                                        >
+                                                                            {emp.full_name}
+                                                                            <button
+                                                                                type="button"
+                                                                                onClick={() => toggleEmployee(emp.employee_id)}
+                                                                                className="hover:text-[var(--color-primary-darkest)]"
+                                                                            >
+                                                                                <X className="w-3 h-3" />
+                                                                            </button>
+                                                                        </span>
+                                                                    ))}
+                                                                </div>
+                                                            </div>
+                                                        )}
+                                                    </>
+                                                ) : (
+                                                    <div className="text-center py-8 text-[var(--color-text-secondary)]">
+                                                        No employees found matching the filters
+                                                    </div>
+                                                )}
+                                            </div>
                                         </div>
-                                    </div>
-                                )}
+                                    )}
+
+                                </div>
 
                                 {/* Actions */}
-                                <div className="bg-[var(--color-bg-secondary)] rounded-lg shadow-sm border border-[var(--color-primary-dark)] p-8">
+
+                                <div className="flex-shrink-0 bg-[var(--color-bg-secondary)] rounded-lg shadow-sm pt-4 mt-4">
                                     <div className="flex items-center justify-end gap-4">
                                         <button
                                             type="button"

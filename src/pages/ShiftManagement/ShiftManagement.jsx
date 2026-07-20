@@ -506,20 +506,22 @@ const ShiftManagement = () => {
                                     </div>
                                 </div>
                             ) : shifts.length === 0 ? (
-                                <NoDataFound
-                                    title="No Shifts Found"
-                                    subtitle={searchQuery ? 'No shifts match your search criteria.' : 'You haven\'t created any shifts yet. Create your first shift to get started with shift management.'}
-                                >
-                                    {permissions['shift_create'] && !searchQuery && (
-                                        <button
-                                            onClick={handleCreateShift}
-                                            className="inline-flex items-center space-x-2 bg-[var(--color-primary-dark)] text-[var(--color-text-white)] px-4 py-2 rounded-md hover:bg-[var(--color-primary-darker)] transition-colors"
-                                        >
-                                            <Plus className="w-4 h-4" />
-                                            <span>Create First Shift</span>
-                                        </button>
-                                    )}
-                                </NoDataFound>
+                                <div className="flex-1 flex items-center justify-center bg-[#FBF9FD] h-[calc(86vh-72px)]">
+                                    <NoDataFound
+                                        title="No Shifts Found"
+                                        subtitle={searchQuery ? 'No shifts match your search criteria.' : 'You haven\'t created any shifts yet. Create your first shift to get started with shift management.'}
+                                    >
+                                        {permissions['shift_create'] && !searchQuery && (
+                                            <button
+                                                onClick={handleCreateShift}
+                                                className="inline-flex items-center space-x-2 bg-[var(--color-primary-dark)] text-[var(--color-text-white)] px-4 py-2 rounded-md hover:bg-[var(--color-primary-darker)] transition-colors"
+                                            >
+                                                <Plus className="w-4 h-4" />
+                                                <span>Create First Shift</span>
+                                            </button>
+                                        )}
+                                    </NoDataFound>
+                                </div>
                             ) : (
                                 <div className="overflow-x-auto">
                                     <Table className="min-w-full divide-y divide-[var(--color-border-divider)]">
@@ -547,8 +549,8 @@ const ShiftManagement = () => {
                                         <TableBody className="bg-[var(--color-bg-secondary)] divide-y divide-[var(--color-border-divider)]">
                                             {/* Actual shift rows */}
                                             {shifts.map((shift) => (
-                                                <TableRow key={shift.shift_id} className="hover:bg-[var(--color-bg-primary)] transition-colors">
-                                                    <Td className="px-6 py-4 text-left whitespace-nowrap font-medium text-[var(--color-text-primary)]">
+                                                <TableRow key={shift.shift_id} className="border-b border-[var(--color-border-divider)] hover:bg-[var(--color-bg-primary)] transition-colors" >
+                                                    <Td className="px-6 py-4 text-left whitespace-nowrap font-medium text-[var(--color-text-primary)] border-b border-[var(--color-border-divider)]">
                                                         <div className="flex items-center space-x-2">
                                                             <div className="w-8 h-8 bg-[var(--color-primary-lighter)] rounded-full flex items-center justify-center">
                                                                 <Calendar className="w-4 h-4 text-[var(--color-primary-dark)]" />
@@ -556,7 +558,7 @@ const ShiftManagement = () => {
                                                             <span>{shift.shift_name}</span>
                                                         </div>
                                                     </Td>
-                                                    <Td className="px-6 py-4 text-left">
+                                                    <Td className="px-6 py-4 text-left border-b border-[var(--color-border-divider)]">
                                                         <div className="flex gap-3">
                                                             {shift.shift_days.map((day) => (
                                                                 <div key={day.day_id} className="relative group">
@@ -573,7 +575,7 @@ const ShiftManagement = () => {
                                                             ))}
                                                         </div>
                                                     </Td>
-                                                    <Td className="px-6 py-4 text-left whitespace-nowrap text-[var(--color-text-secondary)]">
+                                                    <Td className="px-6 py-4 text-left whitespace-nowrap text-[var(--color-text-secondary)] border-b border-[var(--color-border-divider)]">
                                                         <button
                                                             onClick={() => fetchAssignedEmployees(shift.shift_id, shift.shift_name)}
                                                             className="flex items-center gap-2 text-[var(--color-primary-dark)] hover:text-primary-800 transition-colors"
@@ -584,11 +586,11 @@ const ShiftManagement = () => {
                                                             <Users className="w-4 h-4" />
                                                         </button>
                                                     </Td>
-                                                    <Td className="px-6 py-4 text-left whitespace-nowrap text-[var(--color-text-secondary)]">
+                                                    <Td className="px-6 py-4 text-left whitespace-nowrap text-[var(--color-text-secondary)] border-b border-[var(--color-border-divider)]">
                                                         {shift.created_date}
                                                     </Td>
                                                     {(permissions?.shift_edit || permissions?.shift_delete) && (
-                                                        <Td className="px-6 py-4 text-left whitespace-nowrap font-medium">
+                                                        <Td className="px-6 py-4 text-left whitespace-nowrap font-medium border-b border-[var(--color-border-divider)]">
                                                             <div className="flex space-x-3">
                                                                 {permissions['shift_edit'] && (
                                                                     <button
@@ -616,7 +618,7 @@ const ShiftManagement = () => {
 
                                             {/* Empty rows to fill up to 10 rows */}
                                             {generateEmptyRows(shifts.length).map((_, index) => (
-                                                <TableRow key={`empty-${index}`} className="h-16">
+                                                <TableRow key={`empty-${index}`} className="h-16 border-b border-[var(--color-border-divider)]">
                                                     <Td className="px-6 py-4 text-left" colSpan={permissions?.shift_edit || permissions?.shift_delete ? 5 : 4}>
                                                         <div className="h-10">&nbsp;</div>
                                                     </Td>

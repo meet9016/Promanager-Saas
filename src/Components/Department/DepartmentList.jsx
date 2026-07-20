@@ -460,7 +460,7 @@ const DepartmentList = () => {
                             return (
                                 <div
                                     key={departmentId}
-                                    className={`border rounded-lg transition-all duration-200 overflow-hidden min-h-[65px] ${isOpen
+                                    className={`border rounded-lg transition-all duration-200 overflow-hidden min-h-[65px] flex flex-col justify-center ${isOpen
                                         ? "border-[var(--color-primary-dark)] shadow-md bg-[var(--color-bg-secondary)]"
                                         : "border-[var(--color-border-primary)] hover:border-primary-300 hover:shadow-sm bg-gradient-to-r from-primary-50/20 to-indigo-50/20 hover:from-primary-50/40 hover:to-indigo-50/40"
                                         }`}

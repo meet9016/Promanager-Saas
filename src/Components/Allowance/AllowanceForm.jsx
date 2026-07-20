@@ -45,8 +45,8 @@ const AllowanceForm = ({ onSubmit, loading = false, showToast }) => {
 
     return (
         <div className="bg-[var(--color-bg-secondary)] rounded-xl shadow-sm border border-[var(--color-primary-dark)] overflow-hidden">
-            <div className="p-8 bg-[var(--color-bg-secondary)]">
-                <div className="flex w-full flex-row items-center justify-between mb-4">
+            <div className="p-6 bg-[var(--color-bg-secondary)]">
+                <div className="flex w-full flex-row items-center justify-between ">
                     <div className="space-y-2" >
                         <label htmlFor="allowanceName" className=" text-sm font-medium text-[var(--color-text-secondary)] mb-2 ">
                             Add New Allowance <span className="text-[var(--color-error)]">*</span>
