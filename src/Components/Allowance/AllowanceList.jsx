@@ -104,10 +104,12 @@ const AllowanceList = () => {
                     )}
 
                     {!allowances || allowances.length === 0 ? (
-                        <NoDataFound
-                            title="No Allowances Found"
-                            subtitle="Get started by adding your first allowance using the form above."
-                        />
+                        <div className="bg-[#FBF9FD]">
+                            <NoDataFound
+                                title="No Allowances Found"
+                                subtitle="Get started by adding your first allowance using the form above."
+                            />
+                        </div>
                     ) : (
                         <div className="grid gap-4  max-h-[300px] md:max-h-[420px] xl:max-h-[520px] overflow-y-auto custom-scrollbar">
                             {allowances.map((allowance) => {

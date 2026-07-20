@@ -571,12 +571,8 @@ const ShiftReallocation = () => {
                         </div>
 
                         {historyLoading ? (
-                            <div className="px-6 py-0 text-center">
-                                <div className="inline-flex items-center space-x-2 text-[var(--color-text-secondary)]">
-                                    {/* <RefreshCw className="w-5 h-5 animate-spin" />
-                                    <span>Loading reallocation history...</span> */}
-                                    <LoadingSpinner />
-                                </div>
+                            <div className="overflow-hidden" style={{ height: 'calc(86vh - 73px)' }}>
+                                <LoadingSpinner />
                             </div>
 
 

@@ -661,7 +661,7 @@ export default function HolidayManagement() {
                                             })
                                         ) : (
                                             <TableRow>
-                                                <Td colSpan="6" className="py-4 text-center">
+                                                <Td colSpan="6" className="py-4 text-center bg-[#FBF9FD]">
                                                     <NoDataFound
                                                         title="No Holidays Found"
                                                         subtitle="Get started by adding your first holiday."

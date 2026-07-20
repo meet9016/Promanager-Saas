@@ -1097,7 +1097,7 @@ const DetailedDailyReport = () => {
                                 </div>
                             </div>
                         ) : (filteredData?.length || 0) === 0 ? (
-                            <div className="flex items-center justify-center p-8 bg-[var(--color-bg-secondary)] rounded-xl shadow-sm">
+                            <div className="flex items-center justify-center p-8 bg-[#FBF9FD] rounded-xl shadow-sm">
                                 <NoDataFound
                                     title="No records found"
                                     subtitle="Try adjusting your filters or select a different date."

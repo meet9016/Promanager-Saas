@@ -847,7 +847,7 @@ const MonthlySalaryReport = () => {
 
                 {/* No Data Message */}
                 {!reportData && !reportGenerating && !error && filters.month_year && (
-                    <div className="flex items-center justify-center p-12 bg-[var(--color-bg-secondary)] rounded-xl border border-[var(--color-border-primary)] shadow-sm">
+                    <div className="flex items-center justify-center p-12 bg-[#FBF9FD] rounded-xl border border-[var(--color-border-primary)] shadow-sm">
                         <NoDataFound
                             title="No Salary Data Found"
                             subtitle={`No salary data available for ${getMonthYearDisplay(filters.month_year)}. Try selecting a different month or check if payroll has been processed.`}
@@ -857,7 +857,7 @@ const MonthlySalaryReport = () => {
 
                 {/* Initial Message */}
                 {!reportData && !reportGenerating && !error && !filters.month_year && (
-                    <div className="flex items-center justify-center p-12 bg-[var(--color-bg-secondary)] rounded-xl border border-[var(--color-border-primary)] shadow-sm">
+                    <div className="flex items-center justify-center p-12 bg-[#FBF9FD] rounded-xl border border-[var(--color-border-primary)] shadow-sm">
                         <NoDataFound
                             title="Select Month to Generate Report"
                             subtitle="Choose a month above and click 'Generate Report'."

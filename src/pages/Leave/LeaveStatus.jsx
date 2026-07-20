@@ -778,7 +778,7 @@ const LeaveManagement = () => {
                             </div>
                         </div>
                     ) : leaveRequests.length === 0 ? (
-                        <div className="flex items-center justify-center h-[65vh]">
+                        <div className="bg-[#FBF9FD] flex items-center justify-center h-[65vh]">
                             <NoDataFound
                                 title={`No ${STATUS_CONFIG[selectedStatus]?.name} Leave Requests`}
                                 subtitle={`There are no leave requests with ${STATUS_CONFIG[selectedStatus]?.name.toLowerCase()} status.`}

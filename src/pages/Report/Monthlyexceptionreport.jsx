@@ -1209,7 +1209,7 @@ const MonthlyExceptionReport = () => {
                                         </div>
                                     </div>
                                 ) : activeData.length === 0 ? (
-                                    <div className="flex items-center justify-center p-8 bg-[var(--color-bg-secondary)] rounded-xl  shadow-sm">
+                                    <div className="flex items-center justify-center p-8 bg-[#FBF9FD] rounded-xl  shadow-sm">
                                         <NoDataFound
                                             title={activeTab === 'all_employees' ? 'No employees found' : `No ${currentTab?.label} exceptions found`}
                                             subtitle={searchQuery ? 'Try a different search term' : `No exceptions for ${formatMonthYear(monthYear)}`}

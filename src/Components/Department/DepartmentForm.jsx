@@ -251,7 +251,12 @@ const DepartmentForm = ({ onSubmit, loading = false, showToast }) => {
                             </span>
                         </div>
 
-                        <div className="px-5 py-4 grid grid-cols-[1fr_auto] gap-x-4 gap-y-3 items-center bg-[var(--color-bg-secondary)]">
+                        <div
+                            className="px-5 py-4 grid grid-cols-[1fr_auto] gap-x-4 gap-y-3 items-center bg-[var(--color-bg-secondary)] overflow-y-auto"
+                            style={{
+                                maxHeight: "450px",
+                            }}
+                        >
 
                             {/* ── Overtime ── */}
                             <SectionDivider label="Overtime" />

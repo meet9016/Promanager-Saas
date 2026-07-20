@@ -438,10 +438,12 @@ const DepartmentList = () => {
 
                 {/* Empty states */}
                 {totalDepartments === 0 ? (
-                    <NoDataFound
-                        title="No Departments Found"
-                        subtitle="Get started by adding your first department."
-                    />
+                    <div className="bg-[#FBF9FD]">
+                        <NoDataFound
+                            title="No Departments Found"
+                            subtitle="Get started by adding your first department."
+                        />
+                    </div>
                 ) : filteredCount === 0 ? (
                     <NoDataFound
                         title="No Departments Match Your Search"

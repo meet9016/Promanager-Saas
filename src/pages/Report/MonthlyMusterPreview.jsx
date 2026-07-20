@@ -868,7 +868,7 @@ const MonthlyMusterPreview = () => {
                     {/* Data Grid Container */}
                     <div ref={containerRef} className="overflow-auto" style={{ maxHeight: '65vh' }}>
                         {!hasGenerated && (
-                            <div className="flex items-center justify-center p-8 bg-[var(--color-bg-secondary)] rounded-xl border border-[var(--color-border-primary)] shadow-sm">
+                            <div className="flex items-center justify-center p-8 bg-[#FBF9FD] rounded-xl  shadow-sm">
                                 <NoDataFound
                                     title="Ready to Generate Report"
                                     subtitle="Select your filters and click 'Generate Report' to view muster data."
@@ -877,7 +877,7 @@ const MonthlyMusterPreview = () => {
                         )}
 
                         {hasGenerated && gridData.length === 0 && !loading && (
-                            <div className="flex items-center justify-center p-8 bg-[var(--color-bg-secondary)] rounded-xl border border-[var(--color-border-primary)] shadow-sm">
+                            <div className="flex items-center justify-center p-8 bg-[#FBF9FD] rounded-xl shadow-sm">
                                 <NoDataFound
                                     title="No attendance data found"
                                     subtitle="Try adjusting your filters or select a different month."

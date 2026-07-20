@@ -133,7 +133,7 @@ const DesignationList = () => {
                         />
                     }
                     {totalDesignations === 0 ? (
-                        <div className="min-h-[500px] flex items-center justify-center">
+                        <div className="min-h-[500px] flex items-center justify-center bg-[#FBF9FD]">
                             <NoDataFound
                                 title="No Designations Found"
                                 subtitle="Get started by adding your first designation using the form above."

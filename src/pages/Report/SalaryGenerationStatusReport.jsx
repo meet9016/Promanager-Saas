@@ -525,21 +525,21 @@ const SalaryGenerationStatusReport = () => {
 
                 {/* States */}
                 {!reportData && !loading && filters.month_year && (
-                     <div className="flex items-center justify-center p-12 bg-[var(--color-bg-secondary)] rounded-xl border border-[var(--color-border-primary)] shadow-sm">
-                         <NoDataFound
-                             title="No Data Found"
-                             subtitle={`No salary data for ${getMonthYearDisplay(filters.month_year)}.`}
-                         />
-                     </div>
-                 )}
-                 {!reportData && !loading && !filters.month_year && (
-                     <div className="flex items-center justify-center p-12 bg-[var(--color-bg-secondary)] rounded-xl border border-[var(--color-border-primary)] shadow-sm">
-                         <NoDataFound
-                             title="Select Month to Generate Report"
-                             subtitle="Choose a month above and click 'Generate Report'."
-                         />
-                     </div>
-                 )}
+                    <div className="flex items-center justify-center p-12 bg-[#FBF9FD] rounded-xl border border-[var(--color-border-primary)] shadow-sm">
+                        <NoDataFound
+                            title="No Data Found"
+                            subtitle={`No salary data for ${getMonthYearDisplay(filters.month_year)}.`}
+                        />
+                    </div>
+                )}
+                {!reportData && !loading && !filters.month_year && (
+                    <div className="flex items-center justify-center p-12 bg-[#FBF9FD] rounded-xl border border-[var(--color-border-primary)] shadow-sm">
+                        <NoDataFound
+                            title="Select Month to Generate Report"
+                            subtitle="Choose a month above and click 'Generate Report'."
+                        />
+                    </div>
+                )}
                 {loading && (
                     <div className="bg-[var(--color-bg-secondary)] rounded-xl shadow-sm border border-[var(--color-border-primary)] p-12 text-center">
                         <div className="flex flex-col items-center">

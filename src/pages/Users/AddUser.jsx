@@ -360,7 +360,7 @@ const AddUser = () => {
                         </div>
                     </div>
 
-                    <div className="bg-[var(--color-bg-secondary)] rounded-2xl border border-[var(--color-primary-light)] shadow-xl overflow-visible">
+                    <div className="bg-[var(--color-bg-secondary)] rounded-2xl border border-[var(--color-primary-light)] shadow-xl overflow-hidden">
                         <div className="px-6 py-4 border-b border-[var(--color-primary-light)] bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)]">
                             <div className="flex items-center gap-3">
                                 <UserPlus className="w-5 h-5 text-[var(--color-text-white)]" />

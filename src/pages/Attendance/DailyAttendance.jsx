@@ -1073,7 +1073,9 @@ const DailyAttendance = () => {
                   </div>
                 </div>
               ) : (filteredData?.length || 0) === 0 ? (
-                <NoDataFound title="No Attdance Records Found" subtitle="There are no attendance records for the selected date." imgSize="w-36 h-36" />
+                <div className='bg-[#FBF9FD]'>
+                  <NoDataFound title="No Attdance Records Found" subtitle="There are no attendance records for the selected date." imgSize="w-36 h-36" />
+                </div>
               ) : (
                 <>
                   {paginatedData.map((emp, idx) => (

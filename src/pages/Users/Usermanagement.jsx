@@ -275,7 +275,7 @@ const UserManagement = () => {
                                 </div>
                             </div>
                         ) : users.length === 0 ? (
-                            <div className="flex items-center justify-center h-[70vh]">
+                            <div className="flex items-center justify-center bg-[#FBF9FD] h-[70vh]">
                                 <NoDataFound
                                     title="No Users Found"
                                     subtitle={currentPage > 1

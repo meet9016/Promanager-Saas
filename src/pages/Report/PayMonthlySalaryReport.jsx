@@ -689,7 +689,7 @@ const PayMonthlySalaryReport = () => {
 
                 {/* States */}
                 {!reportData && !loading && filters.month_year && (
-                    <div className="flex items-center justify-center p-12 bg-[var(--color-bg-secondary)] rounded-xl border border-[var(--color-border-primary)] shadow-sm">
+                    <div className="flex items-center justify-center p-12 bg-[#FBF9FD] rounded-xl border border-[var(--color-border-primary)] shadow-sm">
                         <NoDataFound
                             title="No Paid Salary Data Found"
                             subtitle={`No salary payment records for ${getMonthYearDisplay(filters.month_year)}.`}
@@ -697,7 +697,7 @@ const PayMonthlySalaryReport = () => {
                     </div>
                 )}
                 {!reportData && !loading && !filters.month_year && (
-                    <div className="flex items-center justify-center p-12 bg-[var(--color-bg-secondary)] rounded-xl border border-[var(--color-border-primary)] shadow-sm">
+                    <div className="flex items-center justify-center p-12 bg-[#FBF9FD] rounded-xl border border-[var(--color-border-primary)] shadow-sm">
                         <NoDataFound
                             title="Select Month to Generate Report"
                             subtitle="Choose a month above and click 'Generate Report'."

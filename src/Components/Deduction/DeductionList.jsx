@@ -103,10 +103,12 @@ const DeductionList = () => {
                     )}
 
                     {!deductions || deductions.length === 0 ? (
-                        <NoDataFound
-                            title="No Deductions Found"
-                            subtitle="Get started by adding your first deduction using the form above."
-                        />
+                        <div className="bg-[#FBF9FD]">
+                            <NoDataFound
+                                title="No Deductions Found"
+                                subtitle="Get started by adding your first deduction using the form above."
+                            />
+                        </div>
                     ) : (
                         <div className="grid gap-4  max-h-[300px] md:max-h-[420px] xl:max-h-[540px] overflow-y-auto custom-scrollbar">
                             {deductions.map((deduction) => {

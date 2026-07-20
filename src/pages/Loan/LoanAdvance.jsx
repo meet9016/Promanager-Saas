@@ -636,7 +636,7 @@ const LoanAdvance = () => {
                                     />
 
                                 </div>
-                                
+
                                 <div className="relative w-full sm:w-44">
                                     <CustomSelect
                                         name="filter"
@@ -714,7 +714,7 @@ const LoanAdvance = () => {
                             </div>
                         </div>
                     ) : loans.length === 0 ? (
-                        <div className="flex items-center justify-center h-[65vh]">
+                        <div className="flex items-center justify-center h-[65vh] bg-[#FBF9FD]">
                             <NoDataFound
                                 title="No Loans Found"
                                 subtitle="You haven't added any loans or advances yet."

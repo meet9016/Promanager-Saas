@@ -281,7 +281,7 @@ export default function FinalizePayroll() {
   // Handle filters and search with debounce
   useEffect(() => {
     if (!isAuthenticated() || !user?.user_id) return;
-    
+
     const delayDebounce = setTimeout(() => {
       fetchSalaryRecords(1, searchQuery, true);
     }, 500);
@@ -669,7 +669,7 @@ export default function FinalizePayroll() {
               </div>
             </div>
           ) : salaryRecords.length === 0 ? (
-            <div className="flex items-center justify-center h-[65vh]">
+            <div className="flex items-center justify-center h-[65vh] bg-[#FBF9FD]">
               <NoDataFound
                 title="No Salary Records Found"
                 subtitle={searchQuery ? 'No records match your search criteria.' : 'No salary records have been generated yet.'}

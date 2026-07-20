@@ -807,7 +807,7 @@ const MonthlyReport = () => {
 
                     <div className="overflow-auto max-h-[70vh]">
                         {!hasGenerated && (
-                            <div className="flex items-center justify-center p-8 bg-[var(--color-bg-secondary)] rounded-xl  shadow-sm">
+                            <div className="flex items-center justify-center p-8 bg-[#FBF9FD] rounded-xl  shadow-sm">
                                 <NoDataFound
                                     title="Ready to Generate Report"
                                     subtitle="Select your filters and click 'Generate Report' to view attendance data."
@@ -816,7 +816,7 @@ const MonthlyReport = () => {
                         )}
 
                         {hasGenerated && reportData.length === 0 && !loading && (
-                            <div className="flex items-center justify-center p-8 bg-[var(--color-bg-secondary)] rounded-xl shadow-sm">
+                            <div className="flex items-center justify-center p-8 bg-[#FBF9FD] rounded-xl shadow-sm">
                                 <NoDataFound
                                     title="No attendance data found"
                                     subtitle="Try adjusting your filters or select a different month."

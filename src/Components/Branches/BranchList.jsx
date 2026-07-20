@@ -187,18 +187,21 @@ const BranchList = () => {
                         </div>
                     )}
 
+
                     {totalBranches === 0 ? (
-                        <NoDataFound
-                            title="No Branches Found"
-                            subtitle="Get started by adding your first branch."
-                        />
+                        <div className="bg-[#FBF9FD]">
+                            <NoDataFound
+                                title="No Branches Found"
+                                subtitle="Get started by adding your first branch."
+                            />
+                        </div>
                     ) : filteredCount === 0 ? (
                         <NoDataFound
                             title="No Branches Match Your Search"
                             subtitle="Try adjusting your search terms."
                         />
                     ) : (
-                      <div className="space-y-2 h-[460px] max-[1024px]:h-[250px] overflow-y-auto custom-scrollbar">
+                        <div className="space-y-2 h-[460px] max-[1024px]:h-[250px] overflow-y-auto custom-scrollbar">
                             {filteredBranches.map((branch) => {
                                 const branchId = branch.branch_id || branch.id;
                                 const isDeleting = deletingId === branchId;

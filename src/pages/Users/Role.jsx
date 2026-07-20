@@ -258,7 +258,7 @@ const Role = () => {
                                 </div>
                             </div>
                         ) : roles.length === 0 ? (
-                            <div className="flex items-center justify-center h-[70vh]">
+                            <div className="flex items-center bg-[#FBF9FD] justify-center h-[70vh]">
                                 <NoDataFound
                                     title="No Roles Found"
                                     subtitle="You haven't created any roles yet."
