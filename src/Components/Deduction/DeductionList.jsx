@@ -18,7 +18,7 @@ const DeductionList = () => {
     const [toast, setToast] = useState(null);
 
     const permissions = useSelector(state => state.permissions) || {};
-    const { deductions, loading, addDeduction, deleteDeduction } = useDeductions();
+    const { deductions, loading, initialLoad, addDeduction, deleteDeduction } = useDeductions();
 
     const showToast = (message, type) => {
         setToast({ message, type });
@@ -69,7 +69,7 @@ const DeductionList = () => {
         }
     };
 
-    if (loading) {
+    if (initialLoad) {
         return (
             <div>
                 <LoadingSpinner />
@@ -93,7 +93,7 @@ const DeductionList = () => {
                     </div>
                 </div>
 
-                <div className="p-8 bg-[var(--color-bg-secondary)] flex flex-col gap-4">
+                <div className="p-8 bg-[#FBF9FD] flex flex-col h-full gap-4">
                     {permissions['deduction_create'] && (
                         <DeductionForm
                             onSubmit={handleAddDeduction}
@@ -103,7 +103,7 @@ const DeductionList = () => {
                     )}
 
                     {!deductions || deductions.length === 0 ? (
-                        <div className="bg-[#FBF9FD]">
+                        <div className="flex-1 flex items-center justify-center bg-[#FBF9FD] min-h-0">
                             <NoDataFound
                                 title="No Deductions Found"
                                 subtitle="Get started by adding your first deduction using the form above."

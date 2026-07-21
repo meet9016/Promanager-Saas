@@ -94,7 +94,7 @@ const AllowanceList = () => {
                     </div>
                 </div>
 
-                <div className="p-8 bg-[var(--color-bg-secondary)] flex flex-col gap-4">
+                <div className="p-8 bg-[#FBF9FD] flex flex-col gap-4 h-full">
                     {permissions['allowance_create'] && (
                         <AllowanceForm
                             onSubmit={handleAddAllowance}
@@ -104,7 +104,7 @@ const AllowanceList = () => {
                     )}
 
                     {!allowances || allowances.length === 0 ? (
-                        <div className="bg-[#FBF9FD]">
+                        <div className="flex-1 flex items-center justify-center bg-[#FBF9FD]">
                             <NoDataFound
                                 title="No Allowances Found"
                                 subtitle="Get started by adding your first allowance using the form above."

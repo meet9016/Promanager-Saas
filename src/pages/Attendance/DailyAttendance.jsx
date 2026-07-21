@@ -695,11 +695,11 @@ const EditAttendanceModal = ({ employee, onClose, onSave }) => {
                 )}
               </div>
             ))}
-
-            {clockEntries.length === 0 && (
-              <p className="text-center text-gray-500 py-4 text-xs sm:text-sm">No entries yet. Click "Add Entry" to start.</p>
-            )}
           </div>
+
+          {clockEntries.length === 0 && (
+            <p className="text-center text-gray-500 py-4 text-xs sm:text-sm">No entries yet. Click "Add Entry" to start.</p>
+          )}
         </div>
 
         {/* Footer */}
@@ -714,6 +714,7 @@ const EditAttendanceModal = ({ employee, onClose, onSave }) => {
           </button>
         </div>
       </div>
+
       {toast && <Toast message={toast.message} type={toast.type} onClose={closeToast} />}
     </div>,
     document.body
@@ -737,6 +738,7 @@ const DailyAttendance = () => {
   });
 
   const [loading, setLoading] = useState(true);
+  const [initialLoad, setInitialLoad] = useState(true);
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [toast, setToast] = useState(null);
@@ -838,6 +840,7 @@ const DailyAttendance = () => {
         showToast(msg, 'error');
       } finally {
         setLoading(false);
+        setInitialLoad(false);
       }
     },
     [user?.user_id]
@@ -939,7 +942,7 @@ const DailyAttendance = () => {
     setActiveFilter((prev) => (prev === filterKey && filterKey !== 'total') ? 'total' : filterKey);
   };
 
-  if (loading && attendanceData.length === 0) {
+  if (initialLoad) {
     return <LoadingSpinner />;
   }
 
@@ -1065,19 +1068,12 @@ const DailyAttendance = () => {
           {/* Mobile Card View */}
           {isMobile ? (
             <div className="p-3">
-              {loading ? (
-                <div className="p-8 text-center text-[var(--color-text-secondary)]">
-                  <div className="flex items-center justify-center">
-                    <Loader2 className="h-6 w-6 animate-spin mr-2" />
-                    <span className="text-sm">Loading...</span>
-                  </div>
-                </div>
-              ) : (filteredData?.length || 0) === 0 ? (
+              {(filteredData?.length || 0) === 0 && !loading ? (
                 <div className='bg-[#FBF9FD]'>
                   <NoDataFound title="No Attdance Records Found" subtitle="There are no attendance records for the selected date." imgSize="w-36 h-36" />
                 </div>
               ) : (
-                <>
+                <div className={`transition-opacity duration-200 ${loading ? 'opacity-50 pointer-events-none' : 'opacity-100'}`}>
                   {paginatedData.map((emp, idx) => (
                     <MobileAttendanceCard
                       key={emp.employee_code || idx}
@@ -1093,28 +1089,22 @@ const DailyAttendance = () => {
                     onPageChange={setCurrentPage}
                     loading={loading}
                   />
-                </>
+                </div>
               )}
             </div>
           ) : (
             /* Desktop Table View */
-            <div className="overflow-x-auto   min-h-[65vh]">
-              {loading ? (
-                <div className="p-8 text-center text-[var(--color-text-secondary)]">
-                  <div className="flex items-center justify-center">
-                    <Loader2 className="h-8 w-8 animate-spin mr-3" />
-                    <span>Loading...</span>
-                  </div>
-                </div>
-              ) : (filteredData?.length || 0) === 0 ? (
+            <div className="overflow-x-auto min-h-[65vh]">
+              {(filteredData?.length || 0) === 0 && !loading ? (
                 <div className="h-[70vh] flex items-center justify-center bg-[#FBF9FD]">
                   <NoDataFound
+
                     title="No Attendance Records Found"
                     subtitle="There are no attendance records for the selected date."
                   />
                 </div>
               ) : (
-                <>
+                <div className={`transition-opacity duration-200 ${loading ? 'opacity-50 pointer-events-none' : 'opacity-100'}`}>
                   <Table className="min-w-[1200px]" wrapperClassName="h-[45vh] xl:h-[70vh] overflow-y-auto custom-scrollbar" >
                     <TableHeader>
                       <TableHeaderRow>
@@ -1284,7 +1274,7 @@ const DailyAttendance = () => {
                     onPageChange={setCurrentPage}
                     loading={loading}
                   />
-                </>
+                </div>
               )}
             </div>
           )}

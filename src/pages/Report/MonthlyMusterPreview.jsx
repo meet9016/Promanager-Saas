@@ -796,7 +796,7 @@ const MonthlyMusterPreview = () => {
                             <button
                                 onClick={handleGenerateReport}
                                 disabled={loading || !filters.month_year}
-                                className={`flex items-center justify-center gap-2 px-6 py-2 rounded-lg font-medium transition-colors duration-200 ${loading || !filters.month_year
+                                className={`w-full md:w-full flex items-center justify-center gap-2 px-6 py-2 rounded-lg font-medium transition-colors duration-200 ${loading || !filters.month_year
                                     ? 'bg-[var(--color-bg-gray-light)] text-[var(--color-text-muted)] cursor-not-allowed'
                                     : 'bg-[var(--color-primary)] text-[var(--color-text-white)] hover:bg-[var(--color-primary-dark)] shadow-lg hover:shadow-xl'
                                     }`}
@@ -859,11 +859,11 @@ const MonthlyMusterPreview = () => {
                     </div>
 
                     {/* Loading indicator (thin bar) */}
-                    {loading && (
-                        <div className="h-0.5 bg-slate-100">
-                            <div className="h-full bg-gradient-to-r from-violet-400 to-blue-400 animate-pulse w-2/3 rounded-full" />
-                        </div>
-                    )}
+                    <div className="h-0.5 w-full bg-transparent">
+                        {loading && (
+                            <div className="h-full bg-[var(--color-primary)] animate-pulse w-full rounded-full" />
+                        )}
+                    </div>
 
                     {/* Data Grid Container */}
                     <div ref={containerRef} className="overflow-auto" style={{ maxHeight: '65vh' }}>

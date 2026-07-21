@@ -5,6 +5,7 @@ import useUserId from "./useUserId";
 const useDesignations = () => {
     const [designations, setDesignations] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [initialLoad, setInitialLoad] = useState(true);
     const [error, setError] = useState(null);
     const user_id = useUserId();
 
@@ -31,6 +32,7 @@ const useDesignations = () => {
             setDesignations([]);
         } finally {
             setLoading(false);
+            setInitialLoad(false);
         }
     };
 
@@ -124,6 +126,7 @@ const useDesignations = () => {
     return {
         designations,
         loading,
+        initialLoad,
         error,
         addDesignation,
         deleteDesignation,

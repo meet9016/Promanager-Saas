@@ -1061,7 +1061,7 @@ const AttendanceExceptionReport = () => {
                                 </div>
                             </div>
                         ) : activeData.length === 0 ? (
-                            <div className="flex items-center justify-center p-8 bg-[#FBF9FD] rounded-xl shadow-sm">
+                            <div className="flex-1 flex items-center justify-center bg-[#FBF9FD] rounded-xl shadow-sm min-h-[500px]">
                                 <NoDataFound
                                     title={activeTab === 'all_employees' ? 'No employees found' : `No ${currentTab?.label} exceptions found`}
                                     subtitle={searchQuery ? 'Try a different search term' : `No data for ${formatDate(selectedDate)}`}

@@ -291,7 +291,7 @@ const DepartmentList = () => {
     const [deletingId, setDeletingId] = useState(null);
 
     const permissions = useSelector((state) => state.permissions) || {};
-    const { departments, loading, addDepartment, updateDepartment, deleteDepartment } = useDepartments();
+    const { departments, loading, initialLoad, addDepartment, updateDepartment, deleteDepartment } = useDepartments();
 
 
     const [toast, setToast] = useState(null);
@@ -386,7 +386,7 @@ const DepartmentList = () => {
         );
     }, [departments, searchTerm]);
 
-    if (loading) return <div><LoadingSpinner /></div>;
+    if (initialLoad) return <div><LoadingSpinner /></div>;
 
     const totalDepartments = departments?.length ?? 0;
     const filteredCount = filteredDepartments.length;
@@ -408,7 +408,7 @@ const DepartmentList = () => {
                 </div>
             </div>
 
-            <div className="p-8 bg-[var(--color-bg-secondary)] flex flex-col gap-4  ">
+            <div className="p-8 bg-[#FBF9FD] flex flex-col gap-4  h-full ">
                 {/* Add Form */}
                 {permissions['department_create'] && (
                     <DepartmentForm onSubmit={handleAddDepartment} loading={loading} showToast={showToast} />
@@ -438,7 +438,7 @@ const DepartmentList = () => {
 
                 {/* Empty states */}
                 {totalDepartments === 0 ? (
-                    <div className="bg-[#FBF9FD]">
+                    <div className="flex-1 flex items-center justify-center bg-[#FBF9FD]">
                         <NoDataFound
                             title="No Departments Found"
                             subtitle="Get started by adding your first department."

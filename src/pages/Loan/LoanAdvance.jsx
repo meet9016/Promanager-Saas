@@ -584,7 +584,7 @@ const LoanAdvance = () => {
                     </div>
                 </div> */}
 
-                <div className="bg-[var(--color-bg-secondary)] h-[87vh] rounded-lg border border-[var(--color-primary-dark)] overflow-visible shadow-sm">
+                <div className="bg-[var(--color-bg-secondary)] h-[87vh] rounded-lg border border-[var(--color-primary-dark)] overflow-visible shadow-sm flex flex-col">
                     <div className="px-6 py-3 border-b border-[var(--color-primary-light)] bg-[var(--color-primary-lighter)]">
                         <div className="flex justify-between items-center overflow-visible">
                             <div className="flex items-center">
@@ -714,7 +714,7 @@ const LoanAdvance = () => {
                             </div>
                         </div>
                     ) : loans.length === 0 ? (
-                        <div className="flex items-center justify-center h-[65vh] bg-[#FBF9FD]">
+                        <div className="flex-1 min-h-0 flex items-center justify-center bg-[#FBF9FD]">
                             <NoDataFound
                                 title="No Loans Found"
                                 subtitle="You haven't added any loans or advances yet."
@@ -731,7 +731,7 @@ const LoanAdvance = () => {
                             </NoDataFound>
                         </div>
                     ) : sortedLoans.length === 0 ? (
-                        <div className="flex items-center justify-center h-[65vh]">
+                        <div className="flex-1 min-h-0 flex items-center justify-center bg-[#FBF9FD]">
                             <NoDataFound
                                 title="No Loans Match Your Search"
                                 subtitle="Try adjusting your search or filter criteria."

@@ -208,7 +208,7 @@ const UserManagement = () => {
     return (
         <>
             <div className="h-[calc(100vh-64px)] overflow-hidden bg-[var(--color-bg-primary)]  ">
-                <div className="p-8  mx-auto">
+                <div className="p-8 mx-auto h-full flex flex-col">
                     {/* <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-xl mb-8 overflow-hidden">
                         <div className="bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] p-8">
                             <div className="flex items-center justify-between">
@@ -243,8 +243,8 @@ const UserManagement = () => {
                         </div>
                     </div> */}
 
-                    <div className="bg-[var(--color-bg-secondary)]  h-[70vh] md:h-[75vh] lg:h-[84vh] xl:h-[87vh]  rounded-lg border border-[var(--color-primary-dark)] overflow-hidden shadow-sm">
-                        <div className="px-6 py-4 border-b border-[var(--color-primary-light)] bg-[var(--color-primary-lighter)] flex items-center justify-between">
+                    <div className="bg-[var(--color-bg-secondary)] flex-1 rounded-lg border border-[var(--color-primary-dark)] overflow-hidden shadow-sm flex flex-col">
+                        <div className="h-20 px-6 border-b border-[var(--color-primary-light)] bg-[var(--color-primary-lighter)] flex items-center justify-between shrink-0">
                             <h3 className="text-lg font-medium text-[var(--color-primary-darker)]">
                                 All Users
                             </h3>
@@ -275,7 +275,7 @@ const UserManagement = () => {
                                 </div>
                             </div>
                         ) : users.length === 0 ? (
-                            <div className="flex items-center justify-center bg-[#FBF9FD] h-[70vh]">
+                            <div className="flex flex-1 items-center justify-center bg-[#FBF9FD]">
                                 <NoDataFound
                                     title="No Users Found"
                                     subtitle={currentPage > 1
@@ -296,7 +296,7 @@ const UserManagement = () => {
                             </div>
                         ) : (
                             <>
-                                <div className="overflow-x-auto">
+                                <div className="flex-1 overflow-x-auto">
                                     <Table className="min-w-full divide-y divide-[var(--color-border-divider)]">
                                         <TableHeader className="bg-[var(--color-primary-dark)]">
                                             <TableHeaderRow>

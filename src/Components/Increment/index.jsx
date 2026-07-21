@@ -10,6 +10,7 @@ import { useAuth } from "../../context/AuthContext";
 import api from "../../api/axiosInstance";
 import CustomSelect from "../comman/CustomSelect";
 import CustomDatePicker from '../comman/CustomDatePicker';
+import NoDataFound from '../comman/NoDataFound';
 
 const Increment = () => {
 
@@ -275,107 +276,109 @@ const Increment = () => {
 
 
     return (
-        <div className="min-h-full bg-[var(--color-bg-primary)]">
-            <div className="mx-auto">
+        <>
+            <div className="bg-[var(--color-bg-secondary)] h-[86vh] rounded-xl shadow-sm border border-[var(--color-primary-dark)] overflow-hidden flex flex-col">
+                <div className="relative shrink-0">
+                    <div className="bg-[var(--color-primary-dark)] px-6 py-4">
+                        <div className="flex items-center space-x-3">
+                            <div className="p-2 bg-[var(--color-bg-secondary-20)] rounded-lg">
+                                <IndianRupee className="w-5 h-5 text-[var(--color-text-white)]" />
+                            </div>
+                            <h3 className="text-lg font-semibold text-[var(--color-text-white)]">
+                                Increments
+                            </h3>
+                        </div>
+                    </div>
+                </div>
 
+                <div className="p-8 bg-[#FBF9FD] flex-1 flex flex-col gap-4 overflow-hidden">
+                    <div className="flex w-full flex-col md:flex-row items-start md:items-end justify-between gap-4 mb-4 shrink-0 rounded-xl shadow-sm border border-[var(--color-primary-dark)] p-8">
+                        <div className="space-y-2 w-full md:w-auto" >
+                            <label htmlFor="allowanceName" className=" text-sm font-medium text-[var(--color-text-secondary)] mb-2 ">
+                                Select Employee <span className="text-[var(--color-error)]">*</span>
+                            </label>
 
-                {/* Main Content */}
-                <div className="space-y-4 md:space-y-8">
-                    <div className="bg-[var(--color-bg-secondary)] min-h-[calc(100vh-120px)] flex flex-col rounded-xl shadow-sm border border-[var(--color-primary-dark)] w-full relative">
-                        <div className="relative shrink-0">
-                            <div className="bg-[var(--color-primary-dark)] px-4 sm:px-6 py-4 rounded-t-xl">
-                                <div className="flex items-center space-x-3">
-                                    <div className="p-2 bg-[var(--color-bg-secondary-20)] rounded-lg">
-                                        <IndianRupee className="w-5 h-5 text-[var(--color-text-white)]" />
-                                    </div>
-                                    <h3 className="text-lg font-semibold text-[var(--color-text-white)]">
-                                        Increments
-                                    </h3>
-                                </div>
+                            <div className="w-full md:w-[350px] lg:w-[500px] relative z-50">
+                                <CustomSelect
+                                    name="employmentType"
+                                    value={employeeId}
+                                    onChange={(e) => setEmployeeId(e.target.value)}
+                                    options={dropdownOptions.map(option => ({
+                                        value: option.employee_id,
+                                        label: option.full_name,
+                                    }))}
+                                    placeholder="Select Employee"
+                                    required
+                                    searchable={true}
+
+                                />
                             </div>
                         </div>
 
-                        <div className="p-4 sm:p-6 lg:p-8 bg-[var(--color-bg-secondary)] flex-1 flex flex-col gap-4 rounded-b-xl">
-                            <div className="bg-[var(--color-bg-secondary)] rounded-xl shadow-sm border border-[var(--color-primary-dark)] flex-1 flex flex-col w-full relative">
-                                <div className="p-4 sm:p-6 lg:p-8 bg-[var(--color-bg-secondary)] flex flex-col flex-1 box-border rounded-xl">
-                                    <div className="flex w-full flex-col md:flex-row items-start md:items-end justify-between gap-4 mb-4 shrink-0">
-                                        <div className="space-y-2 w-full md:w-auto" >
-                                            <label htmlFor="allowanceName" className=" text-sm font-medium text-[var(--color-text-secondary)] mb-2 ">
-                                                Select Employee <span className="text-[var(--color-error)]">*</span>
-                                            </label>
+                        <button
+                            onClick={handleAddIncrement}
+                            className="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3 bg-[var(--color-primary-dark)] text-[var(--color-text-white)] font-medium rounded-lg hover:bg-[var(--color-primary-darker)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--color-primary)] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-sm hover:shadow-md"
+                        >
+                            <Plus className="w-4 h-4 mr-2" />
+                            Add Increment
 
-                                            <div className="w-full md:w-[350px] lg:w-[500px] relative z-50">
-                                                <CustomSelect
-                                                    name="employmentType"
-                                                    value={employeeId}
-                                                    onChange={(e) => setEmployeeId(e.target.value)}
-                                                    options={dropdownOptions.map(option => ({
-                                                        value: option.employee_id,
-                                                        label: option.full_name,
-                                                    }))}
-                                                    placeholder="Select Employee"
-                                                    required
-                                                    searchable={true}
+                        </button>
+                    </div>
 
-                                                />
+
+                    <div className="flex-1 overflow-hidden flex flex-col min-h-0">
+                        {!employeeId ? (
+                            <div className="flex-1 flex items-center justify-center bg-[#FBF9FD]">
+                                <NoDataFound
+                                    title="No Employee Selected"
+                                    subtitle="Please select an employee to view or add increments."
+                                />
+                            </div>
+                        ) : (
+                            <div className="flex-1 overflow-y-auto custom-scrollbar pr-2">
+                                {incrementList && incrementList.map((item, index) => {
+                                    return (
+
+                                        <div key={index} className="border border-[var(--color-border-primary)] my-4 rounded-lg p-4 bg-[var(--color-bg-card)]">
+                                            <div className="flex items-center justify-between mb-4">
+                                                <h4 className="text-sm font-semibold text-[var(--color-text-secondary)]">
+                                                    Increment
+                                                </h4>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => removeIncrement(index)}
+                                                    className="w-9 h-9 flex items-center justify-center rounded-xl bg-red-50 text-red-500 hover:bg-red-100 hover:scale-110 hover:shadow-md transition-all duration-200 disabled:opacity-50"
+                                                    title="Remove this allowance"
+                                                >
+                                                    <Trash2 className="w-4 h-4" strokeWidth={2.5} />
+                                                </button>
+
                                             </div>
-                                        </div>
 
-                                        <button
-                                            onClick={handleAddIncrement}
-                                            className="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3 bg-[var(--color-primary-dark)] text-[var(--color-text-white)] font-medium rounded-lg hover:bg-[var(--color-primary-darker)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--color-primary)] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-sm hover:shadow-md"
-                                        >
-                                            <Plus className="w-4 h-4 mr-2" />
-                                            Add Increment
+                                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                                                <div className="space-y-2">
+                                                    <label className="block text-sm font-medium text-[var(--color-text-secondary)]">
+                                                        Salary <span className="text-[var(--color-error)]">*</span>
+                                                    </label>
+                                                    <input
+                                                        type="number"
+                                                        value={item?.salary || ""}
+                                                        onChange={(e) => {
+                                                            const value = e.target.value;
+                                                            setIncrementList(prev =>
+                                                                prev.map((row, i) =>
+                                                                    i === index ? { ...row, salary: value } : row
+                                                                )
+                                                            );
+                                                        }}
+                                                        className="w-full px-3 py-2 border border-[var(--color-border-primary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition-all"
+                                                        required
+                                                    />
+                                                </div>
 
-                                        </button>
-                                    </div>
-
-
-                                    <div className="flex-1 min-h-[300px] overflow-y-auto custom-scrollbar pr-2">
-                                        {incrementList && incrementList.map((item, index) => {
-                                            return (
-
-                                                <div key={index} className="border border-[var(--color-border-primary)] my-4 rounded-lg p-4 bg-[var(--color-bg-card)]">
-                                                    <div className="flex items-center justify-between mb-4">
-                                                        <h4 className="text-sm font-semibold text-[var(--color-text-secondary)]">
-                                                            Increment
-                                                        </h4>
-                                                        <button
-                                                            type="button"
-                                                            onClick={() => removeIncrement(index)}
-                                                            className="w-9 h-9 flex items-center justify-center rounded-xl bg-red-50 text-red-500 hover:bg-red-100 hover:scale-110 hover:shadow-md transition-all duration-200 disabled:opacity-50"
-                                                            title="Remove this allowance"
-                                                        >
-                                                            <Trash2 className="w-4 h-4" strokeWidth={2.5} />
-                                                        </button>
-
-                                                    </div>
-
-                                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                                                        <div className="space-y-2">
-                                                            <label className="block text-sm font-medium text-[var(--color-text-secondary)]">
-                                                                Salary <span className="text-[var(--color-error)]">*</span>
-                                                            </label>
-                                                            <input
-                                                                type="number"
-                                                                value={item?.salary || ""}
-                                                                onChange={(e) => {
-                                                                    const value = e.target.value;
-                                                                    setIncrementList(prev =>
-                                                                        prev.map((row, i) =>
-                                                                            i === index ? { ...row, salary: value } : row
-                                                                        )
-                                                                    );
-                                                                }}
-                                                                className="w-full px-3 py-2 border border-[var(--color-border-primary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition-all"
-                                                                required
-                                                            />
-                                                        </div>
-
-                                                        <div className="space-y-2">
-                                                            <label className="block text-sm font-medium text-[var(--color-text-secondary)]">Salary Type <span className="text-[var(--color-error)]">*</span></label>
-                                                            {/* <select
+                                                <div className="space-y-2">
+                                                    <label className="block text-sm font-medium text-[var(--color-text-secondary)]">Salary Type <span className="text-[var(--color-error)]">*</span></label>
+                                                    {/* <select
                                                             className="w-full px-3 py-2 border border-[var(--color-border-primary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition-all"
                                                             required
                                                             value={item?.salary_type_id || ""}
@@ -396,115 +399,116 @@ const Increment = () => {
 
 
                                                         </select> */}
-                                                            <CustomSelect
-                                                                name="salary_type_id"
-                                                                value={item?.salary_type_id || ""}
-                                                                onChange={(e) => {
-                                                                    const value = e.target.value;
+                                                    <CustomSelect
+                                                        name="salary_type_id"
+                                                        value={item?.salary_type_id || ""}
+                                                        onChange={(e) => {
+                                                            const value = e.target.value;
 
-                                                                    setIncrementList(prev =>
-                                                                        prev.map((row, i) =>
-                                                                            i === index
-                                                                                ? { ...row, salary_type_id: value }
-                                                                                : row
-                                                                        )
-                                                                    );
-                                                                }}
-                                                                options={salaryTypeList.map(option => ({
-                                                                    value: option.salary_type_id,
-                                                                    label: option.name,
-                                                                }))}
-                                                                placeholder="Select Salary Type"
-                                                                required
-                                                                searchable={true}
-                                                            />
+                                                            setIncrementList(prev =>
+                                                                prev.map((row, i) =>
+                                                                    i === index
+                                                                        ? { ...row, salary_type_id: value }
+                                                                        : row
+                                                                )
+                                                            );
+                                                        }}
+                                                        options={salaryTypeList.map(option => ({
+                                                            value: option.salary_type_id,
+                                                            label: option.name,
+                                                        }))}
+                                                        placeholder="Select Salary Type"
+                                                        required
+                                                        searchable={true}
+                                                    />
 
-                                                        </div>
+                                                </div>
 
-                                                        <div className="space-y-2">
-                                                            <label className="block text-sm font-medium text-[var(--color-text-secondary)]">Start Date <span className="text-[var(--color-error)]">*</span></label>
-                                                            <CustomDatePicker
-                                                                name="starting_date"
-                                                                value={item?.starting_date || ""}
-                                                                placeholder="DD-MM-YYYY"
-                                                                onChange={(e) => {
-                                                                    const formatted = e.target.value;
-                                                                    if (!formatted) return;
+                                                <div className="space-y-2">
+                                                    <label className="block text-sm font-medium text-[var(--color-text-secondary)]">Start Date <span className="text-[var(--color-error)]">*</span></label>
+                                                    <CustomDatePicker
+                                                        name="starting_date"
+                                                        value={item?.starting_date || ""}
+                                                        placeholder="DD-MM-YYYY"
+                                                        onChange={(e) => {
+                                                            const formatted = e.target.value;
+                                                            if (!formatted) return;
 
-                                                                    const prevDate = new Date(formatted);
-                                                                    prevDate.setDate(prevDate.getDate() - 1);
-                                                                    const prevFormatted = formatLocalDate(prevDate);
+                                                            const prevDate = new Date(formatted);
+                                                            prevDate.setDate(prevDate.getDate() - 1);
+                                                            const prevFormatted = formatLocalDate(prevDate);
 
-                                                                    setIncrementList(prev => {
-                                                                        const updated = [...prev];
+                                                            setIncrementList(prev => {
+                                                                const updated = [...prev];
 
-                                                                        updated[index] = {
-                                                                            ...updated[index],
-                                                                            starting_date: formatted
-                                                                        };
+                                                                updated[index] = {
+                                                                    ...updated[index],
+                                                                    starting_date: formatted
+                                                                };
 
-                                                                        if (index > 0) {
-                                                                            updated[index - 1] = {
-                                                                                ...updated[index - 1],
-                                                                                ending_date: prevFormatted
-                                                                            };
-                                                                        }
-
-                                                                        return updated;
-                                                                    });
-                                                                }}
-                                                            />
-                                                        </div>
-                                                        <div className="space-y-2">
-                                                            <label className="block text-sm font-medium text-[var(--color-text-secondary)]">End Date </label>
-
-                                                            <CustomDatePicker
-                                                                name="ending_date"
-                                                                value={item?.ending_date || ""}
-                                                                placeholder="DD-MM-YYYY"
-                                                                disabled={index === incrementList.length - 1}
-                                                                onChange={(e) => {
-                                                                    const formatted = e.target.value;
-                                                                    if (!formatted) return;
-
-                                                                    setIncrementList(prev =>
-                                                                        prev.map((row, i) =>
-                                                                            i === index ? { ...row, ending_date: formatted } : row
-                                                                        )
-                                                                    );
-                                                                }}
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                    {index === incrementList.length - 1 && (
-
-                                                        // <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-lg border border-[var(--color-border-primary)] p-8">
-                                                        <div className="flex gap-4 justify-end mt-10">
-                                                            <button
-                                                                type="button"
-                                                                className="px-6 py-3 border border-[var(--color-border-secondary)] text-[var(--color-text-secondary)] rounded-lg hover:bg-[var(--color-bg-primary)] transition-colors font-medium"
-                                                            >
-                                                                Cancel
-                                                            </button>
-                                                            <button
-                                                                onClick={handleSubmit}
-                                                                className="px-8 py-3 bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] text-[var(--color-text-white)] rounded-lg hover:from-[var(--color-primary-darker)] hover:to-[var(--color-primary-darkest)] transition-all duration-200 font-medium shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-                                                            >
-                                                                {isSubmitting && (
-                                                                    <div className="w-4 h-4 border-2 border-[var(--color-border-primary)] border-t-transparent rounded-full animate-spin"></div>
-                                                                )}
-                                                                {isSubmitting ?
-                                                                    'Please wait' : 'Submit'
+                                                                if (index > 0) {
+                                                                    updated[index - 1] = {
+                                                                        ...updated[index - 1],
+                                                                        ending_date: prevFormatted
+                                                                    };
                                                                 }
-                                                            </button>
-                                                        </div>
-                                                        // </div>
-                                                    )}
-                                                </div>)
-                                        }
-                                        )}
-                                    </div>
-                                    {/* 
+
+                                                                return updated;
+                                                            });
+                                                        }}
+                                                    />
+                                                </div>
+                                                <div className="space-y-2">
+                                                    <label className="block text-sm font-medium text-[var(--color-text-secondary)]">End Date </label>
+
+                                                    <CustomDatePicker
+                                                        name="ending_date"
+                                                        value={item?.ending_date || ""}
+                                                        placeholder="DD-MM-YYYY"
+                                                        disabled={index === incrementList.length - 1}
+                                                        onChange={(e) => {
+                                                            const formatted = e.target.value;
+                                                            if (!formatted) return;
+
+                                                            setIncrementList(prev =>
+                                                                prev.map((row, i) =>
+                                                                    i === index ? { ...row, ending_date: formatted } : row
+                                                                )
+                                                            );
+                                                        }}
+                                                    />
+                                                </div>
+                                            </div>
+                                            {index === incrementList.length - 1 && (
+
+                                                <div className="flex gap-4 justify-end mt-10">
+                                                    <button
+                                                        type="button"
+                                                        className="px-6 py-3 border border-[var(--color-border-secondary)] text-[var(--color-text-secondary)] rounded-lg hover:bg-[var(--color-bg-primary)] transition-colors font-medium"
+                                                    >
+                                                        Cancel
+                                                    </button>
+                                                    <button
+                                                        onClick={handleSubmit}
+                                                        className="px-8 py-3 bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] text-[var(--color-text-white)] rounded-lg hover:from-[var(--color-primary-darker)] hover:to-[var(--color-primary-darkest)] transition-all duration-200 font-medium shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                                                    >
+                                                        {isSubmitting && (
+                                                            <div className="w-4 h-4 border-2 border-[var(--color-border-primary)] border-t-transparent rounded-full animate-spin"></div>
+                                                        )}
+                                                        {isSubmitting ?
+                                                            'Please wait' : 'Submit'
+                                                        }
+                                                    </button>
+                                                </div>
+                                                // </div>
+                                            )}
+                                        </div>)
+                                }
+                                )}
+                            </div>
+                        )}
+                    </div>
+                    {/* 
                                     {employeeId &&
 
                                         <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-lg border border-[var(--color-border-primary)] p-8">
@@ -529,10 +533,6 @@ const Increment = () => {
                                             </div>
                                         </div>
                                     } */}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
 
                 {/* Toast Notification */}
@@ -544,7 +544,7 @@ const Increment = () => {
                     />
                 )}
             </div>
-        </div>
+        </>
     );
 };
 

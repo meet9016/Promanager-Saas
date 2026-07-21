@@ -20,6 +20,7 @@ const DesignationList = () => {
     const {
         designations,
         loading,
+        initialLoad,
         addDesignation,
         deleteDesignation,
     } = useDesignations();
@@ -93,7 +94,7 @@ const DesignationList = () => {
         setSearchTerm("");
     };
 
-    if (loading) {
+    if (initialLoad) {
         return (
             <div>
                 <LoadingSpinner />
@@ -124,7 +125,7 @@ const DesignationList = () => {
                     </div>
                 </div>
 
-                <div className="p-8 bg-[var(--color-bg-secondary)] flex flex-col gap-4">
+                <div className="p-8 bg-[#FBF9FD] flex flex-col gap-4">
                     {permissions['designation_create'] &&
                         <DesignationForm
                             onSubmit={handleAddDesignation}

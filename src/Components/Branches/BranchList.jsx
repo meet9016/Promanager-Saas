@@ -30,7 +30,7 @@ const BranchList = () => {
     const [editingBranch, setEditingBranch] = useState(null);
     const permissions = useSelector((state) => state.permissions) || {};
 
-    const { branches, loading, addBranch, deleteBranch } = useBranches();
+    const { branches, loading, initialLoad, addBranch, deleteBranch } = useBranches();
 
     // eslint-disable-next-line no-unused-vars
     const [toast, setToast] = useState(null);
@@ -118,7 +118,7 @@ const BranchList = () => {
         setSearchTerm("");
     };
 
-    if (loading) {
+    if (initialLoad) {
         return (
             <div>
                 <LoadingSpinner />
@@ -149,7 +149,7 @@ const BranchList = () => {
                     </div>
                 </div>
 
-                <div className="p-8 bg-[var(--color-bg-secondary)] flex-1 flex flex-col gap-4 overflow-hidden">
+                <div className="p-8 bg-[#FBF9FD] flex-1 flex flex-col gap-4 overflow-hidden">
                     {permissions["branch_create"] && (
                         <BranchForm
                             onSubmit={editingBranch ? handleEditBranch : handleAddBranch}

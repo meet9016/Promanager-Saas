@@ -232,6 +232,7 @@ const MonthlyAttendance = () => {
     const [filters, setFilters] = useState(initialFilters);
     const [appliedFilters, setAppliedFilters] = useState(initialFilters);
     const [loading, setLoading] = useState(true);
+    const [initialLoad, setInitialLoad] = useState(true);
     const [rows, setRows] = useState([]);
     const [error, setError] = useState('');
     const [branches, setBranches] = useState([]);
@@ -386,6 +387,7 @@ const MonthlyAttendance = () => {
                 setError(e.message || 'Failed to load data'); setRows([]);
             } finally {
                 setLoading(false);
+                setInitialLoad(false);
                 if (containerRef.current) containerRef.current.scrollLeft = 0;
             }
         }, 300);
@@ -451,7 +453,7 @@ const MonthlyAttendance = () => {
         }
     }, [showFilters, filterPos]);
 
-    if (loading && rows.length === 0) {
+    if (initialLoad) {
         return <LoadingSpinner />;
     }
 
@@ -862,11 +864,13 @@ const MonthlyAttendance = () => {
                     </div>
 
                     {/* Loading bar */}
-                    {loading && (
-                        <div className="h-0.5 bg-slate-100">
-                            <div className="h-full bg-gradient-to-r from-violet-400 to-blue-400 animate-pulse w-2/3 rounded-full" />
-                        </div>
-                    )}
+                    <div className="relative h-0">
+                        {loading && (
+                            <div className="absolute top-0 left-0 w-full h-0.5 bg-slate-100 z-50">
+                                <div className="h-full bg-gradient-to-r from-violet-400 to-blue-400 animate-pulse w-2/3 rounded-full" />
+                            </div>
+                        )}
+                    </div>
 
                     {/* ── Scrollable Grid ── */}
                     <div ref={containerRef} className="overflow-auto" style={{ maxHeight: '100vh' }}>

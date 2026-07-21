@@ -962,7 +962,7 @@ const DetailedDailyReport = () => {
                 </div>
 
                 {/* Main content */}
-                <div className="bg-[var(--color-bg-secondary)] rounded-lg border border-[var(--color-primary-dark)] overflow-hidden shadow-sm flex flex-col flex-1 min-h-0">
+                <div className="bg-[var(--color-bg-secondary)] rounded-lg border border-[var(--color-primary-dark)] overflow-hidden shadow-sm flex flex-col flex-1 h-full">
                     <div className="px-6 py-4 border-b border-[var(--color-primary-light)] bg-[var(--color-primary-lighter)]">
                         <div className="flex justify-between items-center">
                             <div className="flex items-center">
@@ -1087,7 +1087,7 @@ const DetailedDailyReport = () => {
                     </div>
 
                     {/* Table */}
-                    <div className="custom-scrollbar flex-1 min-h-0 ">
+                    <div className="custom-scrollbar flex flex-1 flex-col min-h-0">
                         {loading ? (
                             <div className="p-8 text-center text-[var(--color-text-secondary)]">
                                 <div className="flex items-center justify-center">
@@ -1097,7 +1097,7 @@ const DetailedDailyReport = () => {
                                 </div>
                             </div>
                         ) : (filteredData?.length || 0) === 0 ? (
-                            <div className="flex items-center justify-center p-8 bg-[#FBF9FD] rounded-xl shadow-sm">
+                            <div className="flex flex-1 h-full items-center justify-center bg-[#FBF9FD] rounded-xl">
                                 <NoDataFound
                                     title="No records found"
                                     subtitle="Try adjusting your filters or select a different date."

@@ -5,6 +5,7 @@ import useUserId from "./useUserId";
 const useDeductions = () => {
     const [deductions, setDeductions] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [initialLoad, setInitialLoad] = useState(true);
     const [error, setError] = useState(null);
     const user_id = useUserId();
 
@@ -32,6 +33,7 @@ const useDeductions = () => {
             setDeductions([]);
         } finally {
             setLoading(false);
+            setInitialLoad(false);
         }
     };
 
@@ -124,6 +126,7 @@ const useDeductions = () => {
     return {
         deductions,
         loading,
+        initialLoad,
         error,
         addDeduction,
         deleteDeduction,

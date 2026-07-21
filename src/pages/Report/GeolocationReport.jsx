@@ -988,7 +988,7 @@ const GeolocationReport = () => {
                 </div>
 
                 {/* Main content */}
-                <div className="bg-[var(--color-bg-secondary)] rounded-lg border border-primary-200 overflow-hidden shadow-sm flex flex-col flex-1 min-h-0">
+                <div className="bg-[var(--color-bg-secondary)] rounded-lg border border-primary-200 overflow-hidden shadow-sm flex flex-col flex-1 h-full">
                     <div className="px-6 py-4 border-b border-primary-200 bg-[var(--color-primary-lighter)]">
                         <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4">
                             <div className="flex items-center">
@@ -1123,7 +1123,7 @@ const GeolocationReport = () => {
                     </div>
 
                     {/* Table */}
-                    <div className="custom-scrollbar">
+                    <div className="custom-scrollbar flex-1 flex flex-col min-h-0">
                         {loading ? (
                             <div className="p-8 text-center text-[var(--color-text-secondary)]">
                                 <div className="flex items-center justify-center">
@@ -1133,7 +1133,7 @@ const GeolocationReport = () => {
                                 </div>
                             </div>
                         ) : (filteredData?.length || 0) === 0 ? (
-                            <div className="flex items-center justify-center p-8 bg-[var(--color-bg-secondary)] rounded-xl  shadow-sm">
+                            <div className="flex flex-1 items-center justify-center h-full bg-[#FBF9FD] rounded-xl">
                                 <NoDataFound
                                     title="No attendance records found"
                                     subtitle="Try adjusting your filters or select a different date range."

@@ -15,6 +15,7 @@ const FORMULA_KEYS = [
 const useDepartments = () => {
     const [departments, setDepartments] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [initialLoad, setInitialLoad] = useState(true);
     const [error, setError] = useState(null);
     const user_id = useUserId();
 
@@ -35,6 +36,7 @@ const useDepartments = () => {
             setDepartments([]);
         } finally {
             setLoading(false);
+            setInitialLoad(false);
         }
     };
 
@@ -192,6 +194,7 @@ const useDepartments = () => {
     return {
         departments,
         loading,
+        initialLoad,
         error,
         addDepartment,
         updateDepartment,

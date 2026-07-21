@@ -5,6 +5,7 @@ import useUserId from "./useUserId";
 const useBranches = () => {
     const [branches, setBranches] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [initialLoad, setInitialLoad] = useState(true);
     const [error, setError] = useState(null);
     const [editingBranch, setEditingBranch] = useState(null);
     const user_id = useUserId();
@@ -32,6 +33,7 @@ const useBranches = () => {
             setBranches([]);
         } finally {
             setLoading(false);
+            setInitialLoad(false);
         }
     };
 
@@ -131,6 +133,7 @@ const useBranches = () => {
     return {
         branches,
         loading,
+        initialLoad,
         error,
         addBranch,
         deleteBranch,
