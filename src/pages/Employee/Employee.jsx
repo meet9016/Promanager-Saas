@@ -1706,36 +1706,38 @@ export default function Employee() {
                             </div>
                         </div>
                     ) : employees.length === 0 ? (
-                        <div className="flex flex-col items-center justify-center min-h-[70vh] px-6 bg-[#FBF9FD]">
-                            <NoDataFound
-                                title={searchQuery ? 'No Employees Found' : 'No Employees Found'}
-                                subtitle={
-                                    searchQuery
-                                        ? `No employees match your search "${searchQuery}". Try different search terms.`
-                                        : currentPage > 1
-                                            ? 'No employees found on this page.'
-                                            : "You haven't added any employees yet."
-                                }
-                            />
-                            <div className="flex gap-3 mt-2">
-                                {searchQuery && (
-                                    <button
-                                        onClick={handleClearSearch}
-                                        className="inline-flex items-center space-x-2 bg-[var(--color-bg-gradient-start)] text-[var(--color-text-secondary)] px-4 py-2 rounded-md hover:bg-[var(--color-bg-gray-light)] transition-colors"
-                                    >
-                                        <XCircle className="w-4 h-4" />
-                                        <span>Clear Search</span>
-                                    </button>
-                                )}
-                                {permissions['employee_create'] && !searchQuery && currentPage === 1 && (
-                                    <button
-                                        onClick={() => navigate('/add-employee')}
-                                        className="inline-flex items-center space-x-2 bg-[var(--color-primary-dark)] text-[var(--color-text-white)] px-4 py-2 rounded-md hover:bg-[var(--color-primary-darker)] transition-colors"
-                                    >
-                                        <Plus className="w-4 h-4" />
-                                        <span>Create First Employee</span>
-                                    </button>
-                                )}
+                        <div className="flex items-center justify-center h-[calc(100vh-220px)] bg-[#FBF9FD]">
+                            <div className="flex flex-col items-center justify-center text-center">
+                                <NoDataFound
+                                    title={searchQuery ? 'No Employees Found' : 'No Employees Found'}
+                                    subtitle={
+                                        searchQuery
+                                            ? `No employees match your search "${searchQuery}". Try different search terms.`
+                                            : currentPage > 1
+                                                ? 'No employees found on this page.'
+                                                : "You haven't added any employees yet."
+                                    }
+                                />
+                                <div className="flex gap-3 mt-2">
+                                    {searchQuery && (
+                                        <button
+                                            onClick={handleClearSearch}
+                                            className="inline-flex items-center space-x-2 bg-[var(--color-bg-gradient-start)] text-[var(--color-text-secondary)] px-4 py-2 rounded-md hover:bg-[var(--color-bg-gray-light)] transition-colors"
+                                        >
+                                            <XCircle className="w-4 h-4" />
+                                            <span>Clear Search</span>
+                                        </button>
+                                    )}
+                                    {permissions['employee_create'] && !searchQuery && currentPage === 1 && (
+                                        <button
+                                            onClick={() => navigate('/add-employee')}
+                                            className="inline-flex items-center space-x-2 bg-[var(--color-primary-dark)] text-[var(--color-text-white)] px-4 py-2 rounded-md hover:bg-[var(--color-primary-darker)] transition-colors"
+                                        >
+                                            <Plus className="w-4 h-4" />
+                                            <span>Create First Employee</span>
+                                        </button>
+                                    )}
+                                </div>
                             </div>
                         </div>
                     ) : (

@@ -19,7 +19,8 @@ import {
     FileSpreadsheet,
     Download,
     Play,
-    HelpCircle
+    HelpCircle,
+    X
 } from 'lucide-react';
 import { SearchableDropdown } from '../../Components/Report/ReportComponents';
 import { Toast } from '../../Components/ui/Toast';
@@ -241,6 +242,15 @@ const MonthlyReport = () => {
         offset: 8,
         minWidth: 240,
         minHeight: 120
+    });
+
+    const [filterDropdown, setFilterDropdown] = useState(false);
+    const filterBtnRef = useRef(null);
+    const filterPos = useAnchoredPosition(filterBtnRef, filterDropdown, {
+        placement: 'bottom-start',
+        offset: 8,
+        minWidth: 420,
+        minHeight: 200
     });
 
     // eslint-disable-next-line no-unused-vars
@@ -496,8 +506,8 @@ const MonthlyReport = () => {
 
     /** -------- Render -------- */
     return (
-        <div className="min-h-screen bg-[var(--color-bg-primary)]">
-            <div className="p-8  mx-auto">
+        <div className="h-[calc(100vh-64px)] bg-[var(--color-bg-primary)] flex flex-col">
+            <div className="flex-1 p-8 mx-auto w-full flex flex-col min-h-0">
 
                 {/* Page Header */}
                 <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-xl mb-8 overflow-hidden">
@@ -517,56 +527,6 @@ const MonthlyReport = () => {
                                     </div>
                                 </div>
                             </div>
-
-                            <div className="flex items-center gap-3">
-                                <div className="relative">
-                                    <button
-                                        ref={exportBtnRef}
-                                        onClick={() => setExportDropdown((v) => !v)}
-                                        disabled={!hasGenerated || reportData.length === 0}
-                                        // className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                                        className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-lg font-medium transition-colors"
-
-                                    >
-                                        <Download className="h-4 w-4" />
-                                        Export
-                                        <ChevronDown className="h-4 w-4" />
-                                    </button>
-
-                                    {exportDropdown && exportPos.ready &&
-                                        createPortal(
-                                            <>
-                                                <div className="fixed inset-0 z-40" onClick={() => setExportDropdown(false)} />
-                                                <div
-                                                    className="absolute z-50 bg-[var(--color-bg-secondary)] rounded-lg shadow-2xl border border-[var(--color-border-secondary)] py-2"
-                                                    style={{
-                                                        position: 'absolute',
-                                                        top: exportPos.top,
-                                                        left: exportPos.left,
-                                                        width: Math.max(192, exportPos.width),
-                                                        minWidth: 192
-                                                    }}
-                                                >
-                                                    <button
-                                                        onClick={handleExportExcelClick}
-                                                        className="flex items-center gap-2 w-full px-4 py-2 text-left hover:bg-[var(--color-bg-hover)] transition-colors text-[var(--color-text-primary)]"
-                                                    >
-                                                        <FileSpreadsheet className="h-4 w-4 text-primary-600" />
-                                                        Export to Excel
-                                                    </button>
-                                                    <button
-                                                        onClick={handleExportPDF}
-                                                        className="flex items-center gap-2 w-full px-4 py-2 text-left hover:bg-[var(--color-bg-hover)] transition-colors text-[var(--color-text-primary)]"
-                                                    >
-                                                        <FileDown className="h-4 w-4 text-red-600" />
-                                                        Export to PDF
-                                                    </button>
-                                                </div>
-                                            </>,
-                                            document.body
-                                        )}
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -582,208 +542,9 @@ const MonthlyReport = () => {
                     </div>
                 )}
 
-                {/* Filters Card */}
-                <div className="bg-[var(--color-bg-secondary)] rounded-xl shadow-sm border border-[var(--color-border-secondary)]  md:p-5 mb-8">
-                    <div className="flex items-start md:items-center gap-3 mb-5">
-                        <div className="p-2 bg-[var(--color-primary-lightest)] rounded-lg">
-                            <Filter className="h-5 w-5 text-[var(--color-primary-dark)]" />
-                        </div>
-                        <div className="flex-1">
-                            <h2 className="text-lg md:text-xl font-semibold text-[var(--color-text-primary)]">Report Filters</h2>
-                        </div>
-                        <button
-                            onClick={resetFilters}
-                            className="ml-auto flex items-center gap-2 px-3 py-1.5 bg-[var(--color-bg-gray-light)] text-[var(--color-text-secondary)] rounded-lg hover:bg-[var(--color-bg-hover)] transition-colors text-sm"
-                        >
-                            <RefreshCw className="h-4 w-4" />
-                            Reset
-                        </button>
-                    </div>
-
-                    {dropdownLoading && (
-                        <div className="flex items-center gap-2 mb-4 text-[var(--color-text-secondary)]">
-                            <Loader2 className="h-4 w-4 animate-spin" />
-                            <span className="text-sm">Loading filter options...</span>
-                        </div>
-                    )}
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
-                        {/* Month Year */}
-                        <div className="flex flex-col">
-                            <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-2">
-                                <Calendar className="inline h-4 w-4 mr-1" />
-                                Month &amp; Year <span className="text-[var(--color-text-secondary)]">*</span>
-                            </label>
-                            <DatePicker
-                                selected={filters.month_year ? new Date(`${filters.month_year}-01`) : null}
-                                onChange={(date) => {
-                                    const iso = date
-                                        ? `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`
-                                        : '';
-                                    handleFilterChange('month_year', iso);
-                                }}
-                                dateFormat="MMMM yyyy"
-                                showMonthYearPicker
-                                showFullMonthYearPicker
-                                className="w-full px-3 py-2 rounded-lg border border-[var(--color-border-secondary)] bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
-                                placeholderText="Select month and year"
-                                maxDate={new Date()}
-                                showPopperArrow={false}
-                            />
-                        </div>
-
-                        {/* Branch */}
-                        <div className="flex flex-col">
-                            <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-2">
-                                <Building className="inline h-4 w-4 mr-1" />
-                                Branch
-                            </label>
-                            {/* <select
-                                value={filters.branch_id}
-                                onChange={(e) => handleFilterChange('branch_id', e.target.value)}
-                                className="w-full px-3 py-2 bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] text-[var(--color-text-primary)]"
-                                disabled={dropdownLoading}
-                            >
-                                <option value="">All Branches</option>
-                                {branches.map((branch) => (
-                                    <option key={branch.id} value={branch.id}>{branch.name}</option>
-                                ))}
-                            </select> */}
-                            <CustomSelect
-                                name="branch_id"
-                                value={filters.branch_id}
-                                onChange={(e) => handleFilterChange('branch_id', e.target.value)}
-                                options={branches.map(branch => ({
-                                    value: branch.id,
-                                    label: branch.name,
-                                }))}
-                                placeholder="All Branches"
-                                searchable={true}
-                                disabled={dropdownLoading}
-                            />
-                        </div>
-
-                        {/* Department */}
-                        <div className="flex flex-col">
-                            <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-2">
-                                <Users className="inline h-4 w-4 mr-1" />
-                                Department
-                            </label>
-                            {/* <select
-                                value={filters.department_id}
-                                onChange={(e) => handleFilterChange('department_id', e.target.value)}
-                                className="w-full px-3 py-2 bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] text-[var(--color-text-primary)]"
-                                disabled={dropdownLoading}
-                            >
-                                <option value="">All Departments</option>
-                                {departments.map((d) => (
-                                    <option key={d.id} value={d.id}>{d.name}</option>
-                                ))}
-                            </select> */}
-                            <CustomSelect
-                                name="department_id"
-                                value={filters.department_id}
-                                onChange={(e) => handleFilterChange('department_id', e.target.value)}
-                                options={departments.map((d) => ({
-                                    value: d.id,
-                                    label: d.name,
-                                }))}
-                                placeholder="All Departments"
-                                searchable={true}
-                                disabled={dropdownLoading}
-                            />
-                        </div>
-
-                        {/* Designation */}
-                        <div className="flex flex-col">
-                            <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-2">
-                                <Award className="inline h-4 w-4 mr-1" />
-                                Designation
-                            </label>
-                            {/* <select
-                                value={filters.designation_id}
-                                onChange={(e) => handleFilterChange('designation_id', e.target.value)}
-                                className="w-full px-3 py-2 bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] text-[var(--color-text-primary)]"
-                                disabled={dropdownLoading}
-                            >
-                                <option value="">All Designations</option>
-                                {designations.map((d) => (
-                                    <option key={d.id} value={d.id}>{d.name}</option>
-                                ))}
-                            </select> */}
-                            <CustomSelect
-                                name="designation_id"
-                                value={filters.designation_id}
-                                onChange={(e) => handleFilterChange('designation_id', e.target.value)}
-                                options={designations.map((d) => ({
-                                    value: d.id,
-                                    label: d.name,
-                                }))}
-                                placeholder="All Designations"
-                                searchable={true}
-                                disabled={dropdownLoading}
-                            />
-                        </div>
-
-                        {/* Employee (optional) */}
-                        <div className="flex flex-col">
-                            <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-2">
-                                <User className="inline h-4 w-4 mr-1" />
-                                Employee <span className="text-[var(--color-text-secondary)]">(optional)</span>
-                            </label>
-                            {/* <SearchableDropdown
-                                options={employees}
-                                value={filters.employee_id}
-                                onChange={(value) => handleFilterChange('employee_id', value)}
-                                placeholder="Search and select employee..."
-                                disabled={dropdownLoading}
-                                displayKey="name"
-                                valueKey="id"
-                            /> */}
-                            <CustomSelect
-                                name="employee_id"
-                                value={filters.employee_id}
-                                onChange={(e) => handleFilterChange('employee_id', e.target.value)}
-                                options={employees.map(emp => ({
-                                    value: emp.id,
-                                    label: emp.name,
-                                }))}
-                                placeholder="Search and select employee..."
-                                searchable={true}
-                                disabled={dropdownLoading}
-                            />
-                        </div>
-
-                        {/* Generate */}
-                        <div className="flex flex-col">
-                            <label className="block text-sm font-medium text-transparent mb-2">Generate</label>
-                            <button
-                                onClick={handleGenerateReport}
-                                disabled={loading || !filters.month_year}
-                                className={`flex items-center justify-center gap-2 px-6 py-2 rounded-lg font-medium transition-colors duration-200 ${loading || !filters.month_year
-                                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                                    : 'bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary-dark)] shadow-lg hover:shadow-xl'
-                                    }`}
-                            >
-                                {loading ? (
-                                    <>
-                                        <RefreshCw className="h-4 w-4 animate-spin" />
-                                        Generating...
-                                    </>
-                                ) : (
-                                    <>
-                                        <Play className="h-4 w-4" />
-                                        Generate Report
-                                    </>
-                                )}
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
                 {/* Data Preview Section */}
-                <div className="bg-[var(--color-bg-secondary)] rounded-xl shadow-sm border border-[var(--color-border-primary)] overflow-hidden mb-8">
-                    <div className="px-4 py-4 border-b border-[var(--color-border-primary)] bg-[var(--color-primary-lighter)]">
+                <div className="flex-1 flex flex-col min-h-0 bg-[var(--color-bg-secondary)] rounded-xl shadow-sm border border-[var(--color-primary-dark)] overflow-hidden">
+                    <div className="px-4 py-4 border-b border-[var(--color-primary-dark)] bg-[var(--color-primary-lighter)] shrink-0">
                         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                             <div>
                                 <h3 className="font-semibold text-[var(--color-primary-darker)]">
@@ -796,6 +557,204 @@ const MonthlyReport = () => {
                                     }
                                 </p>
                             </div>
+
+                            <div className="flex items-center gap-3 flex-wrap">
+                                {/* Filter button */}
+                                <div className="relative">
+                                    <button
+                                        ref={filterBtnRef}
+                                        onClick={() => setFilterDropdown((v) => !v)}
+                                        className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-lg font-medium transition-colors"
+                                    >
+                                        <Filter className="h-4 w-4" />
+                                        Filters
+                                        <ChevronDown className="h-4 w-4" />
+                                    </button>
+
+                                    {filterDropdown && createPortal(
+                                        <>
+                                            <div className="fixed inset-0 z-[100] bg-black/40" onClick={() => setFilterDropdown(false)} />
+                                            <div
+                                                className="hidden sm:flex flex-col absolute z-[110] bg-[var(--color-bg-secondary)] rounded-lg shadow-2xl border border-[var(--color-border-secondary)] max-h-[80vh] overflow-visible"
+                                                style={{
+                                                    position: 'absolute',
+                                                    top: filterPos.ready ? filterPos.top : -9999,
+                                                    left: 1450,
+                                                    width: Math.max(420, filterPos.width),
+                                                    minWidth: 420
+                                                }}
+                                            >
+                                                <div className="flex items-center justify-between p-4 border-b border-[var(--color-border-secondary)]">
+                                                    <div className="flex items-center gap-3">
+                                                        <div className="p-2 bg-[var(--color-primary-lightest)] rounded-lg">
+                                                            <Filter className="h-5 w-5 text-[var(--color-primary)]" />
+                                                        </div>
+                                                        <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">Filters</h2>
+                                                    </div>
+                                                    <button
+                                                        onClick={() => setFilterDropdown(false)}
+                                                        className="text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] p-1 rounded-lg hover:bg-[var(--color-bg-hover)]"
+                                                    >
+                                                        <X className="h-4 w-4" />
+                                                    </button>
+                                                </div>
+                                                <div className="flex-1 overflow-visible p-4">
+                                                    <div className="grid grid-cols-2 gap-4">
+                                                        {/* Branch */}
+                                                        <div>
+                                                            <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                                <Building className="inline h-4 w-4 mr-1" /> Branch
+                                                            </label>
+                                                            <CustomSelect
+                                                                name="branch_id"
+                                                                value={filters.branch_id}
+                                                                onChange={(e) => handleFilterChange('branch_id', e.target.value)}
+                                                                options={branches.map(branch => ({ value: branch.id, label: branch.name }))}
+                                                                placeholder="All Branches"
+                                                                searchable={true}
+                                                                disabled={dropdownLoading}
+                                                            />
+                                                        </div>
+                                                        {/* Department */}
+                                                        <div>
+                                                            <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                                <Users className="inline h-4 w-4 mr-1" /> Department
+                                                            </label>
+                                                            <CustomSelect
+                                                                name="department_id"
+                                                                value={filters.department_id}
+                                                                onChange={(e) => handleFilterChange('department_id', e.target.value)}
+                                                                options={departments.map((d) => ({ value: d.id, label: d.name }))}
+                                                                placeholder="All Departments"
+                                                                searchable={true}
+                                                                disabled={dropdownLoading}
+                                                            />
+                                                        </div>
+                                                        {/* Designation */}
+                                                        <div>
+                                                            <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                                <Award className="inline h-4 w-4 mr-1" /> Designation
+                                                            </label>
+                                                            <CustomSelect
+                                                                name="designation_id"
+                                                                value={filters.designation_id}
+                                                                onChange={(e) => handleFilterChange('designation_id', e.target.value)}
+                                                                options={designations.map((d) => ({ value: d.id, label: d.name }))}
+                                                                placeholder="All Designations"
+                                                                searchable={true}
+                                                                disabled={dropdownLoading}
+                                                            />
+                                                        </div>
+                                                        {/* Month Year */}
+                                                        <div>
+                                                            <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                                <Calendar className="inline h-4 w-4 mr-1" /> Month & Year <span className="text-red-500">*</span>
+                                                            </label>
+                                                            <DatePicker
+                                                                selected={filters.month_year ? new Date(`${filters.month_year}-01`) : null}
+                                                                onChange={(date) => {
+                                                                    const iso = date
+                                                                        ? `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`
+                                                                        : '';
+                                                                    handleFilterChange('month_year', iso);
+                                                                }}
+                                                                dateFormat="MMMM yyyy"
+                                                                showMonthYearPicker
+                                                                showFullMonthYearPicker
+                                                                className="w-full px-3 py-2 rounded-lg border border-[var(--color-border-secondary)] bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)]"
+                                                                placeholderText="Select month and year"
+                                                                maxDate={new Date()}
+                                                                showPopperArrow={false}
+                                                            />
+                                                        </div>
+                                                        {/* Employee Search */}
+                                                        <div>
+                                                            <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                                <User className="inline h-4 w-4 mr-1" /> Employee <span className="text-[var(--color-text-muted)] font-normal">(optional)</span>
+                                                            </label>
+                                                            <CustomSelect
+                                                                name="employee_id"
+                                                                value={filters.employee_id}
+                                                                onChange={(e) => handleFilterChange('employee_id', e.target.value)}
+                                                                options={employees.map((emp) => ({ value: emp.id, label: emp.name }))}
+                                                                placeholder="Search and select employee..."
+                                                                searchable={true}
+                                                                disabled={dropdownLoading}
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div className="flex flex-col sm:flex-row justify-end gap-2 p-4 border-t border-[var(--color-border-secondary)] rounded-b-2xl">
+                                                    <button
+                                                        onClick={() => { resetFilters(); setFilterDropdown(false); }}
+                                                        className="flex items-center justify-center gap-2 px-4 py-2 bg-transparent text-[var(--color-primary)] border-2 hover:bg-[var(--color-primary-lightest)] border-[var(--color-primary)] rounded-lg hover:bg-[var(--color-bg-hover)] transition-colors text-sm font-medium min-w-[100px]"
+                                                    >
+                                                        <RefreshCw size={14} />
+                                                        Reset
+                                                    </button>
+                                                    <button
+                                                        onClick={() => { setFilterDropdown(false); handleGenerateReport(); }}
+                                                        disabled={loading}
+                                                        className="w-auto sm:w-[140px] flex items-center justify-center gap-2 px-4 py-2 bg-[var(--color-primary-dark)] text-[var(--color-text-white)] rounded-lg hover:bg-[var(--color-primary-darker)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
+                                                    >
+                                                        {loading ? <Loader2 size={14} className="animate-spin" /> : <Filter size={14} />}
+                                                        {loading ? 'Loading...' : 'Apply Filters'}
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                            {/* Mobile Dropdown (optional, skipping for brevity if unneeded, but keeping desktop functionally equivalent) */}
+                                        </>,
+                                        document.body
+                                    )}
+                                </div>
+
+                                {/* Export button */}
+                                <div className="relative">
+                                    <button
+                                        ref={exportBtnRef}
+                                        onClick={() => setExportDropdown((v) => !v)}
+                                        disabled={!hasGenerated || reportData.length === 0}
+                                        className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-lg font-medium transition-colors"
+                                    >
+                                        <Download className="h-4 w-4" />
+                                        Export
+                                        <ChevronDown className="h-4 w-4" />
+                                    </button>
+
+                                    {exportDropdown && exportPos.ready && createPortal(
+                                        <>
+                                            <div className="fixed inset-0 z-40" onClick={() => setExportDropdown(false)} />
+                                            <div
+                                                className="absolute z-50 bg-[var(--color-bg-secondary)] rounded-lg shadow-2xl border border-[var(--color-border-secondary)] py-2"
+                                                style={{
+                                                    position: 'absolute',
+                                                    top: exportPos.top,
+                                                    left: exportPos.left,
+                                                    width: Math.max(192, exportPos.width),
+                                                    minWidth: 192
+                                                }}
+                                            >
+                                                <button
+                                                    onClick={handleExportExcelClick}
+                                                    className="flex items-center gap-2 w-full px-4 py-2 text-left hover:bg-[var(--color-bg-hover)] transition-colors text-[var(--color-text-primary)]"
+                                                >
+                                                    <FileSpreadsheet className="h-4 w-4 text-primary-600" />
+                                                    Export to Excel
+                                                </button>
+                                                <button
+                                                    onClick={handleExportPDF}
+                                                    className="flex items-center gap-2 w-full px-4 py-2 text-left hover:bg-[var(--color-bg-hover)] transition-colors text-[var(--color-text-primary)]"
+                                                >
+                                                    <FileDown className="h-4 w-4 text-red-600" />
+                                                    Export to PDF
+                                                </button>
+                                            </div>
+                                        </>,
+                                        document.body
+                                    )}
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -805,9 +764,9 @@ const MonthlyReport = () => {
                         </div>
                     )}
 
-                    <div className="overflow-auto max-h-[70vh]">
+                    <div className="flex-1 flex flex-col min-h-0 bg-[#FBF9FD]">
                         {!hasGenerated && (
-                            <div className="flex items-center justify-center p-8 bg-[#FBF9FD] rounded-xl  shadow-sm">
+                            <div className="flex-1 flex items-center justify-center p-8 rounded-xl shadow-sm">
                                 <NoDataFound
                                     title="Ready to Generate Report"
                                     subtitle="Select your filters and click 'Generate Report' to view attendance data."
@@ -816,7 +775,7 @@ const MonthlyReport = () => {
                         )}
 
                         {hasGenerated && reportData.length === 0 && !loading && (
-                            <div className="flex items-center justify-center p-8 bg-[#FBF9FD] rounded-xl shadow-sm">
+                            <div className="flex-1 flex items-center justify-center p-8 rounded-xl shadow-sm">
                                 <NoDataFound
                                     title="No attendance data found"
                                     subtitle="Try adjusting your filters or select a different month."
@@ -825,7 +784,7 @@ const MonthlyReport = () => {
                         )}
 
                         {hasGenerated && reportData.length > 0 && (
-                            <div className="overflow-auto max-h-[70vh] border border-[var(--color-border-secondary)] ">
+                            <div className="flex-1 overflow-auto">
                                 <table className="w-full border-collapse table-fixed">
                                     <thead>
                                         <tr className="sticky top-0 bg-[var(--color-primary-dark)] border-b-2 border-[var(--color-border-primary)] z-20">

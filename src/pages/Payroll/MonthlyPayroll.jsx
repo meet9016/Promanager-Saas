@@ -1675,7 +1675,7 @@ const MonthlyPayroll = () => {
               </button>
             </div>
           ) : allPayrollData.length === 0 ? (
-            <div className="flex items-center justify-center py-8 bg-[var(--color-bg-secondary)] rounded-xl border">
+            <div className="flex items-center justify-center py-8  rounded-xl border border-[var(--color-border-primary)] bg-[#FBF9FD]">
               <NoDataFound
                 title="No Payroll Data"
                 subtitle="Select Branch, Department, Month and Year, then click Generate Payroll."

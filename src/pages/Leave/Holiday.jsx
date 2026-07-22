@@ -328,7 +328,7 @@ export default function HolidayManagement() {
 
 
 
-                <section className="bg-[var(--color-bg-secondary)]  rounded-xl shadow-sm border border-[var(--color-border-primary)] overflow-hidden">
+                <section className="bg-[var(--color-bg-secondary)] rounded-xl shadow-sm border border-[var(--color-border-primary)] overflow-hidden h-[690px] flex flex-col">
                     <div className="px-6 py-4 border-b border-[var(--color-border-primary)] bg-[var(--color-primary-lighter)] ">
                         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                             <h3 className="text-lg font-semibold text-[var(--color-primary-darker)] flex items-center gap-2">
@@ -577,7 +577,7 @@ export default function HolidayManagement() {
                                 </div>
                             </div> */}
 
-                            <div className="overflow-x-auto">
+                            <div className="flex-1 overflow-auto flex flex-col bg-[#FBF9FD]">
                                 <Table className="min-w-full divide-y divide-[var(--color-border-divider)]">
                                     <TableHeader className="bg-[var(--color-primary-dark)]">
                                         <TableHeaderRow>
@@ -588,9 +588,9 @@ export default function HolidayManagement() {
                                             ))}
                                         </TableHeaderRow>
                                     </TableHeader>
-                                    <TableBody className="bg-[var(--color-bg-secondary)] divide-y divide-[var(--color-border-divider)]">
-                                        {holidays.length ? (
-                                            holidays.map((h) => {
+                                    {holidays.length > 0 && (
+                                        <TableBody className="bg-[var(--color-bg-secondary)] divide-y divide-[var(--color-border-divider)]">
+                                            {holidays.map((h) => {
                                                 const dates = Array.isArray(h.holiday_dates) ? h.holiday_dates : (h.holiday_dates ? h.holiday_dates.split(',') : []);
                                                 return (
                                                     <TableRow key={h.holiday_id} className="hover:bg-[var(--color-bg-hover)] transition-colors align-top">
@@ -658,32 +658,32 @@ export default function HolidayManagement() {
                                                         </Td>
                                                     </TableRow>
                                                 );
-                                            })
-                                        ) : (
-                                            <TableRow>
-                                                <Td colSpan="6" className="py-4 text-center bg-[#FBF9FD]">
-                                                    <NoDataFound
-                                                        title="No Holidays Found"
-                                                        subtitle="Get started by adding your first holiday."
-                                                    >
-                                                        {permissions['holiday_create'] && (
-                                                            <button
-                                                                onClick={() => {
-                                                                    resetForm();
-                                                                    setCreateModal(true);
-                                                                }}
-                                                                className="inline-flex items-center gap-2 bg-[var(--color-primary)] text-white px-5 py-2.5 rounded-lg hover:bg-[var(--color-primary-dark)] transition-colors font-medium"
-                                                            >
-                                                                <Plus size={18} />
-                                                                Add Holiday
-                                                            </button>
-                                                        )}
-                                                    </NoDataFound>
-                                                </Td>
-                                            </TableRow>
-                                        )}
-                                    </TableBody>
+                                            })}
+                                        </TableBody>
+                                    )}
                                 </Table>
+
+                                {holidays.length === 0 && (
+                                    <div className="flex-1 flex items-center justify-center bg-[#FBF9FD]">
+                                        <NoDataFound
+                                            title="No Holidays Found"
+                                            subtitle="Get started by adding your first holiday."
+                                        >
+                                            {permissions['holiday_create'] && (
+                                                <button
+                                                    onClick={() => {
+                                                        resetForm();
+                                                        setCreateModal(true);
+                                                    }}
+                                                    className="inline-flex items-center gap-2 bg-[var(--color-primary)] text-white px-5 py-2.5 rounded-lg hover:bg-[var(--color-primary-dark)] transition-colors font-medium"
+                                                >
+                                                    <Plus size={18} />
+                                                    Add Holiday
+                                                </button>
+                                            )}
+                                        </NoDataFound>
+                                    </div>
+                                )}
                             </div>
                         </>
                     )}

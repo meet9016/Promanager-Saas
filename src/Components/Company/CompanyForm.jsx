@@ -312,7 +312,7 @@ const CompanyForm = ({ onSubmit, loading = false, showToast, editData }) => {
             {/* Preview Modal */}
             <PreviewModal />
 
-            <div className="bg-[var(--color-bg-secondary)] rounded-xl shadow-sm border border-[var(--color-primary-dark)] overflow-hidden">
+            <div className="bg-[var(--color-bg-secondary)] rounded-xl shadow-sm border border-[var(--color-primary-dark)] overflow-hidden shrink-0">
                 <div className="p-8 bg-[var(--color-bg-secondary)]">
                     <form onSubmit={handleSubmit} className="space-y-6">
                         <div className="flex items-center space-x-3 mb-4">

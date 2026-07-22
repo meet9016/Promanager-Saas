@@ -585,7 +585,7 @@ const LoanAdvance = () => {
                 </div> */}
 
                 <div className="bg-[var(--color-bg-secondary)] h-[87vh] rounded-lg border border-[var(--color-primary-dark)] overflow-visible shadow-sm flex flex-col">
-                    <div className="px-6 py-3 border-b border-[var(--color-primary-light)] bg-[var(--color-primary-lighter)]">
+                    <div className="px-6 py-3 border-b border-[var(--color-primary-light)] bg-[var(--color-primary-lighter)] rounded-[7px]">
                         <div className="flex justify-between items-center overflow-visible">
                             <div className="flex items-center">
                                 <CreditCard className="h-6 w-6 text-[var(--color-primary-darker)] mr-2" />

@@ -7,7 +7,7 @@ import api from '../../api/axiosInstance';
 import {
     ArrowLeft, Calendar, Users, Building, Award, User,
     Filter, RefreshCw, HelpCircle, Download,
-    ChevronDown, FileDown, FileSpreadsheet, Play
+    ChevronDown, FileDown, FileSpreadsheet, Play, X
 } from 'lucide-react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -245,7 +245,14 @@ const MonthlyMusterPreview = () => {
         department_id: '',
         designation_id: '',
         employee_id: '',
-        month_year: new Date().toISOString().slice(0, 7),
+    });
+
+    const [filterDropdown, setFilterDropdown] = useState(false);
+    const filterBtnRef = useRef(null);
+    const filterPos = useAnchoredPosition(filterBtnRef, filterDropdown, {
+        placement: 'bottom-end',
+        offset: 10,
+        minWidth: 420
     });
 
     // Export dropdown (anchored)
@@ -541,38 +548,239 @@ const MonthlyMusterPreview = () => {
     };
 
     return (
-        <div className="min-h-screen bg-[var(--color-bg-primary)]">
-            <div className="p-8  mx-auto">
-                {/* Header card with inner gradient bar */}
+        <div className="h-[calc(100vh-64px)] bg-[var(--color-bg-primary)] flex flex-col">
+            <div className="flex-1 p-8 mx-auto w-full flex flex-col min-h-0">
+                {/* Header card */}
                 <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-xl mb-8 overflow-hidden">
                     <div className="bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] p-6">
-                        <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-4">
-                                <button
-                                    onClick={() => navigate('/reports')}
-                                    className="flex items-center gap-2 text-[var(--color-text-white)] bg-[var(--color-bg-secondary-20)] hover:bg-[var(--color-bg-secondary-30)] px-2 py-2 rounded-lg backdrop-blur-sm transition-colors"
-                                >
-                                    <ArrowLeft size={18} />
+                        <div className="flex items-center gap-4">
+                            <button
+                                onClick={() => navigate('/reports')}
+                                className="flex items-center justify-center text-[var(--color-text-white)] bg-white/10 hover:bg-white/20 p-2 rounded-lg transition-colors"
+                            >
+                                <ArrowLeft size={18} />
+                            </button>
+                            <h1 className="text-2xl font-bold text-[var(--color-text-white)]">
+                                Monthly Attendance Muster
+                            </h1>
+                        </div>
+                    </div>
+                </div>
 
-                                </button>
-                                <div className="flex items-center gap-3">
-                                    <h1 className="text-2xl font-bold text-[var(--color-text-white)]">
-                                        Monthly Attendance Muster
-                                    </h1>
-                                </div>
+                {/* Error Display */}
+                {error && (
+                    <div className="bg-[var(--color-error-light)] border border-[var(--color-error-lighter)] rounded-lg p-4 mb-6">
+                        <div className="flex items-center gap-2 text-[var(--color-error-dark)]">
+                            <HelpCircle size={16} />
+                            <span className="font-medium">Error:</span>
+                            <span>{error}</span>
+                        </div>
+                    </div>
+                )}
+
+
+
+                {/* Legend + Grid */}
+                <div className="flex-1 flex flex-col min-h-0 bg-[var(--color-bg-secondary)] rounded-xl shadow-sm border border-[var(--color-primary-dark)] overflow-hidden">
+                    {/* Legend/Header bar */}
+                    <div className="px-6 py-4 border-b border-[var(--color-primary-light)] bg-[var(--color-primary-lighter)]">
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                            <div>
+                                <h3 className="font-semibold text-[var(--color-primary-darker)]">
+                                    Monthly Attendance Muster - {formatMonthYear(filters.month_year)}
+                                </h3>
+                                <p className="text-sm text-[var(--color-primary-darker)]">
+                                    {hasGenerated
+                                        ? `${gridData.length} employee${gridData.length !== 1 ? 's' : ''} found`
+                                        : 'Click "Generate Report" to load data'
+                                    }
+                                </p>
                             </div>
 
-                            <div className="flex items-center gap-3">
+                            <div className="flex items-center gap-3 flex-wrap">
+                                {/* Legend - only show when data is loaded */}
+                                {hasGenerated && (
+                                    <div className="flex flex-wrap gap-1.5 sm:ml-auto">
+                                        {[...TOTALS_ORDER].map((c) => (
+                                            <span key={c}
+                                                className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold border ${CODE_COLORS[c] || 'bg-gray-100 text-gray-600 border-gray-200'}`}>
+                                                <span className="w-1.5 h-1.5 rounded-full bg-current opacity-60" />
+                                                {c === '½P' ? '½P' : c}&nbsp;
+                                                <span className="font-normal opacity-70">{CODE_LABELS[c]}</span>
+                                            </span>
+                                        ))}
+                                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold border bg-slate-100 text-slate-500 border-slate-300">
+                                            <span className="w-1.5 h-1.5 rounded-full bg-blue-400" />
+                                            Sat
+                                        </span>
+                                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold border bg-red-50 text-red-400 border-red-200">
+                                            <span className="w-1.5 h-1.5 rounded-full bg-red-400" />
+                                            Sun
+                                        </span>
+                                    </div>
+                                )}
+
+                                {/* Filter button */}
+                                <div className="relative">
+                                    <button
+                                        ref={filterBtnRef}
+                                        onClick={() => setFilterDropdown((v) => !v)}
+                                        className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-lg font-medium transition-colors"
+                                    >
+                                        <Filter className="h-4 w-4" />
+                                        Filters
+                                        <ChevronDown className="h-4 w-4" />
+                                    </button>
+
+                                    {filterDropdown && filterPos.ready && createPortal(
+                                        <>
+                                            <div className="fixed inset-0 z-[100] bg-black/40" onClick={() => setFilterDropdown(false)} />
+                                            <div
+                                                className="hidden sm:flex flex-col absolute z-[110] bg-[var(--color-bg-secondary)] rounded-lg shadow-2xl border border-[var(--color-border-secondary)] max-h-[80vh] overflow-visible"
+                                                style={{
+                                                    position: 'absolute',
+                                                    top: filterPos.top,
+                                                    left: Math.min(filterPos.left, window.innerWidth - 440),
+                                                    width: Math.max(420, filterPos.width),
+                                                    minWidth: 420
+                                                }}
+                                            >
+                                                <div className="flex items-center justify-between p-4 border-b border-[var(--color-border-secondary)]">
+                                                    <div className="flex items-center gap-3">
+                                                        <div className="p-2 bg-[var(--color-primary-lightest)] rounded-lg">
+                                                            <Filter className="h-5 w-5 text-[var(--color-primary)]" />
+                                                        </div>
+                                                        <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">Filters</h2>
+                                                    </div>
+                                                    <button
+                                                        onClick={() => setFilterDropdown(false)}
+                                                        className="text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] p-1 rounded-lg hover:bg-[var(--color-bg-hover)]"
+                                                    >
+                                                        <X className="h-4 w-4" />
+                                                    </button>
+                                                </div>
+                                                <div className="flex-1 overflow-visible p-4">
+                                                    <div className="grid grid-cols-2 gap-4">
+                                                        {/* Month Year */}
+                                                        <div className="col-span-1 flex flex-col">
+                                                            <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-2">
+                                                                <Calendar className="inline h-4 w-4 mr-1" />
+                                                                Month & Year <span className="text-[var(--color-error)]">*</span>
+                                                            </label>
+                                                            <DatePicker
+                                                                selected={filters.month_year ? new Date(`${filters.month_year}-01`) : null}
+                                                                onChange={(date) => {
+                                                                    const iso = date ? `${date.getFullYear()}-${pad2(date.getMonth() + 1)}` : '';
+                                                                    handleFilterChange('month_year', iso);
+                                                                }}
+                                                                dateFormat="MMMM yyyy"
+                                                                showMonthYearPicker
+                                                                showFullMonthYearPicker
+                                                                className="w-full px-3 py-2 rounded-lg border border-[var(--color-border-secondary)] bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-border-focus)] focus:border-transparent"
+                                                                placeholderText="Select month and year"
+                                                                maxDate={new Date()}
+                                                                showPopperArrow={false}
+                                                            />
+                                                        </div>
+
+                                                        {/* Branch */}
+                                                        <div className="col-span-1 flex flex-col">
+                                                            <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-2">
+                                                                <Building className="inline h-4 w-4 mr-1" />
+                                                                Branch
+                                                            </label>
+                                                            <CustomSelect
+                                                                name="branch_id"
+                                                                value={filters.branch_id}
+                                                                onChange={(e) => handleFilterChange('branch_id', e.target.value)}
+                                                                options={branches.map((b) => ({ value: b.id, label: b.name }))}
+                                                                placeholder="All Branches"
+                                                                searchable={true}
+                                                                disabled={dropdownLoading}
+                                                            />
+                                                        </div>
+
+                                                        {/* Department */}
+                                                        <div className="col-span-1 flex flex-col">
+                                                            <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-2">
+                                                                <Users className="inline h-4 w-4 mr-1" />
+                                                                Department
+                                                            </label>
+                                                            <CustomSelect
+                                                                name="department_id"
+                                                                value={filters.department_id}
+                                                                onChange={(e) => handleFilterChange('department_id', e.target.value)}
+                                                                options={departments.map((d) => ({ value: d.id, label: d.name }))}
+                                                                placeholder="All Departments"
+                                                                searchable={true}
+                                                                disabled={dropdownLoading}
+                                                            />
+                                                        </div>
+
+                                                        {/* Designation */}
+                                                        <div className="col-span-1 flex flex-col">
+                                                            <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-2">
+                                                                <Award className="inline h-4 w-4 mr-1" />
+                                                                Designation
+                                                            </label>
+                                                            <CustomSelect
+                                                                name="designation_id"
+                                                                value={filters.designation_id}
+                                                                onChange={(e) => handleFilterChange('designation_id', e.target.value)}
+                                                                options={designations.map((d) => ({ value: d.id, label: d.name }))}
+                                                                placeholder="All Designations"
+                                                                searchable={true}
+                                                                disabled={dropdownLoading}
+                                                            />
+                                                        </div>
+
+                                                        {/* Employee (optional) */}
+                                                        <div className="col-span-2 flex flex-col">
+                                                            <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-2">
+                                                                <User className="inline h-4 w-4 mr-1" />
+                                                                Employee (optional)
+                                                            </label>
+                                                            <CustomSelect
+                                                                name="employee_id"
+                                                                value={filters.employee_id}
+                                                                onChange={(e) => handleFilterChange('employee_id', e.target.value)}
+                                                                options={employees.map((emp) => ({ value: emp.id, label: emp.name }))}
+                                                                placeholder="All Employees"
+                                                                searchable={true}
+                                                                disabled={dropdownLoading}
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div className="flex flex-col sm:flex-row justify-end gap-2 p-4 border-t border-[var(--color-border-secondary)] rounded-b-2xl">
+                                                    <button
+                                                        onClick={() => { resetFilters(); setFilterDropdown(false); }}
+                                                        className="flex items-center justify-center gap-2 px-4 py-2 bg-transparent text-[var(--color-primary)] border-2 hover:bg-[var(--color-primary-lightest)] border-[var(--color-primary)] rounded-lg hover:bg-[var(--color-bg-hover)] transition-colors text-sm font-medium min-w-[100px]"
+                                                    >
+                                                        <RefreshCw size={14} />
+                                                        Reset
+                                                    </button>
+                                                    <button
+                                                        onClick={() => { setFilterDropdown(false); handleGenerateReport(); }}
+                                                        disabled={loading || !filters.month_year}
+                                                        className="w-auto sm:w-[175px] flex items-center justify-center gap-2 px-4 py-2 bg-[var(--color-primary-dark)] text-[var(--color-text-white)] rounded-lg hover:bg-[var(--color-primary-darker)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
+                                                    >
+                                                        {loading ? <RefreshCw size={14} className="animate-spin" /> : <Play size={14} />}
+                                                        {loading ? 'Generating...' : 'Generate Report'}
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </>,
+                                        document.body
+                                    )}
+                                </div>
+
                                 {/* Export button */}
                                 <div className="relative">
                                     <button
                                         ref={exportBtnRef}
                                         onClick={() => setExportDropdown((v) => !v)}
-                                        disabled={!hasGenerated || gridData.length === 0}
-                                        className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${hasGenerated && gridData.length > 0
-                                            ? 'bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)]'
-                                            : 'bg-[var(--color-bg-gray-light)] text-[var(--color-primary-dark)] cursor-not-allowed'
-                                            }`}
+                                        className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-lg font-medium transition-colors"
                                     >
                                         <Download className="h-4 w-4" />
                                         Export
@@ -620,243 +828,6 @@ const MonthlyMusterPreview = () => {
                             </div>
                         </div>
                     </div>
-                </div>
-
-                {/* Error Display */}
-                {error && (
-                    <div className="bg-[var(--color-error-light)] border border-[var(--color-error-lighter)] rounded-lg p-4 mb-6">
-                        <div className="flex items-center gap-2 text-[var(--color-error-dark)]">
-                            <HelpCircle size={16} />
-                            <span className="font-medium">Error:</span>
-                            <span>{error}</span>
-                        </div>
-                    </div>
-                )}
-
-                {/* Filters */}
-                <div className="bg-[var(--color-bg-secondary)] rounded-xl shadow-sm border border-[var(--color-border-primary)] p-5 mb-6">
-                    <div className="flex items-center justify-between mb-4">
-                        <div className="flex items-center gap-3">
-                            <div className="p-2 bg-[var(--color-icon-primary-bg)] rounded-lg">
-                                <Filter className="h-5 w-5 text-[var(--color-primary)]" />
-                            </div>
-                            <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">Filters</h2>
-                        </div>
-                        <button
-                            onClick={resetFilters}
-                            className="flex items-center gap-2 px-4 py-2 bg-[var(--color-bg-gray-light)] text-[var(--color-text-secondary)] rounded-lg hover:bg-[var(--color-bg-hover)] transition-colors duration-200"
-                        >
-                            <RefreshCw className="h-4 w-4" />
-                            Reset
-                        </button>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
-                        {/* Month Year */}
-                        <div className="flex flex-col">
-                            <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-2">
-                                <Calendar className="inline h-4 w-4 mr-1" />
-                                Month & Year <span className="text-[var(--color-error)]">*</span>
-                            </label>
-                            <DatePicker
-                                selected={filters.month_year ? new Date(`${filters.month_year}-01`) : null}
-                                onChange={(date) => {
-                                    const iso = date ? `${date.getFullYear()}-${pad2(date.getMonth() + 1)}` : '';
-                                    handleFilterChange('month_year', iso);
-                                }}
-                                dateFormat="MMMM yyyy"
-                                showMonthYearPicker
-                                showFullMonthYearPicker
-                                className="w-full px-3 py-2 rounded-lg border border-[var(--color-border-secondary)] bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-border-focus)] focus:border-transparent"
-                                placeholderText="Select month and year"
-                                maxDate={new Date()}
-                                showPopperArrow={false}
-                            />
-                        </div>
-
-                        {/* Branch */}
-                        <div className="flex flex-col">
-                            <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-2">
-                                <Building className="inline h-4 w-4 mr-1" />
-                                Branch
-                            </label>
-                            {/* <select
-                                value={filters.branch_id}
-                                onChange={(e) => handleFilterChange('branch_id', e.target.value)}
-                                className="w-full px-3 py-2 bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-border-focus)] focus:border-transparent text-[var(--color-text-primary)]"
-                                disabled={dropdownLoading}
-                            >
-                                <option value="">All Branches</option>
-                                {branches.map(b => <option key={b.id} value={b.id}>{b.name}</option>)}
-                            </select> */}
-                            <CustomSelect
-                                name="branch_id"
-                                value={filters.branch_id}
-                                onChange={(e) => handleFilterChange('branch_id', e.target.value)}
-                                options={branches.map((b) => ({
-                                    value: b.id,
-                                    label: b.name,
-                                }))}
-                                placeholder="All Branches"
-                                searchable={true}
-                                disabled={dropdownLoading}
-                            />
-                        </div>
-
-                        {/* Department */}
-                        <div className="flex flex-col">
-                            <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-2">
-                                <Users className="inline h-4 w-4 mr-1" />
-                                Department
-                            </label>
-                            {/* <select
-                                value={filters.department_id}
-                                onChange={(e) => handleFilterChange('department_id', e.target.value)}
-                                className="w-full px-3 py-2 bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-border-focus)] focus:border-transparent text-[var(--color-text-primary)]"
-                                disabled={dropdownLoading}
-                            >
-                                <option value="">All Departments</option>
-                                {departments.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
-                            </select> */}
-                            <CustomSelect
-                                name="department_id"
-                                value={filters.department_id}
-                                onChange={(e) => handleFilterChange('department_id', e.target.value)}
-                                options={departments.map((d) => ({
-                                    value: d.id,
-                                    label: d.name,
-                                }))}
-                                placeholder="All Departments"
-                                searchable={true}
-                                disabled={dropdownLoading}
-                            />
-                        </div>
-
-                        {/* Designation */}
-                        <div className="flex flex-col">
-                            <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-2">
-                                <Award className="inline h-4 w-4 mr-1" />
-                                Designation
-                            </label>
-                            {/* <select
-                                value={filters.designation_id}
-                                onChange={(e) => handleFilterChange('designation_id', e.target.value)}
-                                className="w-full px-3 py-2 bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-border-focus)] focus:border-transparent text-[var(--color-text-primary)]"
-                                disabled={dropdownLoading}
-                            >
-                                <option value="">All Designations</option>
-                                {designations.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
-                            </select> */}
-                            <CustomSelect
-                                name="designation_id"
-                                value={filters.designation_id}
-                                onChange={(e) => handleFilterChange('designation_id', e.target.value)}
-                                options={designations.map((d) => ({
-                                    value: d.id,
-                                    label: d.name,
-                                }))}
-                                placeholder="All Designations"
-                                searchable={true}
-                                disabled={dropdownLoading}
-                            />
-                        </div>
-
-                        {/* Employee (optional) */}
-                        <div className="flex flex-col">
-                            <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-2">
-                                <User className="inline h-4 w-4 mr-1" />
-                                Employee (optional)
-                            </label>
-                            {/* <select
-                                value={filters.employee_id}
-                                onChange={(e) => handleFilterChange('employee_id', e.target.value)}
-                                className="w-full px-3 py-2 bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-border-focus)] focus:border-transparent text-[var(--color-text-primary)]"
-                                disabled={dropdownLoading}
-                            >
-                                <option value="">All Employees</option>
-                                {employees.map(emp => <option key={emp.id} value={emp.id}>{emp.name}</option>)}
-                            </select> */}
-                            <CustomSelect
-                                name="employee_id"
-                                value={filters.employee_id}
-                                onChange={(e) => handleFilterChange('employee_id', e.target.value)}
-                                options={employees.map((emp) => ({
-                                    value: emp.id,
-                                    label: emp.name,
-                                }))}
-                                placeholder="All Employees"
-                                searchable={true}
-                                disabled={dropdownLoading}
-                            />
-                        </div>
-
-                        {/* Generate Button */}
-                        <div className="flex flex-col">
-                            <label className="block text-sm font-medium text-transparent mb-2">Generate</label>
-                            <button
-                                onClick={handleGenerateReport}
-                                disabled={loading || !filters.month_year}
-                                className={`w-full md:w-full flex items-center justify-center gap-2 px-6 py-2 rounded-lg font-medium transition-colors duration-200 ${loading || !filters.month_year
-                                    ? 'bg-[var(--color-bg-gray-light)] text-[var(--color-text-muted)] cursor-not-allowed'
-                                    : 'bg-[var(--color-primary)] text-[var(--color-text-white)] hover:bg-[var(--color-primary-dark)] shadow-lg hover:shadow-xl'
-                                    }`}
-                            >
-                                {loading ? (
-                                    <>
-                                        <RefreshCw className="h-4 w-4 animate-spin" />
-                                        Generating...
-                                    </>
-                                ) : (
-                                    <>
-                                        <Play className="h-4 w-4" />
-                                        Generate Report
-                                    </>
-                                )}
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Legend + Grid */}
-                <div className="bg-[var(--color-bg-secondary)] rounded-xl shadow-sm border border-[var(--color-border-primary)] overflow-hidden mb-8">
-                    {/* Legend/Header bar */}
-                    <div className="px-4 py-4 border-b border-[var(--color-border-primary)] bg-[var(--color-bg-secondary)]">
-                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                            <div>
-                                <h3 className="font-semibold text-slate-800 mb-1">
-                                    Monthly Attendance Muster - {formatMonthYear(filters.month_year)}
-                                </h3>
-                                <p className="text-sm text-slate-500">
-                                    {hasGenerated
-                                        ? `${gridData.length} employee${gridData.length !== 1 ? 's' : ''} found`
-                                        : 'Click "Generate Report" to load data'
-                                    }
-                                </p>
-                            </div>
-
-                            {/* Legend - only show when data is loaded */}
-                            {hasGenerated && (
-                                <div className="flex flex-wrap gap-1.5 sm:ml-auto">
-                                    {[...TOTALS_ORDER].map((c) => (
-                                        <span key={c}
-                                            className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold border ${CODE_COLORS[c] || 'bg-gray-100 text-gray-600 border-gray-200'}`}>
-                                            <span className="w-1.5 h-1.5 rounded-full bg-current opacity-60" />
-                                            {c === '½P' ? '½P' : c}&nbsp;
-                                            <span className="font-normal opacity-70">{CODE_LABELS[c]}</span>
-                                        </span>
-                                    ))}
-                                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold border bg-slate-100 text-slate-500 border-slate-300">
-                                        <span className="w-1.5 h-1.5 rounded-full bg-blue-400" />
-                                        Sat
-                                    </span>
-                                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold border bg-red-50 text-red-400 border-red-200">
-                                        <span className="w-1.5 h-1.5 rounded-full bg-red-400" />
-                                        Sun
-                                    </span>
-                                </div>
-                            )}
-                        </div>
-                    </div>
 
                     {/* Loading indicator (thin bar) */}
                     <div className="h-0.5 w-full bg-transparent">
@@ -866,9 +837,9 @@ const MonthlyMusterPreview = () => {
                     </div>
 
                     {/* Data Grid Container */}
-                    <div ref={containerRef} className="overflow-auto" style={{ maxHeight: '65vh' }}>
+                    <div ref={containerRef} className="flex-1 overflow-auto bg-[#FBF9FD] flex">
                         {!hasGenerated && (
-                            <div className="flex items-center justify-center p-8 bg-[#FBF9FD] rounded-xl  shadow-sm">
+                            <div className="flex-1 flex items-center justify-center bg-[#FBF9FD] shadow-sm">
                                 <NoDataFound
                                     title="Ready to Generate Report"
                                     subtitle="Select your filters and click 'Generate Report' to view muster data."
@@ -877,7 +848,7 @@ const MonthlyMusterPreview = () => {
                         )}
 
                         {hasGenerated && gridData.length === 0 && !loading && (
-                            <div className="flex items-center justify-center p-8 bg-[#FBF9FD] rounded-xl shadow-sm">
+                            <div className="flex-1 flex items-center justify-center bg-[#FBF9FD] rounded-xl shadow-sm">
                                 <NoDataFound
                                     title="No attendance data found"
                                     subtitle="Try adjusting your filters or select a different month."

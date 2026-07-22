@@ -107,7 +107,7 @@ const DesignationList = () => {
 
     return (
         <>
-            <div className="bg-[var(--color-bg-secondary)] h-[86vh] rounded-xl shadow-sm border border-[var(--color-primary-dark)] overflow-hidden">
+            <div className="bg-[#FBF9FD] h-[86vh] rounded-xl shadow-sm border border-[var(--color-primary-dark)] overflow-hidden">
                 <div className="relative">
                     <div className="bg-[var(--color-primary-dark)] px-6 py-4">
                         <div className="flex items-center justify-between">

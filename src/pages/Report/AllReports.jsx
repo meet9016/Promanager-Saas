@@ -285,12 +285,12 @@ const AllReports = () => {
     };
 
     return (
-        <div className="min-h-screen bg-[var(--color-bg-primary)]">
+        <div className="h-[calc(100vh-64px)] bg-[var(--color-bg-primary)] overflow-hidden flex flex-col">
             {toast && <Toast message={toast.message} type={toast.type} onClose={hideToast} />}
 
-            <div className="p-8  mx-auto">
+            <div className="flex-1 flex flex-col p-8 mx-auto w-full overflow-hidden">
                 {/* Header */}
-                <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-xl mb-8 overflow-hidden">
+                <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-xl mb-6 overflow-hidden flex-shrink-0">
                     <div className="bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] p-6">
                         <div className="flex items-center gap-4">
                             <button
@@ -300,7 +300,7 @@ const AllReports = () => {
                                 aria-label="Go back"
                             >
                                 <ArrowLeft size={18} />
-                               
+
                             </button>
                             <h1 className="text-2xl font-bold text-[var(--color-text-white)]">Reports Dashboard</h1>
                         </div>
@@ -308,7 +308,7 @@ const AllReports = () => {
                 </div>
 
                 {/* Available Reports */}
-                <div className="mb-8">
+                <div className="flex-1 overflow-y-auto pr-2">
                     <div className="flex items-center gap-3 mb-6">
                         <div className="p-2 bg-[var(--color-primary-lighter)] rounded-lg">
                             <CheckCircle className="h-5 w-5 text-[var(--color-primary-dark)]" />

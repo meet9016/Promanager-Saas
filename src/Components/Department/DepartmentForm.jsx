@@ -45,7 +45,7 @@ const SectionCard = ({ icon: Icon, label, accentColor = "primary", children }) =
     };
     return (
         <div className="rounded-xl border border-[var(--color-border-secondary)] overflow-visible bg-[var(--color-bg-secondary)] shadow-sm">
-            <div className={`flex items-center gap-2 px-3 py-2 border-b ${headerStyles[accentColor] || headerStyles.primary}`}>
+            <div className={`flex items-center gap-2 px-3 py-2 border-b rounded-[10px] ${headerStyles[accentColor] || headerStyles.primary}`}>
                 {Icon && <Icon className="w-3.5 h-3.5 shrink-0" />}
                 <span className="text-[11px] font-bold uppercase tracking-widest">{label}</span>
             </div>

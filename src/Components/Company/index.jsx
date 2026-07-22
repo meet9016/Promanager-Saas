@@ -29,12 +29,12 @@ const Company = () => {
     };
 
     return (
-        <div className="min-h-screen bg-[var(--color-bg-primary)]">
-            <div className=" mx-auto">
+        <div className="h-full bg-[var(--color-bg-primary)]">
+            <div className="mx-auto h-full flex flex-col">
 
 
                 {/* Main Content */}
-                <div className="space-y-8">
+                <div className="flex-1 min-h-0">
                     {permissions['company_view'] && (
                         <CompanyList
                             companies={companies}

@@ -725,12 +725,12 @@ const MonthlyExceptionReport = () => {
                                 </div>
                             </div>
                             {/* Export button */}
-                            <div className="relative">
+                            {/* <div className="relative">
                                 <button
                                     ref={exportBtnRef}
                                     onClick={() => setExportDropdown((v) => !v)}
                                     disabled={!hasGenerated || rawData.length === 0}
-                                    // className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+
                                     className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-lg font-medium transition-colors"
                                 >
                                     <Download className="h-4 w-4" />
@@ -759,7 +759,7 @@ const MonthlyExceptionReport = () => {
                                     </>,
                                     document.body
                                 )}
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                 </div>
@@ -939,7 +939,7 @@ const MonthlyExceptionReport = () => {
                 {/* ── Summary cards ── */}
                 {hasGenerated && (
                     <>
-                        <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
+                        {/* <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
                             {TABS.map((tab) => {
                                 const Icon = tab.icon;
                                 const isActive = activeTab === tab.key;
@@ -963,7 +963,7 @@ const MonthlyExceptionReport = () => {
                                     </button>
                                 );
                             })}
-                        </div>
+                        </div> */}
 
                         {/* ── Main content card ── */}
                         <div className="bg-[var(--color-bg-secondary)] rounded-lg border border-[var(--color-primary-dark)] overflow-hidden shadow-sm flex flex-col flex-1 min-h-0">
@@ -1173,6 +1173,51 @@ const MonthlyExceptionReport = () => {
                                                 document.body
                                             )}
                                         </div>
+
+
+
+
+
+
+
+
+
+                                        {/* Export button */}
+                                        <div className="relative">
+                                            <button
+                                                ref={exportBtnRef}
+                                                onClick={() => setExportDropdown((v) => !v)}
+                                                disabled={!hasGenerated || rawData.length === 0}
+
+                                                className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-lg font-medium transition-colors"
+                                            >
+                                                <Download className="h-4 w-4" />
+                                                Export
+                                                <ChevronDown className="h-4 w-4" />
+                                            </button>
+
+                                            {exportDropdown && exportPos.ready && createPortal(
+                                                <>
+                                                    <div className="fixed inset-0 z-40" onClick={() => setExportDropdown(false)} />
+                                                    <div className="absolute z-50 bg-[var(--color-bg-secondary)] rounded-lg shadow-2xl border border-[var(--color-border-secondary)] py-2"
+                                                        style={{ position: 'absolute', top: exportPos.top, left: exportPos.left, width: Math.max(192, exportPos.width), minWidth: 192 }}>
+                                                        <button
+                                                            onClick={() => { showToast('Excel export coming soon', 'info'); setExportDropdown(false); }}
+                                                            className="flex items-center gap-2 w-full px-4 py-2 text-left hover:bg-[var(--color-bg-hover)] transition-colors text-[var(--color-text-primary)]">
+                                                            <FileSpreadsheet className="h-4 w-4 text-primary-600" />
+                                                            Export to Excel
+                                                        </button>
+                                                        <button
+                                                            onClick={() => { showToast('PDF export coming soon', 'info'); setExportDropdown(false); }}
+                                                            className="flex items-center gap-2 w-full px-4 py-2 text-left hover:bg-[var(--color-bg-hover)] transition-colors text-[var(--color-text-primary)]">
+                                                            <FileDown className="h-4 w-4 text-red-600" />
+                                                            Export to PDF
+                                                        </button>
+                                                    </div>
+                                                </>,
+                                                document.body
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -1209,7 +1254,7 @@ const MonthlyExceptionReport = () => {
                                         </div>
                                     </div>
                                 ) : activeData.length === 0 ? (
-                                    <div className="flex items-center justify-center p-8 bg-[#FBF9FD] rounded-xl  shadow-sm">
+                                    <div className="flex-1 flex items-center justify-center bg-[#FBF9FD] rounded-xl">
                                         <NoDataFound
                                             title={activeTab === 'all_employees' ? 'No employees found' : `No ${currentTab?.label} exceptions found`}
                                             subtitle={searchQuery ? 'Try a different search term' : `No exceptions for ${formatMonthYear(monthYear)}`}

@@ -1014,10 +1014,10 @@ const AddEmployee = () => {
     }
 
     return (
-        <div className="min-h-screen bg-[var(--color-bg-primary)]">
-            <div className=" mx-auto px-4 py-8">
+        <div className="h-[calc(100vh-64px)] bg-[var(--color-bg-primary)] flex flex-col">
+            <div className="mx-auto px-4 py-6 w-full flex flex-col h-full overflow-hidden">
                 {/* Header */}
-                <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-xl mb-8 overflow-hidden">
+                <div className="shrink-0 bg-[var(--color-bg-secondary)] rounded-2xl shadow-xl mb-6 overflow-hidden">
                     <div className="bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] p-3 sm:p-6">
                         <div className="flex items-center gap-4">
                             {/* Back Icon Only */}
@@ -1040,104 +1040,105 @@ const AddEmployee = () => {
                 </div>
 
                 {/* Form */}
-                <form onSubmit={handleSubmit} className="space-y-6">
-                    {sections.map((section) => (
-                        <div key={section.key} className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-lg border border-[var(--color-border-primary)] " data-section={section.key}>
-                            <button
-                                type="button"
-                                onClick={() => toggleSection(section.key)}
-                                className="w-full flex items-center justify-between p-8 transition-all duration-200"
-                            >
-                                <div className="flex items-center gap-3">
-                                    <div className={`p-2 rounded-lg bg-${section.color}-100`}>
-                                        <section.icon size={20} className={`text-${section.color}-600`} />
+                <form onSubmit={handleSubmit} className="flex flex-col flex-1 overflow-hidden">
+                    <div className="flex-1 overflow-y-auto space-y-6 pr-2 pb-2">
+                        {sections.map((section) => (
+                            <div key={section.key} className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-lg border border-[var(--color-border-primary)] " data-section={section.key}>
+                                <button
+                                    type="button"
+                                    onClick={() => toggleSection(section.key)}
+                                    className="w-full flex items-center justify-between p-8 transition-all duration-200"
+                                >
+                                    <div className="flex items-center gap-3">
+                                        <div className={`p-2 rounded-lg bg-${section.color}-100`}>
+                                            <section.icon size={20} className={`text-${section.color}-600`} />
+                                        </div>
+                                        <span className="font-semibold text-[var(--color-text-primary)] text-lg">{section.title}</span>
                                     </div>
-                                    <span className="font-semibold text-[var(--color-text-primary)] text-lg">{section.title}</span>
-                                </div>
-                                <div className={`p-1 rounded-full ${expandedSections[section.key] ? 'bg-[var(--color-primary-lighter)]' : 'bg-[var(--color-bg-gradient-start)]'}`}>
-                                    {expandedSections[section.key] ?
-                                        <ChevronUp size={20} className="text-[var(--color-primary-dark)]" /> :
-                                        <ChevronDown size={20} className="text-[var(--color-text-secondary)]" />
-                                    }
-                                </div>
-                            </button>
+                                    <div className={`p-1 rounded-full ${expandedSections[section.key] ? 'bg-[var(--color-primary-lighter)]' : 'bg-[var(--color-bg-gradient-start)]'}`}>
+                                        {expandedSections[section.key] ?
+                                            <ChevronUp size={20} className="text-[var(--color-primary-dark)]" /> :
+                                            <ChevronDown size={20} className="text-[var(--color-text-secondary)]" />
+                                        }
+                                    </div>
+                                </button>
 
-                            {expandedSections[section.key] && (
-                                <div className="border-t border-[var(--color-border-primary)]">
-                                    {section.key === 'basicDetails' && (
-                                        <div className="p-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-                                            <div className="space-y-2">
-                                                <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Employee Code <span className="text-[var(--color-error)]">*</span></label>
-                                                <CustomInput
-                                                    type="text"
-                                                    name="employeeCode"
-                                                    value={formData.employeeCode}
-                                                    onChange={handleInputChange}
-                                                    onBlur={handleFieldBlur}
-                                                    placeholder="Enter employee code"
-                                                    required
-                                                    clearable={true}
-                                                />
-                                            </div>
-                                            <div className="space-y-2">
-                                                <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Full Name <span className="text-[var(--color-error)]">*</span></label>
-                                                <CustomInput
-                                                    type="text"
-                                                    name="name"
-                                                    value={formData.name}
-                                                    onChange={handleInputChange}
-                                                    onBlur={handleFieldBlur}
-                                                    placeholder="Enter full name"
-                                                    required
-                                                    clearable={true}
-                                                />
-                                            </div>
-                                            <div className="space-y-2">
-                                                <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Email Address</label>
-                                                <CustomInput
-                                                    type="email"
-                                                    name="email"
-                                                    value={formData.email}
-                                                    onChange={handleInputChange}
-                                                    onBlur={handleFieldBlur}
-                                                    placeholder="Enter email address"
-                                                    clearable={true}
-                                                />
-                                            </div>
+                                {expandedSections[section.key] && (
+                                    <div className="border-t border-[var(--color-border-primary)]">
+                                        {section.key === 'basicDetails' && (
+                                            <div className="p-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+                                                <div className="space-y-2">
+                                                    <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Employee Code <span className="text-[var(--color-error)]">*</span></label>
+                                                    <CustomInput
+                                                        type="text"
+                                                        name="employeeCode"
+                                                        value={formData.employeeCode}
+                                                        onChange={handleInputChange}
+                                                        onBlur={handleFieldBlur}
+                                                        placeholder="Enter employee code"
+                                                        required
+                                                        clearable={true}
+                                                    />
+                                                </div>
+                                                <div className="space-y-2">
+                                                    <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Full Name <span className="text-[var(--color-error)]">*</span></label>
+                                                    <CustomInput
+                                                        type="text"
+                                                        name="name"
+                                                        value={formData.name}
+                                                        onChange={handleInputChange}
+                                                        onBlur={handleFieldBlur}
+                                                        placeholder="Enter full name"
+                                                        required
+                                                        clearable={true}
+                                                    />
+                                                </div>
+                                                <div className="space-y-2">
+                                                    <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Email Address</label>
+                                                    <CustomInput
+                                                        type="email"
+                                                        name="email"
+                                                        value={formData.email}
+                                                        onChange={handleInputChange}
+                                                        onBlur={handleFieldBlur}
+                                                        placeholder="Enter email address"
+                                                        clearable={true}
+                                                    />
+                                                </div>
 
-                                            {/* REMOVED: Attendance Type dropdown — always sends attendanceType: '1' */}
+                                                {/* REMOVED: Attendance Type dropdown — always sends attendanceType: '1' */}
 
-                                            <div className="space-y-2">
-                                                <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">
-                                                    Mobile No <span className="text-[var(--color-error)]">*</span>
-                                                </label>
-                                                <CustomInput
-                                                    type="tel"
-                                                    name="mobile"
-                                                    value={formData.mobile}
-                                                    onChange={handleInputChange}
-                                                    onBlur={handleFieldBlur}
-                                                    placeholder="Enter mobile number"
-                                                    required
-                                                    clearable={true}
-                                                />
-                                            </div>
-                                            <div className="space-y-2">
-                                                <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">
-                                                    Password <span className="text-[var(--color-error)]">*</span>
-                                                </label>
-                                                <CustomInput
-                                                    type="password"
-                                                    name="password"
-                                                    value={formData.password}
-                                                    onChange={handleInputChange}
-                                                    placeholder="Enter password"
-                                                    required
-                                                />
-                                            </div>
-                                            <div className="space-y-2">
-                                                <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Gender</label>
-                                                {/* <select
+                                                <div className="space-y-2">
+                                                    <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">
+                                                        Mobile No <span className="text-[var(--color-error)]">*</span>
+                                                    </label>
+                                                    <CustomInput
+                                                        type="tel"
+                                                        name="mobile"
+                                                        value={formData.mobile}
+                                                        onChange={handleInputChange}
+                                                        onBlur={handleFieldBlur}
+                                                        placeholder="Enter mobile number"
+                                                        required
+                                                        clearable={true}
+                                                    />
+                                                </div>
+                                                <div className="space-y-2">
+                                                    <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">
+                                                        Password <span className="text-[var(--color-error)]">*</span>
+                                                    </label>
+                                                    <CustomInput
+                                                        type="password"
+                                                        name="password"
+                                                        value={formData.password}
+                                                        onChange={handleInputChange}
+                                                        placeholder="Enter password"
+                                                        required
+                                                    />
+                                                </div>
+                                                <div className="space-y-2">
+                                                    <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Gender</label>
+                                                    {/* <select
                                                     name="gender"
                                                     value={formData.gender}
                                                     onChange={handleInputChange}
@@ -1148,31 +1149,31 @@ const AddEmployee = () => {
                                                         <option key={option.value} value={option.value}>{option.label}</option>
                                                     ))}
                                                 </select> */}
-                                                <CustomSelect
-                                                    name="gender"
-                                                    value={formData.gender}
-                                                    onChange={handleInputChange}
-                                                    options={dropdownOptions.genderOptions}
-                                                    placeholder="Select gender"
-                                                    required
-                                                    searchable={true}
-                                                />
-                                            </div>
-                                            <div className="space-y-2">
-                                                <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Branch <span className="text-[var(--color-error)]">*</span></label>
-                                                <CustomSelect
-                                                    name="branch"
-                                                    value={formData.branch}
-                                                    onChange={handleInputChange}
-                                                    options={dropdownOptions.branchOptions}
-                                                    placeholder="Select Branch"
-                                                    required
-                                                    searchable={true}
-                                                />
-                                            </div>
-                                            <div className="space-y-2">
-                                                <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Department <span className="text-[var(--color-error)]">*</span></label>
-                                                {/* <select
+                                                    <CustomSelect
+                                                        name="gender"
+                                                        value={formData.gender}
+                                                        onChange={handleInputChange}
+                                                        options={dropdownOptions.genderOptions}
+                                                        placeholder="Select gender"
+                                                        required
+                                                        searchable={true}
+                                                    />
+                                                </div>
+                                                <div className="space-y-2">
+                                                    <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Branch <span className="text-[var(--color-error)]">*</span></label>
+                                                    <CustomSelect
+                                                        name="branch"
+                                                        value={formData.branch}
+                                                        onChange={handleInputChange}
+                                                        options={dropdownOptions.branchOptions}
+                                                        placeholder="Select Branch"
+                                                        required
+                                                        searchable={true}
+                                                    />
+                                                </div>
+                                                <div className="space-y-2">
+                                                    <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Department <span className="text-[var(--color-error)]">*</span></label>
+                                                    {/* <select
                                                     name="department"
                                                     value={formData.department}
                                                     onChange={handleInputChange}
@@ -1184,42 +1185,42 @@ const AddEmployee = () => {
                                                         <option key={option.value} value={option.value}>{option.label}</option>
                                                     ))}
                                                 </select> */}
-                                                <CustomSelect
-                                                    name="department"
-                                                    value={formData.department}
-                                                    onChange={handleInputChange}
-                                                    options={dropdownOptions.departmentOptions}
-                                                    placeholder="Select department"
-                                                    required
-                                                    searchable={true}
-                                                />
-                                            </div>
-                                            <div className="space-y-2">
-                                                <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Date of Birth</label>
-                                                <CustomDatePicker
-                                                    name="dateOfBirth"
-                                                    value={formData.dateOfBirth}
-                                                    onChange={handleInputChange}
-                                                    placeholder="DD-MM-YYYY"
-                                                    maxDate={new Date()}
-                                                    clearable={true}
-                                                />
-                                            </div> 
-                                            <div className="space-y-2">
-                                                <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Date of Joining <span className="text-[var(--color-error)]">*</span></label>
-                                                <CustomDatePicker
-                                                    name="dateOfJoining"
-                                                    value={formData.dateOfJoining}
-                                                    onChange={handleInputChange}
-                                                    placeholder="DD-MM-YYYY"
-                                                    maxDate={new Date()}
-                                                    required
-                                                    clearable={true}
-                                                />
-                                            </div>
-                                            <div className="space-y-2">
-                                                <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Designation</label>
-                                                {/* <select
+                                                    <CustomSelect
+                                                        name="department"
+                                                        value={formData.department}
+                                                        onChange={handleInputChange}
+                                                        options={dropdownOptions.departmentOptions}
+                                                        placeholder="Select department"
+                                                        required
+                                                        searchable={true}
+                                                    />
+                                                </div>
+                                                <div className="space-y-2">
+                                                    <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Date of Birth</label>
+                                                    <CustomDatePicker
+                                                        name="dateOfBirth"
+                                                        value={formData.dateOfBirth}
+                                                        onChange={handleInputChange}
+                                                        placeholder="DD-MM-YYYY"
+                                                        maxDate={new Date()}
+                                                        clearable={true}
+                                                    />
+                                                </div>
+                                                <div className="space-y-2">
+                                                    <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Date of Joining <span className="text-[var(--color-error)]">*</span></label>
+                                                    <CustomDatePicker
+                                                        name="dateOfJoining"
+                                                        value={formData.dateOfJoining}
+                                                        onChange={handleInputChange}
+                                                        placeholder="DD-MM-YYYY"
+                                                        maxDate={new Date()}
+                                                        required
+                                                        clearable={true}
+                                                    />
+                                                </div>
+                                                <div className="space-y-2">
+                                                    <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Designation</label>
+                                                    {/* <select
                                                     name="designation"
                                                     value={formData.designation}
                                                     onChange={handleInputChange}
@@ -1230,19 +1231,19 @@ const AddEmployee = () => {
                                                         <option key={option.value} value={option.value}>{option.label}</option>
                                                     ))}
                                                 </select> */}
-                                                <CustomSelect
-                                                    name="designation"
-                                                    value={formData.designation}
-                                                    onChange={handleInputChange}
-                                                    options={dropdownOptions.designationOptions}
-                                                    placeholder="Select designation"
-                                                    required
-                                                    searchable={true}
-                                                />
-                                            </div>
-                                            <div className="space-y-2">
-                                                <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Company</label>
-                                                {/* <select
+                                                    <CustomSelect
+                                                        name="designation"
+                                                        value={formData.designation}
+                                                        onChange={handleInputChange}
+                                                        options={dropdownOptions.designationOptions}
+                                                        placeholder="Select designation"
+                                                        required
+                                                        searchable={true}
+                                                    />
+                                                </div>
+                                                <div className="space-y-2">
+                                                    <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Company</label>
+                                                    {/* <select
                                                     name="company"
                                                     value={formData.company}
                                                     onChange={handleInputChange}
@@ -1253,48 +1254,48 @@ const AddEmployee = () => {
                                                         <option key={option.value} value={option.value}>{option.label}</option>
                                                     ))}
                                                 </select> */}
-                                                <CustomSelect
-                                                    name="company"
-                                                    value={formData.company}
-                                                    onChange={handleInputChange}
-                                                    options={dropdownOptions.companyOptions}
-                                                    placeholder="Select company"
-                                                    required
-                                                    searchable={true}
-                                                />
-                                            </div>
-                                            <div className="space-y-2">
-                                                <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Employment Type</label>
-                                                <CustomSelect
-                                                    name="employmentType"
-                                                    value={formData.employmentType}
-                                                    onChange={handleInputChange}
-                                                    options={dropdownOptions.employmentTypeOptions}
-                                                    placeholder="Select Branch"
-                                                    required
-                                                    searchable={true}
-                                                />
-                                            </div>
-                                            <div className="space-y-2 md:col-span-2">
-                                                <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Address</label>
-                                                <textarea
-                                                    name="address"
-                                                    value={formData.address}
-                                                    onChange={handleInputChange}
-                                                    rows="2"
-                                                    className="w-full px-4 py-3 border border-[var(--color-border-primary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition-all resize-none"
-                                                    placeholder="Enter address"
-                                                />
-                                            </div>
-                                        </div>
-                                    )}
-
-                                    {section.key === 'salaryStructure' && (
-                                        <div className="p-8 space-y-6">
-                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                                    <CustomSelect
+                                                        name="company"
+                                                        value={formData.company}
+                                                        onChange={handleInputChange}
+                                                        options={dropdownOptions.companyOptions}
+                                                        placeholder="Select company"
+                                                        required
+                                                        searchable={true}
+                                                    />
+                                                </div>
                                                 <div className="space-y-2">
-                                                    <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Salary Type</label>
-                                                    {/* <select
+                                                    <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Employment Type</label>
+                                                    <CustomSelect
+                                                        name="employmentType"
+                                                        value={formData.employmentType}
+                                                        onChange={handleInputChange}
+                                                        options={dropdownOptions.employmentTypeOptions}
+                                                        placeholder="Select Branch"
+                                                        required
+                                                        searchable={true}
+                                                    />
+                                                </div>
+                                                <div className="space-y-2 md:col-span-2">
+                                                    <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Address</label>
+                                                    <textarea
+                                                        name="address"
+                                                        value={formData.address}
+                                                        onChange={handleInputChange}
+                                                        rows="2"
+                                                        className="w-full px-4 py-3 border border-[var(--color-border-primary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition-all resize-none"
+                                                        placeholder="Enter address"
+                                                    />
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {section.key === 'salaryStructure' && (
+                                            <div className="p-8 space-y-6">
+                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                                    <div className="space-y-2">
+                                                        <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Salary Type</label>
+                                                        {/* <select
                                                         name="salaryType"
                                                         value={formData.salaryType}
                                                         onChange={handleInputChange}
@@ -1305,252 +1306,254 @@ const AddEmployee = () => {
                                                             <option key={option.value} value={option.value}>{option.label}</option>
                                                         ))}
                                                     </select> */}
-                                                    <CustomSelect
-                                                        name="salaryType"
-                                                        value={formData.salaryType}
+                                                        <CustomSelect
+                                                            name="salaryType"
+                                                            value={formData.salaryType}
+                                                            onChange={handleInputChange}
+                                                            options={dropdownOptions.salaryTypeOptions}
+                                                            placeholder="Select salaryType"
+                                                            required
+                                                            searchable={true}
+                                                        />
+                                                    </div>
+                                                    <div className="space-y-2">
+                                                        <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Base Salary</label>
+                                                        <CustomInput
+                                                            type="number"
+                                                            name="salary"
+                                                            value={formData.salary}
+                                                            onChange={handleInputChange}
+                                                            onBlur={handleFieldBlur}
+                                                            placeholder="Enter base salary amount"
+                                                        />
+                                                    </div>
+                                                </div>
+
+                                                {/* Allowances Section */}
+                                                <div className="space-y-4">
+                                                    <div className="flex items-center justify-between">
+                                                        <h4 className="text-lg font-semibold text-[var(--color-text-primary)] flex items-center gap-2">
+                                                            <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                                                            Allowances
+                                                        </h4>
+                                                        <button
+                                                            type="button"
+                                                            onClick={addAllowance}
+                                                            className="flex items-center gap-2 text-[var(--color-primary-dark)] hover:text-[var(--color-primary-darkest)] font-medium transition-colors px-3 py-2 rounded-lg hover:bg-[var(--color-primary-lighter)]"
+                                                        >
+                                                            <Plus size={16} />
+                                                            Add Allowance
+                                                        </button>
+                                                    </div>
+
+                                                    {formData.allowances.length > 0 ? (
+                                                        formData.allowances.map((allowance, index) => (
+                                                            <div key={index} className="border border-[var(--color-border-primary)] rounded-lg p-4 bg-[var(--color-bg-card)]">
+                                                                <div className="flex items-center justify-between mb-4">
+                                                                    <h4 className="text-sm font-semibold text-[var(--color-text-secondary)]">Allowance {index + 1}</h4>
+                                                                    <button
+                                                                        type="button"
+                                                                        onClick={() => removeAllowance(index)}
+                                                                        className="text-[var(--color-error)] hover:text-[var(--color-error-dark)] p-2 rounded-full hover:bg-[var(--color-error-light)] transition-colors"
+                                                                        title="Remove this allowance"
+                                                                    >
+                                                                        <Trash2 size={16} />
+                                                                    </button>
+                                                                </div>
+                                                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                                                    <div className="space-y-2">
+                                                                        <label className="block text-sm font-medium text-[var(--color-text-secondary)]">Allowance Type <span className="text-[var(--color-error)]">*</span></label>
+                                                                        <CustomSelect
+                                                                            name="allowance_id"
+                                                                            value={allowance.allowance_id}
+                                                                            onChange={(e) => handleAllowanceChange(index, 'allowance_id', e.target.value)}
+                                                                            options={dropdownOptions.allowanceOptions}
+                                                                            placeholder="Select Allowance"
+                                                                            required
+                                                                            searchable={true}
+                                                                        />
+                                                                    </div>
+                                                                    <div className="space-y-2">
+                                                                        <label className="block text-sm font-medium text-[var(--color-text-secondary)]">Type <span className="text-[var(--color-error)]">*</span></label>
+                                                                        <CustomSelect
+                                                                            name="allowance_type"
+                                                                            value={allowance.allowance_type}
+                                                                            onChange={(e) => handleAllowanceChange(index, 'allowance_type', e.target.value ? parseInt(e.target.value) : '')}
+                                                                            options={[
+                                                                                { value: 2, label: 'Amount' },
+                                                                                ...(formData.salaryType === '1' ? [{ value: 1, label: 'Percentage' }] : [])
+                                                                            ]}
+                                                                            placeholder="Select Type"
+                                                                            required
+                                                                            searchable={false}
+                                                                        />
+                                                                    </div>
+                                                                    <div className="space-y-2">
+                                                                        <label className="block text-sm font-medium text-[var(--color-text-secondary)]">
+                                                                            {allowance.allowance_type === 1 ? 'Percentage (%)' : 'Amount (₹)'} <span className="text-[var(--color-error)]">*</span>
+                                                                        </label>
+                                                                        <CustomInput
+                                                                            type="number"
+                                                                            value={allowance.allowance_value}
+                                                                            onChange={(e) => handleAllowanceChange(index, 'allowance_value', e.target.value)}
+                                                                            placeholder={allowance.allowance_type === 1 ? 'Enter percentage' : 'Enter amount'}
+                                                                            min="0"
+                                                                            max={allowance.allowance_type === 1 ? "100" : undefined}
+                                                                            step="0.01"
+                                                                            required
+                                                                        />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        ))
+                                                    ) : (
+                                                        <div className="text-[var(--color-text-muted)]"></div>
+                                                    )}
+                                                </div>
+
+                                                {/* Deductions Section */}
+                                                <div className="space-y-4">
+                                                    <div className="flex items-center justify-between">
+                                                        <h4 className="text-lg font-semibold text-[var(--color-text-primary)] flex items-center gap-2">
+                                                            <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                                                            Deductions
+                                                        </h4>
+                                                        <button
+                                                            type="button"
+                                                            onClick={addDeduction}
+                                                            className="flex items-center gap-2 text-[var(--color-primary-dark)] hover:text-[var(--color-primary-darkest)] font-medium transition-colors px-3 py-2 rounded-lg hover:bg-[var(--color-primary-lighter)]"
+                                                        >
+                                                            <Plus size={16} />
+                                                            Add Deduction
+                                                        </button>
+                                                    </div>
+
+                                                    {formData.deductions.length > 0 ? (
+                                                        formData.deductions.map((deduction, index) => (
+                                                            <div key={index} className="border border-[var(--color-border-primary)] rounded-lg p-4 bg-[var(--color-bg-card)]">
+                                                                <div className="flex items-center justify-between mb-4">
+                                                                    <h4 className="text-sm font-semibold text-[var(--color-text-secondary)]">Deduction {index + 1}</h4>
+                                                                    <button
+                                                                        type="button"
+                                                                        onClick={() => removeDeduction(index)}
+                                                                        className="text-[var(--color-error)] hover:text-[var(--color-error-dark)] p-2 rounded-full hover:bg-[var(--color-error-light)] transition-colors"
+                                                                        title="Remove this deduction"
+                                                                    >
+                                                                        <Trash2 size={16} />
+                                                                    </button>
+                                                                </div>
+                                                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                                                    <div className="space-y-2">
+                                                                        <label className="block text-sm font-medium text-[var(--color-text-secondary)]">Deduction Type <span className="text-[var(--color-error)]">*</span></label>
+                                                                        <CustomSelect
+                                                                            name="deduction_id"
+                                                                            value={deduction.deduction_id}
+                                                                            onChange={(e) => handleDeductionChange(index, 'deduction_id', e.target.value)}
+                                                                            options={dropdownOptions.deductionOptions}
+                                                                            placeholder="Select Deduction"
+                                                                            required
+                                                                            searchable={true}
+                                                                        />
+                                                                    </div>
+                                                                    <div className="space-y-2">
+                                                                        <label className="block text-sm font-medium text-[var(--color-text-secondary)]">Type <span className="text-[var(--color-error)]">*</span></label>
+                                                                        <CustomSelect
+                                                                            name="deduction_type"
+                                                                            value={deduction.deduction_type}
+                                                                            onChange={(e) => handleDeductionChange(index, 'deduction_type', e.target.value ? parseInt(e.target.value) : '')}
+                                                                            options={[
+                                                                                { value: 2, label: 'Amount' },
+                                                                                ...(formData.salaryType === '1' ? [{ value: 1, label: 'Percentage' }] : [])
+                                                                            ]}
+                                                                            placeholder="Select Type"
+                                                                            required
+                                                                            searchable={false}
+                                                                        />
+                                                                    </div>
+                                                                    <div className="space-y-2">
+                                                                        <label className="block text-sm font-medium text-[var(--color-text-secondary)]">
+                                                                            {deduction.deduction_type === 1 ? 'Percentage (%)' : 'Amount (₹)'} <span className="text-[var(--color-error)]">*</span>
+                                                                        </label>
+                                                                        <CustomInput
+                                                                            type="number"
+                                                                            value={deduction.deduction_value}
+                                                                            onChange={(e) => handleDeductionChange(index, 'deduction_value', e.target.value)}
+                                                                            placeholder={deduction.deduction_type === 1 ? 'Enter percentage' : 'Enter amount'}
+                                                                            min="0"
+                                                                            max={deduction.deduction_type === 1 ? "100" : undefined}
+                                                                            step="0.01"
+                                                                            required
+                                                                        />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        ))
+                                                    ) : (
+                                                        <div className="text-[var(--color-text-muted)]"></div>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {section.key === 'bankDetails' && (
+                                            <div className="p-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+                                                <div className="space-y-2">
+                                                    <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Bank Name</label>
+                                                    <CustomInput
+                                                        type="text"
+                                                        name="bankName"
+                                                        value={formData.bankName}
                                                         onChange={handleInputChange}
-                                                        options={dropdownOptions.salaryTypeOptions}
-                                                        placeholder="Select salaryType"
-                                                        required
-                                                        searchable={true}
+                                                        onBlur={handleFieldBlur}
+                                                        placeholder="Enter bank name"
+                                                        clearable={true}
                                                     />
                                                 </div>
                                                 <div className="space-y-2">
-                                                    <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Base Salary</label>
+                                                    <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Branch Name</label>
                                                     <CustomInput
-                                                        type="number"
-                                                        name="salary"
-                                                        value={formData.salary}
+                                                        type="text"
+                                                        name="branchName"
+                                                        value={formData.branchName}
                                                         onChange={handleInputChange}
                                                         onBlur={handleFieldBlur}
-                                                        placeholder="Enter base salary amount"
+                                                        placeholder="Enter branch name"
+                                                        clearable={true}
+                                                    />
+                                                </div>
+                                                <div className="space-y-2">
+                                                    <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Account Number</label>
+                                                    <CustomInput
+                                                        type="text"
+                                                        name="accountNo"
+                                                        value={formData.accountNo}
+                                                        onChange={handleInputChange}
+                                                        onBlur={handleFieldBlur}
+                                                        placeholder="Enter account number"
+                                                        clearable={true}
+                                                    />
+                                                </div>
+                                                <div className="space-y-2">
+                                                    <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">IFSC Code</label>
+                                                    <CustomInput
+                                                        type="text"
+                                                        name="ifscCode"
+                                                        value={formData.ifscCode}
+                                                        onChange={handleInputChange}
+                                                        onBlur={handleFieldBlur}
+                                                        placeholder="Enter IFSC code"
+                                                        clearable={true}
                                                     />
                                                 </div>
                                             </div>
+                                        )}
 
-                                            {/* Allowances Section */}
-                                            <div className="space-y-4">
-                                                <div className="flex items-center justify-between">
-                                                    <h4 className="text-lg font-semibold text-[var(--color-text-primary)] flex items-center gap-2">
-                                                        <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                                                        Allowances
-                                                    </h4>
-                                                    <button
-                                                        type="button"
-                                                        onClick={addAllowance}
-                                                        className="flex items-center gap-2 text-[var(--color-primary-dark)] hover:text-[var(--color-primary-darkest)] font-medium transition-colors px-3 py-2 rounded-lg hover:bg-[var(--color-primary-lighter)]"
-                                                    >
-                                                        <Plus size={16} />
-                                                        Add Allowance
-                                                    </button>
-                                                </div>
-
-                                                {formData.allowances.length > 0 ? (
-                                                    formData.allowances.map((allowance, index) => (
-                                                        <div key={index} className="border border-[var(--color-border-primary)] rounded-lg p-4 bg-[var(--color-bg-card)]">
-                                                            <div className="flex items-center justify-between mb-4">
-                                                                <h4 className="text-sm font-semibold text-[var(--color-text-secondary)]">Allowance {index + 1}</h4>
-                                                                <button
-                                                                    type="button"
-                                                                    onClick={() => removeAllowance(index)}
-                                                                    className="text-[var(--color-error)] hover:text-[var(--color-error-dark)] p-2 rounded-full hover:bg-[var(--color-error-light)] transition-colors"
-                                                                    title="Remove this allowance"
-                                                                >
-                                                                    <Trash2 size={16} />
-                                                                </button>
-                                                            </div>
-                                                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                                                <div className="space-y-2">
-                                                                    <label className="block text-sm font-medium text-[var(--color-text-secondary)]">Allowance Type <span className="text-[var(--color-error)]">*</span></label>
-                                                                    <select
-                                                                        value={allowance.allowance_id}
-                                                                        onChange={(e) => handleAllowanceChange(index, 'allowance_id', e.target.value)}
-                                                                        className="w-full px-3 py-2 border border-[var(--color-border-primary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition-all"
-                                                                        required
-                                                                    >
-                                                                        <option value="">Select Allowance</option>
-                                                                        {dropdownOptions.allowanceOptions && dropdownOptions.allowanceOptions.map(option => (
-                                                                            <option key={option.value} value={option.value}>{option.label}</option>
-                                                                        ))}
-                                                                    </select>
-                                                                </div>
-                                                                <div className="space-y-2">
-                                                                    <label className="block text-sm font-medium text-[var(--color-text-secondary)]">Type <span className="text-[var(--color-error)]">*</span></label>
-                                                                    <select
-                                                                        value={allowance.allowance_type}
-                                                                        onChange={(e) => handleAllowanceChange(index, 'allowance_type', parseInt(e.target.value))}
-                                                                        className="w-full px-3 py-2 border border-[var(--color-border-primary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition-all"
-                                                                        required
-                                                                    >
-                                                                        <option value={2}>Amount</option>
-                                                                        {formData.salaryType === '1' && <option value={1}>Percentage</option>}
-                                                                    </select>
-                                                                </div>
-                                                                <div className="space-y-2">
-                                                                    <label className="block text-sm font-medium text-[var(--color-text-secondary)]">
-                                                                        {allowance.allowance_type === 1 ? 'Percentage (%)' : 'Amount (₹)'} <span className="text-[var(--color-error)]">*</span>
-                                                                    </label>
-                                                                    <CustomInput
-                                                                        type="number"
-                                                                        value={allowance.allowance_value}
-                                                                        onChange={(e) => handleAllowanceChange(index, 'allowance_value', e.target.value)}
-                                                                        placeholder={allowance.allowance_type === 1 ? 'Enter percentage' : 'Enter amount'}
-                                                                        min="0"
-                                                                        max={allowance.allowance_type === 1 ? "100" : undefined}
-                                                                        step="0.01"
-                                                                        required
-                                                                    />
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    ))
-                                                ) : (
-                                                    <div className="text-[var(--color-text-muted)]"></div>
-                                                )}
-                                            </div>
-
-                                            {/* Deductions Section */}
-                                            <div className="space-y-4">
-                                                <div className="flex items-center justify-between">
-                                                    <h4 className="text-lg font-semibold text-[var(--color-text-primary)] flex items-center gap-2">
-                                                        <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                                                        Deductions
-                                                    </h4>
-                                                    <button
-                                                        type="button"
-                                                        onClick={addDeduction}
-                                                        className="flex items-center gap-2 text-[var(--color-primary-dark)] hover:text-[var(--color-primary-darkest)] font-medium transition-colors px-3 py-2 rounded-lg hover:bg-[var(--color-primary-lighter)]"
-                                                    >
-                                                        <Plus size={16} />
-                                                        Add Deduction
-                                                    </button>
-                                                </div>
-
-                                                {formData.deductions.length > 0 ? (
-                                                    formData.deductions.map((deduction, index) => (
-                                                        <div key={index} className="border border-[var(--color-border-primary)] rounded-lg p-4 bg-[var(--color-bg-card)]">
-                                                            <div className="flex items-center justify-between mb-4">
-                                                                <h4 className="text-sm font-semibold text-[var(--color-text-secondary)]">Deduction {index + 1}</h4>
-                                                                <button
-                                                                    type="button"
-                                                                    onClick={() => removeDeduction(index)}
-                                                                    className="text-[var(--color-error)] hover:text-[var(--color-error-dark)] p-2 rounded-full hover:bg-[var(--color-error-light)] transition-colors"
-                                                                    title="Remove this deduction"
-                                                                >
-                                                                    <Trash2 size={16} />
-                                                                </button>
-                                                            </div>
-                                                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                                                <div className="space-y-2">
-                                                                    <label className="block text-sm font-medium text-[var(--color-text-secondary)]">Deduction Type <span className="text-[var(--color-error)]">*</span></label>
-                                                                    <select
-                                                                        value={deduction.deduction_id}
-                                                                        onChange={(e) => handleDeductionChange(index, 'deduction_id', e.target.value)}
-                                                                        className="w-full px-3 py-2 border border-[var(--color-border-primary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition-all"
-                                                                        required
-                                                                    >
-                                                                        <option value="">Select Deduction</option>
-                                                                        {dropdownOptions.deductionOptions && dropdownOptions.deductionOptions.map(option => (
-                                                                            <option key={option.value} value={option.value}>{option.label}</option>
-                                                                        ))}
-                                                                    </select>
-                                                                </div>
-                                                                <div className="space-y-2">
-                                                                    <label className="block text-sm font-medium text-[var(--color-text-secondary)]">Type <span className="text-[var(--color-error)]">*</span></label>
-                                                                    <select
-                                                                        value={deduction.deduction_type}
-                                                                        onChange={(e) => handleDeductionChange(index, 'deduction_type', parseInt(e.target.value))}
-                                                                        className="w-full px-3 py-2 border border-[var(--color-border-primary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition-all"
-                                                                        required
-                                                                    >
-                                                                        <option value={2}>Amount</option>
-                                                                        {formData.salaryType === '1' && <option value={1}>Percentage</option>}
-                                                                    </select>
-                                                                </div>
-                                                                <div className="space-y-2">
-                                                                    <label className="block text-sm font-medium text-[var(--color-text-secondary)]">
-                                                                        {deduction.deduction_type === 1 ? 'Percentage (%)' : 'Amount (₹)'} <span className="text-[var(--color-error)]">*</span>
-                                                                    </label>
-                                                                    <CustomInput
-                                                                        type="number"
-                                                                        value={deduction.deduction_value}
-                                                                        onChange={(e) => handleDeductionChange(index, 'deduction_value', e.target.value)}
-                                                                        placeholder={deduction.deduction_type === 1 ? 'Enter percentage' : 'Enter amount'}
-                                                                        min="0"
-                                                                        max={deduction.deduction_type === 1 ? "100" : undefined}
-                                                                        step="0.01"
-                                                                        required
-                                                                    />
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    ))
-                                                ) : (
-                                                    <div className="text-[var(--color-text-muted)]"></div>
-                                                )}
-                                            </div>
-                                        </div>
-                                    )}
-
-                                    {section.key === 'bankDetails' && (
-                                        <div className="p-8 grid grid-cols-1 md:grid-cols-2 gap-6">
-                                            <div className="space-y-2">
-                                                <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Bank Name</label>
-                                                <CustomInput
-                                                    type="text"
-                                                    name="bankName"
-                                                    value={formData.bankName}
-                                                    onChange={handleInputChange}
-                                                    onBlur={handleFieldBlur}
-                                                    placeholder="Enter bank name"
-                                                    clearable={true}
-                                                />
-                                            </div>
-                                            <div className="space-y-2">
-                                                <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Branch Name</label>
-                                                <CustomInput
-                                                    type="text"
-                                                    name="branchName"
-                                                    value={formData.branchName}
-                                                    onChange={handleInputChange}
-                                                    onBlur={handleFieldBlur}
-                                                    placeholder="Enter branch name"
-                                                    clearable={true}
-                                                />
-                                            </div>
-                                            <div className="space-y-2">
-                                                <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Account Number</label>
-                                                <CustomInput
-                                                    type="text"
-                                                    name="accountNo"
-                                                    value={formData.accountNo}
-                                                    onChange={handleInputChange}
-                                                    onBlur={handleFieldBlur}
-                                                    placeholder="Enter account number"
-                                                    clearable={true}
-                                                />
-                                            </div>
-                                            <div className="space-y-2">
-                                                <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">IFSC Code</label>
-                                                <CustomInput
-                                                    type="text"
-                                                    name="ifscCode"
-                                                    value={formData.ifscCode}
-                                                    onChange={handleInputChange}
-                                                    onBlur={handleFieldBlur}
-                                                    placeholder="Enter IFSC code"
-                                                    clearable={true}
-                                                />
-                                            </div>
-                                        </div>
-                                    )}
-
-                                    {section.key === 'Documents' && (
-                                        <div className="p-8">
-                                            <div className="space-y-2 mb-6">
-                                                <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Document Type</label>
-                                                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
-                                                    {/* <select
+                                        {section.key === 'Documents' && (
+                                            <div className="p-8">
+                                                <div className="space-y-2 mb-6">
+                                                    <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Document Type</label>
+                                                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+                                                        {/* <select
                                                         name="documentOption"
                                                         className="flex-1 w-full px-4 py-3 border border-[var(--color-border-primary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
                                                         onChange={handleDocumentTypeChange}
@@ -1561,104 +1564,104 @@ const AddEmployee = () => {
                                                             <option key={option.value} value={option.value}>{option.label}</option>
                                                         ))}
                                                     </select> */}
-                                                    <CustomSelect
-                                                        name="documentOption"
-                                                        value={formData.documentOption}
-                                                        onChange={handleInputChange}
-                                                        options={dropdownOptions.documentOptions}
-                                                        placeholder="Select documentOption"
-                                                        required
-                                                        searchable={true}
-                                                    />
-                                                    <button
-                                                        type="button"
-                                                        className="flex items-center justify-center gap-2 px-4 py-3 w-full sm:w-auto whitespace-nowrap text-[var(--color-primary-dark)] font-medium rounded-lg bg-[var(--color-primary-lighter)]"
-                                                        onClick={addDocument}
-                                                    >
-                                                        <Plus size={16} />
-                                                        Add Document
-                                                    </button>
+                                                        <CustomSelect
+                                                            name="documentOption"
+                                                            value={formData.documentOption}
+                                                            onChange={handleInputChange}
+                                                            options={dropdownOptions.documentOptions}
+                                                            placeholder="Select documentOption"
+                                                            required
+                                                            searchable={true}
+                                                        />
+                                                        <button
+                                                            type="button"
+                                                            className="flex items-center justify-center gap-2 px-4 py-3 w-full sm:w-auto whitespace-nowrap text-[var(--color-primary-dark)] font-medium rounded-lg bg-[var(--color-primary-lighter)]"
+                                                            onClick={addDocument}
+                                                        >
+                                                            <Plus size={16} />
+                                                            Add Document
+                                                        </button>
+                                                    </div>
+                                                </div>
+
+                                                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-6">
+                                                    {formData?.documents?.map((item, index) => (
+                                                        <div className="space-y-2" key={index}>
+                                                            <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">{item.label}</label>
+                                                            <div className="relative w-full h-28 border-2 border-dashed border-[var(--color-border-primary)] rounded-xl bg-[var(--color-bg-card)] overflow-hidden">
+                                                                {!item.preview ? (
+                                                                    <label className="flex flex-col items-center justify-center w-full h-full cursor-pointer">
+                                                                        <div className="flex flex-col items-center justify-center">
+                                                                            <div className="w-10 h-10 mb-2 bg-[var(--color-primary)] rounded-full flex items-center justify-center">
+                                                                                <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                                                                                </svg>
+                                                                            </div>
+                                                                            <p className="text-sm font-medium text-[var(--color-text-primary)]">Upload {item.label}</p>
+                                                                            <p className="text-xs text-[var(--color-text-muted)]">PNG, JPG, PDF up to 5MB</p>
+                                                                        </div>
+                                                                        <input
+                                                                            type="file"
+                                                                            accept="image/*,.pdf"
+                                                                            onChange={(e) => handleDynamicDocumentUpload(e, index)}
+                                                                            className="hidden"
+                                                                        />
+                                                                    </label>
+                                                                ) : (
+                                                                    <div className="relative w-full h-full group">
+                                                                        <img src={item.preview} className="w-full h-full object-contain" />
+                                                                        <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition flex items-center justify-center space-x-3 opacity-0 group-hover:opacity-100">
+                                                                            <button
+                                                                                type="button"
+                                                                                onClick={() => handleImagePreview(item.preview, item.label)}
+                                                                                className="bg-white rounded-full w-10 h-10 flex items-center justify-center"
+                                                                            >
+                                                                                <Eye size={16} />
+                                                                            </button>
+                                                                            <button
+                                                                                type="button"
+                                                                                onClick={() => removeDynamicDocument(index)}
+                                                                                className="bg-red-500 text-white rounded-full w-10 h-10 flex items-center justify-center"
+                                                                            >
+                                                                                <Trash2 size={16} />
+                                                                            </button>
+                                                                        </div>
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                    ))}
                                                 </div>
                                             </div>
+                                        )}
 
-                                            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-6">
-                                                {formData?.documents?.map((item, index) => (
-                                                    <div className="space-y-2" key={index}>
-                                                        <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">{item.label}</label>
-                                                        <div className="relative w-full h-28 border-2 border-dashed border-[var(--color-border-primary)] rounded-xl bg-[var(--color-bg-card)] overflow-hidden">
-                                                            {!item.preview ? (
-                                                                <label className="flex flex-col items-center justify-center w-full h-full cursor-pointer">
-                                                                    <div className="flex flex-col items-center justify-center">
-                                                                        <div className="w-10 h-10 mb-2 bg-[var(--color-primary)] rounded-full flex items-center justify-center">
-                                                                            <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                                                                            </svg>
-                                                                        </div>
-                                                                        <p className="text-sm font-medium text-[var(--color-text-primary)]">Upload {item.label}</p>
-                                                                        <p className="text-xs text-[var(--color-text-muted)]">PNG, JPG, PDF up to 5MB</p>
-                                                                    </div>
-                                                                    <input
-                                                                        type="file"
-                                                                        accept="image/*,.pdf"
-                                                                        onChange={(e) => handleDynamicDocumentUpload(e, index)}
-                                                                        className="hidden"
-                                                                    />
-                                                                </label>
-                                                            ) : (
-                                                                <div className="relative w-full h-full group">
-                                                                    <img src={item.preview} className="w-full h-full object-contain" />
-                                                                    <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition flex items-center justify-center space-x-3 opacity-0 group-hover:opacity-100">
-                                                                        <button
-                                                                            type="button"
-                                                                            onClick={() => handleImagePreview(item.preview, item.label)}
-                                                                            className="bg-white rounded-full w-10 h-10 flex items-center justify-center"
-                                                                        >
-                                                                            <Eye size={16} />
-                                                                        </button>
-                                                                        <button
-                                                                            type="button"
-                                                                            onClick={() => removeDynamicDocument(index)}
-                                                                            className="bg-red-500 text-white rounded-full w-10 h-10 flex items-center justify-center"
-                                                                        >
-                                                                            <Trash2 size={16} />
-                                                                        </button>
-                                                                    </div>
-                                                                </div>
-                                                            )}
-                                                        </div>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        </div>
-                                    )}
-
-                                    {section.key === 'contactInformation' && (
-                                        <div className="p-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-                                            <div className="space-y-2">
-                                                <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Emergency Contact Number</label>
-                                                <CustomInput
-                                                    type="tel"
-                                                    name="emergencyContactNo"
-                                                    value={formData.emergencyContactNo}
-                                                    onChange={handleInputChange}
-                                                    placeholder="Enter emergency contact number"
-                                                    clearable={true}
-                                                />
-                                            </div>
-                                            <div className="space-y-2">
-                                                <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Contact Person Name</label>
-                                                <CustomInput
-                                                    type="text"
-                                                    name="contactPersonName"
-                                                    value={formData.contactPersonName}
-                                                    onChange={handleInputChange}
-                                                    placeholder="Enter contact person name"
-                                                    clearable={true}
-                                                />
-                                            </div>
-                                            <div className="space-y-2">
-                                                <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Relation</label>
-                                                {/* <select
+                                        {section.key === 'contactInformation' && (
+                                            <div className="p-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+                                                <div className="space-y-2">
+                                                    <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Emergency Contact Number</label>
+                                                    <CustomInput
+                                                        type="tel"
+                                                        name="emergencyContactNo"
+                                                        value={formData.emergencyContactNo}
+                                                        onChange={handleInputChange}
+                                                        placeholder="Enter emergency contact number"
+                                                        clearable={true}
+                                                    />
+                                                </div>
+                                                <div className="space-y-2">
+                                                    <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Contact Person Name</label>
+                                                    <CustomInput
+                                                        type="text"
+                                                        name="contactPersonName"
+                                                        value={formData.contactPersonName}
+                                                        onChange={handleInputChange}
+                                                        placeholder="Enter contact person name"
+                                                        clearable={true}
+                                                    />
+                                                </div>
+                                                <div className="space-y-2">
+                                                    <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Relation</label>
+                                                    {/* <select
                                                     name="relation"
                                                     value={formData.relation}
                                                     onChange={handleInputChange}
@@ -1669,89 +1672,90 @@ const AddEmployee = () => {
                                                         <option key={option.value} value={option.value}>{option.label}</option>
                                                     ))}
                                                 </select> */}
-                                                <CustomSelect
-                                                    name="relation"
-                                                    value={formData.relation}
-                                                    onChange={handleInputChange}
-                                                    options={dropdownOptions.relationOptions}
-                                                    placeholder="Select relation"
-                                                    required
-                                                    searchable={true}
-                                                />
+                                                    <CustomSelect
+                                                        name="relation"
+                                                        value={formData.relation}
+                                                        onChange={handleInputChange}
+                                                        options={dropdownOptions.relationOptions}
+                                                        placeholder="Select relation"
+                                                        required
+                                                        searchable={true}
+                                                    />
+                                                </div>
+                                                <div className="space-y-2 md:col-span-2">
+                                                    <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Emergency Address</label>
+                                                    <textarea
+                                                        name="emergencyAddress"
+                                                        value={formData.emergencyAddress}
+                                                        onChange={handleInputChange}
+                                                        rows="3"
+                                                        className="w-full px-4 py-3 border border-[var(--color-border-primary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition-all resize-none"
+                                                        placeholder="Enter emergency address"
+                                                    />
+                                                </div>
                                             </div>
-                                            <div className="space-y-2 md:col-span-2">
-                                                <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Emergency Address</label>
-                                                <textarea
-                                                    name="emergencyAddress"
-                                                    value={formData.emergencyAddress}
-                                                    onChange={handleInputChange}
-                                                    rows="3"
-                                                    className="w-full px-4 py-3 border border-[var(--color-border-primary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition-all resize-none"
-                                                    placeholder="Enter emergency address"
-                                                />
-                                            </div>
-                                        </div>
-                                    )}
+                                        )}
 
-                                    {section.key === 'reference' && (
-                                        <div className="p-8">
-                                            <div className="space-y-4">
-                                                {formData.references.map((reference, index) => (
-                                                    <div key={index} className="border border-[var(--color-border-primary)] rounded-lg p-4">
-                                                        <div className="flex items-center justify-between mb-4">
-                                                            <h4 className="text-sm font-semibold text-[var(--color-text-secondary)]">Reference {index + 1}</h4>
-                                                            {formData.references.length > 1 && (
-                                                                <button
-                                                                    type="button"
-                                                                    onClick={() => removeReference(index)}
-                                                                    className="text-[var(--color-error)] hover:text-[var(--color-error-dark)] p-1 rounded-full hover:bg-[var(--color-error-light)] transition-colors"
-                                                                >
-                                                                    <Trash2 size={16} />
-                                                                </button>
-                                                            )}
-                                                        </div>
-                                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                                            <div className="space-y-2">
-                                                                <label className="block text-sm font-medium text-[var(--color-text-secondary)]">Name</label>
-                                                                <CustomInput
-                                                                    type="text"
-                                                                    value={reference.name}
-                                                                    onChange={(e) => handleReferenceChange(index, 'name', e.target.value)}
-                                                                    placeholder="Enter reference name"
-                                                                    clearable={true}
-                                                                />
+                                        {section.key === 'reference' && (
+                                            <div className="p-8">
+                                                <div className="space-y-4">
+                                                    {formData.references.map((reference, index) => (
+                                                        <div key={index} className="border border-[var(--color-border-primary)] rounded-lg p-4">
+                                                            <div className="flex items-center justify-between mb-4">
+                                                                <h4 className="text-sm font-semibold text-[var(--color-text-secondary)]">Reference {index + 1}</h4>
+                                                                {formData.references.length > 1 && (
+                                                                    <button
+                                                                        type="button"
+                                                                        onClick={() => removeReference(index)}
+                                                                        className="text-[var(--color-error)] hover:text-[var(--color-error-dark)] p-1 rounded-full hover:bg-[var(--color-error-light)] transition-colors"
+                                                                    >
+                                                                        <Trash2 size={16} />
+                                                                    </button>
+                                                                )}
                                                             </div>
-                                                            <div className="space-y-2">
-                                                                <label className="block text-sm font-medium text-[var(--color-text-secondary)]">Contact Number</label>
-                                                                <CustomInput
-                                                                    type="tel"
-                                                                    value={reference.contactNumber}
-                                                                    onChange={(e) => handleReferenceChange(index, 'contactNumber', e.target.value)}
-                                                                    placeholder="Enter contact number"
-                                                                    clearable={true}
-                                                                />
+                                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                                <div className="space-y-2">
+                                                                    <label className="block text-sm font-medium text-[var(--color-text-secondary)]">Name</label>
+                                                                    <CustomInput
+                                                                        type="text"
+                                                                        value={reference.name}
+                                                                        onChange={(e) => handleReferenceChange(index, 'name', e.target.value)}
+                                                                        placeholder="Enter reference name"
+                                                                        clearable={true}
+                                                                    />
+                                                                </div>
+                                                                <div className="space-y-2">
+                                                                    <label className="block text-sm font-medium text-[var(--color-text-secondary)]">Contact Number</label>
+                                                                    <CustomInput
+                                                                        type="tel"
+                                                                        value={reference.contactNumber}
+                                                                        onChange={(e) => handleReferenceChange(index, 'contactNumber', e.target.value)}
+                                                                        placeholder="Enter contact number"
+                                                                        clearable={true}
+                                                                    />
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                ))}
-                                                <button
-                                                    type="button"
-                                                    onClick={addReference}
-                                                    className="flex items-center gap-2 text-[var(--color-primary-dark)] hover:text-[var(--color-primary-darkest)] font-medium transition-colors"
-                                                >
-                                                    <Plus size={16} />
-                                                    Add Another Reference
-                                                </button>
+                                                    ))}
+                                                    <button
+                                                        type="button"
+                                                        onClick={addReference}
+                                                        className="flex items-center gap-2 text-[var(--color-primary-dark)] hover:text-[var(--color-primary-darkest)] font-medium transition-colors"
+                                                    >
+                                                        <Plus size={16} />
+                                                        Add Another Reference
+                                                    </button>
+                                                </div>
                                             </div>
-                                        </div>
-                                    )}
-                                </div>
-                            )}
-                        </div>
-                    ))}
+                                        )}
+                                    </div>
+                                )}
+                            </div>
+                        ))}
 
+                    </div>
                     {/* Submit Button */}
-                    <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-lg border border-[var(--color-border-primary)] p-8">
+                    <div className="shrink-0 bg-[var(--color-bg-secondary)] rounded-2xl shadow-lg p-0 mt-4">
                         <div className="flex gap-4 justify-end">
                             <button
                                 type="button"

@@ -235,8 +235,8 @@ const CompanyList = () => {
             {/* Preview Modal */}
             <PreviewModal />
 
-            <div className="bg-[var(--color-bg-secondary)] rounded-xl shadow-sm border border-[var(--color-primary-dark)] overflow-hidden">
-                <div className="relative">
+            <div className="bg-[var(--color-bg-secondary)] rounded-xl shadow-sm border border-[var(--color-primary-dark)] overflow-hidden flex flex-col h-full">
+                <div className="relative shrink-0">
                     <div className="bg-[var(--color-primary-dark)] px-6 py-4">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center space-x-3">
@@ -253,7 +253,7 @@ const CompanyList = () => {
                     </div>
                 </div>
 
-                <div className="p-8 flex flex-col gap-4">
+                <div className="p-8 flex flex-col gap-4 flex-1 overflow-y-auto custom-scrollbar">
                     {/* Company Form */}
                     {permissions['company_create'] && (
                         <CompanyForm

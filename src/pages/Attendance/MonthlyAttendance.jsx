@@ -417,6 +417,7 @@ const MonthlyAttendance = () => {
         setAppliedFilters(reset); // This triggers the API call with reset filters
         setError('');
         setToast({ message: 'Filters reset successfully', type: 'success' });
+        setShowFilters(false); // Close filter dropdown
     };
 
     /*

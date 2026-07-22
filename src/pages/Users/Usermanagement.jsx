@@ -322,7 +322,7 @@ const UserManagement = () => {
                                         <TableBody className="bg-[var(--color-bg-secondary)] divide-y divide-[var(--color-border-divider)]">
                                             {users.map(userData => (
                                                 <TableRow key={userData.edit_user_id} className="hover:bg-[var(--color-bg-primary)] transition-colors">
-                                                    <Td className="px-6 py-4 whitespace-nowrap font-medium text-[var(--color-text-primary)]">
+                                                    <Td className="px-6 py-4 whitespace-nowrap font-medium text-[var(--color-text-primary)] border-b border-[var(--color-border-divider)]">
                                                         <div className="flex items-center justify-center space-x-2">
                                                             {isAdminUser(userData) ? (
                                                                 <Shield className="w-4 h-4 text-[var(--color-primary-dark)]" />
@@ -332,13 +332,13 @@ const UserManagement = () => {
                                                             <span>{userData.full_name || 'Unnamed User'}</span>
                                                         </div>
                                                     </Td>
-                                                    <Td className="px-6 py-4 whitespace-nowrap text-[var(--color-text-secondary)]">
+                                                    <Td className="px-6 py-4 whitespace-nowrap text-[var(--color-text-secondary)] border-b border-[var(--color-border-divider)]">
                                                         {userData.email || '--'}
                                                     </Td>
-                                                    <Td className="px-6 py-4 whitespace-nowrap text-[var(--color-text-secondary)]">
+                                                    <Td className="px-6 py-4 whitespace-nowrap text-[var(--color-text-secondary)] border-b border-[var(--color-border-divider)]">
                                                         {userData.number || '--'}
                                                     </Td>
-                                                    <Td className="px-6 py-4 whitespace-nowrap text-[var(--color-text-secondary)]">
+                                                    <Td className="px-6 py-4 whitespace-nowrap text-[var(--color-text-secondary)] border-b border-[var(--color-border-divider)]">
                                                         <div className="flex justify-center">
                                                             <span className={`inline-flex items-center px-2.5 py-0.5 text-xs font-semibold rounded-full ${isAdminUser(userData)
                                                                 ? 'bg-[var(--color-primary-lighter)] text-[var(--color-primary-darkest)]'
@@ -359,7 +359,7 @@ const UserManagement = () => {
                                                         </div>
                                                     </Td>
                                                     {(permissions['user_edit'] || permissions['user_delete']) && (
-                                                        <Td className="px-6 py-4 whitespace-nowrap font-medium">
+                                                        <Td className="px-6 py-4 whitespace-nowrap font-medium border-b border-[var(--color-border-divider)]">
                                                             <div className="flex justify-center space-x-2">
                                                                 {permissions['user_edit'] && (
                                                                     <button

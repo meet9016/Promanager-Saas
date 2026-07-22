@@ -392,9 +392,9 @@ const DepartmentList = () => {
     const filteredCount = filteredDepartments.length;
 
     return (
-        <div className="bg-[var(--color-bg-secondary)] h-[87vh] rounded-xl shadow-sm border border-[var(--color-primary-dark)] overflow-hidden ">
+        <div className="bg-[var(--color-bg-secondary)] flex-1 rounded-xl shadow-sm border border-[var(--color-primary-dark)] overflow-hidden flex flex-col h-full">
             {/* Header */}
-            <div className="relative">
+            <div className="relative shrink-0">
                 <div className="bg-[var(--color-primary-dark)] px-6 py-4">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-3">
@@ -408,10 +408,12 @@ const DepartmentList = () => {
                 </div>
             </div>
 
-            <div className="p-8 bg-[#FBF9FD] flex flex-col gap-4  h-full ">
+            <div className="p-8 bg-[#FBF9FD] flex flex-col gap-4 flex-1 min-h-0 overflow-y-auto">
                 {/* Add Form */}
                 {permissions['department_create'] && (
-                    <DepartmentForm onSubmit={handleAddDepartment} loading={loading} showToast={showToast} />
+                    <div className="shrink-0">
+                        <DepartmentForm onSubmit={handleAddDepartment} loading={loading} showToast={showToast} />
+                    </div>
                 )}
 
                 {/* Search */}
