@@ -50,7 +50,7 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
                 permissions?.allowance_view && { label: 'Allowances', path: '/allowances' },
                 permissions?.company_view && { label: 'Companies', path: '/companies' },
                 permissions?.company_view && { label: 'Increment', path: '/increment' },
-                // permissions?.company_view && { label: 'Paid Leave', path: '/paid-leave' },
+                permissions?.company_view && { label: 'Paid Leave', path: '/paid-leave' },
             ].filter(Boolean)
         },
         (permissions?.shift_view || permissions?.shift_create || permissions?.shift_edit || permissions?.shift_delete || permissions?.shift_assign || permissions?.shift_reallocation_view) && {

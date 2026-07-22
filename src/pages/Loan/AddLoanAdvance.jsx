@@ -469,47 +469,67 @@ const AddLoanAdvance = ({
         );
     }
     return (
-        <div className="min-h-screen bg-[var(--color-bg-primary)]">
-            <div className=" mx-auto px-4 py-8">
+        <div className="h-[calc(100vh-64px)] bg-[var(--color-bg-primary)] flex flex-col">
+            <div className="mx-auto px-4 py-6 w-full flex flex-col h-full overflow-hidden">
                 {/* Enhanced Header */}
-                <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-xl mb-8 overflow-hidden">
+                <div className="shrink-0 bg-[var(--color-bg-secondary)] rounded-2xl shadow-xl mb-6 overflow-hidden">
                     <div className="bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] p-6">
-                        <div className="flex items-center gap-4">
-                            <button
-                                onClick={handleBack}
-                                className="flex items-center gap-2 text-[var(--color-text-white)] hover:text-[var(--color-text-white)] transition-colors bg-[var(--color-bg-secondary-20)] hover:bg-[var(--color-bg-secondary-30)] px-2 py-2 rounded-lg backdrop-blur-sm"
-                                title="Go Back"
-                            >
-                                <ArrowLeft size={18} />
-
-                            </button>
-                            <div className="flex items-center gap-3">
-                                <div>
-                                    <h1 className="text-2xl font-bold text-[var(--color-text-white)]">
-                                        {existingLoan ? 'Edit Loan/Advance' : 'Add New Loan/Advance'}
-                                    </h1>
-                                    {!permissions['loan_edit'] && existingLoan && (
-                                        <p className="text-sm text-yellow-200 mt-1">
-                                            <Info className="w-4 h-4 inline mr-1" />
-                                            Read-only mode - You don't have edit permissions
-                                        </p>
-                                    )}
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-4">
+                                <button
+                                    onClick={handleBack}
+                                    className="flex items-center gap-2 text-[var(--color-text-white)] hover:text-[var(--color-text-white)] transition-colors bg-[var(--color-bg-secondary-20)] hover:bg-[var(--color-bg-secondary-30)] px-2 py-2 rounded-lg backdrop-blur-sm"
+                                    title="Go Back"
+                                >
+                                    <ArrowLeft size={18} />
+                                </button>
+                                <div className="flex items-center gap-3">
+                                    <div>
+                                        <h1 className="text-2xl font-bold text-[var(--color-text-white)]">
+                                            {existingLoan ? 'Edit Loan/Advance' : 'Add New Loan/Advance'}
+                                        </h1>
+                                        {!permissions['loan_edit'] && existingLoan && (
+                                            <p className="text-sm text-yellow-200 mt-1">
+                                                <Info className="w-4 h-4 inline mr-1" />
+                                                Read-only mode - You don't have edit permissions
+                                            </p>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
-                            {/* <div className="ml-auto">
+
+                            <div className="flex items-center gap-3">
                                 <button
-                                    onClick={handleReset}
-                                    className="flex items-center gap-2 text-[var(--color-text-white)] hover:text-[var(--color-text-white)] transition-colors bg-[var(--color-bg-secondary-20)] hover:bg-[var(--color-bg-secondary-30)] px-4 py-2 rounded-lg backdrop-blur-sm"
+                                    type="button"
+                                    onClick={handleBack}
+                                    disabled={isSubmitting}
+                                    className="px-5 py-2 border border-white/30 text-white rounded-lg hover:bg-white/10 transition-colors font-medium backdrop-blur-sm text-sm"
                                 >
-                                    <X size={16} />
-                                    Reset
+                                    Cancel
                                 </button>
-                            </div> */}
+                                <button
+                                    onClick={handleSubmit}
+                                    disabled={isSubmitting || loading}
+                                    className="px-5 py-2 bg-white text-[var(--color-primary-dark)] rounded-lg hover:bg-gray-50 transition-all duration-200 font-medium shadow-md disabled:opacity-70 disabled:cursor-not-allowed flex items-center gap-2 text-sm"
+                                >
+                                    {isSubmitting ? (
+                                        <>
+                                            <div className="w-4 h-4 border-2 border-[var(--color-primary-dark)] border-t-transparent rounded-full animate-spin"></div>
+                                            {existingLoan ? 'Updating...' : 'Creating...'}
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Save className="w-4 h-4" />
+                                            {existingLoan ? 'Update Loan/Advance' : 'Create Loan/Advance'}
+                                        </>
+                                    )}
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div className="space-y-8">
+                <div className="flex-1 overflow-y-auto space-y-6 pr-2 pb-2 custom-scrollbar">
                     {/* Enhanced Employee Information */}
                     <div className="bg-[var(--color-bg-secondary)] backdrop-blur-sm rounded-2xl border border-slate-200 shadow-lg relative z-40">
                         <div className="px-8 py-6 border-b border-slate-200 bg-gradient-to-r from-[var(--color-bg-primary)] to-[var(--color-bg-secondary)] rounded-t-2xl">
@@ -956,57 +976,18 @@ const AddLoanAdvance = ({
                         </div>
                     </div>
 
-                    {/* Enhanced Action Buttons */}
-                    <div className="bg-[var(--color-bg-secondary)] backdrop-blur-sm rounded-2xl border border-slate-200 shadow-lg">
-                        <div className="p-8">
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-3">
-                                </div>
 
-                                <div className="flex items-center gap-4">
-                                    <button
-                                        type="button"
-                                        onClick={handleBack}
-                                        disabled={isSubmitting}
-                                        className="px-6 py-3 border border-[var(--color-border-secondary)] text-[var(--color-text-secondary)] rounded-lg hover:bg-[var(--color-bg-primary)] transition-colors font-medium"
-                                    >
-                                        Cancel
-                                    </button>
 
-                                    <button
-                                        onClick={handleSubmit}
-                                        disabled={isSubmitting || loading}
-                                        className="px-8 py-3 bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] text-[var(--color-text-white)] rounded-xl hover:from-[var(--color-primary-darker)] hover:to-[var(--color-primary-darkest)] focus:ring-2 focus:ring-[var(--color-primary)] focus:outline-none transition-all duration-200 font-medium shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
-                                    >
-                                        <div className="flex items-center gap-2">
-                                            {isSubmitting ? (
-                                                <>
-                                                    <div className="w-4 h-4 border-2 border-[var(--color-border-primary)] rounded-full animate-spin border-t-white"></div>
-                                                    {existingLoan ? 'Updating...' : 'Creating...'}
-                                                </>
-                                            ) : (
-                                                <>
-                                                    <Save className="w-4 h-4" />
-                                                    {existingLoan ? 'Update Loan/Advance' : 'Create Loan/Advance'}
-                                                </>
-                                            )}
-                                        </div>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+
+                    {/* Toast Notification */}
+                    {toast && (
+                        <Toast
+                            message={toast.message}
+                            type={toast.type}
+                            onClose={hideToast}
+                        />
+                    )}
                 </div>
-
-
-                {/* Toast Notification */}
-                {toast && (
-                    <Toast
-                        message={toast.message}
-                        type={toast.type}
-                        onClose={hideToast}
-                    />
-                )}
             </div>
         </div>
     );

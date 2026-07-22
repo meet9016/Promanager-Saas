@@ -1019,28 +1019,51 @@ const AddEmployee = () => {
                 {/* Header */}
                 <div className="shrink-0 bg-[var(--color-bg-secondary)] rounded-2xl shadow-xl mb-6 overflow-hidden">
                     <div className="bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] p-3 sm:p-6">
-                        <div className="flex items-center gap-4">
-                            {/* Back Icon Only */}
-                            <button
-                                onClick={goBack}
-                                className="flex items-center justify-center text-[var(--color-text-white)] transition-colors bg-[var(--color-bg-secondary-20)] hover:bg-[var(--color-bg-secondary-30)] p-2 rounded-lg backdrop-blur-sm"
-                            >
-                                <ArrowLeft size={20} />
-                            </button>
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-4">
+                                {/* Back Icon Only */}
+                                <button
+                                    onClick={goBack}
+                                    className="flex items-center justify-center text-[var(--color-text-white)] transition-colors bg-[var(--color-bg-secondary-20)] hover:bg-[var(--color-bg-secondary-30)] p-2 rounded-lg backdrop-blur-sm"
+                                >
+                                    <ArrowLeft size={20} />
+                                </button>
 
-                            {/* Title and optional edit icon */}
+                                {/* Title and optional edit icon */}
+                                <div className="flex items-center gap-3">
+                                    {isEditMode && <Edit size={24} className="text-[var(--color-text-white)]" />}
+                                    <h1 className="text-2xl font-bold text-[var(--color-text-white)]">
+                                        {isEditMode ? 'Edit Employee' : 'Add New Employee'}
+                                    </h1>
+                                </div>
+                            </div>
+                            
                             <div className="flex items-center gap-3">
-                                {isEditMode && <Edit size={24} className="text-[var(--color-text-white)]" />}
-                                <h1 className="text-2xl font-bold text-[var(--color-text-white)]">
-                                    {isEditMode ? 'Edit Employee' : 'Add New Employee'}
-                                </h1>
+                                <button
+                                    type="button"
+                                    onClick={goBack}
+                                    className="px-5 py-2 border border-white/30 text-white rounded-lg hover:bg-white/10 transition-colors font-medium backdrop-blur-sm text-sm"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type="submit"
+                                    form="employee-form"
+                                    disabled={isSubmitting}
+                                    className="px-5 py-2 bg-white text-[var(--color-primary-dark)] rounded-lg hover:bg-gray-50 transition-all duration-200 font-medium shadow-md disabled:opacity-70 disabled:cursor-not-allowed flex items-center gap-2 text-sm"
+                                >
+                                    {isSubmitting && (
+                                        <div className="w-4 h-4 border-2 border-[var(--color-primary-dark)] border-t-transparent rounded-full animate-spin"></div>
+                                    )}
+                                    {isSubmitting ? (isEditMode ? 'Updating...' : 'Adding...') : (isEditMode ? 'Update Employee' : 'Add Employee')}
+                                </button>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 {/* Form */}
-                <form onSubmit={handleSubmit} className="flex flex-col flex-1 overflow-hidden">
+                <form id="employee-form" onSubmit={handleSubmit} className="flex flex-col flex-1 overflow-hidden">
                     <div className="flex-1 overflow-y-auto space-y-6 pr-2 pb-2">
                         {sections.map((section) => (
                             <div key={section.key} className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-lg border border-[var(--color-border-primary)] " data-section={section.key}>
@@ -1753,28 +1776,6 @@ const AddEmployee = () => {
                             </div>
                         ))}
 
-                    </div>
-                    {/* Submit Button */}
-                    <div className="shrink-0 bg-[var(--color-bg-secondary)] rounded-2xl shadow-lg p-0 mt-4">
-                        <div className="flex gap-4 justify-end">
-                            <button
-                                type="button"
-                                onClick={goBack}
-                                className="px-6 py-3 border border-[var(--color-border-secondary)] text-[var(--color-text-secondary)] rounded-lg hover:bg-[var(--color-bg-primary)] transition-colors font-medium"
-                            >
-                                Cancel
-                            </button>
-                            <button
-                                type="submit"
-                                disabled={isSubmitting}
-                                className="px-8 py-3 bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] text-[var(--color-text-white)] rounded-lg hover:from-[var(--color-primary-darker)] hover:to-[var(--color-primary-darkest)] transition-all duration-200 font-medium shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-                            >
-                                {isSubmitting && (
-                                    <div className="w-4 h-4 border-2 border-[var(--color-border-primary)] border-t-transparent rounded-full animate-spin"></div>
-                                )}
-                                {isSubmitting ? (isEditMode ? 'Updating...' : 'Adding...') : (isEditMode ? 'Update Employee' : 'Add Employee')}
-                            </button>
-                        </div>
                     </div>
                 </form>
                 <PreviewModal />

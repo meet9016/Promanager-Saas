@@ -37,7 +37,8 @@ import {
     ArrowLeft,
     Mail,
     Building,
-    Badge
+    Badge,
+    Ban
 } from 'lucide-react';
 
 const SORT_DIRECTIONS = {
@@ -88,6 +89,14 @@ const STATUS_CONFIG = {
         textColor: 'text-red-800 ',
         tabColor: 'text-red-700 ',
         borderColor: 'border-red-300 '
+    },
+    '4': {
+        name: 'Cancelled',
+        icon: Ban,
+        bgColor: 'bg-gray-100 ',
+        textColor: 'text-gray-800 ',
+        tabColor: 'text-gray-700 ',
+        borderColor: 'border-gray-300 '
     }
 };
 
@@ -125,6 +134,11 @@ const LeaveManagement = () => {
 
     // Modal states
     const [rejectionModal, setRejectionModal] = useState({
+        isOpen: false,
+        leaveData: null,
+        reason: ''
+    });
+    const [cancelModal, setCancelModal] = useState({
         isOpen: false,
         leaveData: null,
         reason: ''
@@ -681,6 +695,38 @@ const LeaveManagement = () => {
         }
     }, [user, rejectionModal, showToast, fetchLeaveRequests]);
 
+    const submitCancel = useCallback(async () => {
+        if (!user?.user_id) {
+            showToast('User authentication required', 'error');
+            return;
+        }
+
+        if (!cancelModal.reason.trim()) {
+            showToast('Please provide a reason for cancellation.', 'warning');
+            return;
+        }
+
+        try {
+            const formData = new FormData();
+            formData.append('leave_id', cancelModal.leaveData.leave_id);
+            formData.append('cancel_reason', cancelModal.reason);
+
+            const response = await api.post('/cancel_leave', formData);
+
+            if (response.data.success) {
+                showToast('Leave request cancelled successfully!', 'success');
+                setCancelModal({ isOpen: false, leaveData: null, reason: '' });
+                setViewModal({ isOpen: false, leaveData: null });
+                fetchLeaveRequests();
+            } else {
+                showToast(response.data.message || 'Failed to cancel leave request', 'error');
+            }
+        } catch (error) {
+            console.error("Error cancelling leave request:", error);
+            showToast('Failed to cancel leave request. Please try again.', 'error');
+        }
+    }, [user, cancelModal, showToast, fetchLeaveRequests]);
+
     // Render sort icon
     const renderSortIcon = useCallback((key) => {
         if (sortConfig.key !== key) {
@@ -887,7 +933,7 @@ const LeaveManagement = () => {
                 {rejectionModal.isOpen && (
                     <div className="fixed inset-0 bg-black/50  flex items-center justify-center p-4 z-50">
                         <div className="bg-[var(--color-bg-secondary)] rounded-xl shadow-2xl w-full max-w-md border border-[var(--color-border-primary)]">
-                            <div className="p-8 border-b border-[var(--color-border-primary)]">
+                            <div className="p-8 border-b border-[var(--color-border-primary)] ">
                                 <div className="flex items-center space-x-3">
                                     <div className="w-10 h-10 bg-red-100  rounded-full flex items-center justify-center">
                                         <XCircle className="w-5 h-5 text-red-600" />
@@ -927,6 +973,56 @@ const LeaveManagement = () => {
                                     disabled={!rejectionModal.reason.trim()}
                                 >
                                     Submit Rejection
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* Cancel Modal */}
+                {cancelModal.isOpen && (
+                    <div className="fixed inset-0 bg-black/50  flex items-center justify-center p-4 z-50">
+                        <div className="bg-[var(--color-bg-secondary)] rounded-xl shadow-2xl w-full max-w-md border border-[var(--color-border-primary)]">
+                            <div className="p-8 border-b border-[var(--color-border-primary)] bg-[var(--color-primary-dark)]">
+                                <div className="flex items-center space-x-3">
+                                    <div className="w-10 h-10 bg-[var(--color-primary-lighter)] rounded-full flex items-center justify-center">
+                                        <Ban className="w-5 h-5 text-[var(--color-primary-dark)]" />
+                                    </div>
+                                    <div>
+                                        <h2 className="text-lg font-semibold text-white">Cancel Leave Request</h2>
+                                        <p className="text-sm text-white">Provide reason for cancellation</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="p-8">
+                                <div className="mb-4">
+                                    <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-2">
+                                        Cancellation Reason *
+                                    </label>
+                                    <textarea
+                                        className="w-full border border-[var(--color-border-secondary)] rounded-lg p-3 h-32 focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] text-[var(--color-text-primary)] bg-[var(--color-bg-secondary)] resize-none placeholder:text-[var(--color-text-muted)]"
+                                        placeholder="Enter detailed reason for cancelling this leave request..."
+                                        value={cancelModal.reason}
+                                        onChange={(e) => setCancelModal(prev => ({ ...prev, reason: e.target.value }))}
+                                    />
+                                    <p className="text-xs text-[var(--color-text-secondary)] mt-1">
+                                        This reason will be visible to the employee
+                                    </p>
+                                </div>
+                            </div>
+                            <div className="p-4 bg-[var(--color-bg-primary)] flex justify-end space-x-3 rounded-b-xl border-t border-[var(--color-border-primary)]">
+                                <button
+                                    className="px-4 py-2 text-[var(--color-text-secondary)] bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] rounded-lg shadow-sm hover:bg-[var(--color-bg-hover)] transition-colors"
+                                    onClick={() => setCancelModal({ isOpen: false, leaveData: null, reason: '' })}
+                                >
+                                    Close
+                                </button>
+                                <button
+                                    className="px-4 py-2 text-white bg-[var(--color-primary-dark)] hover:opacity-90 border border-transparent rounded-lg shadow-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                    onClick={submitCancel}
+                                    disabled={!cancelModal.reason.trim()}
+                                >
+                                    Submit Cancellation
                                 </button>
                             </div>
                         </div>
@@ -1042,38 +1138,53 @@ const LeaveManagement = () => {
                                             <TableHeaderRow>
                                                 <Th className="px-6 py-4 text-left text-white font-semibold whitespace-nowrap">Employee Name</Th>
                                                 <Th className="px-6 py-4 text-left text-white font-semibold whitespace-nowrap">Leave Type</Th>
-                                                <Th className="px-6 py-4 text-left text-white font-semibold whitespace-nowrap">Start Date</Th>
-                                                <Th className="px-6 py-4 text-left text-white font-semibold whitespace-nowrap">End Date</Th>
-                                                <Th className="px-6 py-4 text-left text-white font-semibold whitespace-nowrap">Total Days</Th>
+                                                <Th className="px-6 py-4 text-left text-white font-semibold whitespace-nowrap">Leave Date</Th>
+                                                <Th className="px-6 py-4 text-left text-white font-semibold whitespace-nowrap">Paid Status</Th>
                                                 <Th className="px-6 py-4 text-left text-white font-semibold whitespace-nowrap">Status</Th>
                                             </TableHeaderRow>
                                         </TableHeader>
                                         <TableBody className="divide-y divide-[var(--color-border-divider)]">
-                                            <TableRow className="hover:bg-[var(--color-bg-hover)]">
-                                                <Td className="px-6 py-4 font-bold text-[var(--color-text-primary)] whitespace-nowrap">{viewModal.leaveData.full_name}</Td>
-                                                <Td className="px-6 py-4 font-semibold text-[var(--color-text-primary)] whitespace-nowrap">
-                                                    <span className="px-2.5 py-1 bg-[var(--color-bg-primary)] rounded-md text-xs font-medium border border-[var(--color-border-secondary)]">
-                                                        {viewModal.leaveData.leave_type}
-                                                    </span>
-                                                </Td>
-                                                <Td className="px-6 py-4 font-semibold text-[var(--color-text-primary)] whitespace-nowrap">
-                                                    <div className="flex items-center">
-                                                        <Calendar className="w-4 h-4 mr-2 text-[var(--color-text-muted)]" />
-                                                        {formatDate(viewModal.leaveData.start_date)}
-                                                    </div>
-                                                </Td>
-                                                <Td className="px-6 py-4 font-semibold text-[var(--color-text-primary)] whitespace-nowrap">
-                                                    <div className="flex items-center">
-                                                        <Calendar className="w-4 h-4 mr-2 text-[var(--color-text-muted)]" />
-                                                        {formatDate(viewModal.leaveData.end_date)}
-                                                    </div>
-                                                </Td>
-                                                <Td className="px-6 py-4 font-semibold text-[var(--color-text-primary)] whitespace-nowrap">
-                                                    <span className="font-semibold">{viewModal.leaveData.totalDays || 0}</span>
-                                                    <span className="text-[var(--color-text-muted)] ml-1 text-xs">days</span>
-                                                </Td>
-                                                <Td className="px-6 py-4 whitespace-nowrap"><StatusChip status={viewModal.leaveData.status} /></Td>
-                                            </TableRow>
+                                            {viewModal.leaveData.leave_dates?.length > 0 ? (
+                                                viewModal.leaveData.leave_dates.map((d, i) => (
+                                                    <TableRow key={i} className="hover:bg-[var(--color-bg-hover)] transition-colors">
+                                                        <Td className="px-6 py-4 font-bold text-[var(--color-text-primary)] whitespace-nowrap">{viewModal.leaveData.full_name}</Td>
+                                                        <Td className="px-6 py-4 font-semibold text-[var(--color-text-primary)] whitespace-nowrap">
+                                                            <span className="px-2.5 py-1 bg-[var(--color-bg-primary)] rounded-md text-xs font-medium border border-[var(--color-border-secondary)]">
+                                                                {viewModal.leaveData.leave_type}
+                                                            </span>
+                                                        </Td>
+                                                        <Td className="px-6 py-4 whitespace-nowrap">
+                                                            <div className="flex items-center text-sm font-medium text-[var(--color-text-primary)]">
+                                                                <Calendar className="w-4 h-4 mr-2 text-[var(--color-text-muted)]" />
+                                                                {d.leave_date}
+                                                            </div>
+                                                        </Td>
+                                                        <Td className="px-6 py-4 whitespace-nowrap">
+                                                            <span className={`inline-flex px-2.5 py-1 rounded-md text-[11px] font-bold uppercase tracking-wider border ${
+                                                                d.is_paid === "1"
+                                                                    ? 'bg-green-50 text-green-700 border-green-200'
+                                                                    : 'bg-red-50 text-red-700 border-red-200'
+                                                                }`}>
+                                                                {d.is_paid_name || (d.is_paid === "1" ? "Paid" : "Unpaid")}
+                                                            </span>
+                                                        </Td>
+                                                        <Td className="px-6 py-4 whitespace-nowrap"><StatusChip status={viewModal.leaveData.status} /></Td>
+                                                    </TableRow>
+                                                ))
+                                            ) : (
+                                                <TableRow className="hover:bg-[var(--color-bg-hover)] transition-colors">
+                                                    <Td className="px-6 py-4 font-bold text-[var(--color-text-primary)] whitespace-nowrap">{viewModal.leaveData.full_name}</Td>
+                                                    <Td className="px-6 py-4 font-semibold text-[var(--color-text-primary)] whitespace-nowrap">
+                                                        <span className="px-2.5 py-1 bg-[var(--color-bg-primary)] rounded-md text-xs font-medium border border-[var(--color-border-secondary)]">
+                                                            {viewModal.leaveData.leave_type}
+                                                        </span>
+                                                    </Td>
+                                                    <Td colSpan={2} className="px-6 py-4 text-center text-[var(--color-text-muted)] italic">
+                                                        No dates requested
+                                                    </Td>
+                                                    <Td className="px-6 py-4 whitespace-nowrap"><StatusChip status={viewModal.leaveData.status} /></Td>
+                                                </TableRow>
+                                            )}
                                         </TableBody>
                                     </Table>
                                 </div>
@@ -1091,6 +1202,13 @@ const LeaveManagement = () => {
                                         <div className="bg-red-50 border border-red-200 rounded-xl p-5 shadow-sm">
                                             <h4 className="text-sm font-bold text-red-700 mb-2 uppercase tracking-wider">Rejection Reason</h4>
                                             <p className="text-red-700 leading-relaxed bg-white p-3 rounded-lg border border-red-200 whitespace-pre-wrap">{viewModal.leaveData.reject_reason}</p>
+                                        </div>
+                                    )}
+
+                                    {viewModal.leaveData.status === '4' && viewModal.leaveData.cancel_reason && (
+                                        <div className="bg-gray-50 border border-gray-200 rounded-xl p-5 shadow-sm">
+                                            <h4 className="text-sm font-bold text-gray-700 mb-2 uppercase tracking-wider">Cancellation Reason</h4>
+                                            <p className="text-gray-700 leading-relaxed bg-white p-3 rounded-lg border border-gray-200 whitespace-pre-wrap">{viewModal.leaveData.cancel_reason}</p>
                                         </div>
                                     )}
 
@@ -1135,6 +1253,22 @@ const LeaveManagement = () => {
                                                 </button>
                                             )}
                                         </>
+                                    )}
+                                    {viewModal.leaveData.status === '2' && (
+                                        <button
+                                            onClick={() => {
+                                                setViewModal({ isOpen: false, leaveData: null });
+                                                setCancelModal({
+                                                    isOpen: true,
+                                                    leaveData: viewModal.leaveData,
+                                                    reason: ''
+                                                });
+                                            }}
+                                            className="flex items-center px-6 py-3 text-sm font-bold text-white bg-[var(--color-primary-dark)] hover:opacity-90 rounded-xl shadow-lg duration-200 transform "
+                                        >
+                                            <Ban className="w-5 h-5 mr-2" />
+                                            Cancel Leave
+                                        </button>
                                     )}
                                 </div>
                             </div>

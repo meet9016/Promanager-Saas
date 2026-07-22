@@ -328,47 +328,78 @@ const AddUser = () => {
 
     return (
         <>
-            <div className="min-h-screen bg-[var(--color-bg-primary)]">
-                <div className=" mx-auto px-4 py-8">
-                    <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-xl mb-8 overflow-hidden">
+            <div className="h-[calc(100vh-64px)] bg-[var(--color-bg-primary)] flex flex-col">
+                <div className="mx-auto px-4 py-6 w-full flex flex-col h-full overflow-hidden">
+                    <div className="shrink-0 bg-[var(--color-bg-secondary)] rounded-2xl shadow-xl mb-6 overflow-hidden">
                         <div className="bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)]">
                             <div className="bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] p-6">
-                                <div className="flex items-center gap-4">
-                                    <button
-                                        onClick={handleCancel}
-                                        disabled={isFormDisabled}
-                                        className="flex items-center gap-2 text-[var(--color-text-white)] hover:text-[var(--color-text-white)] transition-colors bg-[var(--color-bg-secondary-20)] hover:bg-[var(--color-bg-secondary-30)] px-2 py-2 rounded-lg backdrop-blur-sm"
-                                    >
-                                        <ArrowLeft size={18} />
-
-                                    </button>
-                                    <div className="flex items-center gap-3">
-                                        <div>
-                                            <h2 className="text-2xl font-bold text-[var(--color-text-white)]">
-                                                {isEditing ? 'Edit User' : 'Create New User'}
-                                            </h2>
-                                            {userDataLoading && (
-                                                <p className="text-[var(--color-text-white)] text-sm mt-1 flex items-center">
-                                                    <RefreshCw className="w-4 h-4 mr-1 animate-spin" />
-                                                    Loading user data...
-                                                </p>
-                                            )}
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-4">
+                                        <button
+                                            onClick={handleCancel}
+                                            disabled={isFormDisabled}
+                                            className="flex items-center gap-2 text-[var(--color-text-white)] hover:text-[var(--color-text-white)] transition-colors bg-[var(--color-bg-secondary-20)] hover:bg-[var(--color-bg-secondary-30)] px-2 py-2 rounded-lg backdrop-blur-sm"
+                                        >
+                                            <ArrowLeft size={18} />
+                                        </button>
+                                        <div className="flex items-center gap-3">
+                                            <div>
+                                                <h2 className="text-2xl font-bold text-[var(--color-text-white)]">
+                                                    {isEditing ? 'Edit User' : 'Create New User'}
+                                                </h2>
+                                                {userDataLoading && (
+                                                    <p className="text-[var(--color-text-white)] text-sm mt-1 flex items-center">
+                                                        <RefreshCw className="w-4 h-4 mr-1 animate-spin" />
+                                                        Loading user data...
+                                                    </p>
+                                                )}
+                                            </div>
                                         </div>
+                                    </div>
+                                    
+                                    <div className="flex items-center gap-3">
+                                        <button
+                                            type="button"
+                                            onClick={handleCancel}
+                                            disabled={isFormDisabled}
+                                            className="px-5 py-2 border border-white/30 text-white rounded-lg hover:bg-white/10 transition-colors font-medium backdrop-blur-sm text-sm"
+                                        >
+                                            Cancel
+                                        </button>
+                                        <button
+                                            type="submit"
+                                            form="user-form"
+                                            disabled={isFormDisabled}
+                                            className="px-5 py-2 bg-white text-[var(--color-primary-dark)] rounded-lg hover:bg-gray-50 transition-all duration-200 font-medium shadow-md disabled:opacity-70 disabled:cursor-not-allowed flex items-center gap-2 text-sm"
+                                        >
+                                            {loading ? (
+                                                <>
+                                                    <RefreshCw className="w-4 h-4 animate-spin" />
+                                                    {isEditing ? 'Updating...' : 'Creating...'}
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <Save className="w-4 h-4" />
+                                                    {isEditing ? 'Update User' : 'Create User'}
+                                                </>
+                                            )}
+                                        </button>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div className="bg-[var(--color-bg-secondary)] rounded-2xl border border-[var(--color-primary-light)] shadow-xl overflow-hidden">
-                        <div className="px-6 py-4 border-b border-[var(--color-primary-light)] bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)]">
-                            <div className="flex items-center gap-3">
-                                <UserPlus className="w-5 h-5 text-[var(--color-text-white)]" />
-                                <h3 className="text-lg font-semibold text-[var(--color-text-white)]">User Information</h3>
+                    <div className="flex-1 overflow-y-auto space-y-6 pr-2 pb-2 custom-scrollbar">
+                        <div className="bg-[var(--color-bg-secondary)] rounded-2xl border border-[var(--color-primary-light)] shadow-xl overflow-hidden">
+                            <div className="px-6 py-4 border-b border-[var(--color-primary-light)] bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)]">
+                                <div className="flex items-center gap-3">
+                                    <UserPlus className="w-5 h-5 text-[var(--color-text-white)]" />
+                                    <h3 className="text-lg font-semibold text-[var(--color-text-white)]">User Information</h3>
+                                </div>
                             </div>
-                        </div>
-
-                        <form onSubmit={validateForm} className="p-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+                            
+                            <form id="user-form" onSubmit={validateForm} className="p-8 grid grid-cols-1 md:grid-cols-2 gap-6">
                             {/* Full Name */}
                             <div className="space-y-2">
                                 <label htmlFor="full_name" className="flex items-center gap-2 text-sm font-semibold text-gray-800">
@@ -587,37 +618,9 @@ const AddUser = () => {
                                 )}
                             </div>
 
-                            {/* Form Actions */}
-                            <div className="md:col-span-2 flex items-center justify-end space-x-4 pt-8  border-[var(--color-border-primary)]">
-                                <button
-                                    type="button"
-                                    onClick={handleCancel}
-                                    className="inline-flex items-center gap-2 px-6 py-3 text-sm font-semibold text-[var(--color-text-secondary)] bg-[var(--color-bg-secondary)] border-2 border-[var(--color-border-secondary)] rounded-xl shadow-sm hover:bg-[var(--color-bg-primary)] hover:border-gray-400 focus:outline-none focus:ring-3 focus:ring-gray-500/20 transition-all duration-200"
-                                    disabled={isFormDisabled}
-                                >
-                                    <X className="w-4 h-4" />
-                                    Cancel
-                                </button>
-                                <button
-                                    type="submit"
-                                    className="inline-flex items-center gap-2 px-6 py-3 text-sm font-semibold text-[var(--color-text-white)] bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] border border-transparent rounded-xl shadow-lg hover:from-[var(--color-primary-darker)] hover:to-[var(--color-primary-darkest)] focus:outline-none focus:ring-3 focus:ring-[var(--color-primary)] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105"
-                                    disabled={isFormDisabled}
-                                >
-                                    {loading ? (
-                                        <>
-                                            <RefreshCw className="w-4 h-4 animate-spin" />
-                                            {isEditing ? 'Updating User...' : 'Creating User...'}
-                                        </>
-                                    ) : (
-                                        <>
-                                            <Save className="w-4 h-4" />
-                                            {isEditing ? 'Update User' : 'Create User'}
-                                        </>
-                                    )}
-                                </button>
-                            </div>
                         </form>
                     </div>
+                </div>
                 </div>
             </div>
 

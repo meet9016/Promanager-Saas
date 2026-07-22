@@ -29,12 +29,12 @@ const Department = () => {
 
 
     return (
-        <div className="h-100 overflow-y-auto bg-[var(--color-bg-primary)]">
-            <div className=" mx-auto">
+        <div className="flex-1 flex flex-col min-h-0 bg-[var(--color-bg-primary)]">
+            <div className="flex-1 flex flex-col min-h-0 mx-auto w-full">
 
 
                 {/* Main Content */}
-                <div className="space-y-8">
+                <div className="flex-1 flex flex-col min-h-0 space-y-8">
                     {permissions['department_view'] &&
                        <DepartmentList
                             departments={departments}

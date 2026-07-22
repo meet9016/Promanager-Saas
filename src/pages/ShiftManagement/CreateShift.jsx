@@ -757,26 +757,57 @@ const CreateShift = () => {
                 {/* Enhanced Header */}
                 <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-xl mb-8 overflow-hidden">
                     <div className="bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] p-6">
-                        <div className="flex items-center gap-4">
-                            <button
-                                onClick={() => navigate('/shift-management')}
-                                className="flex items-center gap-2 text-[var(--color-text-white)] hover:text-[var(--color-text-white)] transition-colors bg-[var(--color-bg-secondary-20)] hover:bg-[var(--color-bg-secondary-30)] px-2 py-2 rounded-lg backdrop-blur-sm"
-                            >
-                                <ArrowLeft size={18} />
-
-                            </button>
-                            <div className="flex items-center gap-3">
-                                <div>
-                                    <h1 className="text-2xl font-bold text-[var(--color-text-white)]">
-                                        {isEditMode ? 'Edit Shift Configuration' : 'Create New Shift'}
-                                    </h1>
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-4">
+                                <button
+                                    onClick={() => navigate('/shift-management')}
+                                    className="flex items-center gap-2 text-[var(--color-text-white)] hover:text-[var(--color-text-white)] transition-colors bg-[var(--color-bg-secondary-20)] hover:bg-[var(--color-bg-secondary-30)] px-2 py-2 rounded-lg backdrop-blur-sm"
+                                >
+                                    <ArrowLeft size={18} />
+                                </button>
+                                <div className="flex items-center gap-3">
+                                    <div>
+                                        <h1 className="text-2xl font-bold text-[var(--color-text-white)]">
+                                            {isEditMode ? 'Edit Shift Configuration' : 'Create New Shift'}
+                                        </h1>
+                                    </div>
                                 </div>
+                            </div>
+
+                            <div className="flex items-center gap-3">
+                                <button
+                                    type="button"
+                                    onClick={() => navigate('/shift-management')}
+                                    disabled={submitting}
+                                    className="px-5 py-2 border border-white/30 text-white rounded-lg hover:bg-white/10 transition-colors font-medium backdrop-blur-sm text-sm"
+                                >
+                                    Cancel
+                                </button>
+
+                                <button
+                                    type="submit"
+                                    form="shift-form"
+                                    disabled={submitting}
+                                    className="px-5 py-2 bg-white text-[var(--color-primary-dark)] rounded-lg hover:bg-gray-50 transition-all duration-200 font-medium shadow-md disabled:opacity-70 disabled:cursor-not-allowed flex items-center gap-2 text-sm"
+                                >
+                                    {submitting ? (
+                                        <>
+                                            <div className="w-4 h-4 border-2 border-[var(--color-primary-dark)] border-t-transparent rounded-full animate-spin"></div>
+                                            {isEditMode ? 'Updating...' : 'Creating...'}
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Save className="w-4 h-4" />
+                                            {isEditMode ? 'Update Shift' : 'Create Shift'}
+                                        </>
+                                    )}
+                                </button>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <form onSubmit={handleSubmit} className="flex-1 flex flex-col overflow-hidden min-h-0">
+                <form id="shift-form" onSubmit={handleSubmit} className="flex-1 flex flex-col overflow-hidden min-h-0">
                     {/* Enhanced Weekly Schedule Configuration */}
                     <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden custom-scrollbar bg-[var(--color-bg-secondary)] backdrop-blur-sm rounded-2xl border border-slate-200 shadow-lg">
                         {/* Enhanced Basic Information */}
@@ -1052,46 +1083,6 @@ const CreateShift = () => {
                         </div>
                     </div>
 
-                    {/* Enhanced Action Buttons */}
-                    <div className="flex-shrink-0 bg-[var(--color-bg-secondary)] border-t border-slate-200 pt-5">
-                        <div className="p-0">
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-3">
-                                </div>
-
-                                <div className="flex items-center gap-4">
-                                    <button
-                                        type="button"
-                                        onClick={() => navigate('/shift-management')}
-                                        disabled={submitting}
-                                        className="px-6 py-3 bg-transparent text-[var(--color-primary)] border-2 hover:bg-[var(--color-primary-lightest)] border-[var(--color-primary)] rounded-xl transition-colors font-medium"
-                                    >
-                                        Cancel
-                                    </button>
-
-                                    <button
-                                        type="submit"
-                                        disabled={submitting}
-                                        className="px-8 py-3 bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] text-[var(--color-text-white)] rounded-xl hover:from-[var(--color-primary-darker)] hover:to-[var(--color-primary-darkest)] focus:ring-2 focus:ring-[var(--color-primary)] focus:outline-none transition-all duration-200 font-medium shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
-                                    >
-                                        <div className="flex items-center gap-2">
-                                            {submitting ? (
-                                                <>
-                                                    <div className="w-4 h-4 border-2 border-[var(--color-border-primary)] rounded-full animate-spin border-t-white"></div>
-                                                    {isEditMode ? 'Updating...' : 'Creating...'}
-                                                </>
-                                            ) : (
-                                                <>
-                                                    <Save className="w-4 h-4" />
-                                                    {isEditMode ? 'Update Shift' : 'Create Shift'}
-                                                </>
-                                            )}
-                                        </div>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </form>
 
 
