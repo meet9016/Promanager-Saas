@@ -1,6 +1,7 @@
 // SalaryTrend.jsx
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { useDashboardData } from '../../context/DashboardContext';
+import NoDataFound from '../comman/NoDataFound';
 
 const SalaryTrend = () => {
   const { dashboardData } = useDashboardData();
@@ -31,7 +32,7 @@ const SalaryTrend = () => {
   const { highest, average, growth } = getStats();
 
   return (
-    <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-lg border border-[var(--color-border-secondary)] p-8 hover:shadow-xl transition-all duration-300">
+    <div className="h-full flex flex-col bg-[var(--color-bg-secondary)] rounded-2xl shadow-lg border border-[var(--color-border-secondary)] p-8 hover:shadow-xl transition-all duration-300">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
           <div className="p-3 bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-dark)] rounded-xl shadow-lg">
@@ -127,14 +128,12 @@ const SalaryTrend = () => {
         </>
       ) : (
         // Empty state
-        <div className="text-center py-16">
-          <div className="w-20 h-20 bg-gradient-to-br from-[var(--color-bg-gray-light)] to-[var(--color-bg-hover)] rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
-            <svg className="w-10 h-10 text-[var(--color-text-muted)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-            </svg>
-          </div>
-          <p className="text-[var(--color-text-secondary)] font-semibold text-lg mb-2">No salary data available</p>
-          <p className="text-sm text-[var(--color-text-muted)]">Data will appear here once salary trends are recorded</p>
+        <div className="flex items-center justify-center h-64">
+          <NoDataFound
+            title="No salary data available"
+            subtitle="Data will appear here once salary trends are recorded"
+            className="!py-2"
+          />
         </div>
       )}
     </div>

@@ -25,7 +25,7 @@ const NoDataFound = ({
       <img
         src={noDataImg}
         alt="No data found"
-        className={`${imgSize} mb-4 opacity-95`}
+        className={`${imgSize} object-contain mb-4 opacity-95`}
       />
       <p className="text-[var(--color-text-primary)] text-2xl font-bold tracking-tight">
         {title}

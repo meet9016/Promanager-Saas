@@ -7,9 +7,9 @@ import { useAuth } from '../context/AuthContext';
 
 const DashboardContent = () => {
   return (
-    <div className="min-h-screen p-6 lg:p-8 bg-[var(--color-bg-primary)]">
-      <div className="max-w-[1600px] mx-auto space-y-6">
-        <AttendanceReport 
+    <div className="h-[calc(100vh-64px)] p-6 lg:p-8 bg-[var(--color-bg-primary)] flex flex-col">
+      <div className="max-w-[1600px] w-full mx-auto flex-1 flex flex-col min-h-0">
+        <AttendanceReport
           salaryTrendComponent={<SalaryTrend />}
           payrollSummaryComponent={<PayrollSummary />}
         />

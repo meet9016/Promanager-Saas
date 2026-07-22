@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip } from 'recharts';
-import { Calendar, Users, TrendingUp, IndianRupee, Clock, Award, Eye } from 'lucide-react';
+import { Calendar, Users, TrendingUp, IndianRupee, Clock, Award, Eye, BarChart2 } from 'lucide-react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useDashboardData } from '../../context/DashboardContext';
 import dayjs from 'dayjs';
+import NoDataFound from '../comman/NoDataFound';
 
 const PayrollSummary = () => {
   const [selectedMonth, setSelectedMonth] = useState(dayjs().format('YYYY-MM'));
@@ -84,7 +85,7 @@ const PayrollSummary = () => {
 
           {/* Summary Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div className="bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] p-6 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 flex items-center justify-between">
+            <div className="bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] p-4 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-[var(--color-text-secondary)] mb-1">Total Payroll</p>
                 <p className="text-2xl font-bold text-[var(--color-text-primary)]">₹{dashboardData?.totals?.total_salary || 0}</p>
@@ -94,7 +95,7 @@ const PayrollSummary = () => {
               </div>
             </div>
 
-            <div className="bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] p-6 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 flex items-center justify-between">
+            <div className="bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] p-4 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-[var(--color-text-secondary)] mb-1">Overtime</p>
                 <p className="text-2xl font-bold text-[var(--color-success)]">₹{dashboardData?.totals?.overtime_salary || 0}</p>
@@ -104,7 +105,7 @@ const PayrollSummary = () => {
               </div>
             </div>
 
-            <div className="bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] p-6 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 flex items-center justify-between">
+            <div className="bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] p-4 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-[var(--color-text-secondary)] mb-1">Bonuses</p>
                 <p className="text-2xl font-bold text-[var(--color-warning)]">₹{dashboardData?.totals?.week_of_salary || 0}</p>
@@ -121,29 +122,29 @@ const PayrollSummary = () => {
             {(viewType === 'table' || viewType === 'both') && (
               <div className={viewType === 'table' ? 'w-full' : ''}>
                 <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-sm border border-[var(--color-border-secondary)] overflow-hidden h-full flex flex-col">
-                  <div className="p-6 border-b border-[var(--color-border-secondary)]">
+                  <div className="p-4 border-b border-[var(--color-border-secondary)] bg-[var(--color-primary-lighter)] text-[var(--color-primary-darker)]">
                     <div className="flex items-center gap-3">
                       <div className="p-2 bg-[var(--color-primary-lightest)] rounded-full">
                         <Users className="w-5 h-5 text-[var(--color-primary)]" />
                       </div>
-                      <h3 className="text-lg font-semibold text-[var(--color-text-primary)]">Employee Payroll</h3>
+                      <h3 className="text-lg font-semibold ">Employee Payroll</h3>
                     </div>
                   </div>
 
                   <div className="overflow-x-auto flex-1 flex flex-col">
                     <table className="min-w-full flex-1 text-sm text-left">
-                      <thead className="bg-[var(--color-bg-primary)] border-b border-[var(--color-border-secondary)]">
+                      <thead className="bg-[var(--color-primary-dark)] border-b border-[var(--color-border-secondary)]">
                         <tr>
-                          <th className="px-6 py-4 font-semibold text-[var(--color-text-secondary)] uppercase tracking-wider text-xs">
+                          <th className="px-6 py-3 font-semibold text-white uppercase tracking-wider text-xs">
                             Employee
                           </th>
-                          <th className="px-6 py-4 font-semibold text-[var(--color-text-secondary)] uppercase tracking-wider text-xs">
+                          <th className="px-6 py-3 font-semibold text-white uppercase tracking-wider text-xs">
                             Base Salary
                           </th>
-                          <th className="px-6 py-4 font-semibold text-[var(--color-text-secondary)] uppercase tracking-wider text-xs">
+                          <th className="px-6 py-3 font-semibold text-white uppercase tracking-wider text-xs">
                             Overtime
                           </th>
-                          <th className="px-6 py-4 font-semibold text-[var(--color-text-secondary)] uppercase tracking-wider text-xs">
+                          <th className="px-6 py-3 font-semibold text-white uppercase tracking-wider text-xs">
                             Status
                           </th>
                         </tr>
@@ -191,8 +192,8 @@ const PayrollSummary = () => {
                                 <td className="px-6 py-4 whitespace-nowrap">
                                   <span
                                     className={`inline-flex px-3 py-1 text-xs font-semibold rounded-full ${employee.payment_status === "2"
-                                        ? "bg-[var(--color-success-light)] text-[var(--color-success)] border border-[var(--color-success)] border-opacity-20"
-                                        : "bg-[var(--color-warning-light)] text-[var(--color-warning)] border border-[var(--color-warning)] border-opacity-20"
+                                      ? "bg-[var(--color-success-light)] text-[var(--color-success)] border border-[var(--color-success)] border-opacity-20"
+                                      : "bg-[var(--color-warning-light)] text-[var(--color-warning)] border border-[var(--color-warning)] border-opacity-20"
                                       }`}
                                   >
                                     {employee.payment_status === "2" ? "Paid" : "Pending"}
@@ -213,28 +214,20 @@ const PayrollSummary = () => {
                             ))}
                           </>
                         ) : (
-                          <>
-                            <tr>
-                              <td
-                                colSpan={4}
-                                className="text-center py-6 text-[var(--color-text-secondary)]"
-                              >
-                                <div className="flex flex-col items-center gap-2 text-xs">
-                                  <Users className="w-8 h-8 text-[var(--color-text-muted)]" />
-                                  <p>No payroll data available</p>
-                                </div>
-                              </td>
-                            </tr>
-
-                            {/* Always show 4 more empty rows */}
-                            {Array.from({ length: 4 }).map((_, index) => (
-                              <tr key={`empty-no-data-${index}`}>
-                                <td colSpan={4} className="px-4 py-6 text-center text-[var(--color-text-muted)] text-xs">
-                                  —
-                                </td>
-                              </tr>
-                            ))}
-                          </>
+                          <tr>
+                            <td
+                              colSpan={4}
+                              className="text-center h-64 text-[var(--color-text-secondary)]"
+                            >
+                              <div className="flex flex-col items-center justify-center h-full gap-2 text-xs">
+                                <NoDataFound
+                                  title="No Payroll Data Available"
+                                  subtitle="Payroll details will appear here once processed."
+                                  className="!py-2"
+                                />
+                              </div>
+                            </td>
+                          </tr>
                         )}
                       </tbody>
                     </table>
@@ -248,23 +241,25 @@ const PayrollSummary = () => {
             {(viewType === 'chart' || viewType === 'both') && (
               <div className={viewType === 'chart' ? 'w-full' : ''}>
                 <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-sm border border-[var(--color-border-secondary)] overflow-hidden h-full flex flex-col">
-                  <div className="p-6 border-b border-[var(--color-border-secondary)]">
+                  <div className="p-4 border-b border-[var(--color-border-secondary)] bg-[var(--color-primary-lighter)] text-[var(--color-primary-darker)]">
                     <div className="flex items-center gap-3">
                       <div className="p-2 bg-[var(--color-primary-lightest)] rounded-full">
-                        <BarChart className="w-5 h-5 text-[var(--color-primary)]" />
+                        <BarChart2 className="w-5 h-5 text-[var(--color-primary)]" />
                       </div>
-                      <h3 className="text-lg font-semibold text-[var(--color-text-primary)]">
+                      <h3 className="text-lg font-semibold ">
                         Monthly Breakdown
                       </h3>
                     </div>
                   </div>
 
                   <div className="p-8 flex-1">
-                    {dashboardData?.monthly_chart?.length === 0 ? (
-                      <div className="h-full flex flex-col items-center justify-center text-[var(--color-text-secondary)]">
-                        <BarChart className="w-16 h-16 text-[var(--color-text-muted)] mb-4" />
-                        <p className="text-lg font-medium">No chart data available</p>
-                        <p className="text-sm">Data will appear here when payroll information is loaded</p>
+                    {!dashboardData?.monthly_chart || dashboardData.monthly_chart.length === 0 || !dashboardData.monthly_chart.some(d => Number(d.total_salary || 0) > 0 || Number(d.overtime_salary || 0) > 0 || Number(d.week_of_salary || 0) > 0) ? (
+                      <div className="flex justify-center items-center h-64">
+                        <NoDataFound
+                          title="No chart data available"
+                          subtitle="Data will appear here when payroll information is loaded"
+                          className="!py-2"
+                        />
                       </div>
                     ) : (
                       <div className="h-80">

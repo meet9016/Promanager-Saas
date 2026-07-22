@@ -15,6 +15,7 @@ import { Toast } from '../ui/Toast';
 import CustomSelect from '../comman/CustomSelect';
 import CustomInput from '../comman/CustomInput';
 import CustomDatePicker from '../comman/CustomDatePicker';
+import NoDataFound from '../comman/NoDataFound';
 
 const SORT_DIRECTIONS = {
     ASCENDING: 'ascending',
@@ -318,12 +319,12 @@ const AttendanceReport = ({ salaryTrendComponent, payrollSummaryComponent }) => 
 
         if (!totalEmployees) {
             return (
-                <div className="flex items-center justify-center h-48 text-[var(--color-text-muted)]">
-                    <div className="text-center">
-                        <Users size={32} className="mx-auto mb-2 opacity-50" />
-                        <p className="font-medium">No Data</p>
-                        <p className="text-sm">No attendance records for this day.</p>
-                    </div>
+                <div className="flex items-center justify-center h-64">
+                    <NoDataFound
+                        title="No Data"
+                        subtitle="No attendance records for this day."
+                        className="!py-2"
+                    />
                 </div>
             );
         }
@@ -371,10 +372,10 @@ const AttendanceReport = ({ salaryTrendComponent, payrollSummaryComponent }) => 
     }
 
     return (
-        <>
+        <div className="flex flex-col flex-1 min-h-0">
             {/* Header */}
-            <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-xl mb-6 overflow-visible">
-                <div className="bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] p-8">
+            <div className="shrink-0 bg-[var(--color-bg-secondary)] rounded-2xl shadow-xl mb-6 overflow-visible">
+                <div className="bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] p-6 border border-[var(--color-border-secondary)] rounded-lg">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-4">
                             <div>
@@ -409,139 +410,142 @@ const AttendanceReport = ({ salaryTrendComponent, payrollSummaryComponent }) => 
             </div>
 
             {/* Stats Cards */}
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-6">
-                <div className="bg-[var(--color-bg-secondary)] rounded-lg border border-[var(--color-border-secondary)] p-4 shadow-sm">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <p className="text-sm font-medium text-[var(--color-text-secondary)]">Total Employees</p>
-                            <p className="text-xl font-bold text-[var(--color-text-primary)]">{stats.totalEmployees}</p>
-                        </div>
-                        <div className="p-2 bg-[var(--color-primary-lightest)] rounded-full">
-                            <Users className="w-5 h-5 text-[var(--color-primary)]" />
-                        </div>
-                    </div>
-                </div>
-                <div className="bg-[var(--color-bg-secondary)] rounded-lg border border-[var(--color-border-secondary)] p-4 shadow-sm">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <p className="text-sm font-medium text-[var(--color-text-secondary)]">Present</p>
-                            <p className="text-xl font-bold text-[var(--color-success)]">{stats.present}</p>
-                        </div>
-                        <div className="p-2 bg-[var(--color-success-light)] rounded-full">
-                            <CheckCircle className="w-5 h-5 text-[var(--color-success)]" />
-                        </div>
-                    </div>
-                </div>
-                <div className="bg-[var(--color-bg-secondary)] rounded-lg border border-[var(--color-border-secondary)] p-4 shadow-sm">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <p className="text-sm font-medium text-[var(--color-text-secondary)]">Absent</p>
-                            <p className="text-xl font-bold text-[var(--color-error)]">{stats.absent}</p>
-                        </div>
-                        <div className="p-2 bg-[var(--color-error-light)] rounded-full">
-                            <UserX className="w-5 h-5 text-[var(--color-error)]" />
-                        </div>
-                    </div>
-                </div>
-                <div className="bg-[var(--color-bg-secondary)] rounded-lg border border-[var(--color-border-secondary)] p-4 shadow-sm">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <p className="text-sm font-medium text-[var(--color-text-secondary)]">Week Off</p>
-                            <p className="text-xl font-bold text-[var(--color-warning)]">{stats.weekOff}</p>
-                        </div>
-                        <div className="p-2 bg-[var(--color-warning-light)] rounded-full">
-                            <Coffee className="w-5 h-5 text-[var(--color-warning)]" />
-                        </div>
-                    </div>
-                </div>
-                <div className="bg-[var(--color-bg-secondary)] rounded-lg border border-[var(--color-border-secondary)] p-4 shadow-sm">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <p className="text-sm font-medium text-[var(--color-text-secondary)]">Attendance Rate</p>
-                            <p className="text-xl font-bold text-[var(--color-primary)]">{stats.productivity}%</p>
-                        </div>
-                        <div className="p-2 bg-[var(--color-primary-lightest)] rounded-full">
-                            <TrendingUp className="w-5 h-5 text-[var(--color-primary)]" />
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {/* Main Content */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:items-stretch mb-8">
-                {/* Chart Section */}
-                <div className="lg:col-span-1 rounded-2xl shadow-lg overflow-hidden border border-[var(--color-border-secondary)]">
-                    <div className="bg-[var(--color-bg-secondary)] rounded-lg shadow-sm p-8 h-full flex flex-col">
-                        <div className="flex items-center justify-between mb-6">
-                            <h3 className="text-lg font-semibold text-[var(--color-text-primary)]">Attendance Overview</h3>
-                            <span className="text-sm text-[var(--color-text-muted)] bg-[var(--color-bg-gray-light)] px-3 py-1 rounded-full">
-                                {new Date(selectedDate).toLocaleDateString('en-US', {
-                                    weekday: 'short',
-                                    month: 'short',
-                                    day: 'numeric'
-                                })}
-                            </span>
-                        </div>
-
-                        <DonutChart
-                            stats={stats}
-                            hoveredSegment={hoveredSegment}
-                            setHoveredSegment={setHoveredSegment}
-                        />
-
-                        {/* Legend */}
-                        <div className="flex flex-col flex-1 justify-center">
-                            <div
-                                className="flex items-center space-x-3 cursor-pointer transition-all duration-200 hover:scale-105 p-3 rounded-lg hover:bg-[var(--color-success-light)]"
-                                onMouseEnter={() => setHoveredSegment('present')}
-                                onMouseLeave={() => setHoveredSegment(null)}
-                            >
-                                <div className="w-4 h-4 bg-[var(--color-success)] rounded-full shadow-sm"></div>
-                                <span className="text-sm text-[var(--color-text-secondary)] font-medium flex-1">AT WORK</span>
-                                <span className="text-sm text-[var(--color-text-primary)] font-bold">{stats.present}</span>
+            <div className="flex-1 overflow-y-auto custom-scrollbar pr-2 min-h-0 pb-0">
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-6">
+                    <div className="bg-[var(--color-bg-secondary)] rounded-lg border border-[var(--color-border-secondary)] p-4 shadow-sm">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <p className="text-sm font-medium text-[var(--color-text-secondary)]">Total Employees</p>
+                                <p className="text-xl font-bold text-[var(--color-text-primary)]">{stats.totalEmployees}</p>
                             </div>
-                            <div
-                                className="flex items-center space-x-3 cursor-pointer transition-all duration-200 hover:scale-105 p-3 rounded-lg hover:bg-[var(--color-error-light)]"
-                                onMouseEnter={() => setHoveredSegment('absent')}
-                                onMouseLeave={() => setHoveredSegment(null)}
-                            >
-                                <div className="w-4 h-4 bg-[var(--color-error)] rounded-full shadow-sm"></div>
-                                <span className="text-sm text-[var(--color-text-secondary)] font-medium flex-1">ABSENT</span>
-                                <span className="text-sm text-[var(--color-text-primary)] font-bold">{stats.absent}</span>
+                            <div className="p-2 bg-[var(--color-primary-lightest)] rounded-full">
+                                <Users className="w-5 h-5 text-[var(--color-primary)]" />
                             </div>
-                            <div
-                                className="flex items-center space-x-3 cursor-pointer transition-all duration-200 hover:scale-105 p-3 rounded-lg hover:bg-[var(--color-warning-light)]"
-                                onMouseEnter={() => setHoveredSegment('weekoff')}
-                                onMouseLeave={() => setHoveredSegment(null)}
-                            >
-                                <div className="w-4 h-4 bg-[var(--color-warning)] rounded-full shadow-sm"></div>
-                                <span className="text-sm text-[var(--color-text-secondary)] font-medium flex-1">WEEK OFF</span>
-                                <span className="text-sm text-[var(--color-text-primary)] font-bold">{stats.weekOff}</span>
+                        </div>
+                    </div>
+                    <div className="bg-[var(--color-bg-secondary)] rounded-lg border border-[var(--color-border-secondary)] p-4 shadow-sm">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <p className="text-sm font-medium text-[var(--color-text-secondary)]">Present</p>
+                                <p className="text-xl font-bold text-[var(--color-success)]">{stats.present}</p>
+                            </div>
+                            <div className="p-2 bg-[var(--color-success-light)] rounded-full">
+                                <CheckCircle className="w-5 h-5 text-[var(--color-success)]" />
+                            </div>
+                        </div>
+                    </div>
+                    <div className="bg-[var(--color-bg-secondary)] rounded-lg border border-[var(--color-border-secondary)] p-4 shadow-sm">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <p className="text-sm font-medium text-[var(--color-text-secondary)]">Absent</p>
+                                <p className="text-xl font-bold text-[var(--color-error)]">{stats.absent}</p>
+                            </div>
+                            <div className="p-2 bg-[var(--color-error-light)] rounded-full">
+                                <UserX className="w-5 h-5 text-[var(--color-error)]" />
+                            </div>
+                        </div>
+                    </div>
+                    <div className="bg-[var(--color-bg-secondary)] rounded-lg border border-[var(--color-border-secondary)] p-4 shadow-sm">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <p className="text-sm font-medium text-[var(--color-text-secondary)]">Week Off</p>
+                                <p className="text-xl font-bold text-[var(--color-warning)]">{stats.weekOff}</p>
+                            </div>
+                            <div className="p-2 bg-[var(--color-warning-light)] rounded-full">
+                                <Coffee className="w-5 h-5 text-[var(--color-warning)]" />
+                            </div>
+                        </div>
+                    </div>
+                    <div className="bg-[var(--color-bg-secondary)] rounded-lg border border-[var(--color-border-secondary)] p-4 shadow-sm">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <p className="text-sm font-medium text-[var(--color-text-secondary)]">Attendance Rate</p>
+                                <p className="text-xl font-bold text-[var(--color-primary)]">{stats.productivity}%</p>
+                            </div>
+                            <div className="p-2 bg-[var(--color-primary-lightest)] rounded-full">
+                                <TrendingUp className="w-5 h-5 text-[var(--color-primary)]" />
                             </div>
                         </div>
                     </div>
                 </div>
 
-                {/* Salary Trend Section */}
-                <div className="lg:col-span-2">
-                    {salaryTrendComponent && (
-                        <div className="h-full">
-                            {salaryTrendComponent}
+                {/* Main Content */}
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:items-stretch mb-8">
+                    {/* Chart Section */}
+                    <div className="lg:col-span-1 rounded-2xl shadow-lg overflow-hidden border border-[var(--color-border-secondary)]">
+                        <div className="bg-[var(--color-bg-secondary)] rounded-lg shadow-sm p-8 h-full flex flex-col">
+                            <div className="flex items-center justify-between mb-6">
+                                <h3 className="text-lg font-semibold text-[var(--color-text-primary)]">Attendance Overview</h3>
+                                <span className="text-sm text-[var(--color-text-muted)] bg-[var(--color-bg-gray-light)] px-3 py-1 rounded-full">
+                                    {new Date(selectedDate).toLocaleDateString('en-US', {
+                                        weekday: 'short',
+                                        month: 'short',
+                                        day: 'numeric'
+                                    })}
+                                </span>
+                            </div>
+
+                            <DonutChart
+                                stats={stats}
+                                hoveredSegment={hoveredSegment}
+                                setHoveredSegment={setHoveredSegment}
+                            />
+
+                            {/* Legend */}
+                            {stats.totalEmployees > 0 && (
+                                <div className="flex flex-col flex-1 justify-center mt-6">
+                                    <div
+                                        className="flex items-center space-x-3 cursor-pointer transition-all duration-200 hover:scale-105 p-3 rounded-lg hover:bg-[var(--color-success-light)]"
+                                        onMouseEnter={() => setHoveredSegment('present')}
+                                        onMouseLeave={() => setHoveredSegment(null)}
+                                    >
+                                        <div className="w-4 h-4 bg-[var(--color-success)] rounded-full shadow-sm"></div>
+                                        <span className="text-sm text-[var(--color-text-secondary)] font-medium flex-1">AT WORK</span>
+                                        <span className="text-sm text-[var(--color-text-primary)] font-bold">{stats.present}</span>
+                                    </div>
+                                    <div
+                                        className="flex items-center space-x-3 cursor-pointer transition-all duration-200 hover:scale-105 p-3 rounded-lg hover:bg-[var(--color-error-light)]"
+                                        onMouseEnter={() => setHoveredSegment('absent')}
+                                        onMouseLeave={() => setHoveredSegment(null)}
+                                    >
+                                        <div className="w-4 h-4 bg-[var(--color-error)] rounded-full shadow-sm"></div>
+                                        <span className="text-sm text-[var(--color-text-secondary)] font-medium flex-1">ABSENT</span>
+                                        <span className="text-sm text-[var(--color-text-primary)] font-bold">{stats.absent}</span>
+                                    </div>
+                                    <div
+                                        className="flex items-center space-x-3 cursor-pointer transition-all duration-200 hover:scale-105 p-3 rounded-lg hover:bg-[var(--color-warning-light)]"
+                                        onMouseEnter={() => setHoveredSegment('weekoff')}
+                                        onMouseLeave={() => setHoveredSegment(null)}
+                                    >
+                                        <div className="w-4 h-4 bg-[var(--color-warning)] rounded-full shadow-sm"></div>
+                                        <span className="text-sm text-[var(--color-text-secondary)] font-medium flex-1">WEEK OFF</span>
+                                        <span className="text-sm text-[var(--color-text-primary)] font-bold">{stats.weekOff}</span>
+                                    </div>
+                                </div>
+                            )}
                         </div>
-                    )}
-                </div>
-            </div>
+                    </div>
 
-            {/* Payroll Summary Section */}
-            {payrollSummaryComponent && (
-                <div className="mb-8">
-                    {payrollSummaryComponent}
+                    {/* Salary Trend Section */}
+                    <div className="lg:col-span-2">
+                        {salaryTrendComponent && (
+                            <div className="h-full">
+                                {salaryTrendComponent}
+                            </div>
+                        )}
+                    </div>
                 </div>
-            )}
 
-            {/* Table Section */}
-            <div className="w-full">
-                <div className="bg-[var(--color-bg-secondary)] rounded-lg shadow-sm overflow-hidden h-full flex flex-col">
+                {/* Payroll Summary Section */}
+                {payrollSummaryComponent && (
+                    <div className="mb-8">
+                        {payrollSummaryComponent}
+                    </div>
+                )}
+
+                {/* Table Section */}
+                <div className="w-full">
+                    <div className="bg-[var(--color-bg-secondary)] rounded-lg shadow-sm overflow-hidden h-full flex flex-col border border-[var(--color-primary-dark)]">
                         {/* Table Header */}
                         <div className="bg-[var(--color-primary-lighter)]  px-6 py-4 border-b border-[var(--color-border-secondary)]">
                             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -737,14 +741,13 @@ const AttendanceReport = ({ salaryTrendComponent, payrollSummaryComponent }) => 
                                         ) : (
                                             <tr>
                                                 <td colSpan={6} className="px-4 py-12 text-center">
-                                                    <div className="flex flex-col items-center justify-center text-[var(--color-text-muted)]" style={{ minHeight: 56 * MIN_ROWS }}>
-                                                        <Activity className="w-12 h-12 mb-4 opacity-50" />
-                                                        <h3 className="text-lg font-medium mb-2">No attendance records found</h3>
-                                                        <p className="text-sm">
-                                                            {searchQuery || statusFilter !== 'all'
-                                                                ? 'Try adjusting your search or filter criteria'
-                                                                : 'No attendance data available for the selected date'}
-                                                        </p>
+                                                    <div style={{ minHeight: 56 * MIN_ROWS }}>
+                                                        <NoDataFound
+                                                            title="No Attendance Records Found"
+                                                            subtitle={searchQuery || statusFilter !== 'all'
+                                                                ? 'Try adjusting your search or filter criteria.'
+                                                                : 'There are no attendance records for the selected date.'}
+                                                        />
                                                     </div>
                                                 </td>
                                             </tr>
@@ -761,14 +764,15 @@ const AttendanceReport = ({ salaryTrendComponent, payrollSummaryComponent }) => 
                         />
                     </div>
                 </div>
-            {toast && (
-                <Toast
-                    message={toast.message}
-                    type={toast.type}
-                    onClose={() => setToast(null)}
-                />
-            )}
-        </>
+                {toast && (
+                    <Toast
+                        message={toast.message}
+                        type={toast.type}
+                        onClose={() => setToast(null)}
+                    />
+                )}
+            </div>
+        </div>
     );
 };
 
