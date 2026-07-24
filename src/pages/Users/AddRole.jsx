@@ -526,7 +526,7 @@ const AddRole = () => {
                                         onClick={handleCancel}
                                         className="px-5 py-2 border border-white/30 text-white rounded-lg hover:bg-white/10 transition-colors font-medium backdrop-blur-sm text-sm"
                                     >
-                                        <X className="w-4 h-4 inline mr-1" />
+                                        {/* <X className="w-4 h-4 inline mr-1" /> */}
                                         Cancel
                                     </button>
                                     <button

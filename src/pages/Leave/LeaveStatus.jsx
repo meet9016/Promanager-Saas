@@ -1155,8 +1155,8 @@ const LeaveManagement = () => {
                                 {/* Leave Summary Stats */}
                                 {(() => {
                                     const dates = viewModal.leaveData.leave_dates || [];
-                                    const startDate = dates[0]?.leave_date ? new Date(dates[0].leave_date.split('-').reverse().join('-')).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : '-';
-                                    const endDate = dates[dates.length - 1]?.leave_date ? new Date(dates[dates.length - 1].leave_date.split('-').reverse().join('-')).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : '-';
+                                    const startDate = viewModal.leaveData.start_date || '-';
+                                    const endDate = viewModal.leaveData.end_date || '-';
                                     const totalDays = dates.length;
                                     const paidDays = dates.filter(d => d.is_paid === "1").length;
                                     const unpaidDays = dates.filter(d => d.is_paid !== "1").length;
@@ -1264,15 +1264,8 @@ const LeaveManagement = () => {
                                                 </thead>
                                                 <tbody className="divide-y divide-[var(--color-border-divider)] bg-[var(--color-bg-secondary)]">
                                                     {viewModal.leaveData.leave_dates.map((d, i) => {
-                                                        const dateStr = d.leave_date; // "DD-MM-YYYY"
+                                                        const dateStr = d.leave_date; // "YYYY-MM-DD" or similar from API
                                                         let displayDate = dateStr;
-                                                        try {
-                                                            const [day, month, year] = dateStr.split('-');
-                                                            const dt = new Date(year, month - 1, day);
-                                                            const weekday = dt.toLocaleDateString('en-US', { weekday: 'long' });
-                                                            const formatted = dt.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
-                                                            displayDate = `${formatted} (${weekday})`;
-                                                        } catch (e) { }
 
                                                         return (
                                                             <tr key={i} className="hover:bg-[var(--color-bg-hover)] transition-colors">
@@ -1332,7 +1325,7 @@ const LeaveManagement = () => {
                                         )}
                                     </>
                                 )}
-                                {viewModal.leaveData.status === '2' && (
+                                {viewModal.leaveData.status === '2' && viewModal.leaveData.can_cancel_btn === true && (
                                     <button
                                         onClick={() => {
                                             setViewModal({ isOpen: false, leaveData: null });

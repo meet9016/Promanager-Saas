@@ -356,7 +356,7 @@ const AddUser = () => {
                                             </div>
                                         </div>
                                     </div>
-                                    
+
                                     <div className="flex items-center gap-3">
                                         <button
                                             type="button"
@@ -390,24 +390,24 @@ const AddUser = () => {
                         </div>
                     </div>
 
-                    <div className="flex-1 overflow-y-auto space-y-6 pr-2 pb-2 custom-scrollbar">
-                        <div className="bg-[var(--color-bg-secondary)] rounded-2xl border border-[var(--color-primary-light)] shadow-xl overflow-hidden">
+                    <div className="flex-1 overflow-visible space-y-6 pr-2 pb-2">
+                        <div className="bg-[var(--color-bg-secondary)] rounded-2xl border border-[var(--color-primary-light)] shadow-xl overflow-visible">
                             <div className="px-6 py-4 border-b border-[var(--color-primary-light)] bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)]">
                                 <div className="flex items-center gap-3">
                                     <UserPlus className="w-5 h-5 text-[var(--color-text-white)]" />
                                     <h3 className="text-lg font-semibold text-[var(--color-text-white)]">User Information</h3>
                                 </div>
                             </div>
-                            
+
                             <form id="user-form" onSubmit={validateForm} className="p-8 grid grid-cols-1 md:grid-cols-2 gap-6">
-                            {/* Full Name */}
-                            <div className="space-y-2">
-                                <label htmlFor="full_name" className="flex items-center gap-2 text-sm font-semibold text-gray-800">
-                                    <User className="w-4 h-4 text-[var(--color-primary-dark)]" />
-                                    Full Name <span className="text-[var(--color-error)]">*</span>
-                                </label>
-                                <div className="relative">
-                                    {/* <input
+                                {/* Full Name */}
+                                <div className="space-y-2">
+                                    <label htmlFor="full_name" className="flex items-center gap-2 text-sm font-semibold text-gray-800">
+                                        <User className="w-4 h-4 text-[var(--color-primary-dark)]" />
+                                        Full Name <span className="text-[var(--color-error)]">*</span>
+                                    </label>
+                                    <div className="relative">
+                                        {/* <input
                                         type="text"
                                         id="full_name"
                                         name="full_name"
@@ -419,34 +419,34 @@ const AddUser = () => {
                                         disabled={isFormDisabled}
                                         maxLength={50}
                                     /> */}
-                                    <CustomInput
-                                        type="text"
-                                        id="full_name"
-                                        name="full_name"
-                                        value={formData.full_name}
-                                        onChange={handleInputChange}
-                                        placeholder="Enter full name (letters and spaces only)"
-                                        disabled={isFormDisabled}
-                                        maxLength={50}
-                                    />
+                                        <CustomInput
+                                            type="text"
+                                            id="full_name"
+                                            name="full_name"
+                                            value={formData.full_name}
+                                            onChange={handleInputChange}
+                                            placeholder="Enter full name (letters and spaces only)"
+                                            disabled={isFormDisabled}
+                                            maxLength={50}
+                                        />
 
+                                    </div>
+                                    {errors.full_name && (
+                                        <p className="mt-2 text-sm text-[var(--color-text-error)] flex items-center gap-2">
+                                            <AlertCircle className="w-4 h-4" />
+                                            {errors.full_name}
+                                        </p>
+                                    )}
                                 </div>
-                                {errors.full_name && (
-                                    <p className="mt-2 text-sm text-[var(--color-text-error)] flex items-center gap-2">
-                                        <AlertCircle className="w-4 h-4" />
-                                        {errors.full_name}
-                                    </p>
-                                )}
-                            </div>
 
-                            {/* Phone Number */}
-                            <div className="space-y-2">
-                                <label htmlFor="number" className="flex items-center gap-2 text-sm font-semibold text-gray-800">
-                                    <Phone className="w-4 h-4 text-[var(--color-primary-dark)]" />
-                                    Phone Number <span className="text-[var(--color-error)]">*</span>
-                                </label>
-                                <div className="relative">
-                                    {/* <input
+                                {/* Phone Number */}
+                                <div className="space-y-2">
+                                    <label htmlFor="number" className="flex items-center gap-2 text-sm font-semibold text-gray-800">
+                                        <Phone className="w-4 h-4 text-[var(--color-primary-dark)]" />
+                                        Phone Number <span className="text-[var(--color-error)]">*</span>
+                                    </label>
+                                    <div className="relative">
+                                        {/* <input
                                         type="tel"
                                         id="number"
                                         name="number"
@@ -458,34 +458,34 @@ const AddUser = () => {
                                         disabled={isFormDisabled}
                                         maxLength={10}
                                     /> */}
-                                    <CustomInput
-                                        type="tel"
-                                        id="number"
-                                        name="number"
-                                        value={formData.number}
-                                        onChange={handleInputChange}
-                                        placeholder="Enter 10-digit phone number (6-9 starting)"
-                                        disabled={isFormDisabled}
-                                        maxLength={10}
-                                    />
-                                    {/* <Phone className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[var(--color-text-muted)]" /> */}
+                                        <CustomInput
+                                            type="tel"
+                                            id="number"
+                                            name="number"
+                                            value={formData.number}
+                                            onChange={handleInputChange}
+                                            placeholder="Enter 10-digit phone number (6-9 starting)"
+                                            disabled={isFormDisabled}
+                                            maxLength={10}
+                                        />
+                                        {/* <Phone className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[var(--color-text-muted)]" /> */}
+                                    </div>
+                                    {errors.number && (
+                                        <p className="mt-2 text-sm text-[var(--color-text-error)] flex items-center gap-2">
+                                            <AlertCircle className="w-4 h-4" />
+                                            {errors.number}
+                                        </p>
+                                    )}
                                 </div>
-                                {errors.number && (
-                                    <p className="mt-2 text-sm text-[var(--color-text-error)] flex items-center gap-2">
-                                        <AlertCircle className="w-4 h-4" />
-                                        {errors.number}
-                                    </p>
-                                )}
-                            </div>
 
-                            {/* Email */}
-                            <div className="space-y-2">
-                                <label htmlFor="email" className="flex items-center gap-2 text-sm font-semibold text-gray-800">
-                                    <Mail className="w-4 h-4 text-[var(--color-primary-dark)]" />
-                                    Email Address <span className="text-[var(--color-error)]">*</span>
-                                </label>
-                                <div className="relative">
-                                    {/* <input
+                                {/* Email */}
+                                <div className="space-y-2">
+                                    <label htmlFor="email" className="flex items-center gap-2 text-sm font-semibold text-gray-800">
+                                        <Mail className="w-4 h-4 text-[var(--color-primary-dark)]" />
+                                        Email Address <span className="text-[var(--color-error)]">*</span>
+                                    </label>
+                                    <div className="relative">
+                                        {/* <input
                                         type="email"
                                         id="email"
                                         name="email"
@@ -497,34 +497,34 @@ const AddUser = () => {
                                         disabled={isFormDisabled}
                                         maxLength={100}
                                     /> */}
-                                    <CustomInput
-                                        type="email"
-                                        id="email"
-                                        name="email"
-                                        value={formData.email}
-                                        onChange={handleInputChange}
-                                        placeholder="Enter valid email address"
-                                        disabled={isFormDisabled}
-                                        maxLength={100}
-                                    />
-                                    {/* <Mail className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[var(--color-text-muted)]" /> */}
+                                        <CustomInput
+                                            type="email"
+                                            id="email"
+                                            name="email"
+                                            value={formData.email}
+                                            onChange={handleInputChange}
+                                            placeholder="Enter valid email address"
+                                            disabled={isFormDisabled}
+                                            maxLength={100}
+                                        />
+                                        {/* <Mail className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[var(--color-text-muted)]" /> */}
+                                    </div>
+                                    {errors.email && (
+                                        <p className="mt-2 text-sm text-[var(--color-text-error)] flex items-center gap-2">
+                                            <AlertCircle className="w-4 h-4" />
+                                            {errors.email}
+                                        </p>
+                                    )}
                                 </div>
-                                {errors.email && (
-                                    <p className="mt-2 text-sm text-[var(--color-text-error)] flex items-center gap-2">
-                                        <AlertCircle className="w-4 h-4" />
-                                        {errors.email}
-                                    </p>
-                                )}
-                            </div>
 
-                            {/* Password */}
-                            <div className="space-y-2">
-                                <label htmlFor="password" className="flex items-center gap-2 text-sm font-semibold text-gray-800">
-                                    <Lock className="w-4 h-4 text-[var(--color-primary-dark)]" />
-                                    Password {!isEditing && <span className="text-[var(--color-error)]">*</span>}
-                                </label>
-                                <div className="relative">
-                                    {/* <input
+                                {/* Password */}
+                                <div className="space-y-2">
+                                    <label htmlFor="password" className="flex items-center gap-2 text-sm font-semibold text-gray-800">
+                                        <Lock className="w-4 h-4 text-[var(--color-primary-dark)]" />
+                                        Password {!isEditing && <span className="text-[var(--color-error)]">*</span>}
+                                    </label>
+                                    <div className="relative">
+                                        {/* <input
                                         type={showPassword ? "text" : "password"}
                                         id="password"
                                         name="password"
@@ -536,18 +536,18 @@ const AddUser = () => {
                                         disabled={isFormDisabled}
                                         maxLength={50}
                                     /> */}
-                                    <CustomInput
-                                        type={showPassword ? "text" : "password"}
-                                        id="password"
-                                        name="password"
-                                        value={formData.password}
-                                        onChange={handleInputChange}
-                                        placeholder={isEditing ? "Enter new password (optional)" : "Enter strong password"}
-                                        disabled={isFormDisabled}
-                                        maxLength={50}
-                                    />
-                                    {/* <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[var(--color-text-muted)]" /> */}
-                                    {/* <button
+                                        <CustomInput
+                                            type={showPassword ? "text" : "password"}
+                                            id="password"
+                                            name="password"
+                                            value={formData.password}
+                                            onChange={handleInputChange}
+                                            placeholder={isEditing ? "Enter new password (optional)" : "Enter strong password"}
+                                            disabled={isFormDisabled}
+                                            maxLength={50}
+                                        />
+                                        {/* <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[var(--color-text-muted)]" /> */}
+                                        {/* <button
                                         type="button"
                                         onClick={togglePasswordVisibility}
                                         className="absolute right-4 top-1/2 transform -translate-y-1/2 text-[var(--color-primary-dark)] transition-colors"
@@ -555,29 +555,29 @@ const AddUser = () => {
                                     >
                                         {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                                     </button> */}
-                                </div>
-                                {errors.password && (
-                                    <p className="mt-2 text-sm text-[var(--color-text-error)] flex items-center gap-2">
-                                        <AlertCircle className="w-4 h-4 text-red-500" />
-                                        {errors.password}
+                                    </div>
+                                    {errors.password && (
+                                        <p className="mt-2 text-sm text-[var(--color-text-error)] flex items-center gap-2">
+                                            <AlertCircle className="w-4 h-4 text-red-500" />
+                                            {errors.password}
+                                        </p>
+                                    )}
+                                    <p className="text-xs text-[var(--color-text-muted)] mt-1">
+                                        {isEditing
+                                            ? "Leave empty to keep current password. If filled, must contain: uppercase letter, lowercase letter, number, and be at least 6 characters long"
+                                            : "Password must contain: uppercase letter, lowercase letter, number, and be at least 6 characters long"
+                                        }
                                     </p>
-                                )}
-                                <p className="text-xs text-[var(--color-text-muted)] mt-1">
-                                    {isEditing
-                                        ? "Leave empty to keep current password. If filled, must contain: uppercase letter, lowercase letter, number, and be at least 6 characters long"
-                                        : "Password must contain: uppercase letter, lowercase letter, number, and be at least 6 characters long"
-                                    }
-                                </p>
-                            </div>
+                                </div>
 
-                            {/* Role Selection */}
-                            <div className="space-y-2">
-                                <label htmlFor="user_roles_id" className="flex items-center gap-2 text-sm font-semibold text-gray-800">
-                                    <Shield className="w-4 h-4 text-[var(--color-primary-dark)]" />
-                                    User Role <span className="text-[var(--color-error)]">*</span>
-                                </label>
-                                <div className="relative">
-                                    {/* <select
+                                {/* Role Selection */}
+                                <div className="space-y-2">
+                                    <label htmlFor="user_roles_id" className="flex items-center gap-2 text-sm font-semibold text-gray-800">
+                                        <Shield className="w-4 h-4 text-[var(--color-primary-dark)]" />
+                                        User Role <span className="text-[var(--color-error)]">*</span>
+                                    </label>
+                                    <div className="relative">
+                                        {/* <select
                                         id="user_roles_id"
                                         name="user_roles_id"
                                         value={formData.user_roles_id}
@@ -595,32 +595,32 @@ const AddUser = () => {
                                             </option>
                                         ))}
                                     </select> */}
-                                    <CustomSelect
-                                        name="user_roles_id"
-                                        value={formData.user_roles_id}
-                                        onChange={handleInputChange}
-                                        options={roles.map((role) => ({
-                                            value: role.user_roles_id,
-                                            label: role.name,
-                                        }))}
-                                        placeholder={rolesLoading ? 'Loading roles...' : 'Select a role'}
-                                        searchable={true}
-                                        disabled={isFormDisabled}
-                                    />
-                                    {/* <Shield className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[var(--color-text-muted)]" /> */}
-                                    {/* <ChevronDown className="absolute right-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[var(--color-text-muted)]" /> */}
+                                        <CustomSelect
+                                            name="user_roles_id"
+                                            value={formData.user_roles_id}
+                                            onChange={handleInputChange}
+                                            options={roles.map((role) => ({
+                                                value: role.user_roles_id,
+                                                label: role.name,
+                                            }))}
+                                            placeholder={rolesLoading ? 'Loading roles...' : 'Select a role'}
+                                            searchable={true}
+                                            disabled={isFormDisabled}
+                                        />
+                                        {/* <Shield className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[var(--color-text-muted)]" /> */}
+                                        {/* <ChevronDown className="absolute right-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[var(--color-text-muted)]" /> */}
+                                    </div>
+                                    {errors.user_roles_id && (
+                                        <p className="mt-2 text-sm text-[var(--color-text-error)] flex items-center gap-2">
+                                            <AlertCircle className="w-4 h-4" />
+                                            {errors.user_roles_id}
+                                        </p>
+                                    )}
                                 </div>
-                                {errors.user_roles_id && (
-                                    <p className="mt-2 text-sm text-[var(--color-text-error)] flex items-center gap-2">
-                                        <AlertCircle className="w-4 h-4" />
-                                        {errors.user_roles_id}
-                                    </p>
-                                )}
-                            </div>
 
-                        </form>
+                            </form>
+                        </div>
                     </div>
-                </div>
                 </div>
             </div>
 
