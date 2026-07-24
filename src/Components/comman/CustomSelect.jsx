@@ -161,7 +161,7 @@ const CustomSelect = ({
             {/* Dropdown Panel */}
             {isOpen && (
                 <div
-                    className="
+                    className="bg-[var(--color-bg-secondary)] rounded-xl shadow-sm border border-[var(--color-border-primary)] overflow-hidden hover:shadow-md transition-all duration-300 hover:scale-105 flex flex-col h-full
                         absolute z-[9999] w-full mt-1
                         bg-[var(--color-bg-secondary)]
                         border border-[var(--color-border-primary)]
@@ -173,7 +173,7 @@ const CustomSelect = ({
                 >
                     {/* Search Input */}
                     {searchable && (
-                        <div className="p-2 border-b border-[var(--color-border-primary)] bg-[var(--color-bg-secondary)]">
+                        <div className="p-2 border-b border-[var(--color-border-primary)] bg-[var(--color-bg-secondary)] rounded-tl-[12px] rounded-tr-[12px]">
                             <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-[var(--color-bg-primary,#f9fafb)] border border-[var(--color-border-primary)]">
                                 <Search size={14} className="text-[var(--color-text-secondary)] shrink-0" />
                                 <input

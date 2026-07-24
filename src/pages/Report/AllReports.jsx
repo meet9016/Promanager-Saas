@@ -320,7 +320,7 @@ const AllReports = () => {
                         {availableReports.map((report) => (
                             <div
                                 key={report.id}
-                                className="bg-[var(--color-bg-secondary)] rounded-xl shadow-sm border border-[var(--color-border-primary)] overflow-hidden hover:shadow-md transition-all duration-300 hover:scale-105 flex flex-col h-full"
+                                className="bg-[var(--color-bg-secondary)] rounded-xl shadow-sm border border-[var(--color-border-primary)] overflow-hidden hover:shadow-md transition-all duration-300 flex flex-col h-full"
                             >
                                 <div className={`bg-gradient-to-r ${report.color} p-8 min-h-[88px] flex items-center`}>
                                     <div className="flex items-center gap-3 w-full">

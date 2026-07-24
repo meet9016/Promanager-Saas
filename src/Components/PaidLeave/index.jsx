@@ -5,6 +5,7 @@ import { ArrowLeft, Trash2, Calendar, CreditCard, Plus, History, User, FileText 
 import { useAuth } from "../../context/AuthContext";
 import api from "../../api/axiosInstance";
 import CustomSelect from "../comman/CustomSelect";
+import NoDataFound from "../comman/NoDataFound";
 
 const PaidLeave = () => {
     const navigate = useNavigate();
@@ -17,7 +18,7 @@ const PaidLeave = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const [dropdownOptions, setDropdownOptions] = useState([]);
-    
+
     // Paid Leave state from response
     const [currentBalance, setCurrentBalance] = useState("0");
     const [transactionLogs, setTransactionLogs] = useState([]);
@@ -216,7 +217,7 @@ const PaidLeave = () => {
                                 </div>
                             </div>
 
-                            {employeeId && (
+                            {employeeId ? (
                                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 flex-1">
                                     {/* Left Panel: Form & Balance */}
                                     <div className="lg:col-span-1 space-y-6">
@@ -246,16 +247,16 @@ const PaidLeave = () => {
                                                         Transaction Type <span className="text-[var(--color-error)]">*</span>
                                                     </label>
                                                     <CustomSelect
-                                                         name="transaction_type"
-                                                         value={transactionType}
-                                                         onChange={(e) => setTransactionType(e.target.value)}
-                                                         options={[
-                                                             { value: "1", label: "Credit (+)" },
-                                                             { value: "2", label: "Debit (-)" }
-                                                         ]}
-                                                         placeholder="Select Transaction Type"
-                                                         required
-                                                     />
+                                                        name="transaction_type"
+                                                        value={transactionType}
+                                                        onChange={(e) => setTransactionType(e.target.value)}
+                                                        options={[
+                                                            { value: "1", label: "Credit (+)" },
+                                                            { value: "2", label: "Debit (-)" }
+                                                        ]}
+                                                        placeholder="Select Transaction Type"
+                                                        required
+                                                    />
                                                 </div>
                                                 <div>
                                                     <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-1">
@@ -336,17 +337,15 @@ const PaidLeave = () => {
                                                                         {log.remark && <div className="text-xs text-[var(--color-text-secondary)] mt-0.5">{log.remark}</div>}
                                                                     </td>
                                                                     <td className="py-3 px-4 text-center">
-                                                                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${
-                                                                            isCredit 
-                                                                                ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
-                                                                                : "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"
-                                                                        }`}>
+                                                                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${isCredit
+                                                                            ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
+                                                                            : "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"
+                                                                            }`}>
                                                                             {log.transaction_type_name}
                                                                         </span>
                                                                     </td>
-                                                                    <td className={`py-3 px-4 text-center font-bold ${
-                                                                        isCredit ? "text-green-600" : "text-red-600"
-                                                                    }`}>
+                                                                    <td className={`py-3 px-4 text-center font-bold ${isCredit ? "text-green-600" : "text-red-600"
+                                                                        }`}>
                                                                         {isCredit ? `+${log.total_days}` : `-${log.total_days}`}
                                                                     </td>
                                                                     <td className="py-3 px-4 text-[var(--color-text-secondary)]">
@@ -360,6 +359,13 @@ const PaidLeave = () => {
                                             </div>
                                         )}
                                     </div>
+                                </div>
+                            ) : (
+                                <div className="flex-1 flex items-center justify-center bg-[#FBF9FD] border border-[var(--color-border-primary)] rounded-xl p-4 sm:p-6 shadow-sm">
+                                    <NoDataFound
+                                        title="No Employee Selected"
+                                        subtitle="Please select an employee to view or add paid leave transactions."
+                                    />
                                 </div>
                             )}
                         </div>

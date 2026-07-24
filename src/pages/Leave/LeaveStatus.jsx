@@ -745,9 +745,9 @@ const LeaveManagement = () => {
     return (
         <div className="h-[calc(100vh-64px)] overflow-hidden bg-[var(--color-bg-primary)]">
             <div className="p-8  mx-auto">
-                <div className="bg-[var(--color-bg-secondary)] h-[87vh] rounded-xl border border-[var(--color-border-primary)] overflow-hidden shadow-custom">
+                <div className="bg-[var(--color-bg-secondary)] h-[87vh] flex flex-col rounded-xl border border-[var(--color-border-primary)] overflow-hidden shadow-custom">
                     {/* Header section with tabs */}
-                    <div className="px-6 py-4 border-b border-[var(--color-border-primary)] bg-[var(--color-primary-lighter)] ">
+                    <div className="px-6 py-4 border-b border-[var(--color-border-primary)] bg-[var(--color-primary-lighter)] shrink-0">
                         <div className="flex justify-between items-center ">
                             <div className="flex items-center">
                                 <FileText className="h-6 w-6 text-[var(--color-primary-darker)] mr-2" />
@@ -783,7 +783,7 @@ const LeaveManagement = () => {
                     </div>
 
                     {/* Status Tabs */}
-                    <div className="px-6 py-2 border-b border-[var(--color-border-primary)] bg-white">
+                    <div className="px-6 py-2 border-b border-[var(--color-border-primary)] bg-white shrink-0">
                         <div className="flex space-x-2">
                             {Object.entries(STATUS_CONFIG).map(([statusValue, config]) => {
                                 const IconComponent = config.icon;
@@ -805,11 +805,11 @@ const LeaveManagement = () => {
                     </div>
                     {/* Content section */}
                     {loading ? (
-                        <div className="px-6 py-12 text-center">
+                        <div className="flex-1 flex items-center justify-center text-center">
                             <LoadingSpinner />
                         </div>
                     ) : error ? (
-                        <div className="px-6 py-12 text-center">
+                        <div className="flex-1 flex items-center justify-center text-center">
                             <div className="bg-[var(--color-error-light)] border border-[var(--color-error)] rounded-xl p-8 max-w-md mx-auto">
                                 <AlertCircle className="w-12 h-12 text-[var(--color-error)] mx-auto mb-4" />
                                 <p className="text-[var(--color-error-dark)] text-lg font-semibold mb-2">Error Loading Leave Requests</p>
@@ -824,14 +824,14 @@ const LeaveManagement = () => {
                             </div>
                         </div>
                     ) : leaveRequests.length === 0 ? (
-                        <div className="bg-[#FBF9FD] flex items-center justify-center h-full">
+                        <div className="flex-1 flex flex-col items-center justify-center bg-[#FBF9FD/paid-leave] min-h-0">
                             <NoDataFound
                                 title={`No ${STATUS_CONFIG[selectedStatus]?.name} Leave Requests`}
                                 subtitle={`There are no leave requests with ${STATUS_CONFIG[selectedStatus]?.name.toLowerCase()} status.`}
                             />
                         </div>
                     ) : (
-                        <div className="overflow-x-auto">
+                        <div className="flex-1 overflow-x-auto overflow-y-auto custom-scrollbar min-h-0">
                             <Table className="min-w-full divide-y divide-[var(--color-border-divider)]">
                                 <TableHeader className="bg-[var(--color-primary-dark)]">
                                     <TableHeaderRow>
