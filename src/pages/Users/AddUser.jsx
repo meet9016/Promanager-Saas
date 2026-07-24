@@ -391,7 +391,7 @@ const AddUser = () => {
                     </div>
 
                     <div className="flex-1 overflow-visible space-y-6 pr-2 pb-2">
-                        <div className="bg-[var(--color-bg-secondary)] rounded-2xl border border-[var(--color-primary-light)] shadow-xl overflow-visible">
+                        <div className="bg-[var(--color-bg-secondary)]  border border-[var(--color-primary-light)] shadow-xl overflow-visible">
                             <div className="px-6 py-4 border-b border-[var(--color-primary-light)] bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)]">
                                 <div className="flex items-center gap-3">
                                     <UserPlus className="w-5 h-5 text-[var(--color-text-white)]" />
@@ -428,15 +428,10 @@ const AddUser = () => {
                                             placeholder="Enter full name (letters and spaces only)"
                                             disabled={isFormDisabled}
                                             maxLength={50}
+                                            error={errors.full_name}
                                         />
 
                                     </div>
-                                    {errors.full_name && (
-                                        <p className="mt-2 text-sm text-[var(--color-text-error)] flex items-center gap-2">
-                                            <AlertCircle className="w-4 h-4" />
-                                            {errors.full_name}
-                                        </p>
-                                    )}
                                 </div>
 
                                 {/* Phone Number */}
@@ -467,15 +462,10 @@ const AddUser = () => {
                                             placeholder="Enter 10-digit phone number (6-9 starting)"
                                             disabled={isFormDisabled}
                                             maxLength={10}
+                                            error={errors.number}
                                         />
                                         {/* <Phone className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[var(--color-text-muted)]" /> */}
                                     </div>
-                                    {errors.number && (
-                                        <p className="mt-2 text-sm text-[var(--color-text-error)] flex items-center gap-2">
-                                            <AlertCircle className="w-4 h-4" />
-                                            {errors.number}
-                                        </p>
-                                    )}
                                 </div>
 
                                 {/* Email */}
@@ -506,15 +496,10 @@ const AddUser = () => {
                                             placeholder="Enter valid email address"
                                             disabled={isFormDisabled}
                                             maxLength={100}
+                                            error={errors.email}
                                         />
                                         {/* <Mail className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[var(--color-text-muted)]" /> */}
                                     </div>
-                                    {errors.email && (
-                                        <p className="mt-2 text-sm text-[var(--color-text-error)] flex items-center gap-2">
-                                            <AlertCircle className="w-4 h-4" />
-                                            {errors.email}
-                                        </p>
-                                    )}
                                 </div>
 
                                 {/* Password */}
@@ -545,6 +530,7 @@ const AddUser = () => {
                                             placeholder={isEditing ? "Enter new password (optional)" : "Enter strong password"}
                                             disabled={isFormDisabled}
                                             maxLength={50}
+                                            error={errors.password}
                                         />
                                         {/* <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[var(--color-text-muted)]" /> */}
                                         {/* <button
@@ -556,12 +542,6 @@ const AddUser = () => {
                                         {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                                     </button> */}
                                     </div>
-                                    {errors.password && (
-                                        <p className="mt-2 text-sm text-[var(--color-text-error)] flex items-center gap-2">
-                                            <AlertCircle className="w-4 h-4 text-red-500" />
-                                            {errors.password}
-                                        </p>
-                                    )}
                                     <p className="text-xs text-[var(--color-text-muted)] mt-1">
                                         {isEditing
                                             ? "Leave empty to keep current password. If filled, must contain: uppercase letter, lowercase letter, number, and be at least 6 characters long"
@@ -606,16 +586,11 @@ const AddUser = () => {
                                             placeholder={rolesLoading ? 'Loading roles...' : 'Select a role'}
                                             searchable={true}
                                             disabled={isFormDisabled}
+                                            error={errors.user_roles_id}
                                         />
                                         {/* <Shield className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[var(--color-text-muted)]" /> */}
                                         {/* <ChevronDown className="absolute right-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[var(--color-text-muted)]" /> */}
                                     </div>
-                                    {errors.user_roles_id && (
-                                        <p className="mt-2 text-sm text-[var(--color-text-error)] flex items-center gap-2">
-                                            <AlertCircle className="w-4 h-4" />
-                                            {errors.user_roles_id}
-                                        </p>
-                                    )}
                                 </div>
 
                             </form>

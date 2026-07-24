@@ -140,6 +140,7 @@ const CreateShift = () => {
     const [dayList, setDayList] = useState([]);
     const [shiftTypes, setShiftTypes] = useState([]);
     const [occasionalDayList, setOccasionalDayList] = useState([]);
+    const [formErrors, setFormErrors] = useState({});
     const permissions = useSelector(state => state.permissions) || {};
 
     // Show toast notification
@@ -397,10 +398,21 @@ const CreateShift = () => {
 
     // Validate form data
     const validateForm = () => {
+        const errors = {};
+        // Shift name: required, only letters/numbers/spaces/hyphens
+        const shiftNameRegex = /^[a-zA-Z0-9 \-_]{2,100}$/;
         if (!shiftName.trim()) {
-            showToast('Shift name is required to proceed', 'error');
+            errors.shiftName = 'Shift name is required.';
+        } else if (!shiftNameRegex.test(shiftName.trim())) {
+            errors.shiftName = 'Shift name must be 2-100 characters (letters, numbers, spaces, hyphens allowed).';
+        }
+
+        if (Object.keys(errors).length > 0) {
+            setFormErrors(errors);
             return false;
         }
+
+        setFormErrors({});
 
         const hasValidDay = dayList.some(day => {
             return day.from_time && day.to_time && day.shift_type;
@@ -843,9 +855,13 @@ const CreateShift = () => {
                                     <CustomInput
                                         type="text"
                                         value={shiftName}
-                                        onChange={(e) => setShiftName(e.target.value)}
+                                        onChange={(e) => {
+                                            setShiftName(e.target.value);
+                                            if (formErrors.shiftName) setFormErrors(prev => ({ ...prev, shiftName: '' }));
+                                        }}
                                         placeholder="Enter a descriptive shift name"
-                                        required
+                                        // required
+                                        error={formErrors.shiftName}
                                     />
                                 </div>
                                 <div>

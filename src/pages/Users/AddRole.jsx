@@ -32,6 +32,7 @@ const AddRole = () => {
     const editRoleId = searchParams.get('edit');
 
     const [name, setName] = useState('');
+    const [nameError, setNameError] = useState('');
     const [permissionConfig, setPermissionConfig] = useState({});
     const [permission, setPermission] = useState({});
     const [expandedSections, setExpandedSections] = useState({});
@@ -366,7 +367,7 @@ const AddRole = () => {
         if (submitInProgressRef.current) return;
 
         if (!name.trim()) {
-            showToast('Please enter a role name', 'warning');
+            setNameError('Role name is required');
             return;
         }
 
@@ -570,8 +571,12 @@ const AddRole = () => {
                                         type="text"
                                         id="role_name"
                                         value={name}
-                                        onChange={(e) => setName(e.target.value)}
+                                        onChange={(e) => {
+                                            setName(e.target.value);
+                                            if (nameError) setNameError('');
+                                        }}
                                         placeholder="Enter role name"
+                                        error={nameError}
                                     />
                                     {/* <User className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[var(--color-text-muted)]" /> */}
                                 </div>

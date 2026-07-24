@@ -27,7 +27,7 @@ const CustomSelect = ({
     disabled = false,
     searchable = true,
     className = '',
-    error = false,
+    error = null,
 }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
@@ -241,13 +241,15 @@ const CustomSelect = ({
                                     <button
                                         key={opt.value}
                                         type="button"
-                                        onClick={() => handleSelect(opt.value)}
+                                        onClick={() => !opt.disabled && handleSelect(opt.value)}
+                                        disabled={opt.disabled}
                                         data-selected={isSelected}
                                         className={`
                                             w-full text-left px-4 py-2.5 text-sm
                                             flex items-center gap-2
                                             transition-colors duration-150
-                                            ${isSelected
+                                            ${opt.disabled ? 'opacity-50 cursor-not-allowed bg-[var(--color-bg-secondary)]' :
+                                              isSelected
                                                 ? 'bg-[var(--color-primary-lighter,#ede9fe)] text-[var(--color-primary-dark)] font-medium'
                                                 : 'text-[var(--color-text-primary)] hover:bg-[var(--color-bg-hover,#f3f4f6)]'
                                             }
@@ -272,6 +274,13 @@ const CustomSelect = ({
                             </div>
                         )}
                     </div>
+                </div>
+            )}
+
+            {/* Error Message */}
+            {error && typeof error === 'string' && (
+                <div className="text-[var(--color-error)] text-xs mt-1 text-left">
+                    {error}
                 </div>
             )}
         </div>

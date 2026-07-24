@@ -825,7 +825,7 @@ const LeaveManagement = () => {
                             </div>
                         </div>
                     ) : leaveRequests.length === 0 ? (
-                        <div className="flex-1 flex flex-col items-center justify-center bg-[#FBF9FD/paid-leave] min-h-0">
+                        <div className="flex-1 flex flex-col items-center justify-center bg-[#FBF9FD] min-h-0">
                             <NoDataFound
                                 title={`No ${STATUS_CONFIG[selectedStatus]?.name} Leave Requests`}
                                 subtitle={`There are no leave requests with ${STATUS_CONFIG[selectedStatus]?.name.toLowerCase()} status.`}
@@ -1564,7 +1564,13 @@ const LeaveManagement = () => {
                                             <button
                                                 type="submit"
                                                 className="px-6 py-2.5 min-w-[150px] flex justify-center text-sm font-medium text-[var(--color-text-white)] bg-[var(--color-primary-dark)] hover:bg-[var(--color-primary-darker)] rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--color-primary)] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                                                disabled={isSubmitting}
+                                                disabled={
+                                                    isSubmitting ||
+                                                    !leaveFormData.employee_id ||
+                                                    !leaveFormData.leave_type ||
+                                                    selectedDates.length === 0 ||
+                                                    !leaveFormData.reason.trim()
+                                                }
                                             >
                                                 {isSubmitting ? (
                                                     <span className="flex items-center gap-2">

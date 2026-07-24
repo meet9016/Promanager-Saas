@@ -859,7 +859,12 @@ export default function HolidayManagement() {
                                 type="button"
                                 onClick={handleSubmit}
                                 className="px-6 py-2.5 bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-primary-dark)] hover:from-[var(--color-primary-dark)] hover:to-[var(--color-primary-darker)] rounded-xl text-white font-semibold transition-all shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-                                disabled={isSubmitting}
+                                disabled={
+                                    isSubmitting ||
+                                    !formData.holiday_name.trim() ||
+                                    !formData.holiday_type_id ||
+                                    selectedDates.length === 0
+                                }
                             >
                                 {isSubmitting ? (
                                     <>

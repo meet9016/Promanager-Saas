@@ -31,7 +31,7 @@ const CustomInput = ({
     clearable = false,
     icon = null,
     maxLength,
-    error = false,
+    error = null,
     className = '',
     ...rest
 }) => {
@@ -49,8 +49,9 @@ const CustomInput = ({
     const showPasswordToggle = isPassword && !disabled;
 
     return (
-        <div className={`relative w-full group ${className}`}>
-            {/* Left Icon */}
+        <div className={`w-full group ${className}`}>
+            <div className="relative w-full">
+                {/* Left Icon */}
             {icon && (
                 <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--color-text-secondary)] pointer-events-none transition-colors duration-200 group-focus-within:text-[var(--color-primary)]">
                     {icon}
@@ -119,6 +120,14 @@ const CustomInput = ({
                     </button>
                 )}
             </div>
+            </div>
+
+            {/* Error Message */}
+            {error && typeof error === 'string' && (
+                <div className="text-[var(--color-error)] text-xs mt-1 text-left">
+                    {error}
+                </div>
+            )}
         </div>
     );
 };

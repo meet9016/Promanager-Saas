@@ -27,7 +27,7 @@ const CustomDatePicker = ({
     minDate,
     maxDate,
     clearable = true,
-    error = false,
+    error = null,
     className = '',
     align = 'left',
 }) => {
@@ -416,6 +416,13 @@ const CustomDatePicker = ({
                             </div>
                         </>
                     )}
+                </div>
+            )}
+
+            {/* Error Message */}
+            {error && typeof error === 'string' && (
+                <div className="text-[var(--color-error)] text-xs mt-1 text-left">
+                    {error}
                 </div>
             )}
         </div>

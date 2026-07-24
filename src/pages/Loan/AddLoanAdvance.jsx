@@ -48,9 +48,6 @@ const AddLoanAdvance = ({
     const [errors, setErrors] = useState({});
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [toast, setToast] = useState(null);
-    const [searchTerm, setSearchTerm] = useState('');
-    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-    const [filteredEmployees, setFilteredEmployees] = useState([]);
 
     // Toast function
     const showToast = (message, type = 'info') => {
@@ -60,17 +57,6 @@ const AddLoanAdvance = ({
     const hideToast = () => {
         setToast(null);
     };
-    useEffect(() => {
-        if (searchTerm) {
-            const filtered = employees.filter(employee =>
-                employee.full_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                employee.employee_id.toString().includes(searchTerm)
-            );
-            setFilteredEmployees(filtered);
-        } else {
-            setFilteredEmployees(employees);
-        }
-    }, [searchTerm, employees]);
 
     // Fetch employee dropdown data
     const fetchEmployeeData = async () => {
@@ -180,27 +166,6 @@ const AddLoanAdvance = ({
         }
     }, [existingLoan, loanTypes, priorities, statuses]);
 
-    // Handle employee selection
-    const handleEmployeeSelect = (employee) => {
-        setSelectedEmployee(employee.employee_id);
-        setSearchTerm(employee.full_name);
-        setIsDropdownOpen(false);
-
-        setFormData(prev => ({
-            ...prev,
-            employeeName: employee.full_name,
-            employeeId: employee.employee_id
-        }));
-
-        // Clear error when user selects an employee
-        if (errors.employeeName) {
-            setErrors(prev => ({
-                ...prev,
-                employeeName: ''
-            }));
-        }
-    };
-
     // Handle loan type selection
     const handleLoanTypeSelect = (e) => {
         const loanTypeId = e.target.value;
@@ -219,6 +184,7 @@ const AddLoanAdvance = ({
                 loanTypeId: ''
             }));
         }
+        if (errors.loanType) setErrors(prev => ({ ...prev, loanType: '' }));
     };
 
     // Handle priority selection
@@ -239,6 +205,7 @@ const AddLoanAdvance = ({
                 priorityId: ''
             }));
         }
+        if (errors.priority) setErrors(prev => ({ ...prev, priority: '' }));
     };
 
     // Handle status selection
@@ -259,6 +226,7 @@ const AddLoanAdvance = ({
                 approvalStatusId: ''
             }));
         }
+        if (errors.approvalStatus) setErrors(prev => ({ ...prev, approvalStatus: '' }));
     };
 
     // Calculate installment amount when amount, interest rate, or tenure changes
@@ -351,7 +319,6 @@ const AddLoanAdvance = ({
         }
 
         if (!validateForm()) {
-            showToast('Please fix the validation errors before submitting', 'error');
             return;
         }
 
@@ -420,35 +387,6 @@ const AddLoanAdvance = ({
         return `${day}-${month}-${year}`;
     };
 
-    const handleReset = () => {
-        // Reset form with default dropdown values
-        const defaultLoanType = loanTypes.length > 0 ? loanTypes[0] : null;
-        const normalPriority = priorities.find(p => p.name === 'Normal');
-        const pendingStatus = statuses.find(s => s.name === 'Pending');
-
-        setFormData({
-            employeeName: '',
-            employeeId: '',
-            loanType: defaultLoanType?.name || '',
-            loanTypeId: defaultLoanType?.loan_type_id || '',
-            amount: '',
-            interestRate: '',
-            tenure: '',
-            reason: '',
-            approvalStatus: pendingStatus?.name || '',
-            approvalStatusId: pendingStatus?.status_id || '',
-            disbursementDate: '',
-            repaymentStartDate: '',
-            installmentAmount: '',
-            guarantorName: '',
-            guarantorContact: '',
-            documents: [],
-            priority: normalPriority?.name || '',
-            priorityId: normalPriority?.loan_priority_id || ''
-        });
-        setSelectedEmployee('');
-        setErrors({});
-    };
     if (!permissions['loan_create']) {
         return (
             <div className="min-h-screen bg-[var(--color-bg-primary)] flex items-center justify-center">
@@ -616,9 +554,6 @@ const AddLoanAdvance = ({
                                                     employeeName: selectedEmp?.full_name || '',
                                                     employeeId: selectedEmp?.employee_id || '',
                                                 }));
-
-                                                setSearchTerm(selectedEmp?.full_name || '');
-
                                                 if (!e.target.value) {
                                                     setSelectedEmployee('');
 
@@ -628,8 +563,11 @@ const AddLoanAdvance = ({
                                                         employeeId: '',
                                                     }));
                                                 }
+
+                                                if (errors.employeeName) setErrors(prev => ({ ...prev, employeeName: '' }));
                                             }}
                                             className="w-full"
+                                            error={errors.employeeName}
                                         />
 
                                     </div>
@@ -682,11 +620,8 @@ const AddLoanAdvance = ({
                                         placeholder={loading ? 'Loading...' : 'Select loan type'}
                                         searchable={true}
                                         disabled={loading}
+                                        error={errors.loanType}
                                     />
-
-                                    {errors.loanType && (
-                                        <p className="text-[var(--color-error)] text-xs mt-2">{errors.loanType}</p>
-                                    )}
                                 </div>
                                 <div>
                                     <label className="block text-sm font-semibold text-[var(--color-text-secondary)] mb-3">
@@ -710,10 +645,8 @@ const AddLoanAdvance = ({
                                         min="0"
                                         step="0.01"
                                         placeholder="Enter amount"
+                                        error={errors.amount}
                                     />
-                                    {errors.amount && (
-                                        <p className="text-[var(--color-error)] text-xs mt-2">{errors.amount}</p>
-                                    )}
                                 </div>
                                 <div>
                                     <label className="block text-sm font-semibold text-[var(--color-text-secondary)] mb-3">
@@ -745,10 +678,8 @@ const AddLoanAdvance = ({
                                         placeholder={loading ? 'Loading...' : 'Select priority'}
                                         searchable={true}
                                         disabled={loading}
+                                        error={errors.priority}
                                     />
-                                    {errors.priority && (
-                                        <p className="text-[var(--color-error)] text-xs mt-2">{errors.priority}</p>
-                                    )}
                                 </div>
                             </div>
 
@@ -855,10 +786,8 @@ const AddLoanAdvance = ({
                                         placeholder={loading ? 'Loading...' : 'Select status'}
                                         searchable={true}
                                         disabled={loading}
+                                        error={errors.approvalStatus}
                                     />
-                                    {errors.approvalStatus && (
-                                        <p className="text-[var(--color-error)] text-xs mt-2">{errors.approvalStatus}</p>
-                                    )}
                                 </div>
                                 <div>
                                     <label className="block text-sm font-semibold text-[var(--color-text-secondary)] mb-3">

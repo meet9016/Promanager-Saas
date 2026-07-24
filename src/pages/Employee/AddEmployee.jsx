@@ -21,8 +21,6 @@ const AddEmployee = () => {
     const [toast, setToast] = useState(null);
     const permissions = useSelector(state => state.permissions) || {};
 
-    const [documentType, setDocumentType] = useState()
-
     const [showPreviewModal, setShowPreviewModal] = useState(false);
     const [previewImage, setPreviewImage] = useState('');
     const [previewTitle, setPreviewTitle] = useState('');
@@ -77,16 +75,11 @@ const AddEmployee = () => {
         reference: false
     });
 
-    const [filePreviews, setFilePreviews] = useState({
-        aadharCard: null,
-        drivingLicence: null,
-        panCard: null,
-        photo: null
-    });
-
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isLoadingDropdowns, setIsLoadingDropdowns] = useState(true);
     const [isLoadingEmployeeData, setIsLoadingEmployeeData] = useState(false);
+    const [formErrors, setFormErrors] = useState({});
+    const [newDoc, setNewDoc] = useState({ document_id: "", label: "", file: null, preview: null });
 
     const [dropdownOptions, setDropdownOptions] = useState({
         genderOptions: [],
@@ -199,7 +192,6 @@ const AddEmployee = () => {
                 }
 
                 const employee = data.employee;
-                const baseUrl = data.base_url || '';
 
                 const allowances = data.employee_allowance?.map(allowance => ({
                     allowance_id: allowance.allowance_id || '',
@@ -255,20 +247,11 @@ const AddEmployee = () => {
                         id: doc.id,
                         document_id: doc.document_id,
                         label: doc.document_name,
-                        preview: "https://admin.promanager.in/" + doc.document_image
+                        preview: doc.document_image ? import.meta.env.VITE_API_BASE_URL_IMAGE + doc.document_image : null
                     }))
                 };
 
                 setFormData(mappedFormData);
-
-                const filePreviews = {
-                    aadharCard: employee.aadharcard_img ? baseUrl + employee.aadharcard_img : null,
-                    drivingLicence: employee.dl_img ? baseUrl + employee.dl_img : null,
-                    panCard: employee.pan_img ? baseUrl + employee.pan_img : null,
-                    photo: employee.passport_img ? baseUrl + employee.passport_img : null
-                };
-
-                setFilePreviews(filePreviews);
             } catch (error) {
                 setToast({ message: 'Failed to fetch employee data. Please try again.', type: error });
             } finally {
@@ -439,7 +422,6 @@ const AddEmployee = () => {
                 const reader = new FileReader();
                 reader.onloadend = () => {
                     setFormData(prev => ({ ...prev, [name]: file }));
-                    setFilePreviews(prev => ({ ...prev, [name]: reader.result }));
                 };
                 reader.readAsDataURL(file);
             }
@@ -477,6 +459,9 @@ const AddEmployee = () => {
                     break;
             }
             setFormData(prev => ({ ...prev, [name]: processedValue }));
+            if (formErrors[name]) {
+                setFormErrors(prev => ({ ...prev, [name]: null }));
+            }
         }
     };
 
@@ -515,9 +500,10 @@ const AddEmployee = () => {
     const handleFieldBlur = (e) => {
         const { name, value } = e.target;
         const error = validateField(name, value);
-        if (error) {
-            setToast({ message: error, type: 'error' });
-        }
+        setFormErrors(prev => ({
+            ...prev,
+            [name]: error || null
+        }));
     };
 
     const handleReferenceChange = (index, field, value) => {
@@ -540,25 +526,38 @@ const AddEmployee = () => {
         }
     };
 
-    const handleDocumentTypeChange = (e) => {
-        const value = e.target.value;
-        if (!value) {
-            setDocumentType(null);
-            return;
+    const handleNewDocTypeChange = (e) => {
+        const docId = e.target.value;
+        const selected = dropdownOptions.documentOptions.find(opt => String(opt.value) === String(docId));
+        if (selected) {
+            setNewDoc(prev => ({ ...prev, document_id: docId, label: selected.label }));
+        } else {
+            setNewDoc(prev => ({ ...prev, document_id: '', label: '' }));
         }
-        const selected = dropdownOptions.documentOptions.find(item => item.value.toString() === value);
-        if (selected) setDocumentType(selected);
+    };
+
+    const handleNewDocUpload = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            if (file.size > 5 * 1024 * 1024) {
+                setToast({ message: 'File size should not exceed 5MB', type: 'error' });
+                return;
+            }
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setNewDoc(prev => ({ ...prev, file: file, preview: reader.result }));
+            };
+            reader.readAsDataURL(file);
+        }
     };
 
     const addDocument = () => {
-        if (!documentType) {
-            setToast({ message: "Select the document", type: "error" });
+        if (!newDoc.document_id) {
+            setToast({ message: "Please select a document type", type: "error" });
             return;
         }
-
-        const alreadyAdded = formData.documents.some(doc => doc.document_id === documentType.value);
-        if (alreadyAdded) {
-            setToast({ message: "Document already added", type: "error" });
+        if (!newDoc.file) {
+            setToast({ message: "Please upload an image", type: "error" });
             return;
         }
 
@@ -566,31 +565,30 @@ const AddEmployee = () => {
             ...prev,
             documents: [
                 ...(prev.documents || []),
-                { document_id: documentType.value, label: documentType.label, file: null, preview: null }
+                { ...newDoc }
             ]
         }));
-
-        setDocumentType(null);
+        
+        setNewDoc({ document_id: '', label: '', file: null, preview: null });
     };
 
-    const handleDynamicDocumentUpload = (e, index) => {
+    const handleExistingDocUpload = (e, index) => {
         const file = e.target.files[0];
-        if (!file) return;
-
-        if (file.size > 5 * 1024 * 1024) {
-            setToast({ message: "File size should not exceed 5MB", type: "error" });
-            return;
+        if (file) {
+            if (file.size > 5 * 1024 * 1024) {
+                setToast({ message: 'File size should not exceed 5MB', type: 'error' });
+                return;
+            }
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setFormData(prev => {
+                    const newDocs = [...(prev.documents || [])];
+                    newDocs[index] = { ...newDocs[index], file: file, preview: reader.result };
+                    return { ...prev, documents: newDocs };
+                });
+            };
+            reader.readAsDataURL(file);
         }
-
-        const reader = new FileReader();
-        reader.onloadend = () => {
-            setFormData(prev => {
-                const updated = [...(prev.documents || [])];
-                updated[index] = { ...updated[index], file, preview: reader.result };
-                return { ...prev, documents: updated };
-            });
-        };
-        reader.readAsDataURL(file);
     };
 
     const removeDynamicDocument = async (index) => {
@@ -621,7 +619,9 @@ const AddEmployee = () => {
                 setToast({ message: message || 'Failed to delete the document.', type: 'error' });
                 return;
             }
-        } catch (error) { }
+        } catch (error) { 
+            console.error(error);
+        }
     };
 
     const handleImagePreview = (imageSrc, title = "Document Preview") => {
@@ -629,18 +629,6 @@ const AddEmployee = () => {
             setPreviewImage(imageSrc);
             setPreviewTitle(title);
             setShowPreviewModal(true);
-        }
-    };
-
-    const handleDocumentPreview = (docSrc, title = "Document Preview") => {
-        if (docSrc) {
-            if (docSrc.includes('.pdf') || docSrc.toLowerCase().includes('pdf')) {
-                window.open(docSrc, '_blank');
-            } else {
-                setPreviewImage(docSrc);
-                setPreviewTitle(title);
-                setShowPreviewModal(true);
-            }
         }
     };
 
@@ -699,13 +687,6 @@ const AddEmployee = () => {
         );
     };
 
-    const handleFileDelete = (fieldName) => {
-        setFilePreviews(prev => ({ ...prev, [fieldName]: null }));
-        setFormData(prev => ({ ...prev, [fieldName]: null }));
-        const fileInput = document.querySelector(`input[name="${fieldName}"]`);
-        if (fileInput) fileInput.value = '';
-    };
-
     const toggleSection = (section) => {
         setExpandedSections(prev => ({ ...prev, [section]: !prev[section] }));
     };
@@ -739,9 +720,9 @@ const AddEmployee = () => {
             }, 100);
         }
     };
-
     const validateForm = () => {
         const errors = [];
+        const fieldErrors = {};
         const firstErrorField = { field: null, message: null };
 
         const fieldsToValidate = [
@@ -764,6 +745,7 @@ const AddEmployee = () => {
             if (!field.value || !field.value.toString().trim()) {
                 const errorMessage = `${field.label} is required`;
                 errors.push(errorMessage);
+                fieldErrors[field.name] = errorMessage;
                 if (!firstErrorField.field) {
                     firstErrorField.field = field.name;
                     firstErrorField.message = errorMessage;
@@ -772,6 +754,7 @@ const AddEmployee = () => {
         });
 
         if (firstErrorField.field) {
+            setFormErrors(fieldErrors);
             navigateToField(firstErrorField.field);
             return errors;
         }
@@ -781,6 +764,7 @@ const AddEmployee = () => {
                 const error = validateField(field.name, field.value);
                 if (error) {
                     errors.push(error);
+                    fieldErrors[field.name] = error;
                     if (!firstErrorField.field) {
                         firstErrorField.field = field.name;
                         firstErrorField.message = error;
@@ -797,18 +781,20 @@ const AddEmployee = () => {
 
             if (!passwordRegex.test(password)) {
                 const errorMessage = 'Password must be at least 6 characters, include 1 uppercase, 1 lowercase, 1 number, and 1 special character';
-                errors.push(errorMessage);
-                if (!firstErrorField.field) {
-                    firstErrorField.field = 'password';
-                    firstErrorField.message = errorMessage;
+                if (!fieldErrors.password) {
+                    errors.push(errorMessage);
+                    fieldErrors.password = errorMessage;
+                    if (!firstErrorField.field) {
+                        firstErrorField.field = 'password';
+                        firstErrorField.message = errorMessage;
+                    }
                 }
             }
         }
-
         const allowanceDeductionErrors = validateAllowancesAndDeductions();
         if (allowanceDeductionErrors.length > 0) {
             errors.push(...allowanceDeductionErrors);
-            if (!firstErrorField.field && allowanceDeductionErrors.length > 0) {
+            if (!firstErrorField.field) {
                 if (!expandedSections.salaryStructure) {
                     setExpandedSections(prev => ({ ...prev, salaryStructure: true }));
                 }
@@ -818,6 +804,8 @@ const AddEmployee = () => {
                 }, 100);
             }
         }
+
+        setFormErrors(fieldErrors);
 
         if (firstErrorField.field && errors.length > 0) {
             navigateToField(firstErrorField.field);
@@ -833,7 +821,6 @@ const AddEmployee = () => {
         const validationErrors = validateForm();
 
         if (validationErrors.length > 0) {
-            setToast({ message: validationErrors[0], type: 'error' });
             setIsSubmitting(false);
             return;
         }
@@ -918,9 +905,14 @@ const AddEmployee = () => {
                 }
             });
 
-            formData.documents.forEach((document) => {
-                formDataToSend.append("document_id[]", document.document_id);
-                formDataToSend.append("document_image[]", document.file);
+            formData.documents.forEach((document, index) => {
+                formDataToSend.append(`document_id[${index}]`, document.document_id);
+                if (document.id) {
+                    formDataToSend.append(`employee_document_id[${index}]`, document.id);
+                }
+                if (document.file) {
+                    formDataToSend.append(`document_image[${index}]`, document.file);
+                }
             });
 
             const response = await api.post('/employee_create', formDataToSend, {
@@ -973,7 +965,6 @@ const AddEmployee = () => {
                         password: '',
                         documents: [],
                     });
-                    setFilePreviews({ aadharCard: null, drivingLicence: null, panCard: null, photo: null });
                 } else {
                     setTimeout(() => { navigate('/employee'); }, 1000);
                 }
@@ -1037,7 +1028,7 @@ const AddEmployee = () => {
                                     </h1>
                                 </div>
                             </div>
-                            
+
                             <div className="flex items-center gap-3">
                                 <button
                                     type="button"
@@ -1099,9 +1090,10 @@ const AddEmployee = () => {
                                                         onChange={handleInputChange}
                                                         onBlur={handleFieldBlur}
                                                         placeholder="Enter employee code"
-                                                        required
+                                                        // required
                                                         clearable={true}
-                                                    />
+
+                                                        error={formErrors.employeeCode} />
                                                 </div>
                                                 <div className="space-y-2">
                                                     <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Full Name <span className="text-[var(--color-error)]">*</span></label>
@@ -1112,9 +1104,10 @@ const AddEmployee = () => {
                                                         onChange={handleInputChange}
                                                         onBlur={handleFieldBlur}
                                                         placeholder="Enter full name"
-                                                        required
+                                                        // required
                                                         clearable={true}
-                                                    />
+
+                                                        error={formErrors.name} />
                                                 </div>
                                                 <div className="space-y-2">
                                                     <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Email Address</label>
@@ -1126,7 +1119,8 @@ const AddEmployee = () => {
                                                         onBlur={handleFieldBlur}
                                                         placeholder="Enter email address"
                                                         clearable={true}
-                                                    />
+
+                                                        error={formErrors.email} />
                                                 </div>
 
                                                 {/* REMOVED: Attendance Type dropdown — always sends attendanceType: '1' */}
@@ -1142,9 +1136,10 @@ const AddEmployee = () => {
                                                         onChange={handleInputChange}
                                                         onBlur={handleFieldBlur}
                                                         placeholder="Enter mobile number"
-                                                        required
+                                                        // required
                                                         clearable={true}
-                                                    />
+
+                                                        error={formErrors.mobile} />
                                                 </div>
                                                 <div className="space-y-2">
                                                     <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">
@@ -1156,8 +1151,9 @@ const AddEmployee = () => {
                                                         value={formData.password}
                                                         onChange={handleInputChange}
                                                         placeholder="Enter password"
-                                                        required
-                                                    />
+                                                        // required
+
+                                                        error={formErrors.password} />
                                                 </div>
                                                 <div className="space-y-2">
                                                     <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Gender</label>
@@ -1178,9 +1174,10 @@ const AddEmployee = () => {
                                                         onChange={handleInputChange}
                                                         options={dropdownOptions.genderOptions}
                                                         placeholder="Select gender"
-                                                        required
+                                                        // required
                                                         searchable={true}
-                                                    />
+
+                                                        error={formErrors.gender} />
                                                 </div>
                                                 <div className="space-y-2">
                                                     <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Branch <span className="text-[var(--color-error)]">*</span></label>
@@ -1190,9 +1187,10 @@ const AddEmployee = () => {
                                                         onChange={handleInputChange}
                                                         options={dropdownOptions.branchOptions}
                                                         placeholder="Select Branch"
-                                                        required
+                                                        // required
                                                         searchable={true}
-                                                    />
+
+                                                        error={formErrors.branch} />
                                                 </div>
                                                 <div className="space-y-2">
                                                     <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Department <span className="text-[var(--color-error)]">*</span></label>
@@ -1214,9 +1212,10 @@ const AddEmployee = () => {
                                                         onChange={handleInputChange}
                                                         options={dropdownOptions.departmentOptions}
                                                         placeholder="Select department"
-                                                        required
+                                                        // required
                                                         searchable={true}
-                                                    />
+
+                                                        error={formErrors.department} />
                                                 </div>
                                                 <div className="space-y-2">
                                                     <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Date of Birth</label>
@@ -1227,7 +1226,8 @@ const AddEmployee = () => {
                                                         placeholder="DD-MM-YYYY"
                                                         maxDate={new Date()}
                                                         clearable={true}
-                                                    />
+
+                                                        error={formErrors.dateOfBirth} />
                                                 </div>
                                                 <div className="space-y-2">
                                                     <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Date of Joining <span className="text-[var(--color-error)]">*</span></label>
@@ -1237,9 +1237,10 @@ const AddEmployee = () => {
                                                         onChange={handleInputChange}
                                                         placeholder="DD-MM-YYYY"
                                                         maxDate={new Date()}
-                                                        required
+                                                        // required
                                                         clearable={true}
-                                                    />
+
+                                                        error={formErrors.dateOfJoining} />
                                                 </div>
                                                 <div className="space-y-2">
                                                     <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Designation</label>
@@ -1260,9 +1261,10 @@ const AddEmployee = () => {
                                                         onChange={handleInputChange}
                                                         options={dropdownOptions.designationOptions}
                                                         placeholder="Select designation"
-                                                        required
+                                                        // required
                                                         searchable={true}
-                                                    />
+
+                                                        error={formErrors.designation} />
                                                 </div>
                                                 <div className="space-y-2">
                                                     <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Company</label>
@@ -1283,9 +1285,10 @@ const AddEmployee = () => {
                                                         onChange={handleInputChange}
                                                         options={dropdownOptions.companyOptions}
                                                         placeholder="Select company"
-                                                        required
+                                                        // required
                                                         searchable={true}
-                                                    />
+
+                                                        error={formErrors.company} />
                                                 </div>
                                                 <div className="space-y-2">
                                                     <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Employment Type</label>
@@ -1295,9 +1298,10 @@ const AddEmployee = () => {
                                                         onChange={handleInputChange}
                                                         options={dropdownOptions.employmentTypeOptions}
                                                         placeholder="Select Branch"
-                                                        required
+                                                        // required
                                                         searchable={true}
-                                                    />
+
+                                                        error={formErrors.employmentType} />
                                                 </div>
                                                 <div className="space-y-2 md:col-span-2">
                                                     <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Address</label>
@@ -1335,9 +1339,10 @@ const AddEmployee = () => {
                                                             onChange={handleInputChange}
                                                             options={dropdownOptions.salaryTypeOptions}
                                                             placeholder="Select salaryType"
-                                                            required
+                                                            // required
                                                             searchable={true}
-                                                        />
+
+                                                            error={formErrors.salaryType} />
                                                     </div>
                                                     <div className="space-y-2">
                                                         <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Base Salary</label>
@@ -1348,7 +1353,8 @@ const AddEmployee = () => {
                                                             onChange={handleInputChange}
                                                             onBlur={handleFieldBlur}
                                                             placeholder="Enter base salary amount"
-                                                        />
+
+                                                            error={formErrors.salary} />
                                                     </div>
                                                 </div>
 
@@ -1530,7 +1536,8 @@ const AddEmployee = () => {
                                                         onBlur={handleFieldBlur}
                                                         placeholder="Enter bank name"
                                                         clearable={true}
-                                                    />
+
+                                                        error={formErrors.bankName} />
                                                 </div>
                                                 <div className="space-y-2">
                                                     <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Branch Name</label>
@@ -1542,7 +1549,8 @@ const AddEmployee = () => {
                                                         onBlur={handleFieldBlur}
                                                         placeholder="Enter branch name"
                                                         clearable={true}
-                                                    />
+
+                                                        error={formErrors.branchName} />
                                                 </div>
                                                 <div className="space-y-2">
                                                     <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Account Number</label>
@@ -1554,7 +1562,8 @@ const AddEmployee = () => {
                                                         onBlur={handleFieldBlur}
                                                         placeholder="Enter account number"
                                                         clearable={true}
-                                                    />
+
+                                                        error={formErrors.accountNo} />
                                                 </div>
                                                 <div className="space-y-2">
                                                     <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">IFSC Code</label>
@@ -1566,94 +1575,114 @@ const AddEmployee = () => {
                                                         onBlur={handleFieldBlur}
                                                         placeholder="Enter IFSC code"
                                                         clearable={true}
-                                                    />
+
+                                                        error={formErrors.ifscCode} />
                                                 </div>
                                             </div>
                                         )}
 
                                         {section.key === 'Documents' && (
                                             <div className="p-8">
-                                                <div className="space-y-2 mb-6">
-                                                    <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Document Type</label>
-                                                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
-                                                        {/* <select
-                                                        name="documentOption"
-                                                        className="flex-1 w-full px-4 py-3 border border-[var(--color-border-primary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
-                                                        onChange={handleDocumentTypeChange}
-                                                        value={documentType?.value || ""}
-                                                    >
-                                                        <option value="">Select Document</option>
-                                                        {dropdownOptions?.documentOptions.map(option => (
-                                                            <option key={option.value} value={option.value}>{option.label}</option>
-                                                        ))}
-                                                    </select> */}
+                                                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                                                    {/* Added Documents */}
+                                                    {formData?.documents?.map((item, index) => (
+                                                        <div className="space-y-3 p-4 bg-white border border-[var(--color-border-primary)] rounded-xl shadow-sm" key={index}>
+                                                            <div className="flex justify-between items-center">
+                                                                <label className="block text-sm font-bold text-[var(--color-text-primary)]">{item.label}</label>
+                                                            </div>
+                                                            <div className="relative w-full h-36 border border-gray-200 rounded-xl bg-gray-50 overflow-hidden group">
+                                                                <img src={item.preview} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" alt={item.label} />
+                                                                <div className="absolute inset-0 bg-black/40 backdrop-blur-[1px] transition-all flex items-center justify-center space-x-4 opacity-0 group-hover:opacity-100">
+                                                                    <button
+                                                                        type="button"
+                                                                        onClick={() => handleImagePreview(item.preview, item.label)}
+                                                                        className="bg-white/90 hover:bg-white text-gray-800 rounded-full w-10 h-10 flex items-center justify-center shadow-lg transition-transform hover:scale-110"
+                                                                        title="View"
+                                                                    >
+                                                                        <Eye size={18} />
+                                                                    </button>
+                                                                    <label
+                                                                        className="bg-blue-500/90 hover:bg-blue-600 text-white rounded-full w-10 h-10 flex items-center justify-center shadow-lg transition-transform hover:scale-110 cursor-pointer"
+                                                                        title="Change"
+                                                                    >
+                                                                        <Edit size={18} />
+                                                                        <input
+                                                                            type="file"
+                                                                            accept="image/*,.pdf"
+                                                                            className="hidden"
+                                                                            onChange={(e) => handleExistingDocUpload(e, index)}
+                                                                        />
+                                                                    </label>
+                                                                    <button
+                                                                        type="button"
+                                                                        onClick={() => removeDynamicDocument(index)}
+                                                                        className="bg-red-500/90 hover:bg-red-600 text-white rounded-full w-10 h-10 flex items-center justify-center shadow-lg transition-transform hover:scale-110"
+                                                                        title="Delete"
+                                                                    >
+                                                                        <Trash2 size={18} />
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    ))}
+
+                                                    {/* New Document Slot */}
+                                                    <div className="space-y-3 p-4 bg-[var(--color-bg-card)] border-2 border-dashed border-[var(--color-border-primary)] rounded-xl shadow-sm">
                                                         <CustomSelect
                                                             name="documentOption"
-                                                            value={formData.documentOption}
-                                                            onChange={handleInputChange}
-                                                            options={dropdownOptions.documentOptions}
-                                                            placeholder="Select documentOption"
-                                                            required
+                                                            value={newDoc.document_id}
+                                                            onChange={handleNewDocTypeChange}
+                                                            options={dropdownOptions.documentOptions.map(opt => ({
+                                                                ...opt,
+                                                                disabled: formData.documents?.some(doc => String(doc.document_id) === String(opt.value))
+                                                            }))}
+                                                            placeholder="Select Document Type"
                                                             searchable={true}
                                                         />
-                                                        <button
-                                                            type="button"
-                                                            className="flex items-center justify-center gap-2 px-4 py-3 w-full sm:w-auto whitespace-nowrap text-[var(--color-primary-dark)] font-medium rounded-lg bg-[var(--color-primary-lighter)]"
-                                                            onClick={addDocument}
-                                                        >
-                                                            <Plus size={16} />
-                                                            Add Document
-                                                        </button>
-                                                    </div>
-                                                </div>
 
-                                                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-6">
-                                                    {formData?.documents?.map((item, index) => (
-                                                        <div className="space-y-2" key={index}>
-                                                            <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">{item.label}</label>
-                                                            <div className="relative w-full h-28 border-2 border-dashed border-[var(--color-border-primary)] rounded-xl bg-[var(--color-bg-card)] overflow-hidden">
-                                                                {!item.preview ? (
-                                                                    <label className="flex flex-col items-center justify-center w-full h-full cursor-pointer">
-                                                                        <div className="flex flex-col items-center justify-center">
-                                                                            <div className="w-10 h-10 mb-2 bg-[var(--color-primary)] rounded-full flex items-center justify-center">
-                                                                                <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                                                                                </svg>
-                                                                            </div>
-                                                                            <p className="text-sm font-medium text-[var(--color-text-primary)]">Upload {item.label}</p>
-                                                                            <p className="text-xs text-[var(--color-text-muted)]">PNG, JPG, PDF up to 5MB</p>
+                                                        <div className="relative w-full h-36 border border-gray-200 rounded-xl bg-gray-50 overflow-hidden">
+                                                            {!newDoc.preview ? (
+                                                                <label className="flex flex-col items-center justify-center w-full h-full cursor-pointer hover:bg-gray-100 transition-colors">
+                                                                    <div className="w-10 h-10 mb-2 bg-[var(--color-primary)]/10 rounded-full flex items-center justify-center text-[var(--color-primary)]">
+                                                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                                                                        </svg>
+                                                                    </div>
+                                                                    <p className="text-sm font-semibold text-[var(--color-text-primary)]">Upload Image</p>
+                                                                    <p className="text-xs text-[var(--color-text-muted)] mt-1">PNG, JPG up to 5MB</p>
+                                                                    <input
+                                                                        type="file"
+                                                                        accept="image/*,.pdf"
+                                                                        onChange={handleNewDocUpload}
+                                                                        className="hidden"
+                                                                    />
+                                                                </label>
+                                                            ) : (
+                                                                <div className="relative w-full h-full group">
+                                                                    <img src={newDoc.preview} className="w-full h-full object-cover" alt="Preview" />
+                                                                    <label className="absolute inset-0 bg-black/40 backdrop-blur-[1px] transition-all flex items-center justify-center space-x-4 opacity-0 group-hover:opacity-100 cursor-pointer">
+                                                                        <div className="bg-white/90 hover:bg-white text-gray-800 rounded-full px-4 py-2 flex items-center shadow-lg transition-transform hover:scale-105">
+                                                                            <Edit size={16} className="mr-2" /> Change
                                                                         </div>
                                                                         <input
                                                                             type="file"
                                                                             accept="image/*,.pdf"
-                                                                            onChange={(e) => handleDynamicDocumentUpload(e, index)}
+                                                                            onChange={handleNewDocUpload}
                                                                             className="hidden"
                                                                         />
                                                                     </label>
-                                                                ) : (
-                                                                    <div className="relative w-full h-full group">
-                                                                        <img src={item.preview} className="w-full h-full object-contain" />
-                                                                        <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition flex items-center justify-center space-x-3 opacity-0 group-hover:opacity-100">
-                                                                            <button
-                                                                                type="button"
-                                                                                onClick={() => handleImagePreview(item.preview, item.label)}
-                                                                                className="bg-white rounded-full w-10 h-10 flex items-center justify-center"
-                                                                            >
-                                                                                <Eye size={16} />
-                                                                            </button>
-                                                                            <button
-                                                                                type="button"
-                                                                                onClick={() => removeDynamicDocument(index)}
-                                                                                className="bg-red-500 text-white rounded-full w-10 h-10 flex items-center justify-center"
-                                                                            >
-                                                                                <Trash2 size={16} />
-                                                                            </button>
-                                                                        </div>
-                                                                    </div>
-                                                                )}
-                                                            </div>
+                                                                </div>
+                                                            )}
                                                         </div>
-                                                    ))}
+                                                        <button
+                                                            type="button"
+                                                            onClick={addDocument}
+                                                            className="flex items-center justify-center gap-2 px-4 py-2 w-full text-white font-semibold rounded-lg bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] transition-colors"
+                                                        >
+                                                            <Plus size={16} />
+                                                            Add
+                                                        </button>
+                                                    </div>
                                                 </div>
                                             </div>
                                         )}
@@ -1669,7 +1698,8 @@ const AddEmployee = () => {
                                                         onChange={handleInputChange}
                                                         placeholder="Enter emergency contact number"
                                                         clearable={true}
-                                                    />
+
+                                                        error={formErrors.emergencyContactNo} />
                                                 </div>
                                                 <div className="space-y-2">
                                                     <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Contact Person Name</label>
@@ -1680,7 +1710,8 @@ const AddEmployee = () => {
                                                         onChange={handleInputChange}
                                                         placeholder="Enter contact person name"
                                                         clearable={true}
-                                                    />
+
+                                                        error={formErrors.contactPersonName} />
                                                 </div>
                                                 <div className="space-y-2">
                                                     <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Relation</label>
@@ -1703,7 +1734,8 @@ const AddEmployee = () => {
                                                         placeholder="Select relation"
                                                         required
                                                         searchable={true}
-                                                    />
+
+                                                        error={formErrors.relation} />
                                                 </div>
                                                 <div className="space-y-2 md:col-span-2">
                                                     <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Emergency Address</label>
