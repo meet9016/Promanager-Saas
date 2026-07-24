@@ -161,12 +161,12 @@ const CustomSelect = ({
             {/* Dropdown Panel */}
             {isOpen && (
                 <div
-                    className="bg-[var(--color-bg-secondary)] rounded-xl shadow-sm border border-[var(--color-border-primary)] overflow-hidden hover:shadow-md transition-all duration-300 hover:scale-105 flex flex-col h-full
+                    className="
                         absolute z-[9999] w-full mt-1
                         bg-[var(--color-bg-secondary)]
                         border border-[var(--color-border-primary)]
                         rounded-xl shadow-xl
-                        
+                        overflow-hidden
                         animate-fadeIn
                     "
                     style={{ maxHeight: '280px' }}

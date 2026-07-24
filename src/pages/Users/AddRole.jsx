@@ -20,6 +20,7 @@ import { useRef } from 'react';
 import LoadingSpinner from "../../Components/Loader/LoadingSpinner"
 import { useSelector } from 'react-redux';
 import CustomInput from '../../Components/comman/CustomInput';
+import CustomCheckbox from '../../Components/comman/CustomCheckbox';
 
 const AddRole = () => {
     const navigate = useNavigate();
@@ -526,7 +527,7 @@ const AddRole = () => {
                                         className="px-5 py-2 border border-white/30 text-white rounded-lg hover:bg-white/10 transition-colors font-medium backdrop-blur-sm text-sm"
                                     >
                                         <X className="w-4 h-4 inline mr-1" />
-                                        Discard
+                                        Cancel
                                     </button>
                                     <button
                                         onClick={handleSaveChanges}
@@ -641,20 +642,17 @@ const AddRole = () => {
 
                                                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                                                     {subsection.permission.map(perm => (
-                                                                        <label
+                                                                        <CustomCheckbox
                                                                             key={perm.key}
-                                                                            className="flex items-center space-x-3 cursor-pointer group p-3 rounded-lg hover:bg-[var(--color-primary-lightest)] transition-colors duration-150 border border-transparent hover:border-[var(--color-primary-light)]"
+                                                                            id={`perm-${sectionKey}-${subsectionKey}-${perm.key}`}
+                                                                            checked={subsectionPerms[perm.key] || false}
+                                                                            onChange={() => handlePermissionChange(sectionKey, subsectionKey, perm.key)}
+                                                                            className="p-3 rounded-lg hover:bg-[var(--color-primary-lightest)] transition-colors duration-150 border border-transparent hover:border-[var(--color-primary-light)] w-full group"
                                                                         >
-                                                                            <input
-                                                                                type="checkbox"
-                                                                                checked={subsectionPerms[perm.key] || false}
-                                                                                onChange={() => handlePermissionChange(sectionKey, subsectionKey, perm.key)}
-                                                                                className="w-4 h-4 text-[var(--color-primary-dark)] border-2 border-[var(--color-border-secondary)] rounded focus:ring-[var(--color-primary)] focus:ring-2 transition-colors duration-150"
-                                                                            />
                                                                             <span className="text-sm text-[var(--color-text-secondary)] group-hover:text-[var(--color-text-primary)] transition-colors duration-150 font-medium">
                                                                                 {formatPermissionName(perm.title)}
                                                                             </span>
-                                                                        </label>
+                                                                        </CustomCheckbox>
                                                                     ))}
                                                                 </div>
                                                             </div>

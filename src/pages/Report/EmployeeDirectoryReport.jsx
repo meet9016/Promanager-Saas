@@ -948,123 +948,128 @@ const EmployeeDirectoryReport = () => {
                                 />
                             </div>
                         ) : (
-                            <div className="flex-1 custom-scrollbar min-h-0 overflow-y-auto">
-                                <Table className="w-full min-w-[1200px] ">
-                                    <TableHeader className=" bg-[var(--color-primary-dark)] border-b border-[var(--color-border-secondary)]">
-                                        <TableHeaderRow>
-                                            <Th className="px-6 py-3 text-center font-medium">Employee</Th>
-                                            <Th className="px-6 py-3 text-center font-medium">Code</Th>
-                                            <Th className="px-6 py-3 text-center font-medium">Department</Th>
-                                            <Th className="px-6 py-3 text-center font-medium">Designation</Th>
-                                            <Th className="px-6 py-3 text-center font-medium">Branch</Th>
-                                            <Th className="px-6 py-3 text-center font-medium">Contact</Th>
-                                            <Th className="px-6 py-3 text-center font-medium">Join Date</Th>
-                                            <Th className="px-6 py-3 text-center font-medium">Action</Th>
-                                        </TableHeaderRow>
-                                    </TableHeader>
+                            <>
+                                <div className="flex-1 custom-scrollbar min-h-0 ">
+                                    <Table className="w-full min-w-[1200px] ">
+                                        <TableHeader className=" bg-[var(--color-primary-dark)] border-b border-[var(--color-border-secondary)]">
+                                            <TableHeaderRow>
+                                                <Th className="px-6 py-3 text-center font-medium">Employee</Th>
+                                                <Th className="px-6 py-3 text-center font-medium">Code</Th>
+                                                <Th className="px-6 py-3 text-center font-medium">Department</Th>
+                                                <Th className="px-6 py-3 text-center font-medium">Designation</Th>
+                                                <Th className="px-6 py-3 text-center font-medium">Branch</Th>
+                                                <Th className="px-6 py-3 text-center font-medium">Contact</Th>
+                                                <Th className="px-6 py-3 text-center font-medium">Join Date</Th>
+                                                <Th className="px-6 py-3 text-center font-medium">Action</Th>
+                                            </TableHeaderRow>
+                                        </TableHeader>
 
-                                    <TableBody className="bg-[var(--color-bg-secondary)] divide-y divide-[var(--color-border-secondary)] ">
-                                        {currentItems.map((employee, index) => (
-                                            <TableRow key={employee.employee_id || index} className="hover:bg-[var(--color-bg-hover)] transition-colors">
-                                                <Td className="px-6 py-4 whitespace-nowrap text-left">
-                                                    <div className="flex items-center">
-                                                        <div className="flex-shrink-0 h-10 w-10 relative">
-                                                            <div className="h-10 w-10 rounded-full bg-[var(--color-primary-dark)] flex items-center justify-center">
-                                                                <span className="text-sm font-medium text-[var(--color-text-white)]">
-                                                                    {employee.full_name?.charAt(0) || 'N'}
-                                                                </span>
+                                        <TableBody className="bg-[var(--color-bg-secondary)] divide-y divide-[var(--color-border-secondary)] ">
+                                            {currentItems.map((employee, index) => (
+                                                <TableRow key={employee.employee_id || index} className="hover:bg-[var(--color-bg-hover)] transition-colors">
+                                                    <Td className="px-6 py-4 whitespace-nowrap text-left">
+                                                        <div className="flex items-center">
+                                                            <div className="flex-shrink-0 h-10 w-10 relative">
+                                                                <div className="h-10 w-10 rounded-full bg-[var(--color-primary-dark)] flex items-center justify-center">
+                                                                    <span className="text-sm font-medium text-[var(--color-text-white)]">
+                                                                        {employee.full_name?.charAt(0) || 'N'}
+                                                                    </span>
+                                                                </div>
+                                                                <div
+                                                                    className={`absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-white ${employee.status === 1 || employee.status === '1'
+                                                                        ? 'bg-green-500'
+                                                                        : employee.status === 2 || employee.status === '2'
+                                                                            ? 'bg-red-500'
+                                                                            : 'bg-gray-400'
+                                                                        }`}
+                                                                />
                                                             </div>
-                                                            <div
-                                                                className={`absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-white ${employee.status === 1 || employee.status === '1'
-                                                                    ? 'bg-green-500'
-                                                                    : employee.status === 2 || employee.status === '2'
-                                                                        ? 'bg-red-500'
-                                                                        : 'bg-gray-400'
-                                                                    }`}
-                                                            />
+                                                            <div className="ml-4">
+                                                                <div
+                                                                    className="text-sm font-medium text-[var(--color-text-primary)]"
+                                                                    title={employee.full_name || '--'}
+                                                                >
+                                                                    {truncateText(employee.full_name, 15)}
+                                                                </div>
+
+                                                                <div className="text-sm text-[var(--color-text-muted)]">
+                                                                    {employee.gender || '--'}
+                                                                </div>
+                                                            </div>
+
                                                         </div>
-                                                        <div className="ml-4">
-                                                            <div
-                                                                className="text-sm font-medium text-[var(--color-text-primary)]"
-                                                                title={employee.full_name || '--'}
-                                                            >
-                                                                {truncateText(employee.full_name, 15)}
-                                                            </div>
-
-                                                            <div className="text-sm text-[var(--color-text-muted)]">
-                                                                {employee.gender || '--'}
-                                                            </div>
+                                                    </Td>
+                                                    <Td className="px-6 py-4 text-center whitespace-nowrap text-sm text-[var(--color-text-primary)]">
+                                                        {employee.employee_code || '--'}
+                                                    </Td>
+                                                    <Td className="px-6 py-4 text-center whitespace-nowrap text-sm text-[var(--color-text-primary)]">
+                                                        {truncateText(employee.department_name, 10)}
+                                                    </Td>
+                                                    <Td className="px-6 py-4 text-center whitespace-nowrap text-sm text-[var(--color-text-primary)]">
+                                                        {truncateText(employee.designation_name, 10)}
+                                                    </Td>
+                                                    <Td className="px-6 py-4 text-center whitespace-nowrap text-sm text-[var(--color-text-primary)]">
+                                                        {truncateText(employee.branch_name, 10)}
+                                                    </Td>
+                                                    <Td className="px-6 py-4 text-center whitespace-nowrap text-sm text-[var(--color-text-primary)]">
+                                                        <div className="space-y-1">
+                                                            {employee.email && (
+                                                                <div className="flex items-center gap-1">
+                                                                    <Mail className="h-3 w-3 text-[var(--color-text-muted)]" />
+                                                                    <span className="text-xs">{truncateText(employee.email, 18) || '--'}</span>
+                                                                </div>
+                                                            )}
+                                                            {employee.mobile_number && (
+                                                                <div className="flex items-center gap-1">
+                                                                    <Phone className="h-3 w-3 text-[var(--color-text-muted)]" />
+                                                                    <span className="text-xs">{employee.mobile_number}</span>
+                                                                </div>
+                                                            )}
                                                         </div>
+                                                    </Td>
+                                                    <Td className="px-6 py-4 text-center whitespace-nowrap text-sm text-[var(--color-text-primary)]">
+                                                        {employee.date_of_joining ? new Date(employee.date_of_joining).toLocaleDateString('en-GB') : '--'}
+                                                    </Td>
+                                                    <Td className="px-6 py-4 text-center whitespace-nowrap">
+                                                        <button
+                                                            onClick={() => handleViewDetails(employee.employee_id)}
+                                                            disabled={reportGenerating}
+                                                            className="w-9 h-9 flex items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 hover:bg-emerald-100 hover:scale-110 hover:shadow-md transition-all duration-200 mx-auto disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                                                            title="View Details"
+                                                        >
+                                                            <Eye className="w-4 h-4" strokeWidth={2.5} />
+                                                        </button>
+                                                    </Td>
+                                                </TableRow>
+                                            ))}
 
-                                                    </div>
-                                                </Td>
-                                                <Td className="px-6 py-4 text-center whitespace-nowrap text-sm text-[var(--color-text-primary)]">
-                                                    {employee.employee_code || '--'}
-                                                </Td>
-                                                <Td className="px-6 py-4 text-center whitespace-nowrap text-sm text-[var(--color-text-primary)]">
-                                                    {truncateText(employee.department_name, 10)}
-                                                </Td>
-                                                <Td className="px-6 py-4 text-center whitespace-nowrap text-sm text-[var(--color-text-primary)]">
-                                                    {truncateText(employee.designation_name, 10)}
-                                                </Td>
-                                                <Td className="px-6 py-4 text-center whitespace-nowrap text-sm text-[var(--color-text-primary)]">
-                                                    {truncateText(employee.branch_name, 10)}
-                                                </Td>
-                                                <Td className="px-6 py-4 text-center whitespace-nowrap text-sm text-[var(--color-text-primary)]">
-                                                    <div className="space-y-1">
-                                                        {employee.email && (
-                                                            <div className="flex items-center gap-1">
-                                                                <Mail className="h-3 w-3 text-[var(--color-text-muted)]" />
-                                                                <span className="text-xs">{truncateText(employee.email, 18) || '--'}</span>
-                                                            </div>
-                                                        )}
-                                                        {employee.mobile_number && (
-                                                            <div className="flex items-center gap-1">
-                                                                <Phone className="h-3 w-3 text-[var(--color-text-muted)]" />
-                                                                <span className="text-xs">{employee.mobile_number}</span>
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                </Td>
-                                                <Td className="px-6 py-4 text-center whitespace-nowrap text-sm text-[var(--color-text-primary)]">
-                                                    {employee.date_of_joining ? new Date(employee.date_of_joining).toLocaleDateString('en-GB') : '--'}
-                                                </Td>
-                                                <Td className="px-6 py-4 text-center whitespace-nowrap">
-                                                    <button
-                                                        onClick={() => handleViewDetails(employee.employee_id)}
-                                                        disabled={reportGenerating}
-                                                        className="w-9 h-9 flex items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 hover:bg-emerald-100 hover:scale-110 hover:shadow-md transition-all duration-200 mx-auto disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
-                                                        title="View Details"
-                                                    >
-                                                        <Eye className="w-4 h-4" strokeWidth={2.5} />
-                                                    </button>
-                                                </Td>
-                                            </TableRow>
-                                        ))}
+                                            {/* Empty placeholder rows to keep exactly 10 rows per page */}
+                                            {Array.from({ length: emptyRows }).map((_, i) => (
+                                                <TableRow key={`empty-${i}`} className="hover:bg-transparent">
+                                                    <Td className="px-6 py-4 h-12">&nbsp;</Td>
+                                                    <Td className="px-6 py-4 h-12">&nbsp;</Td>
+                                                    <Td className="px-6 py-4 h-12">&nbsp;</Td>
+                                                    <Td className="px-6 py-4 h-12">&nbsp;</Td>
+                                                    <Td className="px-6 py-4 h-12">&nbsp;</Td>
+                                                    <Td className="px-6 py-4 h-12">&nbsp;</Td>
+                                                    <Td className="px-6 py-4 h-12">&nbsp;</Td>
+                                                    <Td className="px-6 py-4 h-12">&nbsp;</Td>
+                                                </TableRow>
+                                            ))}
+                                        </TableBody>
+                                    </Table>
+                                </div>
 
-                                        {/* Empty placeholder rows to keep exactly 10 rows per page */}
-                                        {Array.from({ length: emptyRows }).map((_, i) => (
-                                            <TableRow key={`empty-${i}`} className="hover:bg-transparent">
-                                                <Td className="px-6 py-4 h-12">&nbsp;</Td>
-                                                <Td className="px-6 py-4 h-12">&nbsp;</Td>
-                                                <Td className="px-6 py-4 h-12">&nbsp;</Td>
-                                                <Td className="px-6 py-4 h-12">&nbsp;</Td>
-                                                <Td className="px-6 py-4 h-12">&nbsp;</Td>
-                                                <Td className="px-6 py-4 h-12">&nbsp;</Td>
-                                                <Td className="px-6 py-4 h-12">&nbsp;</Td>
-                                                <Td className="px-6 py-4 h-12">&nbsp;</Td>
-                                            </TableRow>
-                                        ))}
-                                    </TableBody>
-                                </Table>
-
-                                <Pagination
-                                    currentPage={currentPage}
-                                    totalPages={totalPages}
-                                    onPageChange={handlePageChange}
-                                    loading={reportGenerating}
-                                />
-                            </div>
+                                {/* Pagination component outside the scrollable div to stay fixed at bottom */}
+                                <div className="border-t border-[var(--color-border-secondary)] bg-[var(--color-bg-secondary)] mt-auto z-10 shrink-0">
+                                    <Pagination
+                                        currentPage={currentPage}
+                                        totalPages={totalPages}
+                                        onPageChange={handlePageChange}
+                                        loading={reportGenerating}
+                                    />
+                                </div>
+                            </>
                         )}
                     </div>
                 )}
