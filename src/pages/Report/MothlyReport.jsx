@@ -521,41 +521,14 @@ const MonthlyReport = () => {
                                     <ArrowLeft size={18} />
 
                                 </button>
-                                <div className="flex items-center gap-3">
-                                    <div>
-                                        <h1 className="text-2xl font-bold text-[var(--color-text-white)]">Monthly Attendance Report</h1>
-                                    </div>
+                                <div className="flex items-baseline gap-3">
+                                    <h1 className="text-2xl font-bold text-[var(--color-text-white)]">Monthly Attendance Report</h1>
+                                    {hasGenerated && (
+                                        <p className="text-sm text-white/70">
+                                            ({formatMonthYear(filters.month_year)})
+                                        </p>
+                                    )}
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Error Display */}
-                {error && (
-                    <div className="bg-[var(--color-error-light)] border border-[var(--color-error-lighter)] rounded-lg p-4 mb-6">
-                        <div className="flex items-center gap-2 text-[var(--color-error-dark)]">
-                            <HelpCircle size={16} />
-                            <span className="font-medium">Error:</span>
-                            <span>{error}</span>
-                        </div>
-                    </div>
-                )}
-
-                {/* Data Preview Section */}
-                <div className="flex-1 flex flex-col min-h-0 bg-[var(--color-bg-secondary)] rounded-xl shadow-sm border border-[var(--color-primary-dark)] overflow-hidden">
-                    <div className="px-4 py-4 border-b border-[var(--color-primary-dark)] bg-[var(--color-primary-lighter)] shrink-0">
-                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                            <div>
-                                <h3 className="font-semibold text-[var(--color-primary-darker)]">
-                                    Monthly Attendance Report - {formatMonthYear(filters.month_year)}
-                                </h3>
-                                <p className="text-sm text-[var(--color-primary-darker)]">
-                                    {hasGenerated
-                                        ? `${reportData.length} record${reportData.length !== 1 ? 's' : ''} found`
-                                        : 'Click "Generate Report" to load data'
-                                    }
-                                </p>
                             </div>
 
                             <div className="flex items-center gap-3 flex-wrap">
@@ -755,9 +728,24 @@ const MonthlyReport = () => {
                                     )}
                                 </div>
                             </div>
+
                         </div>
                     </div>
+                </div>
 
+                {/* Error Display */}
+                {error && (
+                    <div className="bg-[var(--color-error-light)] border border-[var(--color-error-lighter)] rounded-lg p-4 mb-6">
+                        <div className="flex items-center gap-2 text-[var(--color-error-dark)]">
+                            <HelpCircle size={16} />
+                            <span className="font-medium">Error:</span>
+                            <span>{error}</span>
+                        </div>
+                    </div>
+                )}
+
+                {/* Data Preview Section */}
+                <div className="flex-1 flex flex-col min-h-0 bg-[var(--color-bg-secondary)] rounded-xl shadow-sm border border-[var(--color-primary-dark)] overflow-hidden">
                     {loading && (
                         <div className="relative h-1 bg-[var(--color-bg-gray-light)]">
                             <div className="absolute inset-y-0 left-0 bg-[var(--color-primary)] animate-pulse w-1/3" />

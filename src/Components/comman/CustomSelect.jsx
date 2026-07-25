@@ -111,7 +111,7 @@ const CustomSelect = ({
     return (
         <div
             ref={containerRef}
-            className={`relative w-full ${className}`}
+            className={`relative w-full ${className || ''}`}
             onKeyDown={handleKeyDown}
         >
             {/* Trigger Button */}
@@ -162,7 +162,7 @@ const CustomSelect = ({
             {isOpen && (
                 <div
                     className="
-                        absolute z-[9999] w-full mt-1
+                        absolute z-[9999] w-full mt-1 left-0 top-full
                         bg-[var(--color-bg-secondary)]
                         border border-[var(--color-border-primary)]
                         rounded-xl shadow-xl
@@ -249,9 +249,9 @@ const CustomSelect = ({
                                             flex items-center gap-2
                                             transition-colors duration-150
                                             ${opt.disabled ? 'opacity-50 cursor-not-allowed bg-[var(--color-bg-secondary)]' :
-                                              isSelected
-                                                ? 'bg-[var(--color-primary-lighter,#ede9fe)] text-[var(--color-primary-dark)] font-medium'
-                                                : 'text-[var(--color-text-primary)] hover:bg-[var(--color-bg-hover,#f3f4f6)]'
+                                                isSelected
+                                                    ? 'bg-[var(--color-primary-lighter,#ede9fe)] text-[var(--color-primary-dark)] font-medium'
+                                                    : 'text-[var(--color-text-primary)] hover:bg-[var(--color-bg-hover,#f3f4f6)]'
                                             }
                                         `}
                                         role="option"

@@ -717,49 +717,264 @@ const MonthlyExceptionReport = () => {
                                     <ArrowLeft size={18} />
 
                                 </button>
-                                <div>
+                                {/* <div>
                                     <h1 className="text-2xl font-bold text-[var(--color-text-white)]">Monthly Exception Report</h1>
                                     {hasGenerated && (
                                         <p className="text-sm text-white/70 mt-0.5">{formatMonthYear(monthYear)}</p>
                                     )}
+                                </div> */}
+                                <div className="flex items-baseline gap-3">
+                                    <h1 className="text-2xl font-bold text-[var(--color-text-white)]">
+                                        Monthly Exception Report
+                                    </h1>
+
+                                    {hasGenerated && (
+                                        <p className="text-sm text-white/70">
+                                            ({formatMonthYear(monthYear)})
+                                        </p>
+                                    )}
                                 </div>
                             </div>
-                            {/* Export button */}
-                            {/* <div className="relative">
-                                <button
-                                    ref={exportBtnRef}
-                                    onClick={() => setExportDropdown((v) => !v)}
-                                    disabled={!hasGenerated || rawData.length === 0}
+                            <div className="flex items-center gap-3 flex-wrap">
+                                {/* Search */}
+                                {/* <div className="relative w-full sm:w-56">
+                                            <input
+                                                type="text"
+                                                placeholder="Search employees..."
+                                                value={searchQuery}
+                                                onChange={(e) => setSearchQuery(e.target.value)}
+                                                className="w-full pl-10 pr-10 py-2 border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-white focus:border-[var(--color-border-primary)] text-sm"
+                                            />
+                                            <Search className="absolute left-3 top-2.5 h-4 w-4 text-[var(--color-text-muted)]" />
+                                            {searchQuery && (
+                                                <button onClick={handleClearSearch} className="absolute right-3 top-2.5">
+                                                    <XCircle className="h-4 w-4 text-[var(--color-text-muted)]" />
+                                                </button>
+                                            )}
+                                        </div> */}
+                                <div className="relative w-full sm:w-56">
 
-                                    className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-lg font-medium transition-colors"
-                                >
-                                    <Download className="h-4 w-4" />
-                                    Export
-                                    <ChevronDown className="h-4 w-4" />
-                                </button>
+                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--color-text-muted)] z-10" />
 
-                                {exportDropdown && exportPos.ready && createPortal(
-                                    <>
-                                        <div className="fixed inset-0 z-40" onClick={() => setExportDropdown(false)} />
-                                        <div className="absolute z-50 bg-[var(--color-bg-secondary)] rounded-lg shadow-2xl border border-[var(--color-border-secondary)] py-2"
-                                            style={{ position: 'absolute', top: exportPos.top, left: exportPos.left, width: Math.max(192, exportPos.width), minWidth: 192 }}>
-                                            <button
-                                                onClick={() => { showToast('Excel export coming soon', 'info'); setExportDropdown(false); }}
-                                                className="flex items-center gap-2 w-full px-4 py-2 text-left hover:bg-[var(--color-bg-hover)] transition-colors text-[var(--color-text-primary)]">
-                                                <FileSpreadsheet className="h-4 w-4 text-primary-600" />
-                                                Export to Excel
-                                            </button>
-                                            <button
-                                                onClick={() => { showToast('PDF export coming soon', 'info'); setExportDropdown(false); }}
-                                                className="flex items-center gap-2 w-full px-4 py-2 text-left hover:bg-[var(--color-bg-hover)] transition-colors text-[var(--color-text-primary)]">
-                                                <FileDown className="h-4 w-4 text-red-600" />
-                                                Export to PDF
-                                            </button>
-                                        </div>
-                                    </>,
-                                    document.body
-                                )}
-                            </div> */}
+                                    <CustomInput
+                                        type="text"
+                                        name="searchQuery"
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                        placeholder="Search employees..."
+                                        clearable={true}
+                                        className="!h-[37px] [&_input]:!h-[37px] [&_input]:!pl-10 [&_input]:!pr-10 [&_input]:!rounded-lg"
+                                    />
+
+                                </div>
+
+                                {/* Filter button */}
+                                <div className="relative">
+                                    <button
+                                        ref={filterBtnRef}
+                                        onClick={() => setFilterDropdown((v) => !v)}
+                                        className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-lg font-medium transition-colors"
+                                    >
+                                        <Filter className="h-4 w-4" />
+                                        Filters
+                                        {getActiveFiltersCount() > 0 && (
+                                            <span className="bg-[var(--color-primary-dark)] text-white text-xs rounded-full px-2 py-1">{getActiveFiltersCount()}</span>
+                                        )}
+                                        <ChevronDown className="h-4 w-4" />
+                                    </button>
+
+                                    {filterDropdown && createPortal(
+                                        <>
+                                            <div className="fixed inset-0 z-[100] bg-black/40" onClick={() => setFilterDropdown(false)} />
+                                            {/* Desktop */}
+                                            <div
+                                                className="hidden sm:flex flex-col absolute z-[110] bg-[var(--color-bg-secondary)] rounded-lg shadow-2xl border border-[var(--color-border-secondary)] max-h-[80vh] overflow-visible"
+                                                style={{ position: 'absolute', top: filterPos.ready ? filterPos.top : -9999, left: filterPos.ready ? Math.max(12, filterPos.left) : -9999, width: Math.max(420, filterPos.width), minWidth: 420 }}
+                                            >
+                                                {/* <div className="flex items-center justify-between p-4 border-b border-[var(--color-border-secondary)]">
+                                                            <h3 className="text-lg font-semibold text-[var(--color-text-primary)]">Filter Exceptions</h3>
+                                                            <button onClick={() => setFilterDropdown(false)} className="text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] p-1 rounded-lg hover:bg-[var(--color-bg-hover)]">
+                                                                <X className="h-4 w-4" />
+                                                            </button>
+                                                        </div> */}
+
+                                                <div className="flex items-center justify-between p-4 border-b border-[var(--color-border-secondary)]">
+                                                    <div className="flex items-center gap-3">
+                                                        <div className="p-2 bg-[var(--color-primary-lightest)] rounded-lg">
+                                                            <Filter className="h-5 w-5 text-[var(--color-primary)]" />
+                                                        </div>
+                                                        <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">Filters</h2>
+                                                    </div>
+                                                    <button
+                                                        onClick={() => setFilterDropdown(false)}
+                                                        className="text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] p-1 rounded-lg hover:bg-[var(--color-bg-hover)]"
+                                                    >
+                                                        <X className="h-4 w-4" />
+                                                    </button>
+                                                </div>
+                                                <div className="flex-1 overflow-visible p-4">
+                                                    <div className="grid grid-cols-2 gap-4">
+
+                                                        <FilterSelect label="Branch" icon={Building} value={filters.branch_id} onChange={(v) => handleFilterChange('branch_id', v)} options={branches} disabled={dropdownLoading} placeholder="All Branches" />
+                                                        <FilterSelect label="Department" icon={Users} value={filters.department_id} onChange={(v) => handleFilterChange('department_id', v)} options={departments} disabled={dropdownLoading} placeholder="All Departments" />
+                                                        <FilterSelect label="Designation" icon={Award} value={filters.designation_id} onChange={(v) => handleFilterChange('designation_id', v)} options={designations} disabled={dropdownLoading} placeholder="All Designations" />
+
+
+
+
+                                                        <div>
+                                                            <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                                <Calendar className="inline h-4 w-4 mr-1" />
+                                                                Month & Year <span className="text-red-500">*</span>
+                                                            </label>
+
+                                                            <DatePicker
+                                                                selected={monthYear ? new Date(`${monthYear}-01`) : null}
+                                                                onChange={(date) => {
+                                                                    const iso = date
+                                                                        ? `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`
+                                                                        : '';
+                                                                    setMonthYear(iso);
+                                                                }}
+                                                                dateFormat="MMMM yyyy"
+                                                                showMonthYearPicker
+                                                                showFullMonthYearPicker
+                                                                className="w-full px-3 py-2 rounded-lg border border-[var(--color-border-secondary)] bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)]"
+                                                                placeholderText="Select month and year"
+                                                                maxDate={new Date()}
+                                                                showPopperArrow={false}
+                                                            />
+
+                                                        </div>
+
+                                                        <div>
+                                                            <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                                <User className="inline h-4 w-4 mr-1" />
+                                                                Employee <span className="text-[var(--color-text-muted)] font-normal">(optional)</span>
+                                                            </label>
+
+                                                            <CustomSelect
+                                                                name="employee_id"
+                                                                value={filters.employee_id}
+                                                                onChange={(e) => handleFilterChange('employee_id', e.target.value)}
+                                                                options={employees.map((emp) => ({
+                                                                    value: emp.id,
+                                                                    label: emp.name,
+                                                                }))}
+                                                                placeholder="Search and select employee..."
+                                                                searchable={true}
+                                                                disabled={dropdownLoading}
+                                                            />
+                                                        </div>
+
+
+
+                                                    </div>
+                                                </div>
+                                                {/* <div className="flex gap-2 p-4 border-t border-[var(--color-border-secondary)]">
+                                                            <button
+                                                                onClick={() => { setFilterDropdown(false); handleGenerateReport(); }}
+                                                                className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-[var(--color-primary-dark)] text-[var(--color-text-white)] rounded-lg hover:bg-[var(--color-primary-darker)] transition-colors text-sm font-medium">
+                                                                <Filter className="h-4 w-4" /> Apply Filters
+                                                            </button>
+                                                            <button onClick={() => { resetAll(); setFilterDropdown(false); }} className="flex items-center justify-center gap-2 px-4 py-2 bg-[var(--color-bg-gray-light)] text-[var(--color-text-secondary)] rounded-lg hover:bg-[var(--color-bg-hover)] transition-colors text-sm font-medium min-w-[90px]">
+                                                                Reset
+                                                            </button>
+                                                        </div> */}
+                                                <div className="flex flex-col sm:flex-row justify-end gap-2 p-4 border-t border-[var(--color-border-secondary)] rounded-b-2xl">
+                                                    <button
+                                                        onClick={() => { resetAll(); setFilterDropdown(false); }}
+                                                        className="flex items-center justify-center gap-2 px-4 py-2 bg-transparent text-[var(--color-primary)] border-2 hover:bg-[var(--color-primary-lightest)] border-[var(--color-primary)] rounded-lg hover:bg-[var(--color-bg-hover)] transition-colors text-sm font-medium min-w-[100px]"
+                                                    >
+                                                        <RefreshCw size={14} />
+                                                        Reset
+                                                    </button>
+
+                                                    <button
+                                                        onClick={() => { setFilterDropdown(false); handleGenerateReport(); }}
+                                                        disabled={loading}
+                                                        className="w-auto sm:w-[140px] flex items-center justify-center gap-2 px-4 py-2 bg-[var(--color-primary-dark)] text-[var(--color-text-white)] rounded-lg hover:bg-[var(--color-primary-darker)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
+                                                    >
+                                                        {loading ? <Loader2 size={14} className="animate-spin" /> : <Filter size={14} />}
+                                                        {loading ? 'Loading...' : 'Apply Filters'}
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                            {/* Mobile */}
+                                            <div className="sm:hidden fixed inset-0 z-[110] flex">
+                                                <div className="ml-auto h-full w-full bg-[var(--color-bg-secondary)] flex flex-col">
+                                                    <div className="flex items-center justify-between p-4 border-b border-[var(--color-border-secondary)]">
+                                                        <h3 className="text-lg font-semibold text-[var(--color-text-primary)]">Filter Exceptions</h3>
+                                                        <button onClick={() => setFilterDropdown(false)} className="text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] p-1 rounded-lg hover:bg-[var(--color-bg-hover)]">
+                                                            <X className="h-5 w-5" />
+                                                        </button>
+                                                    </div>
+                                                    <div className="flex-1 overflow-y-auto p-4 grid grid-cols-1 gap-4">
+                                                        <FilterSelect label="Branch" icon={Building} value={filters.branch_id} onChange={(v) => handleFilterChange('branch_id', v)} options={branches} disabled={dropdownLoading} placeholder="All Branches" />
+                                                        <FilterSelect label="Department" icon={Users} value={filters.department_id} onChange={(v) => handleFilterChange('department_id', v)} options={departments} disabled={dropdownLoading} placeholder="All Departments" />
+                                                        <FilterSelect label="Designation" icon={Award} value={filters.designation_id} onChange={(v) => handleFilterChange('designation_id', v)} options={designations} disabled={dropdownLoading} placeholder="All Designations" />
+                                                    </div>
+                                                    <div className="p-4 border-t border-[var(--color-border-secondary)] grid grid-cols-1 gap-2">
+                                                        <button onClick={() => { setFilterDropdown(false); handleGenerateReport(); }} className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-[var(--color-primary-dark)] text-[var(--color-text-white)] rounded-lg hover:bg-[var(--color-primary-darker)] transition-colors text-sm font-medium">
+                                                            <Filter className="h-4 w-4" /> Apply Filters
+                                                        </button>
+                                                        <button onClick={() => { resetAll(); setFilterDropdown(false); }} className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-[var(--color-bg-gray-light)] text-[var(--color-text-secondary)] rounded-lg hover:bg-[var(--color-bg-hover)] transition-colors text-sm font-medium">
+                                                            Reset
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </>,
+                                        document.body
+                                    )}
+                                </div>
+
+
+
+
+
+
+
+
+
+                                {/* Export button */}
+                                <div className="relative">
+                                    <button
+                                        ref={exportBtnRef}
+                                        onClick={() => setExportDropdown((v) => !v)}
+                                        disabled={!hasGenerated || rawData.length === 0}
+
+                                        className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-lg font-medium transition-colors"
+                                    >
+                                        <Download className="h-4 w-4" />
+                                        Export
+                                        <ChevronDown className="h-4 w-4" />
+                                    </button>
+
+                                    {exportDropdown && exportPos.ready && createPortal(
+                                        <>
+                                            <div className="fixed inset-0 z-40" onClick={() => setExportDropdown(false)} />
+                                            <div className="absolute z-50 bg-[var(--color-bg-secondary)] rounded-lg shadow-2xl border border-[var(--color-border-secondary)] py-2"
+                                                style={{ position: 'absolute', top: exportPos.top, left: exportPos.left, width: Math.max(192, exportPos.width), minWidth: 192 }}>
+                                                <button
+                                                    onClick={() => { showToast('Excel export coming soon', 'info'); setExportDropdown(false); }}
+                                                    className="flex items-center gap-2 w-full px-4 py-2 text-left hover:bg-[var(--color-bg-hover)] transition-colors text-[var(--color-text-primary)]">
+                                                    <FileSpreadsheet className="h-4 w-4 text-primary-600" />
+                                                    Export to Excel
+                                                </button>
+                                                <button
+                                                    onClick={() => { showToast('PDF export coming soon', 'info'); setExportDropdown(false); }}
+                                                    className="flex items-center gap-2 w-full px-4 py-2 text-left hover:bg-[var(--color-bg-hover)] transition-colors text-[var(--color-text-primary)]">
+                                                    <FileDown className="h-4 w-4 text-red-600" />
+                                                    Export to PDF
+                                                </button>
+                                            </div>
+                                        </>,
+                                        document.body
+                                    )}
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -967,260 +1182,6 @@ const MonthlyExceptionReport = () => {
 
                         {/* ── Main content card ── */}
                         <div className="bg-[var(--color-bg-secondary)] rounded-lg border border-[var(--color-primary-dark)] overflow-hidden shadow-sm flex flex-col flex-1 min-h-0">
-
-                            {/* Table toolbar */}
-                            <div className="px-6 py-4 border-b border-[var(--color-primary-light)] bg-[var(--color-primary-lighter)]">
-                                <div className="flex justify-between items-center flex-wrap gap-3">
-                                    <div className="flex items-center gap-2">
-                                        {currentTab && <currentTab.icon className="h-5 w-5 text-[var(--color-primary-darker)]" />}
-                                        <h3 className="text-lg font-medium text-[var(--color-primary-darker)]">{currentTab?.label}</h3>
-                                        <span className="px-2 py-0.5 bg-white rounded-full text-xs text-[var(--color-primary-darker)] font-medium">
-                                            {activeData.length} record{activeData.length !== 1 ? 's' : ''}
-                                        </span>
-                                    </div>
-
-                                    <div className="flex items-center gap-3 flex-wrap">
-                                        {/* Search */}
-                                        {/* <div className="relative w-full sm:w-56">
-                                            <input
-                                                type="text"
-                                                placeholder="Search employees..."
-                                                value={searchQuery}
-                                                onChange={(e) => setSearchQuery(e.target.value)}
-                                                className="w-full pl-10 pr-10 py-2 border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-white focus:border-[var(--color-border-primary)] text-sm"
-                                            />
-                                            <Search className="absolute left-3 top-2.5 h-4 w-4 text-[var(--color-text-muted)]" />
-                                            {searchQuery && (
-                                                <button onClick={handleClearSearch} className="absolute right-3 top-2.5">
-                                                    <XCircle className="h-4 w-4 text-[var(--color-text-muted)]" />
-                                                </button>
-                                            )}
-                                        </div> */}
-                                        <div className="relative w-full sm:w-56">
-
-                                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--color-text-muted)] z-10" />
-
-                                            <CustomInput
-                                                type="text"
-                                                name="searchQuery"
-                                                value={searchQuery}
-                                                onChange={(e) => setSearchQuery(e.target.value)}
-                                                placeholder="Search employees..."
-                                                clearable={true}
-                                                className="!h-[37px] [&_input]:!h-[37px] [&_input]:!pl-10 [&_input]:!pr-10 [&_input]:!rounded-lg"
-                                            />
-
-                                        </div>
-
-                                        {/* Filter button */}
-                                        <div className="relative">
-                                            <button
-                                                ref={filterBtnRef}
-                                                onClick={() => setFilterDropdown((v) => !v)}
-                                                className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-lg font-medium transition-colors"
-                                            >
-                                                <Filter className="h-4 w-4" />
-                                                Filters
-                                                {getActiveFiltersCount() > 0 && (
-                                                    <span className="bg-[var(--color-primary-dark)] text-white text-xs rounded-full px-2 py-1">{getActiveFiltersCount()}</span>
-                                                )}
-                                                <ChevronDown className="h-4 w-4" />
-                                            </button>
-
-                                            {filterDropdown && createPortal(
-                                                <>
-                                                    <div className="fixed inset-0 z-[100] bg-black/40" onClick={() => setFilterDropdown(false)} />
-                                                    {/* Desktop */}
-                                                    <div
-                                                        className="hidden sm:flex flex-col absolute z-[110] bg-[var(--color-bg-secondary)] rounded-lg shadow-2xl border border-[var(--color-border-secondary)] max-h-[80vh] overflow-visible"
-                                                        style={{ position: 'absolute', top: filterPos.ready ? filterPos.top : -9999, left: filterPos.ready ? Math.max(12, filterPos.left) : -9999, width: Math.max(420, filterPos.width), minWidth: 420 }}
-                                                    >
-                                                        {/* <div className="flex items-center justify-between p-4 border-b border-[var(--color-border-secondary)]">
-                                                            <h3 className="text-lg font-semibold text-[var(--color-text-primary)]">Filter Exceptions</h3>
-                                                            <button onClick={() => setFilterDropdown(false)} className="text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] p-1 rounded-lg hover:bg-[var(--color-bg-hover)]">
-                                                                <X className="h-4 w-4" />
-                                                            </button>
-                                                        </div> */}
-
-                                                        <div className="flex items-center justify-between p-4 border-b border-[var(--color-border-secondary)]">
-                                                            <div className="flex items-center gap-3">
-                                                                <div className="p-2 bg-[var(--color-primary-lightest)] rounded-lg">
-                                                                    <Filter className="h-5 w-5 text-[var(--color-primary)]" />
-                                                                </div>
-                                                                <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">Filters</h2>
-                                                            </div>
-                                                            <button
-                                                                onClick={() => setFilterDropdown(false)}
-                                                                className="text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] p-1 rounded-lg hover:bg-[var(--color-bg-hover)]"
-                                                            >
-                                                                <X className="h-4 w-4" />
-                                                            </button>
-                                                        </div>
-                                                        <div className="flex-1 overflow-visible p-4">
-                                                            <div className="grid grid-cols-2 gap-4">
-
-                                                                <FilterSelect label="Branch" icon={Building} value={filters.branch_id} onChange={(v) => handleFilterChange('branch_id', v)} options={branches} disabled={dropdownLoading} placeholder="All Branches" />
-                                                                <FilterSelect label="Department" icon={Users} value={filters.department_id} onChange={(v) => handleFilterChange('department_id', v)} options={departments} disabled={dropdownLoading} placeholder="All Departments" />
-                                                                <FilterSelect label="Designation" icon={Award} value={filters.designation_id} onChange={(v) => handleFilterChange('designation_id', v)} options={designations} disabled={dropdownLoading} placeholder="All Designations" />
-
-
-
-
-                                                                <div>
-                                                                    <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
-                                                                        <Calendar className="inline h-4 w-4 mr-1" />
-                                                                        Month & Year <span className="text-red-500">*</span>
-                                                                    </label>
-
-                                                                    <DatePicker
-                                                                        selected={monthYear ? new Date(`${monthYear}-01`) : null}
-                                                                        onChange={(date) => {
-                                                                            const iso = date
-                                                                                ? `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`
-                                                                                : '';
-                                                                            setMonthYear(iso);
-                                                                        }}
-                                                                        dateFormat="MMMM yyyy"
-                                                                        showMonthYearPicker
-                                                                        showFullMonthYearPicker
-                                                                        className="w-full px-3 py-2 rounded-lg border border-[var(--color-border-secondary)] bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)]"
-                                                                        placeholderText="Select month and year"
-                                                                        maxDate={new Date()}
-                                                                        showPopperArrow={false}
-                                                                    />
-
-                                                                </div>
-
-                                                                <div>
-                                                                    <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
-                                                                        <User className="inline h-4 w-4 mr-1" />
-                                                                        Employee <span className="text-[var(--color-text-muted)] font-normal">(optional)</span>
-                                                                    </label>
-
-                                                                    <CustomSelect
-                                                                        name="employee_id"
-                                                                        value={filters.employee_id}
-                                                                        onChange={(e) => handleFilterChange('employee_id', e.target.value)}
-                                                                        options={employees.map((emp) => ({
-                                                                            value: emp.id,
-                                                                            label: emp.name,
-                                                                        }))}
-                                                                        placeholder="Search and select employee..."
-                                                                        searchable={true}
-                                                                        disabled={dropdownLoading}
-                                                                    />
-                                                                </div>
-
-
-
-                                                            </div>
-                                                        </div>
-                                                        {/* <div className="flex gap-2 p-4 border-t border-[var(--color-border-secondary)]">
-                                                            <button
-                                                                onClick={() => { setFilterDropdown(false); handleGenerateReport(); }}
-                                                                className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-[var(--color-primary-dark)] text-[var(--color-text-white)] rounded-lg hover:bg-[var(--color-primary-darker)] transition-colors text-sm font-medium">
-                                                                <Filter className="h-4 w-4" /> Apply Filters
-                                                            </button>
-                                                            <button onClick={() => { resetAll(); setFilterDropdown(false); }} className="flex items-center justify-center gap-2 px-4 py-2 bg-[var(--color-bg-gray-light)] text-[var(--color-text-secondary)] rounded-lg hover:bg-[var(--color-bg-hover)] transition-colors text-sm font-medium min-w-[90px]">
-                                                                Reset
-                                                            </button>
-                                                        </div> */}
-                                                        <div className="flex flex-col sm:flex-row justify-end gap-2 p-4 border-t border-[var(--color-border-secondary)] rounded-b-2xl">
-                                                            <button
-                                                                onClick={() => { resetAll(); setFilterDropdown(false); }}
-                                                                className="flex items-center justify-center gap-2 px-4 py-2 bg-transparent text-[var(--color-primary)] border-2 hover:bg-[var(--color-primary-lightest)] border-[var(--color-primary)] rounded-lg hover:bg-[var(--color-bg-hover)] transition-colors text-sm font-medium min-w-[100px]"
-                                                            >
-                                                                <RefreshCw size={14} />
-                                                                Reset
-                                                            </button>
-
-                                                            <button
-                                                                onClick={() => { setFilterDropdown(false); handleGenerateReport(); }}
-                                                                disabled={loading}
-                                                                className="w-auto sm:w-[140px] flex items-center justify-center gap-2 px-4 py-2 bg-[var(--color-primary-dark)] text-[var(--color-text-white)] rounded-lg hover:bg-[var(--color-primary-darker)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
-                                                            >
-                                                                {loading ? <Loader2 size={14} className="animate-spin" /> : <Filter size={14} />}
-                                                                {loading ? 'Loading...' : 'Apply Filters'}
-                                                            </button>
-                                                        </div>
-                                                    </div>
-
-                                                    {/* Mobile */}
-                                                    <div className="sm:hidden fixed inset-0 z-[110] flex">
-                                                        <div className="ml-auto h-full w-full bg-[var(--color-bg-secondary)] flex flex-col">
-                                                            <div className="flex items-center justify-between p-4 border-b border-[var(--color-border-secondary)]">
-                                                                <h3 className="text-lg font-semibold text-[var(--color-text-primary)]">Filter Exceptions</h3>
-                                                                <button onClick={() => setFilterDropdown(false)} className="text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] p-1 rounded-lg hover:bg-[var(--color-bg-hover)]">
-                                                                    <X className="h-5 w-5" />
-                                                                </button>
-                                                            </div>
-                                                            <div className="flex-1 overflow-y-auto p-4 grid grid-cols-1 gap-4">
-                                                                <FilterSelect label="Branch" icon={Building} value={filters.branch_id} onChange={(v) => handleFilterChange('branch_id', v)} options={branches} disabled={dropdownLoading} placeholder="All Branches" />
-                                                                <FilterSelect label="Department" icon={Users} value={filters.department_id} onChange={(v) => handleFilterChange('department_id', v)} options={departments} disabled={dropdownLoading} placeholder="All Departments" />
-                                                                <FilterSelect label="Designation" icon={Award} value={filters.designation_id} onChange={(v) => handleFilterChange('designation_id', v)} options={designations} disabled={dropdownLoading} placeholder="All Designations" />
-                                                            </div>
-                                                            <div className="p-4 border-t border-[var(--color-border-secondary)] grid grid-cols-1 gap-2">
-                                                                <button onClick={() => { setFilterDropdown(false); handleGenerateReport(); }} className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-[var(--color-primary-dark)] text-[var(--color-text-white)] rounded-lg hover:bg-[var(--color-primary-darker)] transition-colors text-sm font-medium">
-                                                                    <Filter className="h-4 w-4" /> Apply Filters
-                                                                </button>
-                                                                <button onClick={() => { resetAll(); setFilterDropdown(false); }} className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-[var(--color-bg-gray-light)] text-[var(--color-text-secondary)] rounded-lg hover:bg-[var(--color-bg-hover)] transition-colors text-sm font-medium">
-                                                                    Reset
-                                                                </button>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </>,
-                                                document.body
-                                            )}
-                                        </div>
-
-
-
-
-
-
-
-
-
-                                        {/* Export button */}
-                                        <div className="relative">
-                                            <button
-                                                ref={exportBtnRef}
-                                                onClick={() => setExportDropdown((v) => !v)}
-                                                disabled={!hasGenerated || rawData.length === 0}
-
-                                                className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-lg font-medium transition-colors"
-                                            >
-                                                <Download className="h-4 w-4" />
-                                                Export
-                                                <ChevronDown className="h-4 w-4" />
-                                            </button>
-
-                                            {exportDropdown && exportPos.ready && createPortal(
-                                                <>
-                                                    <div className="fixed inset-0 z-40" onClick={() => setExportDropdown(false)} />
-                                                    <div className="absolute z-50 bg-[var(--color-bg-secondary)] rounded-lg shadow-2xl border border-[var(--color-border-secondary)] py-2"
-                                                        style={{ position: 'absolute', top: exportPos.top, left: exportPos.left, width: Math.max(192, exportPos.width), minWidth: 192 }}>
-                                                        <button
-                                                            onClick={() => { showToast('Excel export coming soon', 'info'); setExportDropdown(false); }}
-                                                            className="flex items-center gap-2 w-full px-4 py-2 text-left hover:bg-[var(--color-bg-hover)] transition-colors text-[var(--color-text-primary)]">
-                                                            <FileSpreadsheet className="h-4 w-4 text-primary-600" />
-                                                            Export to Excel
-                                                        </button>
-                                                        <button
-                                                            onClick={() => { showToast('PDF export coming soon', 'info'); setExportDropdown(false); }}
-                                                            className="flex items-center gap-2 w-full px-4 py-2 text-left hover:bg-[var(--color-bg-hover)] transition-colors text-[var(--color-text-primary)]">
-                                                            <FileDown className="h-4 w-4 text-red-600" />
-                                                            Export to PDF
-                                                        </button>
-                                                    </div>
-                                                </>,
-                                                document.body
-                                            )}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
 
                             {/* ── Tab strip ── */}
                             <div className="flex border-b border-[var(--color-border-secondary)]  overflow-x-auto">

@@ -245,6 +245,7 @@ const MonthlyMusterPreview = () => {
         department_id: '',
         designation_id: '',
         employee_id: '',
+        month_year: new Date().toISOString().slice(0, 7),
     });
 
     const [filterDropdown, setFilterDropdown] = useState(false);
@@ -553,79 +554,26 @@ const MonthlyMusterPreview = () => {
                 {/* Header card */}
                 <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-xl mb-8 overflow-hidden">
                     <div className="bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] p-6">
-                        <div className="flex items-center gap-4">
-                            <button
-                                onClick={() => navigate('/reports')}
-                                className="flex items-center justify-center text-[var(--color-text-white)] bg-white/10 hover:bg-white/20 p-2 rounded-lg transition-colors"
-                            >
-                                <ArrowLeft size={18} />
-                            </button>
-                            <h1 className="text-2xl font-bold text-[var(--color-text-white)]">
-                                Monthly Attendance Muster
-                            </h1>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Error Display */}
-                {error && (
-                    <div className="bg-[var(--color-error-light)] border border-[var(--color-error-lighter)] rounded-lg p-4 mb-6">
-                        <div className="flex items-center gap-2 text-[var(--color-error-dark)]">
-                            <HelpCircle size={16} />
-                            <span className="font-medium">Error:</span>
-                            <span>{error}</span>
-                        </div>
-                    </div>
-                )}
-
-
-
-                {/* Legend + Grid */}
-                <div className="flex-1 flex flex-col min-h-0 bg-[var(--color-bg-secondary)] rounded-xl shadow-sm border border-[var(--color-primary-dark)] overflow-hidden">
-                    {/* Legend/Header bar */}
-                    <div className="px-6 py-4 border-b border-[var(--color-primary-light)] bg-[var(--color-primary-lighter)]">
-                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                            <div>
-                                <h3 className="font-semibold text-[var(--color-primary-darker)]">
-                                    Monthly Attendance Muster - {formatMonthYear(filters.month_year)}
-                                </h3>
-                                <p className="text-sm text-[var(--color-primary-darker)]">
-                                    {hasGenerated
-                                        ? `${gridData.length} employee${gridData.length !== 1 ? 's' : ''} found`
-                                        : 'Click "Generate Report" to load data'
-                                    }
-                                </p>
+                        <div className="flex items-center justify-between flex-wrap gap-4">
+                            <div className="flex items-center gap-4">
+                                <button
+                                    onClick={() => navigate('/reports')}
+                                    className="flex items-center justify-center text-[var(--color-text-white)] bg-white/10 hover:bg-white/20 p-2 rounded-lg transition-colors"
+                                >
+                                    <ArrowLeft size={18} />
+                                </button>
+                                <h1 className="text-2xl font-bold text-[var(--color-text-white)]">
+                                    Monthly Attendance Muster {filters.month_year && `- ${formatMonthYear(filters.month_year)}`}
+                                </h1>
                             </div>
-
+                            
                             <div className="flex items-center gap-3 flex-wrap">
-                                {/* Legend - only show when data is loaded */}
-                                {hasGenerated && (
-                                    <div className="flex flex-wrap gap-1.5 sm:ml-auto">
-                                        {[...TOTALS_ORDER].map((c) => (
-                                            <span key={c}
-                                                className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold border ${CODE_COLORS[c] || 'bg-gray-100 text-gray-600 border-gray-200'}`}>
-                                                <span className="w-1.5 h-1.5 rounded-full bg-current opacity-60" />
-                                                {c === '½P' ? '½P' : c}&nbsp;
-                                                <span className="font-normal opacity-70">{CODE_LABELS[c]}</span>
-                                            </span>
-                                        ))}
-                                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold border bg-slate-100 text-slate-500 border-slate-300">
-                                            <span className="w-1.5 h-1.5 rounded-full bg-blue-400" />
-                                            Sat
-                                        </span>
-                                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold border bg-red-50 text-red-400 border-red-200">
-                                            <span className="w-1.5 h-1.5 rounded-full bg-red-400" />
-                                            Sun
-                                        </span>
-                                    </div>
-                                )}
-
                                 {/* Filter button */}
                                 <div className="relative">
                                     <button
                                         ref={filterBtnRef}
                                         onClick={() => setFilterDropdown((v) => !v)}
-                                        className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-lg font-medium transition-colors"
+                                        className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-lg font-medium transition-colors shadow-sm"
                                     >
                                         <Filter className="h-4 w-4" />
                                         Filters
@@ -780,7 +728,7 @@ const MonthlyMusterPreview = () => {
                                     <button
                                         ref={exportBtnRef}
                                         onClick={() => setExportDropdown((v) => !v)}
-                                        className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-lg font-medium transition-colors"
+                                        className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-lg font-medium transition-colors shadow-sm"
                                     >
                                         <Download className="h-4 w-4" />
                                         Export
@@ -828,6 +776,50 @@ const MonthlyMusterPreview = () => {
                             </div>
                         </div>
                     </div>
+                </div>
+
+                {/* Error Display */}
+                {error && (
+                    <div className="bg-[var(--color-error-light)] border border-[var(--color-error-lighter)] rounded-lg p-4 mb-6">
+                        <div className="flex items-center gap-2 text-[var(--color-error-dark)]">
+                            <HelpCircle size={16} />
+                            <span className="font-medium">Error:</span>
+                            <span>{error}</span>
+                        </div>
+                    </div>
+                )}
+
+
+
+                {/* Legend + Grid */}
+                <div className="flex-1 flex flex-col min-h-0 bg-[var(--color-bg-secondary)] rounded-xl shadow-sm border border-[var(--color-primary-dark)] overflow-hidden">
+                    {/* Legend bar */}
+                    {hasGenerated && (
+                        <div className="px-6 py-2 border-b border-[var(--color-primary-light)] bg-[var(--color-primary-lighter)]">
+                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-end gap-3">
+                                <div className="flex items-center gap-3 flex-wrap">
+                                    <div className="flex flex-wrap gap-1.5 sm:ml-auto">
+                                        {[...TOTALS_ORDER].map((c) => (
+                                            <span key={c}
+                                                className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold border ${CODE_COLORS[c] || 'bg-gray-100 text-gray-600 border-gray-200'}`}>
+                                                <span className="w-1.5 h-1.5 rounded-full bg-current opacity-60" />
+                                                {c === '½P' ? '½P' : c}&nbsp;
+                                                <span className="font-normal opacity-70">{CODE_LABELS[c]}</span>
+                                            </span>
+                                        ))}
+                                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold border bg-slate-100 text-slate-500 border-slate-300">
+                                            <span className="w-1.5 h-1.5 rounded-full bg-blue-400" />
+                                            Sat
+                                        </span>
+                                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold border bg-red-50 text-red-400 border-red-200">
+                                            <span className="w-1.5 h-1.5 rounded-full bg-red-400" />
+                                            Sun
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
 
                     {/* Loading indicator (thin bar) */}
                     <div className="h-0.5 w-full bg-transparent">

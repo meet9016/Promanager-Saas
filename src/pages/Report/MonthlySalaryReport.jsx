@@ -408,7 +408,7 @@ const MonthlySalaryReport = () => {
                                 </button>
                                 <div className="flex items-center gap-3">
                                     <div>
-                                        <h1 className="text-2xl font-bold text-[var(--color-text-white)]">Monthly Salary Report</h1>
+                                        <h1 className="text-2xl font-bold text-[var(--color-text-white)]">Monthly Salary Report {filters.month_year && `- ${getMonthYearDisplay(filters.month_year)}`}</h1>
                                     </div>
                                 </div>
                             </div>
@@ -626,7 +626,7 @@ const MonthlySalaryReport = () => {
                 {/* Summary Statistics */}
                 {summaryStats && (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8 shrink-0">
-                        <div className="bg-[var(--color-bg-secondary)] rounded-xl p-8 shadow-sm border border-[var(--color-border-primary)]">
+                        <div className="bg-[var(--color-bg-secondary)] rounded-xl p-5 shadow-sm border border-[var(--color-border-primary)]">
                             <div className="flex items-center justify-between">
                                 <div>
                                     <p className="text-sm text-[var(--color-text-secondary)]">Total Employees</p>
@@ -635,7 +635,7 @@ const MonthlySalaryReport = () => {
                                 <Users className="h-8 w-8 text-[var(--color-primary-dark)]" />
                             </div>
                         </div>
-                        <div className="bg-[var(--color-bg-secondary)] rounded-xl p-8 shadow-sm border border-[var(--color-border-primary)]">
+                        <div className="bg-[var(--color-bg-secondary)] rounded-xl p-5 shadow-sm border border-[var(--color-border-primary)]">
                             <div className="flex items-center justify-between">
                                 <div>
                                     <p className="text-sm text-[var(--color-text-secondary)]">Total Paid</p>
@@ -644,7 +644,7 @@ const MonthlySalaryReport = () => {
                                 <IndianRupee className="h-8 w-8 text-green-600" />
                             </div>
                         </div>
-                        <div className="bg-[var(--color-bg-secondary)] rounded-xl p-8 shadow-sm border border-[var(--color-border-primary)]">
+                        <div className="bg-[var(--color-bg-secondary)] rounded-xl p-5 shadow-sm border border-[var(--color-border-primary)]">
                             <div className="flex items-center justify-between">
                                 <div>
                                     <p className="text-sm text-[var(--color-text-secondary)]">Overtime Pay</p>
@@ -653,7 +653,7 @@ const MonthlySalaryReport = () => {
                                 <Clock className="h-8 w-8 text-orange-600" />
                             </div>
                         </div>
-                        <div className="bg-[var(--color-bg-secondary)] rounded-xl p-8 shadow-sm border border-[var(--color-border-primary)]">
+                        <div className="bg-[var(--color-bg-secondary)] rounded-xl p-5 shadow-sm border border-[var(--color-border-primary)]">
                             <div className="flex items-center justify-between">
                                 <div>
                                     <p className="text-sm text-[var(--color-text-secondary)]">Average Salary</p>
@@ -668,185 +668,162 @@ const MonthlySalaryReport = () => {
                 {/* Salary Report Results */}
                 {reportData && (
                     <div className="flex-1 flex flex-col min-h-0 bg-[var(--color-bg-secondary)] rounded-xl shadow-lg border border-[var(--color-border-primary)] overflow-hidden">
-                        {/* Header */}
-                        <div className="px-6 py-5 border-b border-[var(--color-border-primary)] bg-[var(--color-primary-lighter)]">
-                            <div className="flex justify-between items-center">
-                                <div className="flex items-center">
-                                    <div className="p-2 bg-[var(--color-bg-secondary-20)] rounded-lg mr-3">
-                                        <IndianRupee className="h-6 w-6 text-[var(--color-primary-darker)]" />
-                                    </div>
-                                    <div>
-                                        <h3 className="text-xl font-bold text-[var(--color-primary-darker)]">Monthly Salary Report</h3>
-                                        <p className="text-sm text-[var(--color-primary-darker)] opacity-80">
-                                            {getMonthYearDisplay(filters.month_year)}
-                                        </p>
-                                    </div>
-                                </div>
-                                <div className="text-right">
-                                    <div className="text-sm text-[var(--color-primary-darker)] opacity-80">Total Records</div>
-                                    <div className="text-2xl font-bold text-[var(--color-primary-darker)]">{reportData.length}</div>
-                                </div>
-                            </div>
-                        </div>
-
                         {/* Table Container */}
-                        <div className="flex-1 overflow-auto custom-scrollbar">
-                            <Table className="w-full">
-                                <TableHeader>
-                                    <TableHeaderRow className="bg-[var(--color-primary-dark)] border-b border-[var(--color-border-primary)]">
-                                        <Th className="text-left font-semibold text-white">
-                                            <div className="flex items-center gap-2">
-                                                <User className="h-4 w-4" />
-                                                Employee Details
-                                            </div>
-                                        </Th>
-                                        <Th className="text-center font-semibold text-white">
-                                            <div className="flex items-center justify-center gap-2">
-                                                <IndianRupee className="h-4 w-4" />
-                                                Base Salary
-                                            </div>
-                                        </Th>
-                                        <Th className="text-center font-semibold text-white">
-                                            <div className="flex items-center justify-center gap-2">
-                                                <Calendar className="h-4 w-4" />
-                                                Attendance Summary
-                                            </div>
-                                        </Th>
-                                        <Th className="text-center font-semibold text-white">
-                                            <div className="flex items-center justify-center gap-2">
-                                                <Clock className="h-4 w-4" />
-                                                Overtime Details
-                                            </div>
-                                        </Th>
-                                        <Th className="text-center font-semibold text-white">
-                                            <div className="flex items-center justify-center gap-2">
-                                                <CalendarX className="h-4 w-4" />
-                                                Week Off
-                                            </div>
-                                        </Th>
-                                        <Th className="text-center font-semibold text-white">
-                                            <div className="flex items-center justify-center gap-2">
-                                                <Calculator className="h-4 w-4" />
-                                                Subtotal
-                                            </div>
-                                        </Th>
-                                        <Th className="text-center font-semibold text-white">
-                                            <div className="flex items-center justify-center gap-2">
-                                                <TrendingUp className="h-4 w-4" />
-                                                Final Salary
-                                            </div>
-                                        </Th>
-                                    </TableHeaderRow>
-                                </TableHeader>
-                                <TableBody className="divide-y divide-[var(--color-border-primary)] ">
-                                    {currentItems.map((employee, index) => {
-                                        const initials = employee.employee_name
-                                            ? employee.employee_name.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase()
-                                            : '??';
+                        <Table wrapperClassName="flex-1 min-h-0 max-h-none overflow-auto custom-scrollbar" className="w-full">
+                            <TableHeader>
+                                <TableHeaderRow className="bg-[var(--color-primary-dark)] border-b border-[var(--color-border-primary)]">
+                                    <Th className="text-left font-semibold text-white">
+                                        <div className="flex items-center gap-2">
+                                            <User className="h-4 w-4" />
+                                            Employee Details
+                                        </div>
+                                    </Th>
+                                    <Th className="text-center font-semibold text-white">
+                                        <div className="flex items-center justify-center gap-2">
+                                            <IndianRupee className="h-4 w-4" />
+                                            Base Salary
+                                        </div>
+                                    </Th>
+                                    <Th className="text-center font-semibold text-white">
+                                        <div className="flex items-center justify-center gap-2">
+                                            <Calendar className="h-4 w-4" />
+                                            Attendance Summary
+                                        </div>
+                                    </Th>
+                                    <Th className="text-center font-semibold text-white">
+                                        <div className="flex items-center justify-center gap-2">
+                                            <Clock className="h-4 w-4" />
+                                            Overtime Details
+                                        </div>
+                                    </Th>
+                                    <Th className="text-center font-semibold text-white">
+                                        <div className="flex items-center justify-center gap-2">
+                                            <CalendarX className="h-4 w-4" />
+                                            Week Off
+                                        </div>
+                                    </Th>
+                                    <Th className="text-center font-semibold text-white">
+                                        <div className="flex items-center justify-center gap-2">
+                                            <Calculator className="h-4 w-4" />
+                                            Subtotal
+                                        </div>
+                                    </Th>
+                                    <Th className="text-center font-semibold text-white">
+                                        <div className="flex items-center justify-center gap-2">
+                                            <TrendingUp className="h-4 w-4" />
+                                            Final Salary
+                                        </div>
+                                    </Th>
+                                </TableHeaderRow>
+                            </TableHeader>
+                            <TableBody className="divide-y divide-[var(--color-border-primary)] ">
+                                {currentItems.map((employee, index) => {
+                                    const initials = employee.employee_name
+                                        ? employee.employee_name.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase()
+                                        : '??';
 
-                                        return (
-                                            <TableRow key={employee.employee_code || index} className="bg-[var(--color-bg-secondary)] hover:bg-[var(--color-bg-hover)] transition-all duration-200 group border-b border-[var(--color-border-secondary)] last:border-0">
-                                                {/* Employee Details */}
-                                                <Td className="py-4">
-                                                    <div className="flex items-center gap-3 pl-2">
-                                                        <div className="flex-shrink-0 h-9 w-9 rounded-full bg-gradient-to-br from-[var(--color-primary-light)] to-[var(--color-primary)] text-white flex items-center justify-center text-xs font-bold shadow-sm">
-                                                            {initials}
-                                                        </div>
-                                                        <div className="flex flex-col items-start">
-                                                            <span className="text-sm font-bold text-[var(--color-text-primary)] group-hover:text-[var(--color-primary-dark)] transition-colors tracking-tight">
-                                                                {employee.employee_name || '--'}
-                                                            </span>
-                                                            <span className="text-[11px] font-semibold text-[var(--color-text-muted)] mt-0.5 bg-[var(--color-bg-gray-light)] px-1.5 py-0.5 rounded">
-                                                                {employee.employee_code || '--'}
-                                                            </span>
-                                                        </div>
+                                    return (
+                                        <TableRow key={employee.employee_code || index} className="bg-[var(--color-bg-secondary)] hover:bg-[var(--color-bg-hover)] transition-all duration-200 group border-b border-[var(--color-border-secondary)] last:border-0">
+                                            {/* Employee Details */}
+                                            <Td className="py-4">
+                                                <div className="flex items-center gap-3 pl-2">
+                                                    <div className="flex-shrink-0 h-9 w-9 rounded-full bg-gradient-to-br from-[var(--color-primary-light)] to-[var(--color-primary)] text-white flex items-center justify-center text-xs font-bold shadow-sm">
+                                                        {initials}
                                                     </div>
-                                                </Td>
-
-                                                {/* Base Salary */}
-                                                <Td className="text-center py-4">
-                                                    <div className="inline-flex items-center justify-center px-3 py-1 bg-slate-50 border border-slate-200 rounded-lg shadow-sm">
-                                                        <span className="text-[14px] font-bold text-slate-700">
-                                                            {formatCurrency(employee.employee_salary)}
+                                                    <div className="flex flex-col items-start">
+                                                        <span className="text-sm font-bold text-[var(--color-text-primary)] group-hover:text-[var(--color-primary-dark)] transition-colors tracking-tight">
+                                                            {employee.employee_name || '--'}
+                                                        </span>
+                                                        <span className="text-[11px] font-semibold text-[var(--color-text-muted)] mt-0.5 bg-[var(--color-bg-gray-light)] px-1.5 py-0.5 rounded">
+                                                            {employee.employee_code || '--'}
                                                         </span>
                                                     </div>
-                                                </Td>
+                                                </div>
+                                            </Td>
 
-                                                {/* Attendance Summary */}
-                                                <Td className="py-4">
-                                                    <div className="flex items-center justify-center gap-2 text-[11px] font-bold tracking-wide">
-                                                        <div className="flex items-center gap-1.5 px-2 py-1 bg-blue-50 text-blue-700 border border-blue-100 rounded-md shadow-sm">
-                                                            <span className="opacity-80">W</span>
-                                                            <span className="text-[13px]">{employee.working_days || 0}</span>
-                                                        </div>
-                                                        <div className="flex items-center gap-1.5 px-2 py-1 bg-green-50 text-green-700 border border-green-100 rounded-md shadow-sm">
-                                                            <span className="opacity-80">P</span>
-                                                            <span className="text-[13px]">{employee.present_days || 0}</span>
-                                                        </div>
-                                                        <div className="flex items-center gap-1.5 px-2 py-1 bg-red-50 text-red-700 border border-red-100 rounded-md shadow-sm">
-                                                            <span className="opacity-80">A</span>
-                                                            <span className="text-[13px]">{employee.absent_days || 0}</span>
-                                                        </div>
-                                                    </div>
-                                                </Td>
-
-                                                {/* Overtime Details */}
-                                                <Td className="text-center py-4">
-                                                    <div className="flex flex-col items-center justify-center gap-1">
-                                                        {parseFloat(employee.overtime_salary || 0) > 0 ? (
-                                                            <span className="inline-flex items-center justify-center px-2.5 py-1 bg-orange-50 text-orange-700 border border-orange-200 rounded-md font-bold text-[13px] shadow-sm">
-                                                                {formatCurrency(employee.overtime_salary)}
-                                                            </span>
-                                                        ) : (
-                                                            <span className="text-[14px] font-medium text-gray-300">--</span>
-                                                        )}
-                                                        {parseFloat(employee.overtime_days || 0) > 0 && (
-                                                            <span className="text-[10px] text-orange-600 font-bold flex items-center gap-1 uppercase tracking-wide">
-                                                                <Clock className="h-3 w-3" /> {employee.overtime_days} days
-                                                            </span>
-                                                        )}
-                                                    </div>
-                                                </Td>
-
-                                                {/* Week Off */}
-                                                <Td className="text-center py-4">
-                                                    <div className="flex flex-col items-center justify-center gap-1">
-                                                        {parseFloat(employee.week_off_salary || 0) > 0 ? (
-                                                            <span className="inline-flex items-center justify-center px-2.5 py-1 bg-[var(--color-primary-lightest)] text-[var(--color-primary-dark)] border border-[var(--color-primary-light)] rounded-md font-bold text-[13px] shadow-sm">
-                                                                {formatCurrency(employee.week_off_salary)}
-                                                            </span>
-                                                        ) : (
-                                                            <span className="text-[14px] font-medium text-gray-300">--</span>
-                                                        )}
-                                                        {parseFloat(employee.week_off_days || 0) > 0 && (
-                                                            <span className="text-[10px] text-[var(--color-primary)] font-bold flex items-center gap-1 uppercase tracking-wide">
-                                                                <CalendarX className="h-3 w-3" /> {employee.week_off_days} days
-                                                            </span>
-                                                        )}
-                                                    </div>
-                                                </Td>
-
-                                                {/* Subtotal */}
-                                                <Td className="text-center py-4">
-                                                    <span className="text-[15px] font-bold text-gray-600">
-                                                        {formatCurrency(employee.subtotal_salary)}
+                                            {/* Base Salary */}
+                                            <Td className="text-center py-4">
+                                                <div className="inline-flex items-center justify-center px-3 py-1 bg-slate-50 border border-slate-200 rounded-lg shadow-sm">
+                                                    <span className="text-[14px] font-bold text-slate-700">
+                                                        {formatCurrency(employee.employee_salary)}
                                                     </span>
-                                                </Td>
+                                                </div>
+                                            </Td>
 
-                                                {/* Final Salary */}
-                                                <Td className="text-center py-4 pr-4">
-                                                    <div className="inline-flex items-center justify-center px-3.5 py-1.5 bg-emerald-50 border border-emerald-200 rounded-lg shadow-sm">
-                                                        <span className="text-[15px] font-black text-emerald-700 tracking-tight">
-                                                            {formatCurrency(employee.total_salary)}
-                                                        </span>
+                                            {/* Attendance Summary */}
+                                            <Td className="py-4">
+                                                <div className="flex items-center justify-center gap-2 text-[11px] font-bold tracking-wide">
+                                                    <div className="flex items-center gap-1.5 px-2 py-1 bg-blue-50 text-blue-700 border border-blue-100 rounded-md shadow-sm">
+                                                        <span className="opacity-80">W</span>
+                                                        <span className="text-[13px]">{employee.working_days || 0}</span>
                                                     </div>
-                                                </Td>
-                                            </TableRow>
-                                        );
-                                    })}
-                                </TableBody>
-                            </Table>
-                        </div>
+                                                    <div className="flex items-center gap-1.5 px-2 py-1 bg-green-50 text-green-700 border border-green-100 rounded-md shadow-sm">
+                                                        <span className="opacity-80">P</span>
+                                                        <span className="text-[13px]">{employee.present_days || 0}</span>
+                                                    </div>
+                                                    <div className="flex items-center gap-1.5 px-2 py-1 bg-red-50 text-red-700 border border-red-100 rounded-md shadow-sm">
+                                                        <span className="opacity-80">A</span>
+                                                        <span className="text-[13px]">{employee.absent_days || 0}</span>
+                                                    </div>
+                                                </div>
+                                            </Td>
+
+                                            {/* Overtime Details */}
+                                            <Td className="text-center py-4">
+                                                <div className="flex flex-col items-center justify-center gap-1">
+                                                    {parseFloat(employee.overtime_salary || 0) > 0 ? (
+                                                        <span className="inline-flex items-center justify-center px-2.5 py-1 bg-orange-50 text-orange-700 border border-orange-200 rounded-md font-bold text-[13px] shadow-sm">
+                                                            {formatCurrency(employee.overtime_salary)}
+                                                        </span>
+                                                    ) : (
+                                                        <span className="text-[14px] font-medium text-gray-300">--</span>
+                                                    )}
+                                                    {parseFloat(employee.overtime_days || 0) > 0 && (
+                                                        <span className="text-[10px] text-orange-600 font-bold flex items-center gap-1 uppercase tracking-wide">
+                                                            <Clock className="h-3 w-3" /> {employee.overtime_days} days
+                                                        </span>
+                                                    )}
+                                                </div>
+                                            </Td>
+
+                                            {/* Week Off */}
+                                            <Td className="text-center py-4">
+                                                <div className="flex flex-col items-center justify-center gap-1">
+                                                    {parseFloat(employee.week_off_salary || 0) > 0 ? (
+                                                        <span className="inline-flex items-center justify-center px-2.5 py-1 bg-[var(--color-primary-lightest)] text-[var(--color-primary-dark)] border border-[var(--color-primary-light)] rounded-md font-bold text-[13px] shadow-sm">
+                                                            {formatCurrency(employee.week_off_salary)}
+                                                        </span>
+                                                    ) : (
+                                                        <span className="text-[14px] font-medium text-gray-300">--</span>
+                                                    )}
+                                                    {parseFloat(employee.week_off_days || 0) > 0 && (
+                                                        <span className="text-[10px] text-[var(--color-primary)] font-bold flex items-center gap-1 uppercase tracking-wide">
+                                                            <CalendarX className="h-3 w-3" /> {employee.week_off_days} days
+                                                        </span>
+                                                    )}
+                                                </div>
+                                            </Td>
+
+                                            {/* Subtotal */}
+                                            <Td className="text-center py-4">
+                                                <span className="text-[15px] font-bold text-gray-600">
+                                                    {formatCurrency(employee.subtotal_salary)}
+                                                </span>
+                                            </Td>
+
+                                            {/* Final Salary */}
+                                            <Td className="text-center py-4 pr-4">
+                                                <div className="inline-flex items-center justify-center px-3.5 py-1.5 bg-emerald-50 border border-emerald-200 rounded-lg shadow-sm">
+                                                    <span className="text-[15px] font-black text-emerald-700 tracking-tight">
+                                                        {formatCurrency(employee.total_salary)}
+                                                    </span>
+                                                </div>
+                                            </Td>
+                                        </TableRow>
+                                    );
+                                })}
+                            </TableBody>
+                        </Table>
 
                         {/* Pagination */}
                         <div className="border-t border-[var(--color-border-primary)] bg-[var(--color-bg-primary)]">

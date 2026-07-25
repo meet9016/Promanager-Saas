@@ -436,7 +436,7 @@ const EmployeeDirectoryReport = () => {
                 {/* Summary */}
                 {summaryStats && (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-                        <div className="bg-[var(--color-bg-secondary)] rounded-xl p-6 shadow-sm border border-[var(--color-border-primary)]">
+                        <div className="bg-[var(--color-bg-secondary)] rounded-xl p-4 shadow-sm border border-[var(--color-border-primary)]">
                             <div className="flex items-center justify-between ">
                                 <div>
                                     <p className="text-sm text-[var(--color-text-secondary)]">Total Employees</p>
@@ -445,7 +445,7 @@ const EmployeeDirectoryReport = () => {
                                 <Users className="h-8 w-8 text-[var(--color-primary)]" />
                             </div>
                         </div>
-                        <div className="bg-[var(--color-bg-secondary)] rounded-xl p-6 shadow-sm border border-[var(--color-border-primary)]">
+                        <div className="bg-[var(--color-bg-secondary)] rounded-xl p-4 shadow-sm border border-[var(--color-border-primary)]">
                             <div className="flex items-center justify-between">
                                 <div>
                                     <p className="text-sm text-[var(--color-text-secondary)]">Active</p>
@@ -454,7 +454,7 @@ const EmployeeDirectoryReport = () => {
                                 <UserCheck className="h-8 w-8 text-[var(--color-success)]" />
                             </div>
                         </div>
-                        <div className="bg-[var(--color-bg-secondary)] rounded-xl p-6 shadow-sm border border-[var(--color-border-primary)]">
+                        <div className="bg-[var(--color-bg-secondary)] rounded-xl p-4 shadow-sm border border-[var(--color-border-primary)]">
                             <div className="flex items-center justify-between">
                                 <div>
                                     <p className="text-sm text-[var(--color-text-secondary)]">Male</p>
@@ -463,7 +463,7 @@ const EmployeeDirectoryReport = () => {
                                 <User className="h-8 w-8 text-[var(--color-primary)]" />
                             </div>
                         </div>
-                        <div className="bg-[var(--color-bg-secondary)] rounded-xl p-6 shadow-sm border border-[var(--color-border-primary)]">
+                        <div className="bg-[var(--color-bg-secondary)] rounded-xl p-4 shadow-sm border border-[var(--color-border-primary)]">
                             <div className="flex items-center justify-between">
                                 <div>
                                     <p className="text-sm text-[var(--color-text-secondary)]">Female</p>

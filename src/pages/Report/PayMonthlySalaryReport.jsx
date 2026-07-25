@@ -320,6 +320,12 @@ const PayMonthlySalaryReport = () => {
     const { user } = useAuth();
     const currentDate = new Date();
 
+    const getMonthYearDisplay = (monthYear) => {
+        if (!monthYear) return '';
+        const date = new Date(monthYear + '-01');
+        return date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+    };
+
     const [filters, setFilters] = useState({
         branch_id: '', department_id: '', designation_id: '', employee_id: '', month_year: `${currentDate.getFullYear()}-${String(
             currentDate.getMonth() + 1
@@ -413,7 +419,6 @@ const PayMonthlySalaryReport = () => {
     };
 
     const handleFilterChange = (key, value) => {
-        setReportData(null); setApiSummary(null); setError('');
         setFilters(prev => {
             const next = { ...prev, [key]: value };
             if (key === 'branch_id') { next.department_id = ''; next.designation_id = ''; next.employee_id = ''; }
@@ -432,11 +437,6 @@ const PayMonthlySalaryReport = () => {
     const totalPages = Math.ceil((reportData?.length || 0) / itemsPerPage);
     const currentItems = reportData?.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage) || [];
     useEffect(() => { setCurrentPage(1); }, [reportData]);
-
-    const getMonthYearDisplay = (monthYear) => {
-        if (!monthYear) return 'Select Month';
-        return new Date(monthYear + '-01').toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
-    };
 
     const handleExportPDF = async () => {
         try {
@@ -466,8 +466,7 @@ const PayMonthlySalaryReport = () => {
                                     <ArrowLeft size={18} />
                                 </button>
                                 <div>
-                                    <h1 className="text-2xl font-bold text-[var(--color-text-white)]">Paid Salary Report</h1>
-                                    {/* <p className="text-sm text-white/70 mt-0.5">Detailed salary breakdown with allowances, deductions, loans & payments</p> */}
+                                    <h1 className="text-2xl font-bold text-[var(--color-text-white)]">Paid Salary Report {filters.month_year && `- ${getMonthYearDisplay(filters.month_year)}`}</h1>
                                 </div>
                             </div>
                             <div className="flex items-center gap-3">
@@ -640,59 +639,47 @@ const PayMonthlySalaryReport = () => {
 
                 {/* Summary from API */}
                 {apiSummary && (
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
-                        {[
-                            { label: 'Total Employees', value: apiSummary.total_employees, icon: Users, color: 'text-[var(--color-primary-dark)]' },
-                            { label: 'Grand Total Salary', value: formatCurrency(apiSummary.grand_total_salary), icon: IndianRupee, color: 'text-[var(--color-text-primary)]' },
-                            { label: 'Total Allowances', value: formatCurrency(apiSummary.grand_total_allowance), icon: TrendingUp, color: 'text-green-600' },
-                            { label: 'Total Deductions', value: formatCurrency(apiSummary.grand_total_deduction), icon: Minus, color: 'text-red-500' },
-                            { label: 'Total Loans', value: formatCurrency(apiSummary.grand_total_loan), icon: CreditCard, color: 'text-orange-500' },
-                            { label: 'Total Advance', value: formatCurrency(apiSummary.grand_total_advance), icon: Wallet, color: 'text-yellow-600' },
-                            { label: 'Grand Net Payable', value: formatCurrency(apiSummary.grand_net_payable), icon: CheckCircle, color: 'text-green-700' },
-                            { label: 'Grand Total Paid', value: formatCurrency(apiSummary.grand_total_paid), icon: CreditCard, color: 'text-primary-600' },
-                        ].map(({ label, value, icon: Icon, color }) => (
-                            <div key={label} className="bg-[var(--color-bg-secondary)] rounded-xl p-4 shadow-sm border border-[var(--color-border-primary)]">
-                                <div className="flex items-center justify-between mb-1">
-                                    <p className="text-xs text-[var(--color-text-secondary)] leading-tight">{label}</p>
-                                    <Icon className={`h-5 w-5 flex-shrink-0 ${color}`} />
+                    <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-sm border border-[var(--color-border-primary)] mb-5 shrink-0 overflow-hidden">
+                        <div className="grid grid-cols-4 lg:grid-cols-8 divide-x divide-[var(--color-border-primary)]">
+                            {[
+                                { label: 'Total Employees', value: apiSummary.total_employees, icon: Users, iconBg: 'bg-purple-100', iconColor: 'text-[var(--color-primary-dark)]', valueColor: 'text-[var(--color-primary-dark)]' },
+                                { label: 'Grand Total Salary', value: formatCurrency(apiSummary.grand_total_salary), icon: IndianRupee, iconBg: 'bg-slate-100', iconColor: 'text-slate-600', valueColor: 'text-[var(--color-text-primary)]' },
+                                { label: 'Total Allowances', value: formatCurrency(apiSummary.grand_total_allowance), icon: TrendingUp, iconBg: 'bg-green-100', iconColor: 'text-green-600', valueColor: 'text-green-700' },
+                                { label: 'Total Deductions', value: formatCurrency(apiSummary.grand_total_deduction), icon: Minus, iconBg: 'bg-red-100', iconColor: 'text-red-500', valueColor: 'text-red-600' },
+                                { label: 'Total Loans', value: formatCurrency(apiSummary.grand_total_loan), icon: CreditCard, iconBg: 'bg-orange-100', iconColor: 'text-orange-500', valueColor: 'text-orange-600' },
+                                { label: 'Total Advance', value: formatCurrency(apiSummary.grand_total_advance), icon: Wallet, iconBg: 'bg-yellow-100', iconColor: 'text-yellow-600', valueColor: 'text-yellow-700' },
+                                { label: 'Grand Net Payable', value: formatCurrency(apiSummary.grand_net_payable), icon: CheckCircle, iconBg: 'bg-emerald-100', iconColor: 'text-emerald-600', valueColor: 'text-emerald-700' },
+                                { label: 'Grand Total Paid', value: formatCurrency(apiSummary.grand_total_paid), icon: CreditCard, iconBg: 'bg-blue-100', iconColor: 'text-blue-600', valueColor: 'text-blue-700' },
+                            ].map(({ label, value, icon: Icon, iconBg, iconColor, valueColor }) => (
+                                <div key={label} className="flex flex-col items-start gap-2 px-4 py-3">
+                                    <div className={`p-1.5 rounded-lg ${iconBg}`}>
+                                        <Icon className={`h-3.5 w-3.5 ${iconColor}`} />
+                                    </div>
+                                    <div>
+                                        <p className="text-[10px] font-medium text-[var(--color-text-secondary)] uppercase tracking-wide leading-tight mb-0.5">{label}</p>
+                                        <p className={`text-sm font-bold ${valueColor} leading-tight`}>{value}</p>
+                                    </div>
                                 </div>
-                                <p className={`text-base font-bold ${color}`}>{value}</p>
-                            </div>
-                        ))}
+                            ))}
+                        </div>
                     </div>
                 )}
 
                 {/* Table */}
                 {reportData && (
                     <div className="flex-1 flex flex-col min-h-0 bg-[var(--color-bg-secondary)] rounded-xl shadow-lg border border-[var(--color-border-primary)] overflow-hidden">
-                        <div className="px-6 py-5 border-b border-[var(--color-border-primary)] bg-[var(--color-primary-lighter)]">
-                            <div className="flex justify-between items-center">
-                                <div className="flex items-center">
-                                    <div className="p-2 bg-[var(--color-bg-secondary-20)] rounded-lg mr-3"><IndianRupee className="h-6 w-6 text-[var(--color-primary-darker)]" /></div>
-                                    <div>
-                                        <h3 className="text-xl font-bold text-[var(--color-primary-darker)]">Paid Salary Report</h3>
-                                        <p className="text-sm text-[var(--color-primary-darker)]">{getMonthYearDisplay(filters.month_year)} · Click <ChevronRight className="inline h-3 w-3" /> to expand breakdown</p>
-                                    </div>
-                                </div>
-                                <div className="text-right">
-                                    <div className="text-sm text-[var(--color-primary-darker)]">Total Records</div>
-                                    <div className="text-2xl font-bold text-[var(--color-primary-darker)]">{reportData.length}</div>
-                                </div>
-                            </div>
-                        </div>
-
                         <div className="flex-1 overflow-auto custom-scrollbar">
                             <table className="w-full">
-                                <thead>
+                                <thead className="sticky top-0 z-30">
                                     <tr className="bg-[var(--color-primary-dark)] border-b border-[var(--color-border-primary)]">
                                         <th className="px-4 py-4 text-center text-sm font-semibold text-white w-10">#</th>
                                         <th className="px-4 py-4 text-left text-sm font-semibold text-white">Employee</th>
                                         <th className="px-4 py-4 text-center text-sm font-semibold text-white">Monthly Salary</th>
                                         <th className="px-4 py-4 text-center text-sm font-semibold text-white">Att. Salary</th>
-                                        <th className="px-4 py-4 text-center text-sm font-semibold text-white text-green-600">+ Allowance</th>
-                                        <th className="px-4 py-4 text-center text-sm font-semibold text-white text-red-500">− Deduction</th>
-                                        <th className="px-4 py-4 text-center text-sm font-semibold text-white text-orange-500">− Loan</th>
-                                        <th className="px-4 py-4 text-center text-sm font-semibold text-white text-white">− Advance</th>
+                                        <th className="px-4 py-4 text-center text-sm font-semibold text-white">+ Allowance</th>
+                                        <th className="px-4 py-4 text-center text-sm font-semibold text-white">− Deduction</th>
+                                        <th className="px-4 py-4 text-center text-sm font-semibold text-white">− Loan</th>
+                                        <th className="px-4 py-4 text-center text-sm font-semibold text-white">− Advance</th>
                                         <th className="px-4 py-4 text-center text-sm font-semibold text-white">Net Payable</th>
                                         <th className="px-4 py-4 text-center text-sm font-semibold text-white">Total Paid</th>
                                         <th className="px-4 py-4 text-center text-sm font-semibold text-white">Status</th>

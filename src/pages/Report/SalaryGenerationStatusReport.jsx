@@ -202,7 +202,6 @@ const SalaryGenerationStatusReport = () => {
     };
 
     const handleFilterChange = (key, value) => {
-        setReportData(null); setApiSummary(null); setError('');
         setFilters(prev => {
             const next = { ...prev, [key]: value };
             if (key === 'branch_id') { next.department_id = ''; next.designation_id = ''; next.employee_id = ''; }
@@ -258,8 +257,7 @@ const SalaryGenerationStatusReport = () => {
                                     <ArrowLeft size={18} />
                                 </button>
                                 <div>
-                                    <h1 className="text-2xl font-bold text-[var(--color-text-white)]">Salary Generation Status</h1>
-                                    {/* <p className="text-sm text-white/70 mt-0.5">Generation & payment overview per employee</p> */}
+                                    <h1 className="text-2xl font-bold text-[var(--color-text-white)]">Salary Generation Status {filters.month_year && `- ${getMonthYearDisplay(filters.month_year)}`}</h1>
                                 </div>
                             </div>
                             <div className="flex items-center gap-3">
@@ -454,95 +452,77 @@ const SalaryGenerationStatusReport = () => {
                 {/* Table */}
                 {reportData && (
                     <div className="flex-1 flex flex-col min-h-0 bg-[var(--color-bg-secondary)] rounded-xl shadow-lg border border-[var(--color-border-primary)] overflow-hidden">
-                        <div className="px-6 py-5 border-b border-[var(--color-border-primary)]  bg-[var(--color-primary-lighter)]">
-                            <div className="flex justify-between items-center">
-                                <div className="flex items-center">
-                                    <div className="p-2 bg-[var(--color-bg-secondary-20)] rounded-lg mr-3"><IndianRupee className="h-6 w-6 text-[var(--color-primary-darker)]" /></div>
-                                    <div>
-                                        <h3 className="text-xl font-bold text-[var(--color-primary-darker)]">Salary Generation Status</h3>
-                                        <p className="text-sm text-[var(--color-primary-darker)]">{getMonthYearDisplay(filters.month_year)}</p>
-                                    </div>
-                                </div>
-                                <div className="text-right">
-                                    <div className="text-sm text-[var(--color-primary-darker)]">Total Records</div>
-                                    <div className="text-2xl font-bold text-[var(--color-primary-darker)]">{reportData.length}</div>
-                                </div>
-                            </div>
-                        </div>
+                        <Table wrapperClassName="flex-1 min-h-0 max-h-none overflow-auto custom-scrollbar" className="w-full">
+                            <TableHeader>
+                                <TableHeaderRow className="bg-[var(--color-primary-dark)] border-b border-[var(--color-border-primary)]">
+                                    <Th className="text-left font-semibold text-white w-8">#</Th>
+                                    <Th className="text-left font-semibold text-white">
+                                        <div className="flex items-center gap-2"><User className="h-4 w-4" />Employee</div>
+                                    </Th>
+                                    <Th className="text-center font-semibold text-white">Monthly Salary</Th>
+                                    <Th className="text-center font-semibold text-white">Final Salary</Th>
+                                    <Th className="text-center font-semibold text-white">Net Payable</Th>
+                                    <Th className="text-center font-semibold text-white">Total Paid</Th>
+                                    <Th className="text-center font-semibold text-white">Balance Due</Th>
+                                    <Th className="text-center font-semibold text-white">Generated At</Th>
+                                    <Th className="text-center font-semibold text-white">Status</Th>
+                                </TableHeaderRow>
+                            </TableHeader>
+                            <TableBody className="divide-y divide-[var(--color-border-primary)]">
+                                {currentItems.map((emp, idx) => {
+                                    const isPaid = String(emp.payment_status_label || '').toLowerCase() === 'paid';
+                                    const isGenerated = String(emp.salary_generation_status || '').toLowerCase() === 'generated';
+                                    const balanceDue = parseFloat(emp.balance_due || 0);
 
-                        <div className="flex-1 overflow-auto custom-scrollbar">
-                            <Table className="w-full">
-                                <TableHeader>
-                                    <TableHeaderRow className="bg-[var(--color-primary-dark)] border-b border-[var(--color-border-primary)] ">
-                                        <Th className="text-left font-semibold text-white w-8">#</Th>
-                                        <Th className="text-left font-semibold text-white">
-                                            <div className="flex items-center gap-2"><User className="h-4 w-4" />Employee</div>
-                                        </Th>
-                                        <Th className="text-center font-semibold text-white">Monthly Salary</Th>
-                                        <Th className="text-center font-semibold text-white">Final Salary</Th>
-                                        <Th className="text-center font-semibold text-white">Net Payable</Th>
-                                        <Th className="text-center font-semibold text-white">Total Paid</Th>
-                                        <Th className="text-center font-semibold text-white">Balance Due</Th>
-                                        <Th className="text-center font-semibold text-white">Generated At</Th>
-                                        <Th className="text-center font-semibold text-white">Status</Th>
-                                    </TableHeaderRow>
-                                </TableHeader>
-                                <TableBody className="divide-y divide-[var(--color-border-primary)]  ">
-                                    {currentItems.map((emp, idx) => {
-                                        const isPaid = String(emp.payment_status_label || '').toLowerCase() === 'paid';
-                                        const isGenerated = String(emp.salary_generation_status || '').toLowerCase() === 'generated';
-                                        const balanceDue = parseFloat(emp.balance_due || 0);
-
-                                        return (
-                                            <TableRow key={emp.employee_id || idx} className="bg-[var(--color-bg-secondary)] hover:bg-[var(--color-bg-primary)] transition-colors">
-                                                <Td className="text-sm text-[var(--color-text-secondary)]">
-                                                    {(currentPage - 1) * itemsPerPage + idx + 1}
-                                                </Td>
-                                                <Td>
-                                                    <div className="font-semibold text-sm text-[var(--color-text-primary)]">{emp.employee_name || '--'}</div>
-                                                    <div className="text-xs text-[var(--color-text-secondary)] bg-[var(--color-bg-primary)] px-2 py-0.5 rounded mt-1 inline-block">{emp.employee_code || '--'}</div>
-                                                </Td>
-                                                <Td className="text-center">
-                                                    <span className="text-sm font-semibold text-[var(--color-primary-dark)]">{formatCurrency(emp.monthly_salary)}</span>
-                                                </Td>
-                                                <Td className="text-center">
-                                                    {isGenerated
-                                                        ? <span className="text-sm font-semibold text-[var(--color-text-primary)]">{formatCurrency(emp.final_salary)}</span>
-                                                        : <span className="text-xs text-[var(--color-text-secondary)]">—</span>}
-                                                </Td>
-                                                <Td className="text-center">
-                                                    {isGenerated
-                                                        ? <span className="text-sm font-bold text-green-600">{formatCurrency(emp.net_payable)}</span>
-                                                        : <span className="text-xs text-[var(--color-text-secondary)]">—</span>}
-                                                </Td>
-                                                <Td className="text-center">
-                                                    {isPaid
-                                                        ? <span className="text-sm font-bold text-primary-600">{formatCurrency(emp.total_paid)}</span>
-                                                        : <span className="text-xs text-[var(--color-text-secondary)]">—</span>}
-                                                </Td>
-                                                <Td className="text-center">
-                                                    {isGenerated
-                                                        ? <span className={`text-sm font-semibold ${balanceDue > 0 ? 'text-red-500' : 'text-green-600'}`}>
-                                                            {balanceDue > 0 ? formatCurrency(balanceDue) : '✓ Cleared'}
-                                                        </span>
-                                                        : <span className="text-xs text-[var(--color-text-secondary)]">—</span>}
-                                                </Td>
-                                                <Td className="text-center">
-                                                    <span className="text-xs text-[var(--color-text-secondary)]">
-                                                        {emp.generated_at
-                                                            ? new Date(emp.generated_at).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })
-                                                            : '—'}
+                                    return (
+                                        <TableRow key={emp.employee_id || idx} className="bg-[var(--color-bg-secondary)] hover:bg-[var(--color-bg-primary)] transition-colors">
+                                            <Td className="text-sm text-[var(--color-text-secondary)]">
+                                                {(currentPage - 1) * itemsPerPage + idx + 1}
+                                            </Td>
+                                            <Td>
+                                                <div className="font-semibold text-sm text-[var(--color-text-primary)]">{emp.employee_name || '--'}</div>
+                                                <div className="text-xs text-[var(--color-text-secondary)] bg-[var(--color-bg-primary)] px-2 py-0.5 rounded mt-1 inline-block">{emp.employee_code || '--'}</div>
+                                            </Td>
+                                            <Td className="text-center">
+                                                <span className="text-sm font-semibold text-[var(--color-primary-dark)]">{formatCurrency(emp.monthly_salary)}</span>
+                                            </Td>
+                                            <Td className="text-center">
+                                                {isGenerated
+                                                    ? <span className="text-sm font-semibold text-[var(--color-text-primary)]">{formatCurrency(emp.final_salary)}</span>
+                                                    : <span className="text-xs text-[var(--color-text-secondary)]">—</span>}
+                                            </Td>
+                                            <Td className="text-center">
+                                                {isGenerated
+                                                    ? <span className="text-sm font-bold text-green-600">{formatCurrency(emp.net_payable)}</span>
+                                                    : <span className="text-xs text-[var(--color-text-secondary)]">—</span>}
+                                            </Td>
+                                            <Td className="text-center">
+                                                {isPaid
+                                                    ? <span className="text-sm font-bold text-primary-600">{formatCurrency(emp.total_paid)}</span>
+                                                    : <span className="text-xs text-[var(--color-text-secondary)]">—</span>}
+                                            </Td>
+                                            <Td className="text-center">
+                                                {isGenerated
+                                                    ? <span className={`text-sm font-semibold ${balanceDue > 0 ? 'text-red-500' : 'text-green-600'}`}>
+                                                        {balanceDue > 0 ? formatCurrency(balanceDue) : '✓ Cleared'}
                                                     </span>
-                                                </Td>
-                                                <Td className="text-center">
-                                                    <SalaryStatusBadge genStatus={emp.salary_generation_status} paymentLabel={emp.payment_status_label} />
-                                                </Td>
-                                            </TableRow>
-                                        );
-                                    })}
-                                </TableBody>
-                            </Table>
-                        </div>
+                                                    : <span className="text-xs text-[var(--color-text-secondary)]">—</span>}
+                                            </Td>
+                                            <Td className="text-center">
+                                                <span className="text-xs text-[var(--color-text-secondary)]">
+                                                    {emp.generated_at
+                                                        ? new Date(emp.generated_at).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })
+                                                        : '—'}
+                                                </span>
+                                            </Td>
+                                            <Td className="text-center">
+                                                <SalaryStatusBadge genStatus={emp.salary_generation_status} paymentLabel={emp.payment_status_label} />
+                                            </Td>
+                                        </TableRow>
+                                    );
+                                })}
+                            </TableBody>
+                        </Table>
 
                         <div className="border-t border-[var(--color-border-primary)] bg-[var(--color-bg-primary)]">
                             <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} loading={loading} />
