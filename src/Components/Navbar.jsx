@@ -534,70 +534,67 @@ const Navbar = ({ isCollapsed, setIsCollapsed }) => {
 
                         {/* Dropdown Menu */}
                         {isDropdownOpen && (
-                            <div className="absolute right-0 top-14 bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] rounded-2xl shadow-2xl w-[320px] overflow-hidden animate-in slide-in-from-top-2 duration-200 z-50">
-                                {/* User Info Header */}
-                                <div className="p-5 bg-[var(--color-bg-secondary)] border-b border-[var(--color-border-secondary)]">
-                                    <div className="flex items-center space-x-4">
-                                        <div className="w-14 h-14 bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-dark)] rounded-full flex items-center justify-center text-white font-bold text-xl shadow-lg ring-4 ring-[var(--color-primary-lightest)]">
+                            <div className="absolute right-0 top-14 rounded-2xl shadow-2xl w-[280px] overflow-hidden z-50"
+                                style={{ border: '1px solid var(--color-border-secondary)', background: 'var(--color-bg-secondary)' }}>
+
+                                {/* Modern Compact Profile Header */}
+                                <div className="p-4 border-b border-[var(--color-border-secondary)] bg-[var(--color-bg-secondary)] rounded-t-2xl">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-10 h-10 rounded-full flex items-center justify-center text-[var(--color-primary-dark)] font-bold text-sm bg-[var(--color-primary-lightest)] flex-shrink-0 shadow-sm border border-[var(--color-primary-lighter)]">
                                             {getUserInitials(user?.full_name)}
                                         </div>
                                         <div className="flex-1 min-w-0">
-                                            <h3 className="text-lg font-bold text-[var(--color-text-primary)] truncate">
-                                                {user?.full_name || user?.name || user?.username || 'User'}
-                                            </h3>
-                                            <p className="text-sm font-medium text-[var(--color-text-secondary)] truncate">
+                                            <div className="flex justify-between items-start mb-0.5">
+                                                <p className="font-bold text-[var(--color-text-primary)] text-[13px] truncate pr-2">
+                                                    {user?.full_name || user?.name || user?.username || 'User'}
+                                                </p>
+                                                {user?.subscriptions_days && (
+                                                    <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-bold bg-green-100 text-green-700 border border-green-200 uppercase tracking-wider flex-shrink-0 mt-0.5">
+                                                        <span className="w-1 h-1 rounded-full bg-green-500" />
+                                                        {user.subscriptions_days} days
+                                                    </span>
+                                                )}
+                                            </div>
+                                            <p className="text-[11px] text-[var(--color-text-secondary)] truncate">
                                                 {user?.email || user?.username || user?.number || '--'}
                                             </p>
                                         </div>
                                     </div>
                                 </div>
 
-                                {/* User Details */}
-                                <div className="p-5 border-b border-[var(--color-border-secondary)] bg-[var(--color-bg-primary)]">
-                                    <h4 className="text-xs font-bold text-[var(--color-text-secondary)] uppercase tracking-wider mb-4 flex items-center">
-                                        <User size={14} className="mr-2 text-[var(--color-primary)]" />
-                                        Account Details
-                                    </h4>
-                                    <div className="space-y-3 text-sm">
-                                        <div className="flex justify-between items-center bg-[var(--color-bg-secondary)] px-3 py-2 rounded-lg border border-[var(--color-border-secondary)] shadow-sm">
-                                            <span className="text-[var(--color-text-secondary)] font-medium">Username</span>
-                                            <span className="text-[var(--color-text-primary)] font-semibold">
-                                                {user?.username || '--'}
-                                            </span>
-                                        </div>
-                                        <div className="flex justify-between items-center bg-[var(--color-bg-secondary)] px-3 py-2 rounded-lg border border-[var(--color-border-secondary)] shadow-sm">
-                                            <span className="text-[var(--color-text-secondary)] font-medium">Phone</span>
-                                            <span className="text-[var(--color-text-primary)] font-semibold">
-                                                {user?.number || '--'}
-                                            </span>
-                                        </div>
-                                        <div className="flex justify-between items-center bg-[var(--color-bg-secondary)] px-3 py-2 rounded-lg border border-[var(--color-border-secondary)] shadow-sm">
-                                            <span className="text-[var(--color-text-secondary)] font-medium">Expire In</span>
-                                            <span className="text-[var(--color-primary)] font-bold bg-[var(--color-primary-lightest)] px-2 py-0.5 rounded-md">
-                                                {user?.subscriptions_days ? `${user.subscriptions_days} days` : '--'}
-                                            </span>
-                                        </div>
-                                        {user?.email && (
-                                            <div className="flex justify-between items-center bg-[var(--color-bg-secondary)] px-3 py-2 rounded-lg border border-[var(--color-border-secondary)] shadow-sm">
-                                                <span className="text-[var(--color-text-secondary)] font-medium">Email</span>
-                                                <span className="text-[var(--color-text-primary)] font-semibold truncate ml-2 max-w-[140px]" title={user.email}>
-                                                    {user.email}
-                                                </span>
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
+                                {/* Menu Items */}
+                                <div className="p-2 flex flex-col gap-1">
+                                    {/* Profile */}
+                                    <Link
+                                        to="/profile"
+                                        onClick={() => setIsDropdownOpen(false)}
+                                        className="flex items-center gap-3 w-full px-4 py-2.5 rounded-xl transition-all duration-200 hover:bg-[var(--color-bg-primary)]"
+                                    >
+                                        <User size={18} style={{ color: 'var(--color-primary-dark)' }} />
+                                        <span className="text-sm font-medium" style={{ color: 'var(--color-text-primary)' }}>Profile</span>
+                                    </Link>
 
-                                {/* Menu Actions */}
-                                <div className="p-3 bg-[var(--color-bg-secondary)]">
+                                    {/* Settings */}
+                                    <Link
+                                        to="/settings"
+                                        onClick={() => setIsDropdownOpen(false)}
+                                        className="flex items-center gap-3 w-full px-4 py-2.5 rounded-xl transition-all duration-200 hover:bg-[var(--color-bg-primary)]"
+                                    >
+                                        <Settings size={18} style={{ color: 'var(--color-primary-dark)' }} />
+                                        <span className="text-sm font-medium" style={{ color: 'var(--color-text-primary)' }}>Settings</span>
+                                    </Link>
+
+                                    {/* Divider */}
+                                    <div className="my-1 mx-2 h-px" style={{ background: 'var(--color-border-secondary)' }} />
+
+                                    {/* Logout */}
                                     <button
                                         onClick={handleLogoutClick}
-                                        className="w-full px-4 py-2.5 rounded-lg text-sm font-medium text-[var(--color-error)] hover:bg-[var(--color-error-light)] hover:text-[var(--color-error-dark)] flex items-center space-x-3 transition-all duration-200 group"
+                                        className="flex items-center gap-3 w-full px-4 py-2.5 rounded-xl transition-all duration-200 hover:opacity-80 mt-1"
+                                        style={{ background: '#FEF2F2' }}
                                     >
-                                        <div className="p-1.5 rounded-md bg-[var(--color-error-light)] group-hover:bg-[var(--color-error)] transition-colors duration-200">
-                                            <LogOut size={16} className="text-[var(--color-error)] group-hover:text-white" />
-                                        </div>
-                                        <span>Logout</span>
+                                        <LogOut size={18} className="text-red-500" />
+                                        <span className="text-sm font-medium text-red-600">Logout</span>
                                     </button>
                                 </div>
                             </div>

@@ -35,28 +35,8 @@ const SettingsPage = () => {
     return (
         <div className="h-full bg-[var(--color-bg-primary)]">
             <div className="p-8 mx-auto space-y-6">
-                {/* Header */}
-                <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-xl overflow-hidden">
-                    <div className="bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] p-6">
-                        <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-4">
-                                <button
-                                    onClick={() => navigate(-1)}
-                                    className="flex items-center gap-2 text-[var(--color-text-white)] hover:opacity-90 transition-colors bg-[var(--color-bg-secondary-20)] px-2 py-2 rounded-lg backdrop-blur-sm"
-                                >
-                                    <ArrowLeft size={18} />
-                                   
-                                </button>
-                                <div className="flex items-center gap-3">
-                                    <SettingsIcon className="w-7 h-7 text-[var(--color-text-white)]" />
-                                    <h1 className="text-2xl font-bold text-[var(--color-text-white)]">Settings</h1>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <ProfileInfoTab />
+                {/* Header is now part of SettingsContent to easily share state for the Add Setting button */}
+                <SettingsContent />
             </div>
         </div>
     );
@@ -299,77 +279,103 @@ const SettingsPage = () => {
 
 
 
-/* ===================== PROFILE & INFO (TAB) ===================== */
-const ProfileInfoTab = () => {
-    const { user } = useAuth();
+/* ===================== SETTINGS CONTENT ===================== */
+const SettingsContent = () => {
+    const { user, logout } = useAuth();
+    const navigate = useNavigate();
+    const [settingsData, setSettingsData] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [toast, setToast] = useState(null);
+    const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
-    const pretty = (val, fallback = '--') => (val === undefined || val === null || val === '' ? fallback : val);
+    const showToast = (message, type = 'info') => setToast({ message, type });
+    const closeToast = () => setToast(null);
 
-    const appDetails = [
-        { icon: Cpu, label: 'App Version', value: 'v1.6.3' },
-        { icon: Server, label: 'API Endpoint', value: 'Configured' },
-        { icon: Shield, label: 'Security', value: 'SOC 2 Type II, 256-bit TLS' },
-        { icon: Zap, label: 'Status', value: 'Operational (99.9% uptime)' },
-    ];
+    const fetchSoftwareSettings = useCallback(async () => {
+        try {
+            setLoading(true);
+            if (!user?.user_id) throw new Error('User ID is required');
+
+            const formData = new FormData();
+            formData.append('user_id', user.user_id);
+            const response = await api.post('software_setting_list', formData);
+
+            if (response.data?.success) {
+                setSettingsData(response.data.data || response.data.settings || {});
+            } else if (response.data) {
+                setSettingsData(response.data);
+            } else {
+                throw new Error(response.data?.message || 'Failed to fetch software settings');
+            }
+        } catch (error) {
+            console.error(error);
+            showToast("Failed to load settings.", 'error');
+        } finally {
+            setLoading(false);
+        }
+    }, [user]);
+
+    useEffect(() => {
+        fetchSoftwareSettings();
+    }, [fetchSoftwareSettings]);
 
     return (
-        <div className="grid xl:grid-cols-3 lg:grid-cols-2 gap-6">
-            {/* User Card */}
-            <div className="lg:col-span-2">
-                <SectionCard titleIcon={<User className="w-6 h-6 text-[var(--color-text-white)]" />} title="User Profile">
-                    <div className="flex items-center gap-4 mb-6">
-                        <div className="w-16 h-16 bg-[var(--color-primary)] rounded-full flex items-center justify-center text-white text-xl font-bold">
-                            {getInitials(user?.full_name || user?.name || user?.username || 'User')}
+        <div className="space-y-6">
+            {toast && <Toast message={toast.message} type={toast.type} onClose={closeToast} />}
+
+            {/* Header */}
+            <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-xl overflow-hidden">
+                <div className="bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] p-6">
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                            <button
+                                onClick={() => navigate(-1)}
+                                className="flex items-center gap-2 text-[var(--color-text-white)] hover:opacity-90 transition-colors bg-[var(--color-bg-secondary-20)] px-2 py-2 rounded-lg backdrop-blur-sm"
+                            >
+                                <ArrowLeft size={18} />
+                            </button>
+                            <div className="flex items-center gap-3">
+                                <SettingsIcon className="w-7 h-7 text-[var(--color-text-white)]" />
+                                <h1 className="text-2xl font-bold text-[var(--color-text-white)]">Settings</h1>
+                            </div>
                         </div>
-                        <div>
-                            <h3 className="text-xl font-bold text-[var(--color-text-primary)]">
-                                {pretty(user?.full_name || user?.name || user?.username, 'User')}
+
+                        {/* Add Setting Button on Right Side */}
+                        <button
+                            onClick={() => navigate('/settings/add-setting')}
+                            className="flex items-center gap-2 bg-white/20 hover:bg-white/30 backdrop-blur-md text-white px-5 py-2 rounded-xl font-medium transition-all shadow-sm hover:shadow-md"
+                        >
+                            <SettingsIcon size={18} />
+                            Add Setting
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            {loading ? (
+                <div className="bg-[var(--color-bg-secondary)] rounded-2xl p-10 flex items-center justify-center shadow-xl">
+                    <div className="text-center">
+                        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[var(--color-primary-dark)] mx-auto mb-4"></div>
+                        <p className="text-[var(--color-text-secondary)] font-medium">Loading settings...</p>
+                    </div>
+                </div>
+            ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <SectionCard titleIcon={<Calendar className="w-6 h-6 text-[var(--color-text-white)]" />} title="Leave Settings">
+                        <div className="flex flex-col items-center justify-center p-6 bg-[var(--color-bg-primary)] rounded-xl border border-[var(--color-border-secondary)]">
+                            <div className="w-16 h-16 bg-[var(--color-primary-lightest)] rounded-full flex items-center justify-center mb-4">
+                                <Calendar className="w-8 h-8 text-[var(--color-primary-dark)]" />
+                            </div>
+                            <h3 className="text-3xl font-extrabold text-[var(--color-text-primary)] mb-1">
+                                {settingsData?.total_monthly_paid_leave || '0'}
                             </h3>
-                            <p className="text-[var(--color-text-secondary)]">
-                                {pretty(user?.email || user?.username || user?.number)}
+                            <p className="text-sm font-medium text-[var(--color-text-secondary)] uppercase tracking-wider">
+                                Total Monthly Paid Leaves
                             </p>
                         </div>
-                    </div>
-
-                    <div className="grid sm:grid-cols-1 md:grid-cols-2 gap-4">
-                        <InfoTile label="Full Name">
-                            {pretty(user?.full_name || user?.name || user?.username)}
-                        </InfoTile>
-                        <InfoTile label="Email">
-                            <span className="inline-flex items-center gap-2"><Mail size={14} /> {pretty(user?.email)}</span>
-                        </InfoTile>
-                        <InfoTile label="Phone">
-                            <span className="inline-flex items-center gap-2"><Phone size={14} /> {pretty(user?.number)}</span>
-                        </InfoTile>
-                        <InfoTile label="Username">
-                            {pretty(user?.username)}
-                        </InfoTile>
-                        <InfoTile label="Company">
-                            <span className="inline-flex items-center gap-2"><Building2 size={14} /> {pretty(user?.company_name || user?.company || '—')}</span>
-                        </InfoTile>
-                        <InfoTile label="Subscription Days Left">
-                            {pretty(user?.subscriptions_days, '0')} days
-                        </InfoTile>
-                    </div>
-                </SectionCard>
-            </div>
-
-            {/* Software / About Card */}
-            <div className="lg:col-span-1">
-                <SectionCard titleIcon={<Info className="w-6 h-6 text-[var(--color-text-white)]" />} title="Software Info">
-                    <div className="space-y-3">
-                        {appDetails.map((row, i) => (
-                            <div key={i} className="flex items-center justify-between border border-[var(--color-border-primary)] rounded-lg px-3 py-2">
-                                <div className="flex items-center gap-2">
-                                    <row.icon size={16} className="text-[var(--color-primary-dark)]" />
-                                    <span className="text-sm text-[var(--color-text-secondary)]">{row.label}</span>
-                                </div>
-                                <span className="text-sm font-medium text-[var(--color-text-primary)]">{row.value}</span>
-                            </div>
-                        ))}
-                    </div>
-                </SectionCard>
-            </div>
+                    </SectionCard>
+                </div>
+            )}
         </div>
     );
 };
@@ -388,20 +394,5 @@ const SectionCard = ({ title, titleIcon, children, tight = false }) => (
         <div className={`p-8 ${tight ? 'pt-5' : ''}`}>{children}</div>
     </div>
 );
-
-const InfoTile = ({ label, children }) => (
-    <div className="bg-[var(--color-bg-secondary)] border border-[var(--color-border-primary)] rounded-xl p-4">
-        <div className="text-xs uppercase tracking-wide text-[var(--color-text-secondary)] mb-1">{label}</div>
-        <div className="text-[var(--color-text-primary)] font-medium">{children}</div>
-    </div>
-);
-
-const getInitials = (name) =>
-    name
-        .split(' ')
-        .map(w => w[0])
-        .join('')
-        .toUpperCase()
-        .slice(0, 2);
 
 export default SettingsPage;

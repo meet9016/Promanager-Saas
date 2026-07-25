@@ -104,6 +104,8 @@ const SalaryGenerationStatusReport = lazy(
 
 // Settings (combines Configuration + Plans & Pricing)
 const SettingsPage = lazy(() => import("./pages/Setting/SettingsPage"));
+const ProfilePage = lazy(() => import("./pages/Setting/ProfilePage"));
+const AddSettingPage = lazy(() => import("./pages/Setting/AddSettingPage"));
 const SubscriptionPage = lazy(() => import("./pages/Setting/SubscriptionPage"));
 
 import { useNavigate } from "react-router-dom";
@@ -870,6 +872,15 @@ const App = () => {
               />
 
               <Route
+                path="/profile"
+                element={
+                  <ProtectedRoute>
+                    <ProfilePage />
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route
                 path="/settings"
                 element={
 
@@ -881,6 +892,15 @@ const App = () => {
                     />
                   </ProtectedRoute>
 
+                }
+              />
+              
+              <Route
+                path="/settings/add-setting"
+                element={
+                  <ProtectedRoute>
+                    <AddSettingPage />
+                  </ProtectedRoute>
                 }
               />
 
