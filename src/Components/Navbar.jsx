@@ -1,10 +1,11 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { Bell, ChevronDown, User, LogOut, Settings, Menu, X, Search, Loader2, IndianRupee, Eye, ChevronRight } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { clearPermissions } from '../redux/permissionsSlice';
 import { ConfirmDialog } from './comman/ConfirmDialog';
 import { Link, useNavigate } from 'react-router-dom';
+import CustomSelect from './comman/CustomSelect';
 import Logo from '../assets/logo.png';
 import api from '../api/axiosInstance';
 
@@ -40,6 +41,7 @@ const Navbar = ({ isCollapsed, setIsCollapsed }) => {
     const dropdownRef = useRef(null);
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const permissions = useSelector(state => state.permissions) || {};
 
     // ── Search state ──────────────────────────────────────────────────
     const [searchQuery, setSearchQuery] = useState('');
@@ -434,33 +436,15 @@ const Navbar = ({ isCollapsed, setIsCollapsed }) => {
                                                         </div>
 
                                                         {/* Month Select — custom styled */}
-                                                        <div className="flex-1 relative">
-                                                            <select
+                                                        <div className="flex-1 min-w-[120px]" onClick={e => e.stopPropagation()}>
+                                                            <CustomSelect
+                                                                name="month"
                                                                 value={empMonth}
                                                                 onChange={(e) => handleMonthChange(e, employee.employee_id)}
-                                                                onClick={(e) => e.stopPropagation()}
-                                                                className="w-full appearance-none text-[11px] font-semibold px-2.5 py-1.5 pr-6 rounded-lg cursor-pointer focus:outline-none transition-all duration-150"
-                                                                style={{
-                                                                    background: 'var(--color-bg-secondary)',
-                                                                    border: '1px solid var(--color-border-secondary)',
-                                                                    color: 'var(--color-text-primary)',
-                                                                }}
-                                                                onFocus={e => {
-                                                                    e.currentTarget.style.borderColor = 'var(--color-primary)';
-                                                                    e.currentTarget.style.boxShadow = '0 0 0 2px var(--color-primary-lightest)';
-                                                                }}
-                                                                onBlur={e => {
-                                                                    e.currentTarget.style.borderColor = 'var(--color-border-secondary)';
-                                                                    e.currentTarget.style.boxShadow = 'none';
-                                                                }}
-                                                            >
-                                                                {PAST_MONTHS.map(m => (
-                                                                    <option key={m.value} value={m.value}>{m.label}</option>
-                                                                ))}
-                                                            </select>
-                                                            <div className="pointer-events-none absolute inset-y-0 right-2 flex items-center">
-                                                                <ChevronDown size={10} style={{ color: 'var(--color-primary)' }} />
-                                                            </div>
+                                                                options={PAST_MONTHS}
+                                                                searchable={false}
+                                                                usePortal={true}
+                                                            />
                                                         </div>
 
                                                         {/* View Button */}
@@ -488,20 +472,7 @@ const Navbar = ({ isCollapsed, setIsCollapsed }) => {
                                 )}
                             </div>
 
-                            {/* Footer */}
-                            {searchResults.length > 0 && (
-                                <div
-                                    className="flex items-center justify-center px-4 py-2 border-t"
-                                    style={{
-                                        borderColor: 'var(--color-border-secondary)',
-                                        background: 'var(--color-bg-primary)',
-                                    }}
-                                >
-                                    <span className="text-[10px]" style={{ color: 'var(--color-text-secondary)' }}>
-                                        Click employee to open profile &nbsp;·&nbsp; Select month &amp; click <strong style={{ color: 'var(--color-primary)' }}>View</strong> for salary details
-                                    </span>
-                                </div>
-                            )}
+
                         </div>
                     )}
                 </div>
@@ -534,67 +505,85 @@ const Navbar = ({ isCollapsed, setIsCollapsed }) => {
 
                         {/* Dropdown Menu */}
                         {isDropdownOpen && (
-                            <div className="absolute right-0 top-14 rounded-2xl shadow-2xl w-[280px] overflow-hidden z-50"
-                                style={{ border: '1px solid var(--color-border-secondary)', background: 'var(--color-bg-secondary)' }}>
-
+                            <div className="absolute right-0 top-14 rounded-2xl shadow-2xl w-[320px] overflow-hidden z-50 bg-white border border-[var(--color-border-secondary)]">
                                 {/* Modern Compact Profile Header */}
-                                <div className="p-4 border-b border-[var(--color-border-secondary)] bg-[var(--color-bg-secondary)] rounded-t-2xl">
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 rounded-full flex items-center justify-center text-[var(--color-primary-dark)] font-bold text-sm bg-[var(--color-primary-lightest)] flex-shrink-0 shadow-sm border border-[var(--color-primary-lighter)]">
+                                <div className="p-5 border-b border-[var(--color-border-secondary)] bg-white">
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-14 h-14 rounded-full flex items-center justify-center text-[var(--color-primary-dark)] font-bold text-xl bg-[var(--color-primary-lightest)] flex-shrink-0 shadow-sm border border-[var(--color-primary-lighter)]">
                                             {getUserInitials(user?.full_name)}
                                         </div>
-                                        <div className="flex-1 min-w-0">
-                                            <div className="flex justify-between items-start mb-0.5">
-                                                <p className="font-bold text-[var(--color-text-primary)] text-[13px] truncate pr-2">
-                                                    {user?.full_name || user?.name || user?.username || 'User'}
-                                                </p>
-                                                {user?.subscriptions_days && (
-                                                    <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-bold bg-green-100 text-green-700 border border-green-200 uppercase tracking-wider flex-shrink-0 mt-0.5">
-                                                        <span className="w-1 h-1 rounded-full bg-green-500" />
-                                                        {user.subscriptions_days} days
-                                                    </span>
-                                                )}
-                                            </div>
-                                            <p className="text-[11px] text-[var(--color-text-secondary)] truncate">
+                                        <div className="flex-1 min-w-0 flex flex-col items-start text-left">
+                                            <p className="font-bold text-[var(--color-text-primary)] text-[15px] truncate w-full">
+                                                {user?.full_name || user?.name || user?.username || 'User'}
+                                            </p>
+                                            <p className="text-[13px] text-[var(--color-text-secondary)] truncate mb-2 mt-0.5 w-full">
                                                 {user?.email || user?.username || user?.number || '--'}
                                             </p>
+                                            {user?.subscriptions_days && (
+                                                <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-bold bg-green-100 text-green-700 uppercase tracking-wider w-fit">
+                                                    <span className="w-1.5 h-1.5 rounded-full bg-green-500" />
+                                                    Active • {user.subscriptions_days} days
+                                                </span>
+                                            )}
                                         </div>
                                     </div>
                                 </div>
 
                                 {/* Menu Items */}
-                                <div className="p-2 flex flex-col gap-1">
+                                <div className="p-3 flex flex-col gap-1.5">
                                     {/* Profile */}
                                     <Link
                                         to="/profile"
                                         onClick={() => setIsDropdownOpen(false)}
-                                        className="flex items-center gap-3 w-full px-4 py-2.5 rounded-xl transition-all duration-200 hover:bg-[var(--color-bg-primary)]"
+                                        className="flex items-center justify-between w-full p-2 rounded-xl transition-all duration-200 hover:bg-[var(--color-bg-primary)] group"
                                     >
-                                        <User size={18} style={{ color: 'var(--color-primary-dark)' }} />
-                                        <span className="text-sm font-medium" style={{ color: 'var(--color-text-primary)' }}>Profile</span>
+                                        <div className="flex items-center gap-3">
+                                            <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-purple-50 text-[var(--color-primary-dark)] group-hover:bg-[var(--color-primary-lightest)] transition-colors">
+                                                <User size={18} strokeWidth={2} />
+                                            </div>
+                                            <div className="flex flex-col text-left">
+                                                <span className="text-sm font-semibold text-[var(--color-text-primary)]">Profile</span>
+                                                <span className="text-[12px] text-[var(--color-text-secondary)] mt-0.5">View and manage your profile</span>
+                                            </div>
+                                        </div>
+                                        <ChevronRight size={16} className="text-gray-400 group-hover:text-gray-600" />
                                     </Link>
 
                                     {/* Settings */}
-                                    <Link
-                                        to="/settings"
-                                        onClick={() => setIsDropdownOpen(false)}
-                                        className="flex items-center gap-3 w-full px-4 py-2.5 rounded-xl transition-all duration-200 hover:bg-[var(--color-bg-primary)]"
-                                    >
-                                        <Settings size={18} style={{ color: 'var(--color-primary-dark)' }} />
-                                        <span className="text-sm font-medium" style={{ color: 'var(--color-text-primary)' }}>Settings</span>
-                                    </Link>
+                                    {(permissions?.configuration_view || permissions?.configuration_edit || permissions?.software_setting_view) && (
+                                        <Link
+                                            to="/settings"
+                                            onClick={() => setIsDropdownOpen(false)}
+                                            className="flex items-center justify-between w-full p-2 rounded-xl transition-all duration-200 hover:bg-[var(--color-bg-primary)] group"
+                                        >
+                                            <div className="flex items-center gap-3">
+                                                <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-indigo-50 text-[var(--color-primary-dark)] group-hover:bg-indigo-100 transition-colors">
+                                                    <Settings size={18} strokeWidth={2} />
+                                                </div>
+                                                <div className="flex flex-col text-left">
+                                                    <span className="text-sm font-semibold text-[var(--color-text-primary)]">Settings</span>
+                                                    <span className="text-[12px] text-[var(--color-text-secondary)] mt-0.5">Manage your account preferences</span>
+                                                </div>
+                                            </div>
+                                            <ChevronRight size={16} className="text-gray-400 group-hover:text-gray-600" />
+                                        </Link>
+                                    )}
 
                                     {/* Divider */}
-                                    <div className="my-1 mx-2 h-px" style={{ background: 'var(--color-border-secondary)' }} />
+                                    <div className="my-1.5 mx-2 h-px bg-[var(--color-border-secondary)]" />
 
                                     {/* Logout */}
                                     <button
                                         onClick={handleLogoutClick}
-                                        className="flex items-center gap-3 w-full px-4 py-2.5 rounded-xl transition-all duration-200 hover:opacity-80 mt-1"
-                                        style={{ background: '#FEF2F2' }}
+                                        className="flex items-center gap-3 w-full p-3 rounded-xl transition-all duration-200 hover:opacity-90 mt-1 bg-red-50 group border border-transparent hover:border-red-100"
                                     >
-                                        <LogOut size={18} className="text-red-500" />
-                                        <span className="text-sm font-medium text-red-600">Logout</span>
+                                        <div className="flex items-center justify-center w-10 h-10 rounded-xl text-red-500 bg-red-50 group-hover:bg-red-100 transition-colors">
+                                            <LogOut size={20} strokeWidth={2.5} className="ml-1" />
+                                        </div>
+                                        <div className="flex flex-col items-start text-left">
+                                            <span className="text-sm font-semibold text-red-600">Logout</span>
+                                            <span className="text-[12px] text-red-400 mt-0.5">Sign out from your account</span>
+                                        </div>
                                     </button>
                                 </div>
                             </div>

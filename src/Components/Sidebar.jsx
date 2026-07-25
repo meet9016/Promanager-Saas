@@ -26,7 +26,7 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
 
     const menuItems = [
         { id: 'dashboard', label: 'Dashboard', icon: Home, path: '/dashboard' },
-        {
+        (permissions?.daily_attendance || permissions?.monthly_attendance) && {
             id: 'attendance', label: 'Attendance', icon: Calendar, hasSubmenu: true, path: '/attendance/daily',
             submenu: [
                 permissions?.daily_attendance && { label: 'Daily Attendance', path: '/attendance/daily' },
@@ -38,7 +38,8 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
             permissions?.branch_view || permissions?.branch_create || permissions?.branch_edit || permissions?.branch_delete ||
             permissions?.designation_view || permissions?.designation_create || permissions?.designation_edit || permissions?.designation_delete ||
             permissions?.deduction_view || permissions?.deduction_create || permissions?.deduction_edit || permissions?.deduction_delete ||
-            permissions?.allowance_view || permissions?.allowance_create || permissions?.allowance_edit || permissions?.allowance_delete) && {
+            permissions?.allowance_view || permissions?.allowance_create || permissions?.allowance_edit || permissions?.allowance_delete ||
+            permissions?.company_view || permissions?.increments_view || permissions?.paid_leave_view) && {
             id: 'employees', label: 'Employees', icon: Users, hasSubmenu: true, path: '/employee',
             submenu: [
                 permissions?.employee_view && { label: 'Employee List', path: '/employee' },
@@ -49,8 +50,8 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
                 permissions?.deduction_view && { label: 'Deductions', path: '/deductions' },
                 permissions?.allowance_view && { label: 'Allowances', path: '/allowances' },
                 permissions?.company_view && { label: 'Companies', path: '/companies' },
-                permissions?.company_view && { label: 'Increment', path: '/increment' },
-                permissions?.company_view && { label: 'Paid Leave', path: '/paid-leave' },
+                permissions?.increments_view && { label: 'Increment', path: '/increment' },
+                permissions?.paid_leave_view && { label: 'Paid Leave', path: '/paid-leave' },
             ].filter(Boolean)
         },
         (permissions?.shift_view || permissions?.shift_create || permissions?.shift_edit || permissions?.shift_delete || permissions?.shift_assign || permissions?.shift_reallocation_view) && {
@@ -112,8 +113,8 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
                 permissions?.user_roles_view && { label: 'Roles', path: '/role' },
             ].filter(Boolean)
         },
-        { id: 'subscription', label: 'Subscription', icon: CreditCard, hasSubmenu: false, path: '/subscription' },
-        { id: 'settings', label: 'Settings', icon: SettingsIcon, hasSubmenu: false, path: '/settings' },
+        (permissions?.subscription_view || permissions?.subscription_create || permissions?.subscription_edit || permissions?.subscription_delete) && { id: 'subscription', label: 'Subscription', icon: CreditCard, hasSubmenu: false, path: '/subscription' },
+        (permissions?.configuration_view || permissions?.configuration_edit || permissions?.software_setting_view) && { id: 'settings', label: 'Settings', icon: SettingsIcon, hasSubmenu: false, path: '/settings' },
     ].filter(Boolean);
 
     const getActiveItemId = () => {

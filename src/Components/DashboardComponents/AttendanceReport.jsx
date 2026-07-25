@@ -10,6 +10,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { useDashboardData } from '../../context/DashboardContext';
 import { StatusBadge } from '../../Components/Report/ReportComponents';
 import { useAuth } from '../../context/AuthContext';
+import { useSelector } from 'react-redux';
 import api from '../../api/axiosInstance';
 import { Toast } from '../ui/Toast';
 import CustomSelect from '../comman/CustomSelect';
@@ -51,6 +52,7 @@ const AttendanceReport = ({ salaryTrendComponent, payrollSummaryComponent }) => 
     });
 
     const { user } = useAuth();
+    const permissions = useSelector(state => state.permissions) || {};
 
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(5);
@@ -472,6 +474,7 @@ const AttendanceReport = ({ salaryTrendComponent, payrollSummaryComponent }) => 
                 {/* Main Content */}
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:items-stretch mb-8">
                     {/* Chart Section */}
+                    {permissions?.daily_attendance && (
                     <div className="lg:col-span-1 rounded-2xl shadow-lg overflow-hidden border border-[var(--color-border-secondary)]">
                         <div className="bg-[var(--color-bg-secondary)] rounded-lg shadow-sm p-8 h-full flex flex-col">
                             <div className="flex items-center justify-between mb-6">
@@ -525,9 +528,10 @@ const AttendanceReport = ({ salaryTrendComponent, payrollSummaryComponent }) => 
                             )}
                         </div>
                     </div>
+                    )}
 
                     {/* Salary Trend Section */}
-                    <div className="lg:col-span-2">
+                    <div className={`lg:col-span-${permissions?.daily_attendance ? '2' : '3'}`}>
                         {salaryTrendComponent && (
                             <div className="h-full">
                                 {salaryTrendComponent}
@@ -544,6 +548,7 @@ const AttendanceReport = ({ salaryTrendComponent, payrollSummaryComponent }) => 
                 )}
 
                 {/* Table Section */}
+                {permissions?.daily_attendance && (
                 <div className="w-full">
                     <div className="bg-[var(--color-bg-secondary)] rounded-lg shadow-sm overflow-hidden h-full flex flex-col border border-[var(--color-primary-dark)]">
                         {/* Table Header */}
@@ -764,6 +769,7 @@ const AttendanceReport = ({ salaryTrendComponent, payrollSummaryComponent }) => 
                         />
                     </div>
                 </div>
+                )}
                 {toast && (
                     <Toast
                         message={toast.message}

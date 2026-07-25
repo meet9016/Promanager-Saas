@@ -5,7 +5,11 @@ import SalaryTrend from './DashboardComponents/SalaryTrend';
 import { DashboardProvider } from '../context/DashboardContext';
 import { useAuth } from '../context/AuthContext';
 
+import { useSelector } from 'react-redux';
+
 const DashboardContent = () => {
+  const permissions = useSelector(state => state.permissions) || {};
+
   return (
     <div className="h-[calc(100vh-64px)] p-6 lg:p-8 bg-[var(--color-bg-primary)] flex flex-col">
       <div className="max-w-[1600px] w-full mx-auto flex-1 flex flex-col min-h-0">

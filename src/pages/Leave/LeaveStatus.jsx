@@ -786,7 +786,13 @@ const LeaveManagement = () => {
                     {/* Status Tabs */}
                     <div className="px-6 py-2 border-b border-[var(--color-border-primary)] bg-white shrink-0">
                         <div className="flex space-x-2">
-                            {Object.entries(STATUS_CONFIG).map(([statusValue, config]) => {
+                            {Object.entries(STATUS_CONFIG).filter(([statusValue]) => {
+                                if (statusValue === '1') return true;
+                                if (statusValue === '2') return permissions['leave_approved'];
+                                if (statusValue === '3') return permissions['leave_rejected'];
+                                if (statusValue === '4') return permissions['leave_cancelled'];
+                                return true;
+                            }).map(([statusValue, config]) => {
                                 const IconComponent = config.icon;
                                 return (
                                     <button
@@ -1325,7 +1331,7 @@ const LeaveManagement = () => {
                                         )}
                                     </>
                                 )}
-                                {viewModal.leaveData.status === '2' && viewModal.leaveData.can_cancel_btn === true && (
+                                {permissions['leave_cancelled'] && viewModal.leaveData.status === '2' && viewModal.leaveData.can_cancel_btn === true && (
                                     <button
                                         onClick={() => {
                                             setViewModal({ isOpen: false, leaveData: null });

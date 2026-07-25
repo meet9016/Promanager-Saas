@@ -1790,19 +1790,23 @@ export default function Employee() {
                                                 Mobile
                                             </Th>
 
-                                            <Th
-                                                className="w-[15%] text-center"
-                                                onClick={() => requestSort(COLUMN_KEYS.ATTENDANCE_TYPE)}
-                                            >
-                                                <div className="flex items-center justify-center w-full">
-                                                    Attendance Permission
-                                                    {renderSortIcon(COLUMN_KEYS.ATTENDANCE_TYPE)}
-                                                </div>
-                                            </Th>
+                                            {permissions['attendance_type_change'] && (
+                                                <>
+                                                    <Th
+                                                        className="w-[15%] text-center"
+                                                        onClick={() => requestSort(COLUMN_KEYS.ATTENDANCE_TYPE)}
+                                                    >
+                                                        <div className="flex items-center justify-center w-full">
+                                                            Attendance Permission
+                                                            {renderSortIcon(COLUMN_KEYS.ATTENDANCE_TYPE)}
+                                                        </div>
+                                                    </Th>
 
-                                            <Th className="w-[15%] text-center">
-                                                Location Permission
-                                            </Th>
+                                                    <Th className="w-[15%] text-center">
+                                                        Location Permission
+                                                    </Th>
+                                                </>
+                                            )}
 
                                             {(permissions?.employee_edit || permissions?.employee_view) && (
                                                 <Th className="w-[5%] text-center">
@@ -1905,15 +1909,18 @@ export default function Employee() {
                                                         </div>
                                                     </Td>
 
-                                                    {/* Attendance */}
-                                                    <Td className="text-center">
-                                                        {renderAttendanceTypeDisplay(employee)}
-                                                    </Td>
+                                                    {/* Attendance & Location */}
+                                                    {permissions['attendance_type_change'] && (
+                                                        <>
+                                                            <Td className="text-center">
+                                                                {renderAttendanceTypeDisplay(employee)}
+                                                            </Td>
 
-                                                    {/* Location */}
-                                                    <Td className="text-center">
-                                                        {renderLocationPermissionDisplay(employee)}
-                                                    </Td>
+                                                            <Td className="text-center">
+                                                                {renderLocationPermissionDisplay(employee)}
+                                                            </Td>
+                                                        </>
+                                                    )}
 
                                                     {/* Actions */}
                                                     {(permissions?.employee_edit || permissions?.employee_view) && (

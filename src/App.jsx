@@ -587,7 +587,7 @@ const App = () => {
                   isMobileOrTablet ? (
                     <Navigate to="/increment" replace />
                   ) : (
-                    <PermissionRoute permission="employee_create">
+                    <PermissionRoute permission="increments_view">
                       <IncrementPage />
                     </PermissionRoute>
                   )
