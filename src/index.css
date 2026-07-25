@@ -349,11 +349,10 @@ body.dark-theme *:not([class*="bg-"]):not([style*="background"]) {
 }
 
 .month-picker-input {
-    width: 100%;
-    padding: 0.5rem 0.75rem;
-    background-color: var(--color-bg-primary);
-    border: 1px solid var(--color-border-secondary);
-    border-radius: 0.5rem;
+    width: 6rem;
+    padding: 0;
+    background-color: transparent;
+    border: none;
     color: var(--color-text-primary);
     font-size: 0.875rem;
 }

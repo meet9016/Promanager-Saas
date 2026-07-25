@@ -37,16 +37,18 @@ const PayrollSummary = () => {
 
             <div className="flex flex-col sm:flex-row gap-4">
               {/* Month Selector */}
-              <div className="flex items-center space-x-2 z-50">
-                <Calendar className="w-5 h-5 text-gray-700" />
+              <div className="flex items-center gap-2 bg-[var(--color-bg-primary)] border border-[var(--color-border-secondary)] rounded-lg px-3 py-2">
+                <Calendar className="w-4 h-4 text-[var(--color-primary)] flex-shrink-0" />
                 <DatePicker
                   selected={selectedMonth}
                   onChange={handleMonthChange}
                   dateFormat="MM-yyyy"
                   showMonthYearPicker
-                  className="month-picker-input"
+                  className="month-picker-input border-0 bg-transparent p-0 text-sm font-medium text-[var(--color-text-primary)] w-24 focus:outline-none"
                   placeholderText="MM-YYYY"
                   maxDate={new Date()}
+                  popperProps={{ strategy: 'fixed' }}
+                  popperPlacement="bottom-start"
                 />
               </div>
 
