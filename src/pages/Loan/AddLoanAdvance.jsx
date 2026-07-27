@@ -485,7 +485,7 @@ const AddLoanAdvance = ({
                                 <div className="lg:col-span-2">
                                     <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
                                         <Users className="w-4 h-4 inline mr-2" />
-                                        Select Employee
+                                        Select Employee <span className="text-[var(--color-error)]">*</span>
                                     </label>
                                     <div className="relative overflow-visible ">
                                         {/* <input
@@ -696,7 +696,7 @@ const AddLoanAdvance = ({
                                                 name="interestRate"
                                                 value={formData.interestRate}
                                                 onChange={handleInputChange}
-                                                className={`w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-all duration-200 shadow-sm bg-[var(--color-bg-secondary)] ${errors.interestRate ? 'border-red-500' : ''}`}
+                                                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 transition-all duration-200 shadow-sm bg-[var(--color-bg-secondary)] ${errors.interestRate ? '!border-red-500 focus:ring-red-500 focus:!border-red-500' : 'border-slate-300 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)]'}`}
                                                 min="0"
                                                 step="0.01"
                                                 placeholder="Enter annual interest rate (e.g., 12)"
@@ -715,7 +715,7 @@ const AddLoanAdvance = ({
                                                 name="tenure"
                                                 value={formData.tenure}
                                                 onChange={handleInputChange}
-                                                className={`w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-all duration-200 shadow-sm bg-[var(--color-bg-secondary)] ${errors.tenure ? 'border-red-500' : ''}`}
+                                                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 transition-all duration-200 shadow-sm bg-[var(--color-bg-secondary)] ${errors.tenure ? '!border-red-500 focus:ring-red-500 focus:!border-red-500' : 'border-slate-300 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)]'}`}
                                                 min="1"
                                                 placeholder="Enter tenure"
                                             />
@@ -895,7 +895,7 @@ const AddLoanAdvance = ({
                                     value={formData.reason}
                                     onChange={handleInputChange}
                                     rows={4}
-                                    className={`w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-all duration-200 shadow-sm bg-[var(--color-bg-secondary)] resize-none ${errors.reason ? 'border-red-500' : ''}`}
+                                    className={`w-full px-4 py-3 border rounded-xl focus:ring-2 transition-all duration-200 shadow-sm bg-[var(--color-bg-secondary)] resize-none ${errors.reason ? '!border-red-500 focus:ring-red-500 focus:!border-red-500' : 'border-slate-300 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)]'}`}
                                     placeholder="Explain the reason for this loan/advance request..."
                                 />
                                 {errors.reason && (

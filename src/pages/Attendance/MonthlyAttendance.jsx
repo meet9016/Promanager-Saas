@@ -494,7 +494,25 @@ const MonthlyAttendance = () => {
                         </div>
 
                         {/* Right: filter btn */}
-                        <div className="flex items-center gap-3">
+                        <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto mt-4 sm:mt-0">
+                            {/* Search */}
+                            <div className="relative flex-shrink-0 w-full sm:w-auto">
+                                <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                                <input
+                                    type="text"
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    placeholder="Search employee or code..."
+                                    className="pl-8 pr-8 py-2 text-xs rounded-xl border border-slate-200 bg-white text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-400 focus:border-transparent w-full sm:w-60 transition-all"
+                                />
+                                {searchQuery && (
+                                    <button onClick={() => setSearchQuery('')}
+                                        className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                                        <X size={13} />
+                                    </button>
+                                )}
+                            </div>
+
                             <button
                                 ref={filterBtnRef}
                                 onClick={() => setShowFilters(!showFilters)}
@@ -825,24 +843,6 @@ const MonthlyAttendance = () => {
 
                     {/* Search + Legend toolbar */}
                     <div className="flex flex-col sm:flex-row sm:items-center gap-3 px-4 sm:px-5 py-3 border-b border-slate-100 flex-shrink-0">
-                        {/* Search */}
-                        <div className="relative flex-shrink-0">
-                            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
-                            <input
-                                type="text"
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                placeholder="Search employee or code..."
-                                className="pl-8 pr-8 py-2 text-xs rounded-xl border border-slate-200 bg-slate-50 text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-400 focus:border-transparent w-52 transition-all"
-                            />
-                            {searchQuery && (
-                                <button onClick={() => setSearchQuery('')}
-                                    className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
-                                    <X size={13} />
-                                </button>
-                            )}
-                        </div>
-
                         {/* Legend */}
                         <div className="flex flex-wrap items-center gap-1.5 sm:ml-auto">
                             {[...TOTALS_ORDER, 'L'].map(c => (

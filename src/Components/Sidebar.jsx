@@ -113,7 +113,7 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
                 permissions?.user_roles_view && { label: 'Roles', path: '/role' },
             ].filter(Boolean)
         },
-        (permissions?.subscription_view || permissions?.subscription_create || permissions?.subscription_edit || permissions?.subscription_delete) && { id: 'subscription', label: 'Subscription', icon: CreditCard, hasSubmenu: false, path: '/subscription' },
+        (permissions?.subscription || permissions?.subscription_view || permissions?.subscription_create || permissions?.subscription_edit || permissions?.subscription_delete) && { id: 'subscription', label: 'Subscription', icon: CreditCard, hasSubmenu: false, path: '/subscription' },
         (permissions?.configuration_view || permissions?.configuration_edit || permissions?.software_setting_view) && { id: 'settings', label: 'Settings', icon: SettingsIcon, hasSubmenu: false, path: '/settings' },
     ].filter(Boolean);
 

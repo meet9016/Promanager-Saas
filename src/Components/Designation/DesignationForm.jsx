@@ -72,6 +72,7 @@ const DesignationForm = ({ onSubmit, loading = false, showToast }) => {
                                 placeholder="Enter designation name"
                                 required
                                 clearable={true}
+                                maxLength={50}
                             />
                         </div>
                     </div>

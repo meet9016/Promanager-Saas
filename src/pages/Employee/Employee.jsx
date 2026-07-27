@@ -875,7 +875,7 @@ export default function Employee() {
 
             <div className="p-8 mx-auto ">
 
-                <div className="bg-[var(--color-bg-secondary)] rounded-lg border border-[var(--color-primary-dark)] overflow-hidden shadow-sm min-h-[87vh]">
+                <div className="bg-[var(--color-bg-secondary)] rounded-lg border border-[var(--color-primary-dark)] overflow-hidden shadow-sm min-h-[87vh] flex flex-col">
                     {/* Header section */}
                     <div className="px-6 py-4 border-b border-[var(--color-primary-light)] bg-[var(--color-primary-lighter)] ">
                         <div className="flex justify-between items-center flex-wrap gap-3">
@@ -1960,7 +1960,7 @@ export default function Employee() {
                             </div>
 
                             {/* Pagination and Rows per page */}
-                            <div className="flex flex-col sm:flex-row items-center justify-between px-6 py-4 border-t border-[var(--color-border-primary)] bg-[var(--color-bg-gray)] gap-4">
+                            <div className="mt-auto flex flex-col sm:flex-row items-center justify-between px-6 py-4 border-t border-[var(--color-border-primary)] bg-[var(--color-bg-gray)] gap-4">
                                 <div className="flex items-center gap-2">
                                     <span className="text-sm font-medium text-[var(--color-text-secondary)]">
                                         Rows per page:

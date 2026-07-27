@@ -8,6 +8,7 @@ import { useSelector } from 'react-redux';
 import LoadingSpinner from '../../Components/Loader/LoadingSpinner';
 import CustomInput from '../../Components/comman/CustomInput';
 import CustomSelect from '../../Components/comman/CustomSelect';
+import CustomCheckbox from '../../Components/comman/CustomCheckbox';
 
 // Enhanced Copy Dropdown Component
 const CopyDropdown = ({ dayList, onCopy, sourceDay }) => {
@@ -906,7 +907,7 @@ const CreateShift = () => {
                                                     <div className="flex items-center gap-4">
                                                         <div
                                                             className={`px-6 py-3 rounded-lg flex items-center justify-center font-semibold text-white shadow-md transition-all duration-200 hover:shadow-lg ${day.day_name.toLowerCase() === 'sunday'
-                                                                ? 'bg-gradient-to-r from-[var(--color-error)] to-[var(--color-error-dark)] hover:from-[var(--color-error-dark)] hover:to-[var(--color-error-darker)]'
+                                                                ? 'bg-gradient-to-r from-[var(--color-error)] to-[var(--color-error-dark)]'
                                                                 : 'bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-primary-dark)] hover:from-[var(--color-primary-dark)] hover:to-[var(--color-primary-darker)]'
                                                                 }`}
                                                         >
@@ -1036,27 +1037,23 @@ const CreateShift = () => {
                                                                     {occasionalDayList.map(occasionalDay => {
                                                                         const isSelected = selectedOccasionalDays.includes(occasionalDay.occasional_day_id);
                                                                         return (
-                                                                            <label
+                                                                            <CustomCheckbox
                                                                                 key={occasionalDay.occasional_day_id}
-                                                                                className={`flex items-center px-3 py-2.5 rounded-lg cursor-pointer transition-all duration-200 text-sm ${isSelected
+                                                                                checked={isSelected}
+                                                                                onChange={(e) => handleOccasionalDayChange(
+                                                                                    day.day_id,
+                                                                                    occasionalDay.occasional_day_id,
+                                                                                    e.target.checked
+                                                                                )}
+                                                                                className={`px-3 py-2.5 rounded-lg transition-all duration-200 text-sm ${isSelected
                                                                                     ? 'bg-[var(--color-primary-lighter)] border-2 border-primary-300 text-[var(--color-primary-darkest)] shadow-sm'
                                                                                     : 'bg-[var(--color-bg-secondary)] border-2 border-slate-200 hover:border-slate-300 hover:bg-slate-50'
                                                                                     }`}
                                                                             >
-                                                                                <input
-                                                                                    type="checkbox"
-                                                                                    checked={isSelected}
-                                                                                    onChange={(e) => handleOccasionalDayChange(
-                                                                                        day.day_id,
-                                                                                        occasionalDay.occasional_day_id,
-                                                                                        e.target.checked
-                                                                                    )}
-                                                                                    className="w-4 h-4 text-[var(--color-primary-dark)] border-slate-300 rounded focus:ring-[var(--color-primary)] focus:ring-2 mr-2"
-                                                                                />
                                                                                 <span className="font-medium truncate">
                                                                                     {occasionalDay.occasional_day_name}
                                                                                 </span>
-                                                                            </label>
+                                                                            </CustomCheckbox>
                                                                         );
                                                                     })}
                                                                 </div>

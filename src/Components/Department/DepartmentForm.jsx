@@ -211,7 +211,7 @@ const DepartmentForm = ({ onSubmit, loading = false, showToast }) => {
                             {/* Overtime Card */}
                             <SectionCard icon={Clock} label="Overtime" accentColor="amber">
                                 <FieldRow label="OT Formula">
-                                    <div className="w-36">
+                                    <div className="w-80">
                                         <CustomSelect
                                             value={f.ot_formula}
                                             onChange={(e) => handleOTChange(e.target.value)}

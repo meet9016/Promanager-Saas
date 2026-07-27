@@ -432,7 +432,7 @@ const AssignShift = () => {
                                                         <RefreshCw className="h-4 w-4" /> Reset
                                                     </button>
                                                 </div> */}
-                                                
+
                                                 <div className="flex flex-col sm:flex-row justify-end gap-2 p-4 border-t border-[var(--color-border-secondary)] rounded-b-2xl">
                                                     <button
                                                         onClick={() => setFilterDropdown(false)}
@@ -688,7 +688,7 @@ const AssignShift = () => {
                                     type="button"
                                     onClick={handleBack}
                                     disabled={submitting}
-                                    className="px-6 py-2.5 border border-[var(--color-border-secondary)] text-[var(--color-text-secondary)] rounded-lg hover:bg-[var(--color-bg-primary)] transition-colors font-medium"
+                                    className="px-4 py-2 text-sm border border-[var(--color-border-secondary)] text-[var(--color-text-secondary)] rounded-lg hover:bg-[var(--color-bg-primary)] transition-colors font-medium"
                                 >
                                     Cancel
                                 </button>
@@ -696,7 +696,7 @@ const AssignShift = () => {
                                 <button
                                     onClick={handleSubmit}
                                     disabled={submitting || !selectedEmployees.length || !selectedShift}
-                                    className="px-6 py-2.5 bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] text-[var(--color-text-white)] rounded-xl hover:from-[var(--color-primary-darker)] hover:to-[var(--color-primary-darkest)] focus:ring-2 focus:ring-[var(--color-primary)] focus:outline-none transition-all duration-200 font-medium shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+                                    className="px-4 py-2 text-sm bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] text-[var(--color-text-white)] rounded-md hover:from-[var(--color-primary-darker)] hover:to-[var(--color-primary-darkest)] focus:ring-2 focus:ring-[var(--color-primary)] focus:outline-none transition-all duration-200 font-medium shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                     <div className="flex items-center gap-2">
                                         {submitting ? (

@@ -34,6 +34,7 @@ import { ConfirmDialog } from '../../Components/comman/ConfirmDialog';
 import LoadingSpinner from '../../Components/Loader/LoadingSpinner';
 import CustomSelect from '../../Components/comman/CustomSelect';
 import CustomInput from '../../Components/comman/CustomInput';
+import CustomCheckbox from '../../Components/comman/CustomCheckbox';
 import NoDataFound from '../../Components/comman/NoDataFound';
 
 // ---------------------------------------------------------------------------
@@ -678,7 +679,7 @@ const EmployeePayrollBlock = ({ empData, permissions, onDataChange, onUnsavedCha
             {payrollData.employee_allowance_arr.map(a => (
               <div key={a.employee_allowance_id} className="flex items-center justify-between p-2 border rounded text-sm">
                 <div className="flex items-center gap-2">
-                  <input type="checkbox" checked={!!selectedAllowances[a.employee_allowance_id]} onChange={() => { setSelectedAllowances(p => ({ ...p, [a.employee_allowance_id]: !p[a.employee_allowance_id] })); markEdited(); }} className="w-3.5 h-3.5" />
+                  <CustomCheckbox checked={!!selectedAllowances[a.employee_allowance_id]} onChange={() => { setSelectedAllowances(p => ({ ...p, [a.employee_allowance_id]: !p[a.employee_allowance_id] })); markEdited(); }} />
                   <div>
                     <div className="font-medium">{a.allowance_name}</div>
                     {/* <div className="text-xs text-[var(--color-text-secondary)]">Type {a.allowance_type}</div> */}
@@ -866,7 +867,7 @@ const EmployeePayrollBlock = ({ empData, permissions, onDataChange, onUnsavedCha
             {payrollData.employee_deduction_arr.map(d => (
               <div key={d.employee_deduction_id} className="flex items-center justify-between p-2 border rounded text-sm">
                 <div className="flex items-center gap-2">
-                  <input type="checkbox" checked={!!selectedDeductions[d.employee_deduction_id]} onChange={() => { setSelectedDeductions(p => ({ ...p, [d.employee_deduction_id]: !p[d.employee_deduction_id] })); markEdited(); }} className="w-3.5 h-3.5" />
+                  <CustomCheckbox checked={!!selectedDeductions[d.employee_deduction_id]} onChange={() => { setSelectedDeductions(p => ({ ...p, [d.employee_deduction_id]: !p[d.employee_deduction_id] })); markEdited(); }} />
                   <div>
                     <div className="font-medium">{d.deduction_name}</div>
                     {/* <div className="text-xs text-[var(--color-text-secondary)]">Type {d.deduction_type}</div> */}
@@ -1034,7 +1035,7 @@ const EmployeePayrollBlock = ({ empData, permissions, onDataChange, onUnsavedCha
                 <div key={g.holiday_id} className="p-3 border rounded">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <input type="checkbox" checked={included} onChange={() => { setSelectedHolidays(p => ({ ...p, [g.holiday_id]: !p[g.holiday_id] })); markEdited(); }} className="w-3.5 h-3.5" />
+                      <CustomCheckbox checked={included} onChange={() => { setSelectedHolidays(p => ({ ...p, [g.holiday_id]: !p[g.holiday_id] })); markEdited(); }} />
                       <div>
                         <div className="text-sm font-medium">{g.holiday_name} <span className="text-xs text-[var(--color-text-secondary)]">({g.dates.length} days)</span></div>
                       </div>
@@ -1093,7 +1094,7 @@ const EmployeePayrollBlock = ({ empData, permissions, onDataChange, onUnsavedCha
                 {payrollData.employee_loan_arr.map(loan => (
                   <div key={loan.loan_items_id} className="flex items-center justify-between p-2 border rounded text-xs">
                     <div className="flex items-center gap-2">
-                      <input type="checkbox" checked={!!selectedLoans[loan.loan_items_id]} onChange={() => { setSelectedLoans(p => ({ ...p, [loan.loan_items_id]: !p[loan.loan_items_id] })); markEdited(); }} className="w-3.5 h-3.5" />
+                      <CustomCheckbox checked={!!selectedLoans[loan.loan_items_id]} onChange={() => { setSelectedLoans(p => ({ ...p, [loan.loan_items_id]: !p[loan.loan_items_id] })); markEdited(); }} />
                       <div>
                         <div className="font-medium">Loan Installment</div>
                         <div className="text-[var(--color-text-secondary)]">Amount: ₹{parseFloat(loan.loan_amount || 0).toLocaleString()} | {loan.interest_rate}% | {loan.tenure}m</div>
@@ -1117,7 +1118,7 @@ const EmployeePayrollBlock = ({ empData, permissions, onDataChange, onUnsavedCha
                 {payrollData.employee_advance_arr.map(adv => (
                   <div key={adv.advance_id} className="flex items-center justify-between p-2 border rounded text-xs">
                     <div className="flex items-center gap-2">
-                      <input type="checkbox" checked={!!selectedAdvances[adv.advance_id]} onChange={() => { setSelectedAdvances(p => ({ ...p, [adv.advance_id]: !p[adv.advance_id] })); markEdited(); }} className="w-3.5 h-3.5" />
+                      <CustomCheckbox checked={!!selectedAdvances[adv.advance_id]} onChange={() => { setSelectedAdvances(p => ({ ...p, [adv.advance_id]: !p[adv.advance_id] })); markEdited(); }} />
                       <div>
                         <div className="font-medium">Advance Payment</div>
                         <div className="text-[var(--color-text-secondary)]">Max: ₹{parseFloat(adv.advance_amount || 0).toLocaleString()} | {new Date(adv.advance_disbursement_date).toLocaleDateString('en-GB')}</div>

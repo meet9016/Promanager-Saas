@@ -1563,13 +1563,13 @@ const LeaveManagement = () => {
                                                     resetLeaveForm();
                                                     handleCloseAddLeave();
                                                 }}
-                                                className="px-5 py-2.5 text-sm font-medium bg-transparent text-[var(--color-primary)] border-2 hover:bg-[var(--color-primary-lightest)] border-[var(--color-primary)] rounded-xl transition-colors"
+                                                className="px-4 py-2 text-sm font-medium bg-transparent text-[var(--color-primary)] border-2 hover:bg-[var(--color-primary-lightest)] border-[var(--color-primary)] rounded-lg transition-colors"
                                             >
                                                 Cancel
                                             </button>
                                             <button
                                                 type="submit"
-                                                className="px-6 py-2.5 min-w-[150px] flex justify-center text-sm font-medium text-[var(--color-text-white)] bg-[var(--color-primary-dark)] hover:bg-[var(--color-primary-darker)] rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--color-primary)] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                                className="px-4 py-2 min-w-[150px] flex justify-center text-sm font-medium text-[var(--color-text-white)] bg-[var(--color-primary-dark)] hover:bg-[var(--color-primary-darker)] rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--color-primary)] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                                                 disabled={
                                                     isSubmitting ||
                                                     !leaveFormData.employee_id ||

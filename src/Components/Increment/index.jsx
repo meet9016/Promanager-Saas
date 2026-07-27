@@ -484,7 +484,7 @@ const Increment = () => {
                                                 <div className="flex gap-4 justify-end mt-10">
                                                     <button
                                                         type="button"
-                                                        className="px-6 py-3 border border-[var(--color-border-secondary)] text-[var(--color-text-secondary)] rounded-lg hover:bg-[var(--color-bg-primary)] transition-colors font-medium"
+                                                        className="px-5 py-2 border border-[var(--color-border-secondary)] text-[var(--color-text-secondary)] rounded-lg hover:bg-[var(--color-bg-primary)] transition-colors font-medium"
                                                     >
                                                         Cancel
                                                     </button>

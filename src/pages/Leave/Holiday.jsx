@@ -847,7 +847,7 @@ export default function HolidayManagement() {
                             <button
                                 type="button"
                                 onClick={() => { setCreateModal(false); resetForm(); }}
-                                className="px-6 py-2.5 bg-[var(--color-bg-primary)] hover:bg-[var(--color-bg-hover)] rounded-xl text-[var(--color-text-primary)] font-semibold transition-all border border-[var(--color-border-secondary)] shadow-sm hover:shadow-md"
+                                className="px-4 py-2 text-sm font-medium bg-transparent text-[var(--color-primary)] border-2 hover:bg-[var(--color-primary-lightest)] border-[var(--color-primary)] rounded-lg transition-colors"
                                 disabled={isSubmitting}
                             >
                                 Cancel
@@ -855,7 +855,7 @@ export default function HolidayManagement() {
                             <button
                                 type="button"
                                 onClick={handleSubmit}
-                                className="px-6 py-2.5 bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-primary-dark)] hover:from-[var(--color-primary-dark)] hover:to-[var(--color-primary-darker)] rounded-xl text-white font-semibold transition-all shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                                className="px-4 py-2 min-w-[150px] flex justify-center text-sm font-medium text-[var(--color-text-white)] bg-[var(--color-primary-dark)] hover:bg-[var(--color-primary-darker)] rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--color-primary)] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                                 disabled={
                                     isSubmitting ||
                                     !formData.holiday_name.trim() ||

@@ -377,7 +377,7 @@ const CompanyForm = ({ onSubmit, loading = false, showToast, editData }) => {
                                         value={formData.company_name}
                                         onChange={handleInputChange}
                                         placeholder="Enter company name"
-                                        required
+
                                         clearable={true}
                                     />
                                 </div>
@@ -393,7 +393,7 @@ const CompanyForm = ({ onSubmit, loading = false, showToast, editData }) => {
                                         value={formData.company_number}
                                         onChange={handleInputChange}
                                         placeholder="Enter company number"
-                                        required
+
                                         clearable={true}
                                     />
                                 </div>
