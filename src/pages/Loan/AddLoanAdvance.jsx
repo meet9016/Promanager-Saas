@@ -798,6 +798,7 @@ const AddLoanAdvance = ({
                                         value={formData.disbursementDate}
                                         onChange={handleInputChange}
                                         placeholder="DD-MM-YYYY"
+                                        className="[&>button]:!h-auto [&>button]:!py-3 [&>button]:!rounded-xl"
                                     />
                                 </div>
                                 <div>
@@ -809,6 +810,7 @@ const AddLoanAdvance = ({
                                         value={formData.repaymentStartDate}
                                         onChange={handleInputChange}
                                         placeholder="DD-MM-YYYY"
+                                        className="[&>button]:!h-auto [&>button]:!py-3 [&>button]:!rounded-xl"
                                     />
                                 </div>
                             </div>
