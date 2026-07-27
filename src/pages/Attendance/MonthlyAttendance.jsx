@@ -460,13 +460,13 @@ const MonthlyAttendance = () => {
 
     /* ===================== RENDER ===================== */
     return (
-        <div className="h-[calc(100vh-64px)] bg-slate-50 pb-8" style={{ fontFamily: "'Inter', sans-serif" }}>
+        <div className="h-[calc(100vh-64px)] bg-slate-50 flex flex-col pb-2" style={{ fontFamily: "'Inter', sans-serif" }}>
             {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
 
-            <div className="p-3 sm:p-6 mx-auto max-w-[1900px] space-y-4">
+            <div className="p-3 sm:p-6 mx-auto max-w-[1900px] w-full flex flex-col flex-1 min-h-0 gap-4">
 
                 {/* ══ HERO HEADER CARD ══ */}
-                <div className="bg-[var(--color-primary-dark)]  rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+                <div className="bg-[var(--color-primary-dark)] rounded-2xl shadow-sm border border-slate-100 overflow-hidden flex-shrink-0">
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 px-6 py-5">
                         {/* Left */}
                         <div className="flex items-center gap-4">
@@ -814,17 +814,17 @@ const MonthlyAttendance = () => {
 
                 {/* ══ ERROR ══ */}
                 {error && (
-                    <div className="flex items-center gap-2.5 bg-red-50 border border-red-200 text-red-600 rounded-xl px-4 py-3 text-sm">
+                    <div className="flex items-center gap-2.5 bg-red-50 border border-red-200 text-red-600 rounded-xl px-4 py-3 text-sm flex-shrink-0">
                         <HelpCircle size={15} className="flex-shrink-0" />
                         <span><b>Error:</b> {error}</span>
                     </div>
                 )}
 
                 {/* ══ MAIN GRID CARD ══ */}
-                <div className="bg-white rounded-2xl shadow-sm  overflow-hidden border border-[var(--color-primary-dark)]">
+                <div className="bg-white rounded-2xl shadow-sm overflow-hidden border border-[var(--color-primary-dark)] flex flex-col flex-1 min-h-0">
 
                     {/* Search + Legend toolbar */}
-                    <div className="flex flex-col sm:flex-row sm:items-center gap-3 px-4 sm:px-5 py-3 border-b border-slate-100">
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-3 px-4 sm:px-5 py-3 border-b border-slate-100 flex-shrink-0">
                         {/* Search */}
                         <div className="relative flex-shrink-0">
                             <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
@@ -865,7 +865,7 @@ const MonthlyAttendance = () => {
                     </div>
 
                     {/* Loading bar */}
-                    <div className="relative h-0">
+                    <div className="relative h-0 flex-shrink-0">
                         {loading && (
                             <div className="absolute top-0 left-0 w-full h-0.5 bg-slate-100 z-50">
                                 <div className="h-full bg-gradient-to-r from-violet-400 to-blue-400 animate-pulse w-2/3 rounded-full" />
@@ -874,7 +874,7 @@ const MonthlyAttendance = () => {
                     </div>
 
                     {/* ── Scrollable Grid ── */}
-                    <div ref={containerRef} className="overflow-auto" style={{ maxHeight: '100vh' }}>
+                    <div ref={containerRef} className="overflow-auto flex-1 custom-scrollbar">
                         <div style={{ minWidth: `${minInnerWidth}px` }}>
 
                             {/* Header row */}
