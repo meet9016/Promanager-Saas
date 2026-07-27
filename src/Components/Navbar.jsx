@@ -279,27 +279,14 @@ const Navbar = ({ isCollapsed, setIsCollapsed }) => {
                     </div>
 
                     {/* ── Dropdown Panel ── */}
+                    {/* ── Dropdown Panel ── */}
                     {showSearchDropdown && (
-                        <div
-                            className="absolute top-full mt-2.5 left-0 right-0 z-[9999] rounded-2xl overflow-hidden"
-                            style={{
-                                background: 'var(--color-bg-secondary)',
-                                border: '1px solid var(--color-border-secondary)',
-                                boxShadow: '0 24px 48px -8px rgba(108,76,241,0.15), 0 8px 24px -4px rgba(0,0,0,0.10)',
-                            }}
-                        >
+                        <div className="absolute top-full mt-3 right-0 w-[320px] sm:w-[400px] z-[9999] bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-100/80 overflow-hidden flex flex-col ring-1 ring-black/5">
                             {/* Panel Header */}
-                            <div
-                                className="flex items-center justify-between px-4 py-2.5"
-                                style={{
-                                    background: 'linear-gradient(135deg, var(--color-primary-dark), var(--color-primary-darker))',
-                                }}
-                            >
-                                <div className="flex items-center gap-2">
-                                    <div className="w-5 h-5 rounded-md bg-white/20 flex items-center justify-center">
-                                        <Search size={11} className="text-white" />
-                                    </div>
-                                    <span className="text-[11px] font-semibold tracking-widest uppercase text-white/80">
+                            <div className="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-gray-50 to-white border-b border-gray-100">
+                                <div className="flex items-center gap-2 text-gray-500">
+                                    <Search size={14} className="text-[var(--color-primary)]" />
+                                    <span className="text-[11px] font-bold tracking-widest uppercase text-gray-600">
                                         {searchResults.length > 0
                                             ? `${searchResults.length} Result${searchResults.length > 1 ? 's' : ''}`
                                             : 'No Results'}
@@ -307,27 +294,24 @@ const Navbar = ({ isCollapsed, setIsCollapsed }) => {
                                 </div>
                                 <button
                                     onClick={() => { setShowSearchDropdown(false); setSearchQuery(''); setSearchResults([]); }}
-                                    className="w-5 h-5 rounded-md bg-white/10 hover:bg-white/25 flex items-center justify-center transition-all duration-150"
+                                    className="p-1.5 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-200/50 transition-all active:scale-95"
                                 >
-                                    <X size={11} className="text-white" />
+                                    <X size={14} />
                                 </button>
                             </div>
 
                             {/* Results Body */}
-                            <div className="custom-scrollbar overflow-y-auto" style={{ maxHeight: '400px' }}>
+                            <div className="custom-scrollbar overflow-y-auto max-h-[420px] p-2 space-y-2">
                                 {searchResults.length === 0 ? (
-                                    <div className="flex flex-col items-center justify-center py-10 px-6 gap-2">
-                                        <div
-                                            className="w-12 h-12 rounded-2xl flex items-center justify-center"
-                                            style={{ background: 'var(--color-primary-lightest)' }}
-                                        >
-                                            <Search size={22} style={{ color: 'var(--color-primary)', opacity: 0.5 }} />
+                                    <div className="flex flex-col items-center justify-center py-12 px-6 gap-3">
+                                        <div className="w-14 h-14 rounded-2xl bg-gray-50 flex items-center justify-center mb-1 border border-gray-100 shadow-sm">
+                                            <Search size={24} className="text-gray-300" />
                                         </div>
-                                        <p className="text-sm font-semibold mt-1" style={{ color: 'var(--color-text-primary)' }}>No employee found</p>
-                                        <p className="text-xs" style={{ color: 'var(--color-text-secondary)' }}>Try a different name or employee code</p>
+                                        <p className="text-[15px] font-semibold text-gray-700">No employee found</p>
+                                        <p className="text-[13px] text-gray-400 text-center">Try searching with a different name or employee code.</p>
                                     </div>
                                 ) : (
-                                    <div className="p-2.5 space-y-2">
+                                    <>
                                         {searchResults.map((employee, idx) => {
                                             const initials = (employee.full_name || '?')
                                                 .split(' ').map(s => s[0]).slice(0, 2).join('').toUpperCase();
@@ -337,142 +321,94 @@ const Navbar = ({ isCollapsed, setIsCollapsed }) => {
                                             return (
                                                 <div
                                                     key={employee.employee_id}
-                                                    className="rounded-xl overflow-hidden"
-                                                    style={{
-                                                        border: '1px solid var(--color-border-secondary)',
-                                                        boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
-                                                    }}
+                                                    className="group/emp flex flex-col bg-white border border-purple-200 rounded-xl shadow-md transition-all duration-200 overflow-visible"
                                                 >
                                                     {/* ── Employee Row ── */}
-                                                    <button
+                                                    <div
                                                         onClick={() => handleEmployeeClick(employee)}
-                                                        className="w-full text-left group/emp relative flex items-center gap-3 px-3.5 py-3 transition-all duration-150"
-                                                        style={{ background: 'var(--color-bg-secondary)' }}
-                                                        onMouseEnter={e => e.currentTarget.style.background = 'var(--color-primary-lightest)'}
-                                                        onMouseLeave={e => e.currentTarget.style.background = 'var(--color-bg-secondary)'}
+                                                        className="w-full text-left flex items-center gap-3.5 px-4 py-3.5 cursor-pointer hover:bg-purple-50/30 transition-colors"
                                                     >
-                                                        {/* Left accent bar */}
-                                                        <div
-                                                            className="absolute left-0 top-0 bottom-0 w-0.5 opacity-0 group-hover/emp:opacity-100 transition-all duration-200 rounded-l-xl"
-                                                            style={{ background: 'var(--color-primary)' }}
-                                                        />
-
                                                         {/* Avatar */}
-                                                        <div
-                                                            className="w-9 h-9 rounded-xl flex items-center justify-center text-white text-xs font-bold flex-shrink-0 shadow-sm"
-                                                            style={{ background: 'linear-gradient(135deg, var(--color-primary), var(--color-primary-dark))' }}
-                                                        >
+                                                        <div className="w-11 h-11 rounded-full flex items-center justify-center text-[13px] font-bold flex-shrink-0 bg-gradient-to-br from-purple-100 to-purple-50 text-[var(--color-primary-dark)] shadow-sm border border-purple-100/50">
                                                             {initials}
                                                         </div>
 
                                                         {/* Info */}
                                                         <div className="flex-1 min-w-0">
-                                                            <div className="flex items-center gap-1.5 flex-wrap">
-                                                                <span
-                                                                    className="text-[13px] font-semibold truncate leading-tight"
-                                                                    style={{ color: 'var(--color-text-primary)' }}
-                                                                >
+                                                            <div className="flex items-center gap-2 mb-1">
+                                                                <span className="text-[14px] font-bold text-gray-900 truncate">
                                                                     {employee.full_name}
                                                                 </span>
                                                                 {employee.employee_code && (
-                                                                    <span
-                                                                        className="text-[10px] font-bold px-2 py-0.5 rounded-full flex-shrink-0 leading-none"
-                                                                        style={{
-                                                                            background: 'var(--color-primary-lightest)',
-                                                                            color: 'var(--color-primary-dark)',
-                                                                        }}
-                                                                    >
+                                                                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-purple-50 text-[var(--color-primary-dark)] flex-shrink-0 border border-purple-100/50">
                                                                         {employee.employee_code}
                                                                     </span>
                                                                 )}
                                                             </div>
-                                                            <div className="flex items-center gap-1 mt-0.5">
+                                                            <div className="flex items-center gap-1.5 text-[12px] text-gray-500 font-medium">
                                                                 {employee.department_name && (
-                                                                    <span className="text-[11px] truncate" style={{ color: 'var(--color-text-secondary)' }}>
-                                                                        {employee.department_name}
-                                                                    </span>
+                                                                    <span className="truncate">{employee.department_name}</span>
                                                                 )}
                                                                 {employee.department_name && employee.designation_name && (
-                                                                    <span style={{ color: 'var(--color-text-secondary)', opacity: 0.4 }}>·</span>
+                                                                    <span className="opacity-40">•</span>
                                                                 )}
                                                                 {employee.designation_name && (
-                                                                    <span className="text-[11px] truncate" style={{ color: 'var(--color-text-secondary)', opacity: 0.75 }}>
-                                                                        {employee.designation_name}
-                                                                    </span>
+                                                                    <span className="truncate">{employee.designation_name}</span>
                                                                 )}
                                                             </div>
                                                         </div>
 
                                                         {/* Arrow */}
                                                         <ChevronRight
-                                                            size={14}
-                                                            className="flex-shrink-0 -translate-x-1 opacity-0 group-hover/emp:opacity-100 group-hover/emp:translate-x-0 transition-all duration-200"
-                                                            style={{ color: 'var(--color-primary)' }}
+                                                            size={16}
+                                                            className="text-gray-300 opacity-0 -translate-x-2 group-hover/emp:opacity-100 group-hover/emp:translate-x-0 group-hover/emp:text-[var(--color-primary)] transition-all duration-300"
                                                         />
-                                                    </button>
+                                                    </div>
 
                                                     {/* ── Salary Strip ── */}
-                                                    <div
-                                                        className="flex items-center gap-2 px-3.5 py-2"
-                                                        style={{
-                                                            background: 'var(--color-bg-primary)',
-                                                            borderTop: '1px dashed var(--color-border-secondary)',
-                                                        }}
-                                                    >
+                                                    <div className="flex flex-wrap sm:flex-nowrap items-center justify-between gap-3 px-4 py-2.5 bg-gray-50/80 border-t border-purple-100/50">
                                                         {/* Salary Label */}
-                                                        <div className="flex items-center gap-1.5 flex-shrink-0">
-                                                            <div
-                                                                className="w-6 h-6 rounded-lg flex items-center justify-center"
-                                                                style={{ background: 'var(--color-primary-lightest)' }}
-                                                            >
-                                                                <IndianRupee size={11} style={{ color: 'var(--color-primary-dark)' }} />
+                                                        <div className="flex items-center gap-1.5 flex-shrink-0 text-gray-500">
+                                                            <div className="w-6 h-6 rounded flex items-center justify-center bg-white shadow-sm border border-gray-200/60">
+                                                                <IndianRupee size={12} className="text-[var(--color-primary-dark)]" />
                                                             </div>
-                                                            <span
-                                                                className="text-[10px] font-bold uppercase tracking-wider"
-                                                                style={{ color: 'var(--color-primary-dark)' }}
+                                                            <span className="text-[11px] font-bold uppercase tracking-wider text-[var(--color-primary-dark)]">Salary</span>
+                                                        </div>
+
+                                                        <div className="flex items-stretch gap-2 flex-1 justify-end h-[42px]">
+                                                            {/* Month Select */}
+                                                            <div className="w-[120px] h-full flex items-center" onClick={e => e.stopPropagation()}>
+                                                                <CustomSelect
+                                                                    name="month"
+                                                                    value={empMonth}
+                                                                    onChange={(e) => handleMonthChange(e, employee.employee_id)}
+                                                                    options={PAST_MONTHS}
+                                                                    searchable={false}
+                                                                    usePortal={true}
+                                                                />
+                                                            </div>
+
+                                                            {/* View Button */}
+                                                            <button
+                                                                onClick={(e) => handleSalaryClick(e, employee)}
+                                                                disabled={isLoadingSalary}
+                                                                title="View Salary Details"
+                                                                className="h-full flex-shrink-0 flex items-center justify-center gap-1.5 px-4 rounded-lg text-sm text-[var(--color-text-primary)] bg-[var(--color-bg-secondary)] border border-[var(--color-border-primary)] hover:border-[var(--color-primary)] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed active:scale-95"
                                                             >
-                                                                Salary
-                                                            </span>
+                                                                {isLoadingSalary
+                                                                    ? <Loader2 size={15} className="animate-spin text-[var(--color-primary)]" />
+                                                                    : <Eye size={15} className="text-[var(--color-primary)]" />
+                                                                }
+                                                                <span className="font-semibold text-gray-700">{isLoadingSalary ? 'Wait' : 'View'}</span>
+                                                            </button>
                                                         </div>
-
-                                                        {/* Month Select — custom styled */}
-                                                        <div className="flex-1 min-w-[120px]" onClick={e => e.stopPropagation()}>
-                                                            <CustomSelect
-                                                                name="month"
-                                                                value={empMonth}
-                                                                onChange={(e) => handleMonthChange(e, employee.employee_id)}
-                                                                options={PAST_MONTHS}
-                                                                searchable={false}
-                                                                usePortal={true}
-                                                            />
-                                                        </div>
-
-                                                        {/* View Button */}
-                                                        <button
-                                                            onClick={(e) => handleSalaryClick(e, employee)}
-                                                            disabled={isLoadingSalary}
-                                                            title="View Salary Details"
-                                                            className="flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-bold text-white transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-md hover:-translate-y-px active:translate-y-0"
-                                                            style={{
-                                                                background: 'linear-gradient(135deg, var(--color-primary), var(--color-primary-dark))',
-                                                                boxShadow: '0 2px 8px rgba(108,76,241,0.25)',
-                                                            }}
-                                                        >
-                                                            {isLoadingSalary
-                                                                ? <Loader2 size={11} className="animate-spin" />
-                                                                : <Eye size={11} strokeWidth={2.5} />
-                                                            }
-                                                            <span>{isLoadingSalary ? 'Loading' : 'View'}</span>
-                                                        </button>
                                                     </div>
                                                 </div>
                                             );
                                         })}
-                                    </div>
+                                    </>
                                 )}
                             </div>
-
-
                         </div>
                     )}
                 </div>
