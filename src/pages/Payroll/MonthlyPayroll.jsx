@@ -540,6 +540,8 @@ const EmployeePayrollBlock = ({ empData, permissions, onDataChange, onUnsavedCha
       })(),
       employee_loan_arr: (payrollData.employee_loan_arr || []).filter(l => selectedLoans[l.loan_items_id]),
       employee_advance_arr: (payrollData.employee_advance_arr || []).filter(a => selectedAdvances[a.advance_id]).map(a => ({ ...a, advance_amount: editableAdvances[a.advance_id] })),
+      paid_leave_list_arr: payrollData.paid_leave_list_arr || [],
+      total_paid_leave_amount: (payrollData.total_paid_leave_amount || 0).toString(),
       hasAnyEdit,
       editRemark,
     });
@@ -1456,12 +1458,15 @@ const MonthlyPayroll = () => {
           holiday_list_arr: payload.holiday_list_arr || [],
           employee_loan_arr: payload.employee_loan_arr || [],
           employee_advance_arr: payload.employee_advance_arr || [],
+          paid_leave_list_arr: payload.paid_leave_list_arr || [],
+          total_paid_leave_amount: payload.total_paid_leave_amount || "0",
         };
       });
 
       formData.append('employees_data', JSON.stringify(employeesData));
 
       const response = await api.post('add_all_monthly_employee_salary', formData);
+      console.log("response", response)
       if (response.data?.success) {
         showToast('Payroll submitted successfully for all employees', 'success');
         setAllPayrollData([]);
@@ -1471,7 +1476,7 @@ const MonthlyPayroll = () => {
         setSelectedEmployeeIds([]);
         navigate('/finalize-payroll');
       } else {
-        throw new Error(response.data?.message || 'Failed to submit payroll');
+        throw new Error(response.data?.message || 'Failed to submit payroll ');
       }
     } catch (err) {
       const msg = err.response?.data?.message || err.message || 'Failed to submit payroll';

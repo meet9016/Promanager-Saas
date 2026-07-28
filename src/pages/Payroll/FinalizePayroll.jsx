@@ -39,6 +39,7 @@ const COLUMN_KEYS = {
   MONTH_YEAR: 'month_year',
   TOTAL_SALARY: 'total_salary',
   FINAL_SALARY: 'final_salary',
+  TOTAL_PAID_LEAVE_AMOUNT: 'total_paid_leave_amount',
   TOTAL_PAY_SALARY: 'total_pay_salary',
   PAYMENT_STATUS: 'payment_status'
 };
@@ -693,6 +694,7 @@ export default function FinalizePayroll() {
                         { key: COLUMN_KEYS.total_advance_amount, label: 'Advance Salary' },
                         { key: COLUMN_KEYS.total_loan_amount, label: 'Loan Amount' },
                         { key: COLUMN_KEYS.total_holiday_amount, label: 'Holiday Amount' },
+                        { key: COLUMN_KEYS.TOTAL_PAID_LEAVE_AMOUNT, label: 'Paid Leave' },
                         { key: COLUMN_KEYS.total_pay_salary, label: 'Total Pay' },
                         { key: COLUMN_KEYS.PAYMENT_STATUS, label: 'Payment Status' }
                       ].map(({ key, label }) => (
@@ -766,6 +768,9 @@ export default function FinalizePayroll() {
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--color-success-dark)] font-medium">
                             {formatCurrency(record.total_holiday_amount)}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--color-success-dark)] font-medium">
+                            {formatCurrency(record.total_paid_leave_amount)}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--color-success-dark)] font-semibold">
                             {formatCurrency(record.total_pay_salary)}
@@ -1081,6 +1086,7 @@ export default function FinalizePayroll() {
         const attendanceShifts = salaryDetails.employee_salary_attedance || [];
         const allowances = salaryDetails.employee_salary_allowance || [];
         const holidays = salaryDetails.employee_salary_holiday || [];
+        const paidLeaves = salaryDetails.employee_salary_paid_leave || [];
         const deductions = salaryDetails.employee_salary_deduction || [];
         const loans = salaryDetails.employee_salary_loan || [];
         const advances = salaryDetails.employee_salary_advance || [];
@@ -1090,7 +1096,8 @@ export default function FinalizePayroll() {
           num(sal.total_salary) +
           num(sal.overtime_salary) +
           num(sal.total_allowance_amount) +
-          num(sal.total_holiday_amount);
+          num(sal.total_holiday_amount) +
+          num(sal.total_paid_leave_amount);
         const totalDeducts =
           num(sal.total_deduction_amount) +
           num(sal.total_loan_amount) +
@@ -1247,6 +1254,7 @@ export default function FinalizePayroll() {
                       <div className="h-full bg-teal-400" style={{ width: `${(num(sal.overtime_salary) / totalBar) * 100}%` }} />
                       <div className="h-full bg-sky-400" style={{ width: `${(num(sal.total_allowance_amount) / totalBar) * 100}%` }} />
                       <div className="h-full bg-indigo-400" style={{ width: `${(num(sal.total_holiday_amount) / totalBar) * 100}%` }} />
+                      <div className="h-full bg-purple-400" style={{ width: `${(num(sal.total_paid_leave_amount) / totalBar) * 100}%` }} />
                       <div className="h-full bg-rose-400" style={{ width: `${(num(sal.total_deduction_amount) / totalBar) * 100}%` }} />
                       <div className="h-full bg-amber-400" style={{ width: `${(num(sal.total_loan_amount) / totalBar) * 100}%` }} />
                       <div className="h-full bg-orange-500" style={{ width: `${(num(sal.total_advance_amount) / totalBar) * 100}%` }} />
@@ -1259,6 +1267,7 @@ export default function FinalizePayroll() {
                         { c: 'bg-teal-400', l: 'Overtime', v: sal.overtime_salary },
                         { c: 'bg-sky-400', l: 'Allowances', v: sal.total_allowance_amount },
                         { c: 'bg-indigo-400', l: 'Holidays', v: sal.total_holiday_amount },
+                        { c: 'bg-purple-400', l: 'Paid Leaves', v: sal.total_paid_leave_amount },
                         { c: 'bg-rose-400', l: 'Deductions', v: sal.total_deduction_amount, minus: true },
                         { c: 'bg-amber-400', l: 'Loan Recovery', v: sal.total_loan_amount, minus: true },
                         { c: 'bg-orange-500', l: 'Advance Recovery', v: sal.total_advance_amount, minus: true },
@@ -1310,8 +1319,7 @@ export default function FinalizePayroll() {
                         )}
                       </div>
 
-                      {/* holidays */}
-                      <div className="p-4">
+                      <div className="p-4 border-b border-[var(--color-border-divider)]">
                         <p className="text-[13px]  font-bold text-[#45484c] mb-2">Holidays Compensation</p>
                         {holidays.length > 0 ? (
                           <ul className="space-y-1.5">
@@ -1327,6 +1335,29 @@ export default function FinalizePayroll() {
                           </ul>
                         ) : (
                           <p className="text-[11px] italic text-[var(--color-text-muted)] px-3 py-2">No holidays in this cycle.</p>
+                        )}
+                      </div>
+
+                      {/* paid leaves */}
+                      <div className="p-4">
+                        <p className="text-[13px] font-bold text-[#45484c] mb-2">Paid Leaves Compensation</p>
+                        {paidLeaves.length > 0 ? (
+                          <ul className="space-y-1.5">
+                            {paidLeaves.map((it, i) => (
+                              <li key={i} className="flex items-center justify-between gap-3 text-xs px-3 py-2 rounded-lg bg-[var(--color-bg-primary)] border border-[var(--color-border-divider)]">
+                                <div className="min-w-0 flex items-center gap-2">
+                                  <div className="w-2 h-2 rounded-full bg-emerald-500"></div>
+                                  <div>
+                                    <p className="font-medium text-[var(--color-text-primary)] truncate">{new Date(it.leave_date).toLocaleDateString('en-GB')}</p>
+                                    <p className="text-[11px] text-[var(--color-text-muted)]">Paid Leave</p>
+                                  </div>
+                                </div>
+                                <span className="font-bold text-emerald-600 shrink-0">+ {formatCurrency(it.paid_leave_amount)}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        ) : (
+                          <p className="text-[11px] italic text-[var(--color-text-muted)] px-3 py-2">No paid leaves in this cycle.</p>
                         )}
                       </div>
 
