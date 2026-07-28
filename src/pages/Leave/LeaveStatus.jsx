@@ -10,6 +10,7 @@ import CustomDatePicker from '../../Components/comman/CustomDatePicker';
 import CustomInput from '../../Components/comman/CustomInput';
 import CustomSelect from '../../Components/comman/CustomSelect';
 import NoDataFound from '../../Components/comman/NoDataFound';
+import CustomCheckbox from '../../Components/comman/CustomCheckbox';
 
 // Lucide React Icons
 import {
@@ -1530,27 +1531,24 @@ const LeaveManagement = () => {
                                                                             <span>{d}</span>
                                                                         </div>
 
-                                                                        {/* Paid toggle - default Unpaid, fixed width to prevent layout shift */}
-                                                                        <label
-                                                                            htmlFor={`is-paid-${d}`}
-                                                                            className="flex items-center gap-2 cursor-pointer select-none flex-shrink-0"
-                                                                        >
-                                                                            <input
-                                                                                type="checkbox"
+                                                                        <div className="flex items-center gap-2 flex-shrink-0">
+                                                                            <CustomCheckbox
                                                                                 id={`is-paid-${d}`}
                                                                                 checked={isPaid}
                                                                                 onChange={(e) => {
                                                                                     handlePaidToggle(d, e.target.checked);
                                                                                 }}
-                                                                                className="w-4 h-4 text-[var(--color-primary-dark)] border-2 border-[var(--color-border-secondary)] rounded focus:ring-[var(--color-primary)] focus:ring-2 transition-colors duration-150 cursor-pointer flex-shrink-0"
                                                                             />
-                                                                            <span className={`text-xs font-semibold w-10 text-right ${isPaid
-                                                                                ? 'text-[var(--color-primary-dark)]'
-                                                                                : 'text-[var(--color-text-secondary)]'
-                                                                                }`}>
+                                                                            <label
+                                                                                htmlFor={`is-paid-${d}`}
+                                                                                className={`text-xs font-semibold w-10 text-right cursor-pointer select-none ${isPaid
+                                                                                    ? 'text-[var(--color-primary-dark)]'
+                                                                                    : 'text-[var(--color-text-secondary)]'
+                                                                                    }`}
+                                                                            >
                                                                                 {isPaid ? 'Paid' : 'Unpaid'}
-                                                                            </span>
-                                                                        </label>
+                                                                            </label>
+                                                                        </div>
                                                                     </div>
                                                                 );
                                                             })}
