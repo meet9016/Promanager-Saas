@@ -949,8 +949,8 @@ const EmployeeDirectoryReport = () => {
                             </div>
                         ) : (
                             <>
-                                <div className="flex-1 custom-scrollbar min-h-0 ">
-                                    <Table className="w-full min-w-[1200px] ">
+                                <div className="overflow-hidden flex-1">
+                                    <Table className="w-full min-w-[1200px]" wrapperClassName="h-full max-h-full overflow-y-auto custom-scrollbar">
                                         <TableHeader className=" bg-[var(--color-primary-dark)] border-b border-[var(--color-border-secondary)]">
                                             <TableHeaderRow>
                                                 <Th className="px-6 py-3 text-center font-medium">Employee</Th>

@@ -694,7 +694,7 @@ export default function FinalizePayroll() {
                         { key: COLUMN_KEYS.total_advance_amount, label: 'Advance Salary' },
                         { key: COLUMN_KEYS.total_loan_amount, label: 'Loan Amount' },
                         { key: COLUMN_KEYS.total_holiday_amount, label: 'Holiday Amount' },
-                        { key: COLUMN_KEYS.TOTAL_PAID_LEAVE_AMOUNT, label: 'Paid Leave' },
+                        { key: COLUMN_KEYS.TOTAL_PAID_LEAVE_AMOUNT, label: 'Paid Leave Amount' },
                         { key: COLUMN_KEYS.total_pay_salary, label: 'Total Pay' },
                         { key: COLUMN_KEYS.PAYMENT_STATUS, label: 'Payment Status' }
                       ].map(({ key, label }) => (

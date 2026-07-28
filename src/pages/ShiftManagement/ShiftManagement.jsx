@@ -618,7 +618,7 @@ const ShiftManagement = () => {
 
                                             {/* Empty rows to fill up to 10 rows */}
                                             {generateEmptyRows(shifts.length).map((_, index) => (
-                                                <TableRow key={`empty-${index}`} className="h-16 border-b border-[var(--color-border-divider)]">
+                                                <TableRow key={`empty-${index}`} className="h-16 hover:bg-transparent [&>td]:border-b-0">
                                                     <Td className="px-6 py-4 text-left" colSpan={permissions?.shift_edit || permissions?.shift_delete ? 5 : 4}>
                                                         <div className="h-10">&nbsp;</div>
                                                     </Td>
