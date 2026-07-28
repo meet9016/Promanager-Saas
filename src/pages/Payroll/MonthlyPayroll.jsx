@@ -500,13 +500,15 @@ const EmployeePayrollBlock = ({ empData, permissions, onDataChange, onUnsavedCha
     [selectedAdvances, editableAdvances]
   );
 
+  const totalPaidLeaves = parseFloat(payrollData.total_paid_leave_amount || 0);
+
   // Auto-recalculate final payable
   useEffect(() => {
-    const auto = paySalary + totalAllowances - totalDeductions + totalHolidays - totalLoans - totalAdvances;
+    const auto = paySalary + totalAllowances - totalDeductions + totalHolidays + totalPaidLeaves - totalLoans - totalAdvances;
     if (!isEditingFinalPayable && !finalPayableManuallyEdited) {
       setEditableFinalPayable(auto.toString());
     }
-  }, [paySalary, totalAllowances, totalDeductions, totalHolidays, totalLoans, totalAdvances, isEditingFinalPayable, finalPayableManuallyEdited]);
+  }, [paySalary, totalAllowances, totalDeductions, totalHolidays, totalPaidLeaves, totalLoans, totalAdvances, isEditingFinalPayable, finalPayableManuallyEdited]);
 
   // Notify parent of unsaved state
   useEffect(() => {
@@ -1020,64 +1022,95 @@ const EmployeePayrollBlock = ({ empData, permissions, onDataChange, onUnsavedCha
       </div>
       {/* )} */}
 
-      {/* Holidays */}
-      {groupedHolidays.length > 0 && (
-        <div className="bg-[var(--color-bg-secondary)] rounded-lg border p-4">
-          <div className="flex items-center justify-between mb-3">
-            <h4 className="font-semibold text-sm text-[var(--color-text-primary)]">Holidays</h4>
-            <span className="text-green-700 font-medium text-sm">+ ₹{totalHolidays.toLocaleString()}</span>
-          </div>
-          <div className="space-y-2">
-            {groupedHolidays.map(g => {
-              const groupTotal = g.dates.reduce((s, d) => s + (d.holiday_paid === '1' ? parseFloat(editableHolidayAmounts[d.holiday_date_id] || 0) || 0 : 0), 0);
-              const included = !!selectedHolidays[g.holiday_id];
-              return (
-                <div key={g.holiday_id} className="p-3 border rounded">
-                  <div className="flex items-center justify-between">
+      {/* Holidays & Paid Leaves */}
+      {(groupedHolidays.length > 0 || payrollData.paid_leave_list_arr?.length > 0) && (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          {/* Holidays */}
+          {groupedHolidays.length > 0 && (
+            <div className="bg-[var(--color-bg-secondary)] rounded-lg border p-4">
+              <div className="flex items-center justify-between mb-3">
+                <h4 className="font-semibold text-sm text-[var(--color-text-primary)]">Holidays</h4>
+                <span className="text-green-700 font-medium text-sm">+ ₹{totalHolidays.toLocaleString()}</span>
+              </div>
+              <div className="space-y-2">
+                {groupedHolidays.map(g => {
+                  const groupTotal = g.dates.reduce((s, d) => s + (d.holiday_paid === '1' ? parseFloat(editableHolidayAmounts[d.holiday_date_id] || 0) || 0 : 0), 0);
+                  const included = !!selectedHolidays[g.holiday_id];
+                  return (
+                    <div key={g.holiday_id} className="p-3 border rounded">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <CustomCheckbox checked={included} onChange={() => { setSelectedHolidays(p => ({ ...p, [g.holiday_id]: !p[g.holiday_id] })); markEdited(); }} />
+                          <div>
+                            <div className="text-sm font-medium">{g.holiday_name} <span className="text-xs text-[var(--color-text-secondary)]">({g.dates.length} days)</span></div>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="font-semibold text-sm">₹{groupTotal.toLocaleString()}</span>
+                          <button onClick={() => setExpandedHolidayId(p => p === g.holiday_id ? null : g.holiday_id)} className="p-1 rounded hover:bg-[var(--color-bg-gray-light)]">
+                            {expandedHolidayId === g.holiday_id ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
+                          </button>
+                        </div>
+                      </div>
+                      {expandedHolidayId === g.holiday_id && (
+                        <div className="mt-2 pl-6 space-y-1">
+                          {g.dates.map(d => (
+                            <div key={d.holiday_date_id} className="flex items-center justify-between p-2 border rounded text-xs">
+                              <div>
+                                <div className="font-medium">{new Date(d.holiday_date).toLocaleDateString('en-GB')}</div>
+                                <div className="text-[var(--color-text-secondary)]">{d.holiday_paid === '1' ? 'Paid' : 'Unpaid'}</div>
+                              </div>
+                              <div className="flex items-center gap-1">
+                                {editingHolidayDateId === d.holiday_date_id ? (
+                                  <>
+                                    <input type="number" value={editableHolidayAmounts[d.holiday_date_id] || '0'} onChange={e => setEditableHolidayAmounts(p => ({ ...p, [d.holiday_date_id]: e.target.value }))} className="w-20 px-2 py-1 border rounded" min="0" step="0.01" />
+                                    <button onClick={() => { if (d.holiday_paid === '2') { setEditableHolidayAmounts(p => ({ ...p, [d.holiday_date_id]: '0' })); setEditingHolidayDateId(null); return; } const amt = parseFloat(editableHolidayAmounts[d.holiday_date_id]); if (isNaN(amt) || amt < 0) return showToast('Invalid amount', 'error'); setEditingHolidayDateId(null); markEdited(); }} className="p-1 text-green-600"><Save className="w-3 h-3" /></button>
+                                    <button onClick={() => { setEditingHolidayDateId(null); setEditableHolidayAmounts(p => ({ ...p, [d.holiday_date_id]: d.holiday_paid === '1' ? d.holiday_amount : '0' })); }} className="p-1 text-gray-500"><X className="w-3 h-3" /></button>
+                                  </>
+                                ) : (
+                                  <>
+                                    <span className="font-semibold">₹{parseFloat(editableHolidayAmounts[d.holiday_date_id] || 0).toLocaleString()}</span>
+                                    {d.holiday_paid === '1' && permissions.salary_edit && included && <button onClick={() => setEditingHolidayDateId(d.holiday_date_id)} className="p-1 text-[var(--color-text-secondary)]"><Edit className="w-3 h-3" /></button>}
+                                    {d.holiday_paid === '2' && <span className="text-[var(--color-text-secondary)] border rounded px-1">Unpaid</span>}
+                                  </>
+                                )}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* Paid Leaves */}
+          {payrollData.paid_leave_list_arr?.length > 0 && (
+            <div className="bg-[var(--color-bg-secondary)] rounded-lg border p-4">
+              <div className="flex items-center justify-between mb-3">
+                <h4 className="font-semibold text-sm text-[var(--color-text-primary)]">Paid Leaves</h4>
+                <span className="text-green-700 font-medium text-sm">+ ₹{parseFloat(payrollData.total_paid_leave_amount || 0).toLocaleString()}</span>
+              </div>
+              <div className="space-y-2">
+                {payrollData.paid_leave_list_arr.map(leave => (
+                  <div key={leave.employee_leave_date_id} className="flex items-center justify-between p-3 border rounded text-sm">
                     <div className="flex items-center gap-2">
-                      <CustomCheckbox checked={included} onChange={() => { setSelectedHolidays(p => ({ ...p, [g.holiday_id]: !p[g.holiday_id] })); markEdited(); }} />
+                      <div className="w-2 h-2 rounded-full bg-green-500"></div>
                       <div>
-                        <div className="text-sm font-medium">{g.holiday_name} <span className="text-xs text-[var(--color-text-secondary)]">({g.dates.length} days)</span></div>
+                        <div className="font-medium">{new Date(leave.leave_date).toLocaleDateString('en-GB')}</div>
+                        <div className="text-xs text-[var(--color-text-secondary)]">Paid Leave</div>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="font-semibold text-sm">₹{groupTotal.toLocaleString()}</span>
-                      <button onClick={() => setExpandedHolidayId(p => p === g.holiday_id ? null : g.holiday_id)} className="p-1 rounded hover:bg-[var(--color-bg-gray-light)]">
-                        {expandedHolidayId === g.holiday_id ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
-                      </button>
+                      <span className="font-semibold text-sm text-green-600">₹{parseFloat(leave.paid_leave_amount || 0).toLocaleString()}</span>
                     </div>
                   </div>
-                  {expandedHolidayId === g.holiday_id && (
-                    <div className="mt-2 pl-6 space-y-1">
-                      {g.dates.map(d => (
-                        <div key={d.holiday_date_id} className="flex items-center justify-between p-2 border rounded text-xs">
-                          <div>
-                            <div className="font-medium">{new Date(d.holiday_date).toLocaleDateString('en-GB')}</div>
-                            <div className="text-[var(--color-text-secondary)]">{d.holiday_paid === '1' ? 'Paid' : 'Unpaid'}</div>
-                          </div>
-                          <div className="flex items-center gap-1">
-                            {editingHolidayDateId === d.holiday_date_id ? (
-                              <>
-                                <input type="number" value={editableHolidayAmounts[d.holiday_date_id] || '0'} onChange={e => setEditableHolidayAmounts(p => ({ ...p, [d.holiday_date_id]: e.target.value }))} className="w-20 px-2 py-1 border rounded" min="0" step="0.01" />
-                                <button onClick={() => { if (d.holiday_paid === '2') { setEditableHolidayAmounts(p => ({ ...p, [d.holiday_date_id]: '0' })); setEditingHolidayDateId(null); return; } const amt = parseFloat(editableHolidayAmounts[d.holiday_date_id]); if (isNaN(amt) || amt < 0) return showToast('Invalid amount', 'error'); setEditingHolidayDateId(null); markEdited(); }} className="p-1 text-green-600"><Save className="w-3 h-3" /></button>
-                                <button onClick={() => { setEditingHolidayDateId(null); setEditableHolidayAmounts(p => ({ ...p, [d.holiday_date_id]: d.holiday_paid === '1' ? d.holiday_amount : '0' })); }} className="p-1 text-gray-500"><X className="w-3 h-3" /></button>
-                              </>
-                            ) : (
-                              <>
-                                <span className="font-semibold">₹{parseFloat(editableHolidayAmounts[d.holiday_date_id] || 0).toLocaleString()}</span>
-                                {d.holiday_paid === '1' && permissions.salary_edit && included && <button onClick={() => setEditingHolidayDateId(d.holiday_date_id)} className="p-1 text-[var(--color-text-secondary)]"><Edit className="w-3 h-3" /></button>}
-                                {d.holiday_paid === '2' && <span className="text-[var(--color-text-secondary)] border rounded px-1">Unpaid</span>}
-                              </>
-                            )}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       )}
 
@@ -1164,6 +1197,7 @@ const EmployeePayrollBlock = ({ empData, permissions, onDataChange, onUnsavedCha
           {totalAllowances > 0 && <div className="flex justify-between"><span className="text-green-600 flex items-center"><Plus className="w-3 h-3 mr-1" />Total Allowances</span><span className="font-semibold text-green-600">+ ₹{totalAllowances.toLocaleString()}</span></div>}
           {totalDeductions > 0 && <div className="flex justify-between"><span className="text-red-600 flex items-center"><Minus className="w-3 h-3 mr-1" />Total Deductions</span><span className="font-semibold text-red-600">- ₹{totalDeductions.toLocaleString()}</span></div>}
           {totalHolidays > 0 && <div className="flex justify-between"><span className="text-green-700">Holiday Paid Amount</span><span className="font-semibold text-green-700">+ ₹{totalHolidays.toLocaleString()}</span></div>}
+          {totalPaidLeaves > 0 && <div className="flex justify-between"><span className="text-green-700">Paid Leave Amount</span><span className="font-semibold text-green-700">+ ₹{totalPaidLeaves.toLocaleString()}</span></div>}
           {totalLoans > 0 && <div className="flex justify-between"><span className="text-red-600 flex items-center"><Minus className="w-3 h-3 mr-1" />Loan Deductions</span><span className="font-semibold text-red-600">- ₹{totalLoans.toLocaleString()}</span></div>}
           {totalAdvances > 0 && <div className="flex justify-between"><span className="text-red-600 flex items-center"><Minus className="w-3 h-3 mr-1" />Advance Deductions</span><span className="font-semibold text-red-600">- ₹{totalAdvances.toLocaleString()}</span></div>}
 
