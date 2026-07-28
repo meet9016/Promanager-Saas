@@ -1130,7 +1130,7 @@ const LeaveManagement = () => {
 
                             {/* Content */}
                             <div className="p-8 overflow-y-auto flex-1 custom-scrollbar bg-white">
-                                
+
                                 {/* Employee Info Card */}
                                 <div className="bg-white rounded-xl shadow-sm border border-[var(--color-border-divider)] p-6 mb-6 flex items-center justify-between">
                                     <div className="flex items-center space-x-6">
@@ -1140,7 +1140,7 @@ const LeaveManagement = () => {
                                         <div>
                                             <p className="text-xs text-[var(--color-text-secondary)] font-semibold mb-1 uppercase tracking-wider">Employee Name</p>
                                             <h3 className="text-lg font-bold text-[var(--color-text-primary)] mb-3">{viewModal.leaveData.full_name}</h3>
-                                            
+
                                             <p className="text-xs text-[var(--color-text-secondary)] font-semibold mb-1 uppercase tracking-wider">Leave Type</p>
                                             <div className="inline-flex items-center px-3 py-1.5 bg-[#fbf9ff] text-[var(--color-primary-dark)] rounded-lg text-xs font-bold border border-[#ebdffc] shadow-sm">
                                                 <Calendar className="w-3.5 h-3.5 mr-2" />
@@ -1157,22 +1157,11 @@ const LeaveManagement = () => {
                                 {/* Stats Row */}
                                 {(() => {
                                     const dates = viewModal.leaveData.leave_dates || [];
-                                    const startDate = dates.length > 0 ? dates[0].leave_date : '-';
-                                    const endDate = dates.length > 0 ? dates[dates.length - 1].leave_date : '-';
+                                    const startDate = viewModal.leaveData.start_date || (dates.length > 0 ? dates[0].leave_date : '-');
+                                    const endDate = viewModal.leaveData.end_date || (dates.length > 0 ? dates[dates.length - 1].leave_date : '-');
                                     const totalDays = viewModal.leaveData.total_days || dates.length;
                                     const paidDays = dates.filter(d => d.is_paid === "1").length;
                                     const unpaidDays = dates.filter(d => d.is_paid !== "1").length;
-                                    
-                                    const formatSimpleDate = (dStr) => {
-                                        try {
-                                            const parts = dStr.split('-');
-                                            if(parts.length === 3) {
-                                                const dt = new Date(parts[2], parts[1]-1, parts[0]);
-                                                return dt.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
-                                            }
-                                            return dStr;
-                                        } catch(e) { return dStr; }
-                                    };
 
                                     return (
                                         <div className="flex bg-white rounded-xl shadow-sm border border-[var(--color-border-divider)] mb-6 py-4 md:py-5 divide-x divide-[var(--color-border-divider)] w-full overflow-hidden">
@@ -1182,7 +1171,7 @@ const LeaveManagement = () => {
                                                 </div>
                                                 <div className="min-w-0">
                                                     <p className="text-[10px] md:text-xs text-[var(--color-text-secondary)] font-semibold mb-0.5 md:mb-1 tracking-wide truncate">Start Date</p>
-                                                    <p className="font-bold text-[var(--color-text-primary)] text-xs md:text-sm truncate">{formatSimpleDate(startDate)}</p>
+                                                    <p className="font-bold text-[var(--color-text-primary)] text-xs md:text-sm truncate">{startDate}</p>
                                                 </div>
                                             </div>
                                             <div className="flex flex-1 items-center justify-center gap-2 md:gap-4 px-2 md:px-4">
@@ -1191,7 +1180,7 @@ const LeaveManagement = () => {
                                                 </div>
                                                 <div className="min-w-0">
                                                     <p className="text-[10px] md:text-xs text-[var(--color-text-secondary)] font-semibold mb-0.5 md:mb-1 tracking-wide truncate">End Date</p>
-                                                    <p className="font-bold text-[var(--color-text-primary)] text-xs md:text-sm truncate">{formatSimpleDate(endDate)}</p>
+                                                    <p className="font-bold text-[var(--color-text-primary)] text-xs md:text-sm truncate">{endDate}</p>
                                                 </div>
                                             </div>
                                             <div className="flex flex-1 items-center justify-center gap-2 md:gap-4 px-2 md:px-4">
@@ -1277,15 +1266,15 @@ const LeaveManagement = () => {
                                                 </thead>
                                                 <tbody className="divide-y divide-[var(--color-border-divider)] bg-white">
                                                     {viewModal.leaveData.leave_dates.map((d, i) => {
-                                                        const dateStr = d.leave_date; 
+                                                        const dateStr = d.leave_date;
                                                         let displayDate = dateStr;
                                                         try {
                                                             const parts = dateStr.split('-');
-                                                            if(parts.length === 3) {
-                                                                const dt = new Date(parts[2], parts[1]-1, parts[0]);
+                                                            if (parts.length === 3) {
+                                                                const dt = new Date(parts[2], parts[1] - 1, parts[0]);
                                                                 displayDate = dt.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) + ' (' + dt.toLocaleDateString('en-US', { weekday: 'long' }) + ')';
                                                             }
-                                                        } catch(e) {}
+                                                        } catch (e) { }
 
                                                         return (
                                                             <tr key={i} className="hover:bg-gray-50 transition-colors">
