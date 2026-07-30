@@ -1268,13 +1268,7 @@ const LeaveManagement = () => {
                                                     {viewModal.leaveData.leave_dates.map((d, i) => {
                                                         const dateStr = d.leave_date;
                                                         let displayDate = dateStr;
-                                                        try {
-                                                            const parts = dateStr.split('-');
-                                                            if (parts.length === 3) {
-                                                                const dt = new Date(parts[2], parts[1] - 1, parts[0]);
-                                                                displayDate = dt.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) + ' (' + dt.toLocaleDateString('en-US', { weekday: 'long' }) + ')';
-                                                            }
-                                                        } catch (e) { }
+
 
                                                         return (
                                                             <tr key={i} className="hover:bg-gray-50 transition-colors">
