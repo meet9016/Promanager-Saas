@@ -294,7 +294,8 @@ const EmployeePayrollBlock = ({ empData, permissions, onDataChange, onUnsavedCha
     );
 
     const newAllowance = {
-      employee_allowance_id: '',
+      employee_allowance_id: `temp_${Date.now()}_${Math.floor(Math.random() * 1000)}`,
+      allowance_id: selectedAllowance?.allowance_id || payrollFormData.allowance_type,
       allowance_name: selectedAllowance?.name || '',
       allowance_type: 2,
       allowance_amount: payrollFormData.allowance_amount,
@@ -346,7 +347,8 @@ const EmployeePayrollBlock = ({ empData, permissions, onDataChange, onUnsavedCha
     );
 
     const newDeduction = {
-      employee_deduction_id: '',
+      employee_deduction_id: `temp_${Date.now()}_${Math.floor(Math.random() * 1000)}`,
+      deduction_id: selectedDeduction?.deduction_id || payrollFormData.deduction_type,
       deduction_name: selectedDeduction?.name || '',
       deduction_type: 2,
       deduction_amount: payrollFormData.deduction_amount,
@@ -852,8 +854,8 @@ const EmployeePayrollBlock = ({ empData, permissions, onDataChange, onUnsavedCha
             <h4 className="font-semibold text-sm text-[var(--color-text-primary)]">Deductions</h4>
             {/* <span className="text-red-600 font-medium text-sm">- ₹{totalDeductions.toLocaleString()}</span> */}
             <div className="flex items-center gap-2">
-              <span className="text-green-600 font-medium text-sm">
-                + ₹{totalAllowances.toLocaleString()}
+              <span className="text-red-600 font-medium text-sm">
+                - ₹{totalDeductions.toLocaleString()}
               </span>
 
               <button
@@ -1453,8 +1455,14 @@ const MonthlyPayroll = () => {
           pay_salary: parseFloat(parseFloat(payload.pay_salary || 0).toFixed(2)).toString(),
           total_pay_salary: parseFloat(parseFloat(payload.total_pay_salary || 0).toFixed(2)).toString(),
           remark_for_edit: payload.hasAnyEdit ? (payload.editRemark || '') : '',
-          employee_allowance_arr: payload.employee_allowance_arr || [],
-          employee_deduction_arr: payload.employee_deduction_arr || [],
+          employee_allowance_arr: (payload.employee_allowance_arr || []).map(a => ({
+            ...a,
+            employee_allowance_id: String(a.employee_allowance_id).startsWith('temp_') ? '' : a.employee_allowance_id
+          })),
+          employee_deduction_arr: (payload.employee_deduction_arr || []).map(d => ({
+            ...d,
+            employee_deduction_id: String(d.employee_deduction_id).startsWith('temp_') ? '' : d.employee_deduction_id
+          })),
           holiday_list_arr: payload.holiday_list_arr || [],
           employee_loan_arr: payload.employee_loan_arr || [],
           employee_advance_arr: payload.employee_advance_arr || [],
@@ -1807,11 +1815,14 @@ const MonthlyPayroll = () => {
                     {hasAnyUnsaved && <p className="text-xs text-yellow-700 mt-1 flex items-center gap-1"><AlertTriangle className="w-3 h-3" /> Save all pending edits first</p>}
                     {missingRemarks.length > 0 && <p className="text-xs text-orange-700 mt-1 flex items-center gap-1"><AlertTriangle className="w-3 h-3" /> Add remarks for all edited employees</p>}
                   </div>
+                  {console.log(submitting, "a1")}
+                  {console.log(hasAnyUnsaved, "a2")}
+                  {console.log(missingRemarks.length > 0, "a3")}
                   {permissions['add_salary_payment'] && (
                     <button
                       onClick={handleSubmitPayroll}
-                      disabled={submitting || hasAnyUnsaved || missingRemarks.length > 0}
-                      className={`px-6 py-3 rounded-lg flex items-center gap-2 font-medium transition-colors ${submitting || hasAnyUnsaved || missingRemarks.length > 0 ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-green-600 hover:bg-green-700 text-white'}`}
+                      disabled={submitting || hasAnyUnsaved}
+                      className={`px-6 py-3 rounded-lg flex items-center gap-2 font-medium transition-colors ${submitting || hasAnyUnsaved ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-green-600 hover:bg-green-700 text-white'}`}
                     >
                       <CheckCircle className="w-5 h-5" />
                       {submitting ? 'Submitting...' : 'Submit All Payroll'}
