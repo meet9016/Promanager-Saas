@@ -12,29 +12,32 @@ import { X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 // ─── Reusable UI ─────────────────────────────────────────────────────────────
-const Field = ({ label, required, right, children }) => (
+const Field = ({ label, required, right, error, children }) => (
 
     <div className="flex flex-col gap-1.5 my-2">
 
         <div className="flex items-center justify-between">
             <label className="text-sm font-semibold text-gray-700">
                 {label}
-                {required && <span className="text-[var(--color-primary-darker)] ml-0.5">*</span>}
+                {required && <span className="text-red-500 ml-0.5">*</span>}
             </label>
 
             {right && <div>{right}</div>}
         </div>
 
         {children}
+        {error && <span className="text-xs text-red-500 mt-0.5">{error}</span>}
     </div>
 );
 
-const Input = (props) => (
+const Input = ({ error, ...props }) => (
     <input
         {...props}
-        className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-white text-sm text-gray-800
-        placeholder:text-gray-300 focus:outline-none focus:border-[#6C4CF1] focus:ring-2
-        focus:ring-[#6C4CF1]/15 transition-all"
+        className={`w-full px-4 py-2.5 rounded-xl border bg-white text-sm text-gray-800
+        placeholder:text-gray-300 focus:outline-none focus:ring-2 transition-all ${error
+                ? 'border-red-500 focus:border-red-500 focus:ring-red-500/15'
+                : 'border-gray-200 focus:border-[#6C4CF1] focus:ring-[#6C4CF1]/15'
+            }`}
     />
 );
 
@@ -152,6 +155,15 @@ const PaymentPage = () => {
     const [employees, setEmployees] = useState(21);
     const [billingCycle, setBillingCycle] = useState('yearly');
     const [form, setForm] = useState({ name: '', email: '', company: '', gst: '', phone: '', whatsapp: '', address: '' });
+    const [formErrors, setFormErrors] = useState({});
+
+    const handleFormChange = (field, value) => {
+        setForm(prev => ({ ...prev, [field]: value }));
+        if (formErrors[field]) {
+            setFormErrors(prev => ({ ...prev, [field]: '' }));
+        }
+    };
+
     const [couponInput, setCouponInput] = useState('');
     const [couponApplied, setCouponApplied] = useState(null); // { code, discountPct }
     const [couponError, setCouponError] = useState('');
@@ -198,11 +210,6 @@ const PaymentPage = () => {
     // };
     const getRange = (range, planName = "") => {
 
-        // custom ranges
-        if (planName === "Silver") {
-            return { min: 10, max: 20 };
-        }
-
         if (range.includes('+')) {
             return {
                 min: Number(range.replace('+', '')),
@@ -219,15 +226,7 @@ const PaymentPage = () => {
     useEffect(() => {
         if (!plans.length) return;
 
-        // If employees <= 10, auto-select Free plan
-        if (employees <= 10) {
-            setIsFreePlan(true);
-            setSelectedPlan(null);
-            setBillingCycle("7 days");
-            return;
-        }
-
-        // If employees > 10, ensure Free plan is NOT selected
+        // Ensure Free plan is NOT selected
         if (isFreePlan) {
             setIsFreePlan(false);
         }
@@ -373,44 +372,38 @@ const PaymentPage = () => {
 
     // ── Submit ────────────────────────────────────────────────────────────────
 
-    const handleSubmit = async () => {
+    const handleSubmit = async (e) => {
+        if (e && e.preventDefault) e.preventDefault();
         // ─── VALIDATIONS ─────────────────────────────────────
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         const phoneRegex = /^[6-9]\d{9}$/;
         const gstRegex = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
 
-        if (!form.name.trim()) {
-            return setToast({ type: 'error', message: 'Full name is required' });
-        }
+        const errors = {};
 
-        if (!emailRegex.test(form.email)) {
-            return setToast({ type: 'error', message: 'Enter a valid email' });
-        }
+        if (!form.name.trim()) errors.name = 'Full name is required';
 
-        if (!phoneRegex.test(form.phone)) {
-            return setToast({ type: 'error', message: 'Enter a valid phone number' });
-        }
+        if (!form.email.trim()) errors.email = 'Email is required';
+        else if (!emailRegex.test(form.email)) errors.email = 'Enter a valid email';
 
-        if (!phoneRegex.test(form.whatsapp)) {
-            return setToast({ type: 'error', message: 'Enter a valid WhatsApp number' });
-        }
+        if (!form.company.trim()) errors.company = 'Company is required';
 
-        if (!form.address.trim()) {
-            return setToast({ type: 'error', message: 'Address is required' });
-        }
-        if (!form.company.trim()) {
-            return setToast({ type: 'error', message: 'Company is required' });
-        }
+        if (!form.phone.trim()) errors.phone = 'Phone number is required';
+        else if (!phoneRegex.test(form.phone)) errors.phone = 'Enter a valid phone number';
 
-        // GST validation (only if enabled)
+        if (!form.whatsapp.trim()) errors.whatsapp = 'Whatsapp number is required';
+        else if (!phoneRegex.test(form.whatsapp)) errors.whatsapp = 'Enter a valid WhatsApp number';
+
+        if (!form.address.trim()) errors.address = 'Address is required';
+
         if (enabled) {
-            if (!form.gst.trim()) {
-                return setToast({ type: 'error', message: 'GST number is required' });
-            }
+            if (!form.gst.trim()) errors.gst = 'GST number is required';
+            else if (!gstRegex.test(form.gst)) errors.gst = 'Invalid GST number format';
+        }
 
-            if (!gstRegex.test(form.gst)) {
-                return setToast({ type: 'error', message: 'Invalid GST number format' });
-            }
+        if (Object.keys(errors).length > 0) {
+            setFormErrors(errors);
+            return;
         }
 
         if (!selectedPlan) {
@@ -597,24 +590,8 @@ const PaymentPage = () => {
                                     {[1, 2, 3].map(i => <div key={i} className="h-14 rounded-xl bg-gray-100 animate-pulse" />)}
                                 </div>
                             ) : (
-                                <div className="grid grid-cols-4 gap-2 mb-5">
+                                <div className="grid grid-cols-3 gap-2 mb-5">
 
-                                    {/* Static Free Button */}
-                                    <button
-                                        onClick={handleFreePlanSelect}
-                                        className={`py-2.5 rounded-xl text-xs font-bold border-2 transition-all
-                                            ${isFreePlan
-                                                ? 'bg-gradient-to-r from-[#6C4CF1] to-[#4B2EDB] text-white border-transparent shadow-md'
-                                                : 'border-gray-200 text-gray-500 hover:border-[#6C4CF1]/40 bg-white'
-                                            }`}>
-
-                                        Free
-
-                                        <div className="text-[10px] font-normal mt-0.5 text-gray-400">
-                                            0 - 10 users
-                                        </div>
-
-                                    </button>
                                     {plans.map((p) => {
                                         const colors = PLAN_COLORS[p.name] ?? PLAN_COLORS.Platinum;
                                         const isActive = selectedPlan?.id === p.id;
@@ -626,8 +603,7 @@ const PaymentPage = () => {
                                                         : 'border-gray-200 text-gray-500 hover:border-[#6C4CF1]/40'}`}>
                                                 {p.name}
                                                 <div className={`text-[10px] font-normal mt-0.5 ${isActive ? 'text-white/70' : 'text-gray-400'}`}>
-                                                    {/* {p.user_range} users */}
-                                                    {p.name === "Silver" ? "10-20" : p.user_range} users
+                                                    {p.user_range} users
                                                 </div>
                                             </button>
                                         );
@@ -695,24 +671,25 @@ focus:outline-none focus:border-[#6C4CF1] focus:ring-2 focus:ring-[#6C4CF1]/20" 
                         {/* Billing Details */}
                         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-8">
                             <h2 className="text-base font-bold text-gray-800 mb-5">Billing Details</h2>
-                            <form dclassName="space-y-4">
+                            <form className="space-y-4" onSubmit={handleSubmit}>
                                 <div className="grid sm:grid-cols-2 gap-4">
-                                    <Field label="Full Name" required>
-                                        <Input placeholder="Enter Full Name" value={form.name}
-                                            onChange={e => setForm({ ...form, name: e.target.value })} required />
+                                    <Field label="Full Name" required error={formErrors.name}>
+                                        <Input placeholder="Enter Full Name" value={form.name} error={formErrors.name}
+                                            onChange={e => handleFormChange('name', e.target.value)} required />
                                     </Field>
-                                    <Field label="Email" required>
-                                        <Input type="email" placeholder="Enter Email" value={form.email}
-                                            onChange={e => setForm({ ...form, email: e.target.value })} required />
+                                    <Field label="Email" required error={formErrors.email}>
+                                        <Input type="email" placeholder="Enter Email" value={form.email} error={formErrors.email}
+                                            onChange={e => handleFormChange('email', e.target.value)} required />
                                     </Field>
                                 </div>
                                 <div className="grid sm:grid-cols-2 gap-4">
-                                    <Field label="Company Name" required>
-                                        <Input placeholder="Enter Company Name" value={form.company}
-                                            onChange={e => setForm({ ...form, company: e.target.value })} required />
+                                    <Field label="Company Name" required error={formErrors.company}>
+                                        <Input placeholder="Enter Company Name" value={form.company} error={formErrors.company}
+                                            onChange={e => handleFormChange('company', e.target.value)} required />
                                     </Field>
                                     <Field
                                         label="GST Number (Optional)"
+                                        error={formErrors.gst}
                                         right={
                                             <button
                                                 type="button"
@@ -730,33 +707,33 @@ focus:outline-none focus:border-[#6C4CF1] focus:ring-2 focus:ring-[#6C4CF1]/20" 
                                     >
                                         <Input
                                             placeholder="e.g. 29AAACK7411M1Z3"
-                                            value={form.gst}
-                                            onChange={e => setForm({ ...form, gst: e.target.value })}
+                                            value={form.gst} error={formErrors.gst}
+                                            onChange={e => handleFormChange('gst', e.target.value)}
                                             disabled={!enabled}
                                         />
                                     </Field>
                                 </div>
                                 <div className="grid sm:grid-cols-2 gap-4">
-                                    <Field label="Phone Number" required>
-                                        <Input type="tel" placeholder="98765 43210" value={form.phone}
+                                    <Field label="Phone Number" required error={formErrors.phone}>
+                                        <Input type="tel" placeholder="98765 43210" value={form.phone} error={formErrors.phone}
                                             maxLength={10}
-                                            onChange={e => setForm({ ...form, phone: e.target.value })} required />
+                                            onChange={e => handleFormChange('phone', e.target.value)} required />
                                     </Field>
-                                    <Field label="Whatsapp" required>
-                                        <Input type="tel" placeholder="98765 43210" value={form.whatsapp}
+                                    <Field label="Whatsapp" required error={formErrors.whatsapp}>
+                                        <Input type="tel" placeholder="98765 43210" value={form.whatsapp} error={formErrors.whatsapp}
                                             maxLength={10}
-                                            onChange={e => setForm({ ...form, whatsapp: e.target.value })} required />
+                                            onChange={e => handleFormChange('whatsapp', e.target.value)} required />
                                     </Field>
                                 </div>
 
-
-                                <Field label="Company Address" required>
+                                <Field label="Company Address" required error={formErrors.address}>
                                     <textarea placeholder="Enter Company Address" value={form.address} rows={3} required
-
-                                        onChange={e => setForm({ ...form, address: e.target.value })}
-                                        className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-white text-sm text-gray-800
-                                        placeholder:text-gray-300 focus:outline-none focus:border-[#6C4CF1] focus:ring-2
-                                        focus:ring-[#6C4CF1]/15 transition-all resize-none" />
+                                        onChange={e => handleFormChange('address', e.target.value)}
+                                        className={`w-full px-4 py-2.5 rounded-xl border bg-white text-sm text-gray-800
+                                        placeholder:text-gray-300 focus:outline-none focus:ring-2 transition-all resize-none ${formErrors.address
+                                                ? 'border-red-500 focus:border-red-500 focus:ring-red-500/15'
+                                                : 'border-gray-200 focus:border-[#6C4CF1] focus:ring-[#6C4CF1]/15'
+                                            }`} />
                                 </Field>
 
 
