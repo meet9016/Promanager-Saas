@@ -136,7 +136,7 @@ const CoreFeaturesSection = () => {
                 />
                 <div
                   className="absolute inset-0"
-               
+
                 />
                 {/* Number badge */}
                 <div
@@ -179,7 +179,7 @@ const CoreFeaturesSection = () => {
                   ))}
                 </ul>
 
-                <div className="mt-auto pt-4">
+                {/* <div className="mt-auto pt-4">
                   <Link
                     to="/login"
                     className="group/btn inline-flex w-full items-center justify-between gap-2 rounded-full px-5 py-2.5 text-sm font-semibold text-white transition-all hover:shadow-lg"
@@ -191,14 +191,14 @@ const CoreFeaturesSection = () => {
                     Learn More
                     <ArrowUpRight className="h-4 w-4 transition-transform group-hover/btn:rotate-45" />
                   </Link>
-                </div>
+                </div> */}
               </div>
             </motion.article>
           ))}
         </div>
 
         {/* Bottom Stat */}
-        <motion.div
+        {/* <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -221,7 +221,7 @@ const CoreFeaturesSection = () => {
               Payroll Errors in Last 12 Months
             </span>
           </div>
-        </motion.div>
+        </motion.div> */}
       </div>
     </section>
   );

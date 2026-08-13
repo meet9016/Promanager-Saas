@@ -7,7 +7,7 @@ const benefits = [
   "Free 30-day trial",
   "No setup fees",
   "24/7 support",
-  "GDPR compliant"
+
 ];
 
 const CTASection = () => {
@@ -123,13 +123,13 @@ const CTASection = () => {
             </Link>
             <Link to="/contact" className="inline-block">
 
-            <motion.button
-              whileHover={{ scale: 1.05, y: -2 }}
-              whileTap={{ scale: 0.95 }}
-              className="px-8 py-4 bg-white text-[var(--color-primary)] font-bold rounded-full border-2 border-[var(--color-primary)] hover:bg-[var(--color-primary)]/5 transition-all duration-300"
-            >
-              Schedule Demo
-            </motion.button>
+              <motion.button
+                whileHover={{ scale: 1.05, y: -2 }}
+                whileTap={{ scale: 0.95 }}
+                className="px-8 py-4 bg-white text-[var(--color-primary)] font-bold rounded-full border-2 border-[var(--color-primary)] hover:bg-[var(--color-primary)]/5 transition-all duration-300"
+              >
+                Schedule Demo
+              </motion.button>
             </Link>
 
           </motion.div>

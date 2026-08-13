@@ -590,7 +590,7 @@ const Login = () => {
                                     />
                                 </div>
                             </div>
-                            
+
                             {renderPasswordInput("New Password")}
 
                             <div className="flex items-center justify-between">

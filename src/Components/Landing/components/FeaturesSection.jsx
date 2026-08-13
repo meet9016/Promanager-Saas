@@ -54,49 +54,49 @@ const benefits = [
 // Features data from the provided HTML
 const features = [
   {
-    image: "/images/feature1.PNG",
+    image: "/images/feature_1.png",
     alt: "Attendance Management",
     title: "Attendance Management",
     description:
       "Track employee attendance in real-time with automated check-ins, biometric integration, and detailed logs to ensure accuracy and efficiency.",
   },
   {
-    image: "/images/features3.PNG",
+    image: "/images/feature_2.png",
     alt: "Employee Management",
     title: "Employee Management",
     description:
       "Manage employee records, profiles, roles, and performance from a centralized dashboard for better workforce organization.",
   },
   {
-    image: "/images/feature2.PNG",
+    image: "/images/feature_3.png",
     alt: "Shift Management",
     title: "Shift Management",
     description:
       "Easily create, assign, and manage employee shifts with flexible scheduling and real-time updates.",
   },
   {
-    image: "/images/features4.PNG",
+    image: "/images/feature_4.png",
     alt: "Leave and Holiday Management",
     title: "Leave and Holiday Management",
     description:
       "Simplify leave requests, approvals, and holiday tracking with an automated system for better planning.",
   },
   {
-    image: "/images/features5.PNG",
+    image: "/images/feature_5.png",
     alt: "Payroll Management",
     title: "Payroll Management",
     description:
       "Automate salary calculations, deductions, and payslip generation with an accurate and reliable payroll system.",
   },
   {
-    image: "/images/features6.PNG",
+    image: "/images/feature_6.png",
     alt: "Loan and Advance Management",
     title: "Loan and Advance Management",
     description:
       "Manage employee loans and salary advances with easy tracking, approvals, and repayment scheduling.",
   },
   {
-    image: "/images/features7.PNG",
+    image: "/images/feature_7.png",
     alt: "Reports",
     title: "Reports",
     description:
@@ -121,7 +121,7 @@ const FeaturesSection = ({ noMoreFeatures = false }) => {
       <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-br from-[#4B2EDB]/5 to-transparent rounded-full blur-3xl" />
 
       <div className="container mx-auto px-4 relative z-10">
-        {/* Header Section */}
+        
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -129,7 +129,7 @@ const FeaturesSection = ({ noMoreFeatures = false }) => {
           transition={{ duration: 0.8 }}
           className="text-center mb-16"
         >
-          {/* Benefits Title with Curved Line */}
+        
           <div className="relative inline-block mb-8">
             <motion.h3
               initial={{ opacity: 0, y: 20 }}
@@ -141,7 +141,6 @@ const FeaturesSection = ({ noMoreFeatures = false }) => {
               Benefits
             </motion.h3>
 
-            {/* Curved Line SVG */}
             <motion.svg
               initial={{ pathLength: 0, opacity: 0 }}
               whileInView={{ pathLength: 1, opacity: 1 }}
@@ -180,7 +179,7 @@ const FeaturesSection = ({ noMoreFeatures = false }) => {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="text-4xl lg:text-5xl font-extrabold text-[var(--color-text-primary)] mb-6"
           >
-            Smarter Payroll,{" "}
+            Smarter Payroll,{" "} 
             <span className="bg-[var(--color-primary-dark)] bg-clip-text text-transparent">
               Better Business Outcomes
             </span>
@@ -198,9 +197,8 @@ const FeaturesSection = ({ noMoreFeatures = false }) => {
           </motion.p>
         </motion.div>
 
-        {/* Main Content Grid */}
         <div className="grid lg:grid-cols-3 gap-12 items-start  mx-auto mb-24">
-          {/* Left Column - Benefits 1-3 */}
+     
           <div className="space-y-10">
             {benefits.slice(0, 3).map((benefit, index) => {
               const Icon = benefit.icon;
@@ -214,7 +212,7 @@ const FeaturesSection = ({ noMoreFeatures = false }) => {
                   className="group"
                 >
                   <div className="flex items-start gap-4">
-                    {/* Icon */}
+              
                     <motion.div
                       whileHover={{ scale: 1.15, rotate: 10 }}
                       transition={{ duration: 0.3 }}
@@ -230,7 +228,6 @@ const FeaturesSection = ({ noMoreFeatures = false }) => {
                       </div>
                     </motion.div>
 
-                    {/* Content */}
                     <div className="space-y-2 flex-1">
                       <h3 className="text-xl font-bold text-[var(--color-text-primary)] group-hover:text-[var(--color-primary-darker)] transition-colors duration-300">
                         {benefit.title}
@@ -245,7 +242,6 @@ const FeaturesSection = ({ noMoreFeatures = false }) => {
             })}
           </div>
 
-          {/* Center Column - Image */}
           <motion.div
             initial={{ opacity: 0, y: 50, scale: 0.95 }}
             whileInView={{ opacity: 1, y: 0, scale: 1 }}
@@ -254,7 +250,7 @@ const FeaturesSection = ({ noMoreFeatures = false }) => {
             className="flex justify-center"
           >
             <div className="relative">
-              {/* Decorative Elements */}
+           
               <motion.div
                 animate={{ scale: [1, 1.1, 1], opacity: [0.6, 0.8, 0.6] }}
                 transition={{
@@ -275,21 +271,19 @@ const FeaturesSection = ({ noMoreFeatures = false }) => {
                 className="absolute -bottom-6 -right-6 w-20 h-20 bg-gradient-to-br from-[#4B2EDB]/30 to-transparent rounded-full blur-2xl"
               />
 
-              {/* Main Image */}
               <motion.div
                 whileHover={{ scale: 1.02, rotateY: 5 }}
                 transition={{ duration: 0.4 }}
                 className="relative h-96"
               >
                 <img
-                  src="/images/Smarter-Payroll.png"
+                  src="/images/Smarter-Payroll1.png"
                   alt="Payroll Dashboard"
                   loading="lazy"
                   className="w-full h-full object-contain"
                 />
               </motion.div>
 
-              {/* Floating Shapes */}
               <motion.div
                 animate={{ y: [-5, 5, -5], rotate: [0, 180, 360] }}
                 transition={{
@@ -312,7 +306,6 @@ const FeaturesSection = ({ noMoreFeatures = false }) => {
             </div>
           </motion.div>
 
-          {/* Right Column - Benefits 4-6 */}
           <div className="space-y-10">
             {benefits.slice(3, 6).map((benefit, index) => {
               const Icon = benefit.icon;
@@ -326,7 +319,7 @@ const FeaturesSection = ({ noMoreFeatures = false }) => {
                   className="group"
                 >
                   <div className="flex items-start gap-4">
-                    {/* Icon */}
+                   
                     <motion.div
                       whileHover={{ scale: 1.15, rotate: -10 }}
                       transition={{ duration: 0.3 }}
@@ -342,7 +335,6 @@ const FeaturesSection = ({ noMoreFeatures = false }) => {
                       </div>
                     </motion.div>
 
-                    {/* Content */}
                     <div className="space-y-2 flex-1">
                       <h3 className="text-xl font-bold text-[var(--color-text-primary)] group-hover:text-[var(--color-primary-darker)] transition-colors duration-300">
                         {benefit.title}
@@ -360,7 +352,7 @@ const FeaturesSection = ({ noMoreFeatures = false }) => {
 
         {/* Zig-Zag Features Section */}
         <div className="pay-features-section image-title-text mt-20">
-          {/* Features Header */}
+
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -376,10 +368,10 @@ const FeaturesSection = ({ noMoreFeatures = false }) => {
                 transition={{ duration: 0.6 }}
                 className="text-2xl lg:text-3xl font-bold text-[var(--color-text-primary)]"
               >
-                Powerful Features
+                Powerful Features 
               </motion.h3>
 
-              {/* Curved Line SVG */}
+
               <motion.svg
                 initial={{ pathLength: 0, opacity: 0 }}
                 whileInView={{ pathLength: 1, opacity: 1 }}
@@ -420,7 +412,7 @@ const FeaturesSection = ({ noMoreFeatures = false }) => {
             >
               Everything You Need to{" "}
               <span className="bg-[var(--color-primary-dark)] bg-clip-text text-transparent">
-                Manage Your Workforce
+                Manage Your Workforce 
               </span>
             </motion.h2>
 
@@ -446,21 +438,20 @@ const FeaturesSection = ({ noMoreFeatures = false }) => {
                   viewport={{ once: true }}
                   transition={{ duration: 0.8 }}
                   className={`pay-feature-item flex flex-col ${index % 2 === 0
-                      ? "lg:flex-row" // Even index: Image left, text right
-                      : "lg:flex-row-reverse" // Odd index: Image right, text left
+                    ? "lg:flex-row"
+                    : "lg:flex-row-reverse"
                     } items-center gap-8 lg:gap-16`}
                 >
-                  {/* Feature Image */}
+
                   <motion.div
                     whileHover={{ scale: 1.05 }}
                     transition={{ duration: 0.3 }}
                     className="pay-feature-image flex-1 w-full"
                   >
                     <div className="relative">
-                      {/* Background gradient */}
+
                       <div className="absolute inset-0 bg-gradient-to-br from-[#6C4CF1]/20 to-[#4B2EDB]/20 rounded-3xl blur-3xl transform scale-90" />
 
-                      {/* Image */}
                       <img
                         src={feature.image}
                         alt={feature.alt}
@@ -468,7 +459,6 @@ const FeaturesSection = ({ noMoreFeatures = false }) => {
                         className="w-full h-auto rounded-2xl shadow-2xl relative z-10"
                       />
 
-                      {/* Decorative elements */}
                       <motion.div
                         animate={{
                           y: [-5, 5, -5],
@@ -480,14 +470,13 @@ const FeaturesSection = ({ noMoreFeatures = false }) => {
                           ease: "easeInOut",
                         }}
                         className={`absolute ${index % 2 === 0
-                            ? "-right-4 -bottom-4"
-                            : "-left-4 -bottom-4"
+                          ? "-right-4 -bottom-4"
+                          : "-left-4 -bottom-4"
                           } w-16 h-16 bg-gradient-to-br from-[#6C4CF1] to-[#4B2EDB] rounded-2xl opacity-20 blur-xl`}
                       />
                     </div>
                   </motion.div>
 
-                  {/* Feature Text Content */}
                   <motion.div
                     initial={{ opacity: 0, x: index % 2 === 0 ? 50 : -50 }}
                     whileInView={{ opacity: 1, x: 0 }}
@@ -495,24 +484,20 @@ const FeaturesSection = ({ noMoreFeatures = false }) => {
                     transition={{ duration: 0.8, delay: 0.2 }}
                     className="pay-feature-text flex-1 space-y-4"
                   >
-                    {/* Feature number badge */}
                     <div className="inline-block">
                       <span className="text-sm font-semibold text-[var(--color-primary-darker)] bg-[var(--color-primary-lighter)] px-4 py-2 rounded-full">
                         Feature {String(index + 1).padStart(2, "0")}
                       </span>
                     </div>
 
-                    {/* Title */}
                     <h3 className="text-3xl lg:text-4xl font-bold text-[var(--color-text-primary)] leading-tight">
                       {feature.title}
                     </h3>
 
-                    {/* Description */}
                     <p className="text-lg text-[var(--color-text-secondary)] leading-relaxed">
                       {feature.description}
                     </p>
 
-                    {/* Learn More Link */}
                     <Link to="/login" className="inline-block">
 
                       <motion.a
@@ -531,6 +516,7 @@ const FeaturesSection = ({ noMoreFeatures = false }) => {
             </div>
           ) : null}
         </div>
+
       </div>
     </section>
   );

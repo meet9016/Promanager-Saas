@@ -92,7 +92,7 @@ const PricingPage = () => {
   }, [])
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white ">
       <Helmet>
         <title>Pricing | ProManager</title>
         <meta name="description" content="Transparent pricing for payroll software." />
@@ -169,7 +169,7 @@ const PricingPage = () => {
         ) : (
           <>
             {/* ── ESTIMATOR ── */}
-            <div className="max-w-5xl mx-auto mb-16 relative">
+            <div className="container  mx-auto mb-16 relative px-4 py-4">
               <div className="absolute -inset-4 bg-gradient-to-br from-[#6C4CF1]/20 via-[#a78bfa]/10 to-transparent rounded-[2.5rem] blur-2xl pointer-events-none" />
               <div className="relative bg-white/70 backdrop-blur-xl border border-white rounded-[1.75rem] p-5 shadow-[0_8px_40px_rgba(108,76,241,0.12)]">
                 <div className="text-center mb-4">
@@ -215,7 +215,7 @@ const PricingPage = () => {
             </div>
 
             {/* ── PLANS GRID ── */}
-            <div className="max-w-5xl mx-auto grid md:grid-cols-3 gap-5 items-start">
+            <div className="container  mx-auto mb-16 relative px-4 py-4 mx-auto grid md:grid-cols-4 gap-5 items-start">
               {plans.map((plan, i) => {
                 const isActive = i === safeActivePlan;
                 return (

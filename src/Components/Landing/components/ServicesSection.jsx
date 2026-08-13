@@ -8,18 +8,21 @@ const services = [
     icon: Users,
     title: "Automated Payroll Management",
     description: "Process salaries, deductions, and taxes accurately with just a few clicks — reducing errors and saving time.",
+    description1: "Simplify your payroll process with a smart and efficient solution designed to handle salaries, deductions, taxes, and payments with ease. Save time, improve accuracy, and keep your payroll operations smooth, reliable, and hassle-free.",
     image: "/images/Automated-Payroll-Management.png",
   },
   {
     icon: UserCheck,
     title: "Leave & Attendance Integration",
     description: "Seamlessly sync employee attendance and leave records to ensure payroll is always accurate and compliant.",
+    description1: "Streamline your leave and attendance management with a seamless system that keeps all employee records organized and up to date. Automatically sync attendance, working hours, and leave details to reduce manual effort and minimize errors. This helps ensure accurate payroll calculations, better workforce visibility, and smooth compliance across your organization.",
     image: "/images/Leave-Attendance-Integration.png",
   },
   {
     icon: BarChart3,
     title: "Real-Time Payroll Insights",
     description: "Track expenses, monitor compliance, and generate payroll reports with actionable insights in real time.",
+    description1: "Gain real-time visibility into your payroll expenses, compliance, and key financial trends. Access clear and accurate insights to monitor performance, identify important patterns, and make smarter decisions for better payroll management.",
     image: "/images/Real-Time-Payroll-Insights.png",
   }
 ];
@@ -97,7 +100,7 @@ const ServicesSection = () => {
                 </span>
               </h2>
             </div>
-            <motion.p
+            {/* <motion.p
               initial={{ opacity: 0, x: 50 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
@@ -105,7 +108,7 @@ const ServicesSection = () => {
               className="text-base text-[var(--color-text-secondary)] max-w-md"
             >
               Streamline your workforce management with powerful automation and insights
-            </motion.p>
+            </motion.p> */}
           </div>
         </motion.div>
 
@@ -192,8 +195,12 @@ const ServicesSection = () => {
                     {service.description}
                   </p>
 
+                  <p className="text-base text-[var(--color-text-secondary)] leading-relaxed">
+                    {service.description1}
+                  </p>
+
                   {/* Learn More Link */}
-                  <Link to="/login" className="inline-block">
+                  {/* <Link to="/login" className="inline-block">
 
                     <motion.div
                       whileHover={{ x: 10 }}
@@ -210,14 +217,13 @@ const ServicesSection = () => {
                   </Link>
 
 
-                  {/* Decorative Line */}
                   <motion.div
                     initial={{ scaleX: 0 }}
                     whileInView={{ scaleX: 1 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.8, delay: 0.6 }}
                     className="h-1 w-16 bg-[var(--color-primary-dark)] rounded-full origin-left"
-                  />
+                  /> */}
                 </motion.div>
               </motion.div>
             );

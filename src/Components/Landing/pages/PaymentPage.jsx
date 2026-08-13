@@ -574,7 +574,7 @@ const PaymentPage = () => {
 
             {/* ── Body ── */}
             <section className="px-4 pb-20">
-                <div className="max-w-5xl mx-auto grid lg:grid-cols-[1fr_340px] gap-6 items-start">
+                <div className="container  mx-auto mb-16 relative px-4 py-4 mx-auto grid lg:grid-cols-[1fr_340px] gap-6 items-start">
 
                     {/* LEFT */}
                     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
@@ -586,11 +586,11 @@ const PaymentPage = () => {
 
                             {/* Plan Tabs */}
                             {loading ? (
-                                <div className="grid grid-cols-3 gap-2 mb-5">
+                                <div className="grid grid-cols-4 gap-2 mb-5">
                                     {[1, 2, 3].map(i => <div key={i} className="h-14 rounded-xl bg-gray-100 animate-pulse" />)}
                                 </div>
                             ) : (
-                                <div className="grid grid-cols-3 gap-2 mb-5">
+                                <div className="grid grid-cols-4 gap-2 mb-5">
 
                                     {plans.map((p) => {
                                         const colors = PLAN_COLORS[p.name] ?? PLAN_COLORS.Platinum;

@@ -28,9 +28,9 @@ const AboutSection = () => {
   ];
 
   return (
-    <section className="py-20 lg:py-28 bg-white relative ">
+    <section className="pt-20 lg:pt-28 bg-white relative">
 
- <div className="absolute top-1/2 z-10   right-0 w-[400px] h-[500px] rounded-full
+      <div className="absolute top-1/2 z-10   right-0 w-[400px] h-[500px] rounded-full
     bg-[#6c4cf1]
     blur-[90px]
     opacity-20
@@ -88,7 +88,7 @@ const AboutSection = () => {
                 </div>
               </motion.div> */}
 
-             
+
             </div>
           </motion.div>
 
@@ -113,7 +113,7 @@ const AboutSection = () => {
                   About ProManager
                 </span>
               </motion.div>
-              
+
               {/* Curved Line SVG under badge */}
               <motion.svg
                 initial={{ pathLength: 0, opacity: 0 }}
@@ -162,8 +162,8 @@ const AboutSection = () => {
               transition={{ duration: 0.8, delay: 0.4 }}
               className="text-lg text-[var(--color-text-secondary)] leading-relaxed"
             >
-              At our core, we believe that seamless payroll builds stronger teams. 
-              That's why <span className="font-bold text-[var(--color-primary-darker)] px-1.5 py-0.5 rounded-md bg-[var(--color-primary-alpha-10)]">DIGITALKS TECHNO LLP</span> created <span className="font-bold text-[var(--color-primary-darker)] px-1.5 py-0.5 rounded-md bg-[var(--color-primary-alpha-10)]">ProManager</span> — an ultimate payroll software designed to simplify every aspect of workforce pay, 
+              At our core, we believe that seamless payroll builds stronger teams.
+              That's why <span className="font-bold text-[var(--color-primary-darker)] px-1.5 py-0.5 rounded-md bg-[var(--color-primary-alpha-10)]">DIGITALKS TECHNO LLP</span> created <span className="font-bold text-[var(--color-primary-darker)] px-1.5 py-0.5 rounded-md bg-[var(--color-primary-alpha-10)]">ProManager</span> — an ultimate payroll software designed to simplify every aspect of workforce pay,
               from salary and compliance to attendance, leave, and employee benefits.
             </motion.p>
 
