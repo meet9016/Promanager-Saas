@@ -475,7 +475,7 @@ const LandingNavbar = () => {
                                     Sign Up
                                 </motion.button>
                             </button> */}
-                            {!isAuthenticated() && (
+                            {/* {!isAuthenticated() && (
                                 <button>
                                     <motion.button
                                         onClick={() => setIsAgreementOpen(true)}
@@ -486,7 +486,7 @@ const LandingNavbar = () => {
                                         Sign Up
                                     </motion.button>
                                 </button>
-                            )}
+                            )} */}
                         </div>
 
                         {/* Mobile Menu Button */}
