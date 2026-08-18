@@ -258,12 +258,11 @@ const PaymentPage = () => {
                     apiType: 'web'
                 });
                 if (response?.data?.success) {
-                    const data = response.data.data;
-                    setPlans(data);
-                    if (data.length > 0) {
-                        // Don't auto-select here - let the employees useEffect handle it
-                        // Initial employees is 21, so it will auto-select the appropriate paid plan
-                    }
+                    const rawData = response.data.data || [];
+                    const paidPlans = rawData.filter(
+                        (p) => p.name?.toLowerCase() !== "free" && p.user_range !== "0-3" && Number(p.price_per_user) > 0
+                    );
+                    setPlans(paidPlans);
                 } else {
                     console.error(response?.data?.message || 'Failed to fetch pricing data');
                 }
@@ -521,11 +520,6 @@ const PaymentPage = () => {
         }
     };
 
-
-
-
-
-
     // ─────────────────────────────────────────────────────────────────────────
     return (
         <div className="min-h-screen bg-white">
@@ -581,29 +575,59 @@ const PaymentPage = () => {
                         transition={{ duration: 0.5, delay: 0.1 }} className="space-y-5">
 
                         {/* Select Plan card */}
-                        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-8">
-                            <h2 className="text-base font-bold text-gray-800 mb-4">Select Plan</h2>
+                        <div className="bg-white rounded-2xl border border-gray-300 shadow-sm p-8">
+                            <h2 className="text-base text-[19px] font-extrabold text-gray-800 mb-4">Select Plan</h2>
 
-                            {/* Plan Tabs */}
+                            {/* Plan Cards Grid (3 Box Design as in First Image) */}
                             {loading ? (
-                                <div className="grid grid-cols-4 gap-2 mb-5">
-                                    {[1, 2, 3].map(i => <div key={i} className="h-14 rounded-xl bg-gray-100 animate-pulse" />)}
+                                <div className="grid grid-cols-3 gap-3.5 mb-6">
+                                    {[1, 2, 3].map(i => <div key={i} className="h-28 rounded-2xl bg-gray-100 animate-pulse" />)}
                                 </div>
                             ) : (
-                                <div className="grid grid-cols-4 gap-2 mb-5">
-
+                                <div className="grid grid-cols-3 gap-3.5 mb-6">
                                     {plans.map((p) => {
-                                        const colors = PLAN_COLORS[p.name] ?? PLAN_COLORS.Platinum;
                                         const isActive = selectedPlan?.id === p.id;
+                                        const iconStyle = {
+                                            Silver: "bg-purple-100/80 text-[#6C4CF1]",
+                                            Gold: "bg-amber-100/80 text-amber-700",
+                                            Platinum: "bg-indigo-100/80 text-indigo-700"
+                                        }[p.name] || "bg-purple-100/80 text-[#6C4CF1]";
+
                                         return (
-                                            <button key={p.id} type="button" onClick={() => handlePlanSelect(p)}
-                                                className={`py-2.5 rounded-xl text-xs font-bold border-2 transition-all
-                                                ${isActive
-                                                        ? `bg-gradient-to-r ${colors.gradient} text-white border-transparent shadow-md`
-                                                        : 'border-gray-200 text-gray-500 hover:border-[#6C4CF1]/40'}`}>
-                                                {p.name}
-                                                <div className={`text-[10px] font-normal mt-0.5 ${isActive ? 'text-white/70' : 'text-gray-400'}`}>
+                                            <button
+                                                key={p.id}
+                                                type="button"
+                                                onClick={() => handlePlanSelect(p)}
+                                                className={`relative p-4 rounded-2xl border-2 text-left transition-all duration-200 cursor-pointer flex flex-col justify-between h-32 ${isActive
+                                                    ? 'bg-purple-50/40 border-[#6C4CF1] shadow-sm'
+                                                    : 'bg-white border-gray-200 hover:border-[#6C4CF1]/30 hover:shadow-sm'
+                                                    }`}
+                                            >
+                                                {/* Top Row: Plan Name & Radio Checkmark */}
+                                                <div className="flex items-center justify-between">
+                                                    <span className={`font-bold text-lg ${isActive ? 'text-[#6C4CF1]' : 'text-gray-900'}`}>
+                                                        {p.name}
+                                                    </span>
+                                                    <div className={`w-5 h-5 rounded-full flex items-center justify-center border-2 transition-all ${isActive ? 'bg-[#6C4CF1] border-[#6C4CF1] text-white' : 'border-gray-300 bg-white'
+                                                        }`}>
+                                                        {isActive && (
+                                                            <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                                                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                                            </svg>
+                                                        )}
+                                                    </div>
+                                                </div>
+
+                                                {/* Middle Row: User Range */}
+                                                <div className="text-xs font-semibold text-gray-500">
                                                     {p.user_range} users
+                                                </div>
+
+                                                {/* Bottom Row: Icon Box */}
+                                                <div className={`w-10 h-12 mt-2 rounded-xl flex items-center justify-center ${iconStyle}`}>
+                                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                                                    </svg>
                                                 </div>
                                             </button>
                                         );
@@ -669,7 +693,7 @@ focus:outline-none focus:border-[#6C4CF1] focus:ring-2 focus:ring-[#6C4CF1]/20" 
                         </div>
 
                         {/* Billing Details */}
-                        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-8">
+                        <div className="bg-white rounded-2xl border border-gray-300 shadow-sm p-8">
                             <h2 className="text-base font-bold text-gray-800 mb-5">Billing Details</h2>
                             <form className="space-y-4" onSubmit={handleSubmit}>
                                 <div className="grid sm:grid-cols-2 gap-4">
@@ -747,13 +771,12 @@ focus:outline-none focus:border-[#6C4CF1] focus:ring-2 focus:ring-[#6C4CF1]/20" 
                     </motion.div>
 
                     {/* RIGHT — Sticky Summary */}
-
                     {!isFreePlan && (
                         <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}
                             transition={{ duration: 0.5, delay: 0.2 }}
                             className="lg:sticky lg:top-6 space-y-4">
 
-                            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-8">
+                            <div className="bg-white rounded-2xl border border-gray-300 shadow-sm p-8">
 
                                 <h2 className="text-base font-bold text-gray-800 mb-5">Price Details</h2>
                                 {selectedPlan && (

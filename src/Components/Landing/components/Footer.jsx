@@ -24,7 +24,6 @@ const Footer = () => {
   ];
 
   const resourceLinks = [
-
     { name: "Privacy Policy", path: "/privacy-policy" },
     { name: "Terms & Conditions", path: "/terms" }
   ];
@@ -60,168 +59,170 @@ const Footer = () => {
   }
 
   return (
-    <footer className="bg-[#0b0b0b] text-gray-300">
-      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
-        {/* Main Footer Content */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
+    <>
+      <footer className="bg-[#0b0b0b] text-gray-300">
+        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-8">
+          {/* Main Footer Content Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
 
-          {/* Company Info & Address */}
-          <div className="space-y-6 text-left">
-            <Link to="/" className="inline-block">
-              <img
-                src={Logo}
-                alt="ProManager Logo"
-                className="h-12 w-auto object-contain hover:opacity-80 transition-opacity"
-              />
-            </Link>
+            {/* Col 1: Company Info & Address */}
+            <div className="space-y-4 text-left">
+              <Link to="/" className="inline-block mb-2">
+                <img
+                  src={Logo}
+                  alt="ProManager Logo"
+                  className="h-14 w-auto object-contain hover:opacity-90 transition-opacity"
+                />
+              </Link>
 
-            <div className="space-y-4">
-              <div className="flex items-start space-x-3">
-                <MapPin size={18} className="text-gray-400 flex-shrink-0 mt-1" />
-                <p className="text-sm text-gray-400 leading-relaxed">
-                  {config?.address || "Shreenathji Bungalow, 6, Peddar Rd, near Raghuvir Shoppers, Mota Varachha, Surat, Gujarat 394101"}
-                </p>
-              </div>
+              <div className="space-y-3">
+                <div className="flex items-start space-x-3">
+                  <MapPin size={16} className="text-gray-400 flex-shrink-0 mt-0.5" />
+                  <p className="text-sm text-gray-400 leading-relaxed">
+                    {config?.address || "Shreenathji Bungalow, 6, Peddar Rd, near Raghuvir Shoppers, Mota Varachha, Surat, Gujarat 394101"}
+                  </p>
+                </div>
 
-              <div className="flex items-center space-x-3">
-                <Mail size={18} className="text-gray-400 flex-shrink-0" />
-                <a href={`mailto:${config?.email}`} className="text-sm text-gray-400 hover:text-white transition-colors break-all">
-                  {config?.email}
-                </a>
-              </div>
+                <div className="flex items-center space-x-3">
+                  <Mail size={16} className="text-gray-400 flex-shrink-0" />
+                  <a href={`mailto:${config?.email}`} className="text-sm text-gray-400 hover:text-white transition-colors break-all">
+                    {config?.email}
+                  </a>
+                </div>
 
-              <div className="flex items-start space-x-3">
-                <Phone size={18} className="text-gray-400 flex-shrink-0 mt-1" />
-                <div className="flex flex-col space-y-1">
-
+                <div className="flex items-center space-x-3">
+                  <Phone size={16} className="text-gray-400 flex-shrink-0" />
                   <a href={`tel:${config?.mobile_number}`} className="text-sm text-gray-400 hover:text-white transition-colors">
                     {config?.mobile_number}
                   </a>
                 </div>
               </div>
             </div>
-          </div>
 
-          {/* Quick Links */}
-          <div className="text-left">
-            <h3 className="text-white font-semibold text-lg mb-6">Quick Links</h3>
-            <ul className="space-y-3">
-              {quickLinks.map((link) => (
-                <li key={link.path}>
-                  <Link
-                    to={link.path}
-                    className="text-sm text-gray-400 hover:text-white transition-colors duration-200 inline-block"
-                  >
-                    {link.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+            {/* Col 2: Quick Links */}
+            <div className="text-left">
+              <h3 className="text-white font-semibold text-md mb-4">Quick Links</h3>
+              <ul className="space-y-2.5">
+                {quickLinks.map((link) => (
+                  <li key={link.path}>
+                    <Link
+                      to={link.path}
+                      className="text-sm text-gray-400 hover:text-white transition-colors duration-200 inline-block"
+                    >
+                      {link.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
 
-          {/* Resources & GST */}
-          <div className="text-left">
-            <h3 className="text-white font-semibold text-lg mb-6">Resources</h3>
-            <ul className="space-y-3 mb-6">
-              {resourceLinks.map((link) => (
-                <li key={link.path}>
-                  <Link
-                    to={link.path}
-                    className="text-sm text-gray-400 hover:text-white transition-colors duration-200 inline-block"
-                  >
-                    {link.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+            {/* Col 3: Resources & GST */}
+            <div className="text-left">
+              <h3 className="text-white font-semibold text-md mb-4">Resources</h3>
+              <ul className="space-y-2.5 mb-5">
+                {resourceLinks.map((link) => (
+                  <li key={link.path}>
+                    <Link
+                      to={link.path}
+                      className="text-sm text-gray-400 hover:text-white transition-colors duration-200 inline-block"
+                    >
+                      {link.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
 
-            <div className="border-t border-gray-800 pt-6">
-              <h4 className="text-white font-medium mb-2">GST Number:</h4>
-              <p className="text-sm text-gray-400">{config?.gstNumber || "24BAGPV9685P2ZG"}</p>
+              <div className="border-t border-gray-800/80 pt-4">
+                <h4 className="text-white font-medium text-xs mb-1">GST Number:</h4>
+                <p className="text-sm text-gray-400 font-mono">{config?.gstNumber || "24BAGPV9685P2ZG"}</p>
+              </div>
+            </div>
+
+            {/* Col 4: Bank Details */}
+            <div className="text-left">
+              <h3 className="text-white font-semibold text-md mb-4">Bank Details</h3>
+              <ul className="space-y-2">
+                {bankDetailsToDisplay.map((detail, index) => (
+                  <li key={index} className="text-sm">
+                    <span className="text-gray-300 font-medium">{detail.label}:</span>{" "}
+                    <span className="text-gray-400 break-words">{detail.value}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
 
-          {/* Bank Details */}
-          <div className="text-left">
-            <h3 className="text-white font-semibold text-lg mb-6">Bank Details</h3>
-            <ul className="space-y-3">
-              {bankDetailsToDisplay.map((detail, index) => (
-                <li key={index} className="text-sm">
-                  <span className="text-gray-300">{detail.label}:</span>{" "}
-                  <span className="text-gray-400 break-words">{detail.value}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
+          {/* Thin Horizontal Line Divider */}
+          <div className="border-t border-gray-800/80 my-8"></div>
 
-        {/* Divider */}
-        <div className="border-t border-gray-800 my-10"></div>
-
-        {/* Bottom Section */}
-        <div className="flex flex-col lg:flex-row items-center justify-between gap-6">
-
-          {/* App Store Buttons - Side by side on all screens */}
-          <div className="flex flex-row items-center justify-center lg:justify-start gap-3 w-full lg:w-auto">
-            <a
-              href={config?.playstoreLink || "https://play.google.com/store/apps/details?id=com.shopno.promanager"}
-              className="transition-transform hover:scale-105 duration-200 flex-1 sm:flex-none max-w-[140px] sm:max-w-none"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <img
-                src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg"
-                alt="Download on Google Play"
-                className="h-10 sm:h-12 w-full object-contain"
-              />
-            </a>
-            <a
-              href={config?.appstoreLink || "https://play.google.com/store/apps/details?id=com.shopno.promanager"}
-              className="transition-transform hover:scale-105 duration-200 flex-1 sm:flex-none max-w-[140px] sm:max-w-none"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <img
-                src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg"
-                alt="Download on App Store"
-                className="h-10 sm:h-12 w-full object-contain"
-              />
-            </a>
-          </div>
-
-          {/* Social Links */}
-          <div className="flex items-center justify-center lg:justify-end gap-3 w-full lg:w-auto">
-            {socialLinks.map((social, index) => (
+          {/* Bottom Row Inside Dark Section: App Buttons Left, Social Icons Right */}
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+            {/* App Store Buttons - Left */}
+            <div className="flex items-center gap-3">
               <a
-                key={index}
-                href={social.href}
+                href={config?.playstoreLink || "https://play.google.com/store/apps/details?id=com.shopno.promanager"}
+                className="transition-transform hover:scale-105 duration-200"
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label={social.label}
-                className="bg-gray-800 text-white p-3 rounded-full hover:bg-gray-700 transition-all duration-200 hover:scale-110"
               >
-                <social.icon size={18} />
+                <img
+                  src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg"
+                  alt="Download on Google Play"
+                  className="h-10 sm:h-11 w-auto object-contain"
+                />
               </a>
-            ))}
+              <a
+                href={config?.appstoreLink || "https://play.google.com/store/apps/details?id=com.shopno.promanager"}
+                className="transition-transform hover:scale-105 duration-200"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <img
+                  src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg"
+                  alt="Download on App Store"
+                  className="h-10 sm:h-11 w-auto object-contain"
+                />
+              </a>
+            </div>
+
+            {/* Social Icons - Right */}
+            <div className="flex items-center gap-3">
+              {socialLinks.map((social, index) => (
+                <a
+                  key={index}
+                  href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={social.label}
+                  className="w-9 h-9 rounded-full bg-gray-800/80 border border-gray-700/60 flex items-center justify-center text-gray-300 hover:text-white hover:bg-[var(--color-primary)] hover:border-[var(--color-primary)] transition-all duration-300"
+                >
+                  <social.icon size={16} />
+                </a>
+              ))}
+            </div>
           </div>
         </div>
+      </footer>
 
-        {/* Copyright */}
-        <div className="border-t border-gray-800 mt-10 pt-6">
-          <p className="text-center text-sm text-gray-500">
+      {/* Copyright Bar Outside Footer on White Background */}
+      <div className="bg-white border-t border-gray-200 py-2.5 px-4">
+        <div className="max-w-7xl mx-auto text-center">
+          <p className="text-xs sm:text-sm text-gray-800 font-medium tracking-wide">
             Copyright © {currentYear}{" "}
-            <span className="text-gray-400">ProManager</span>. All rights reserved.{" "}
+            <strong className="text-[var(--color-primary-dark)] font-bold">ProManager</strong>. All rights reserved.{" "}
+            <span className="text-gray-400 mx-1">•</span>{" "}
             <a
               href="https://digitalkstechno.com/"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-primary hover:underline"
+              className="text-[var(--color-primary-dark)] font-bold hover:underline transition-colors"
             >
               A product of Digitalks Techno LLP.
-            </a>         </p>
+            </a>
+          </p>
         </div>
       </div>
-    </footer>
+    </>
   );
 };
 

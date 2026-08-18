@@ -1,47 +1,47 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { Users, TrendingUp, Heart, FileText, DollarSign, GraduationCap, Clock, UserMinus } from "lucide-react";
+import { Users, Clock, Calendar, IndianRupee, Briefcase, BarChart2, ShieldCheck, Settings } from "lucide-react";
 
 const resourceCategories = [
   {
+    icon: Calendar,
+    title: "Attendance Management",
+    description: "Track daily & monthly attendance, detailed logs, and geolocation-based workforce tracking.",
+  },
+  {
     icon: Users,
-    title: "Recruitment & Onboarding",
-    description: "Hire the right talent and onboard employees seamlessly with structured workflows and checklists.",
-  },
-  {
-    icon: TrendingUp,
-    title: "Performance Management",
-    description: "Set goals, track progress, and run performance reviews to boost employee productivity.",
-  },
-  {
-    icon: Heart,
-    title: "Employee Relations",
-    description: "Build a positive workplace culture and resolve employee concerns with transparency.",
-  },
-  {
-    icon: FileText,
-    title: "HR Policies & Compliance",
-    description: "Maintain updated policies and ensure your business stays compliant with labor regulations.",
-  },
-  {
-    icon: DollarSign,
-    title: "Payroll & Compensation",
-    description: "Automate payroll processing, manage benefits, and ensure accurate salary disbursement.",
-  },
-  {
-    icon: GraduationCap,
-    title: "Training & Development",
-    description: "Empower employees with skill development programs and track learning progress.",
+    title: "Employee Management",
+    description: "Manage employee profiles, branches, departments, designations, allowances, and deductions.",
   },
   {
     icon: Clock,
-    title: "Time & Attendance",
-    description: "Track employee working hours, leaves, and shifts with accurate time management tools.",
+    title: "Shift Management",
+    description: "Schedule work shifts, manage shift reallocations, and track employee working hours efficiently.",
   },
   {
-    icon: UserMinus,
-    title: "Offboarding Management",
-    description: "Handle resignations and exits smoothly with structured offboarding checklists.",
+    icon: Calendar,
+    title: "Leaves & Holidays",
+    description: "Process leave applications, track approval statuses, and maintain company holiday calendars.",
+  },
+  {
+    icon: IndianRupee,
+    title: "Payroll & Salary",
+    description: "Automate monthly payroll calculations, salary generation status, and payment disbursals.",
+  },
+  {
+    icon: Briefcase,
+    title: "Loans & Advances",
+    description: "Track employee loan requests, salary advance disbursements, and automated recovery deductions.",
+  },
+  {
+    icon: BarChart2,
+    title: "Reports & Analytics",
+    description: "Generate monthly muster reports, attendance exception summaries, and salary analytics.",
+  },
+  {
+    icon: ShieldCheck,
+    title: "User & Role Management",
+    description: "Configure custom user roles, assign granular permissions, and control administrative access.",
   }
 ];
 
@@ -57,11 +57,11 @@ const ResourceTemplatesSection = () => {
             </pattern>
           </defs>
           <rect width="100%" height="100%" fill="url(#grid)" />
-          
+
           {/* Abstract Shapes */}
           <path d="M 0 50 Q 25 25, 50 50 T 100 50" stroke="#6C4CF1" strokeWidth="2" fill="none" opacity="0.05" />
           <path d="M 100 0 Q 75 25, 50 0 T 0 0" stroke="#4B2EDB" strokeWidth="2" fill="none" opacity="0.05" />
-          
+
           {/* Geometric Lines */}
           <line x1="0" y1="30%" x2="100%" y2="30%" stroke="#6C4CF1" strokeWidth="1" opacity="0.03" />
           <line x1="0" y1="70%" x2="100%" y2="70%" stroke="#4B2EDB" strokeWidth="1" opacity="0.03" />
@@ -70,7 +70,7 @@ const ResourceTemplatesSection = () => {
         </svg>
       </div>
 
-      
+
 
       <div className="container mx-auto px-4 relative z-10">
         {/* Header Section */}
@@ -91,9 +91,9 @@ const ResourceTemplatesSection = () => {
                 transition={{ duration: 0.6 }}
                 className="text-2xl lg:text-3xl font-bold text-[var(--color-text-primary)] mb-6"
               >
-                Resource Categories
+                Software Categories
               </motion.h3>
-              
+
               {/* Curved Line SVG */}
               <motion.svg
                 initial={{ pathLength: 0, opacity: 0 }}
@@ -127,9 +127,9 @@ const ResourceTemplatesSection = () => {
               transition={{ duration: 0.8, delay: 0.2 }}
               className="text-4xl lg:text-5xl font-extrabold text-[var(--color-text-primary)] mb-6 leading-tight"
             >
-              Organize HR Workflows with{" "}
+              Streamline HR & Payroll with{" "}
               <span className="bg-[var(--color-primary-dark)] bg-clip-text text-transparent">
-                Ready-to-Use Templates
+                All-in-One Software Modules
               </span>
             </motion.h2>
 
@@ -140,7 +140,7 @@ const ResourceTemplatesSection = () => {
               transition={{ duration: 0.8, delay: 0.4 }}
               className="text-lg text-[var(--color-text-secondary)] leading-relaxed"
             >
-              Access essential HR categories to streamline every stage of the employee lifecycle — from hiring to exit.
+              Access powerful software modules built to automate every aspect of employee management, attendance, salary processing, and reporting.
             </motion.p>
           </div>
         </motion.div>
@@ -149,7 +149,7 @@ const ResourceTemplatesSection = () => {
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {resourceCategories.map((category, index) => {
             const Icon = category.icon;
-            
+
             return (
               <motion.div
                 key={index}
@@ -181,7 +181,7 @@ const ResourceTemplatesSection = () => {
                     <h3 className="text-lg font-bold text-[var(--color-text-primary)] group-hover:text-[var(--color-primary-dark)] transition-colors duration-300">
                       {category.title}
                     </h3>
-                    
+
                     <p className="text-sm text-[var(--color-text-secondary)] leading-relaxed">
                       {category.description}
                     </p>
@@ -219,7 +219,7 @@ const ResourceTemplatesSection = () => {
         >
           <div className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#6C4CF1]/10 to-[#4B2EDB]/10 rounded-full border border-[#6C4CF1]/20">
             <span className="text-sm font-semibold text-[var(--color-primary-darker)]">
-              8 Essential HR Categories
+              8 Core Software Modules
             </span>
             <div className="w-2 h-2 bg-[var(--color-primary-dark)] rounded-full animate-pulse" />
           </div>

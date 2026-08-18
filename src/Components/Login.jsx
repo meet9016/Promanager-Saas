@@ -138,12 +138,10 @@ const Login = () => {
         const checkNumber = () => {
             if (!number) {
                 setNumberError("Please enter your mobile number.");
-                setToast({ message: "Please enter your mobile number.", type: 'error' });
                 return false;
             }
             if (!/^\d{10}$/.test(number)) {
                 setNumberError("Mobile number must be 10 digits.");
-                setToast({ message: "Mobile number must be 10 digits.", type: 'error' });
                 return false;
             }
             return true;
@@ -152,12 +150,10 @@ const Login = () => {
         const checkPassword = (isStrong = false) => {
             if (!password) {
                 setPasswordError("Please enter your password.");
-                setToast({ message: "Please enter your password.", type: 'error' });
                 return false;
             }
             if (isStrong && !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(password)) {
                 setPasswordError("Password must be 8+ chars, include upper, lower, number & special char.");
-                setToast({ message: "Password must be 8+ chars, include upper, lower, number & special char.", type: 'error' });
                 return false;
             }
             return true;
@@ -166,23 +162,27 @@ const Login = () => {
         const checkOTP = () => {
             if (!OTP) {
                 setNumberError("Please enter OTP.");
-                setToast({ message: "Please enter OTP.", type: 'error' });
                 return false;
             }
             return true;
         };
 
         switch (authStep) {
-            case 0:
-                if (checkNumber() && checkPassword()) handleLogin();
+            case 0: {
+                const isNumberValid = checkNumber();
+                const isPasswordValid = checkPassword();
+                if (isNumberValid && isPasswordValid) handleLogin();
                 break;
+            }
             case 1:
                 if (checkNumber()) handleOTP();
                 break;
-            case 2:
-                // Reusing numberError for OTP error to match original logic
-                if (checkOTP() && checkPassword(true)) handlePassword();
+            case 2: {
+                const isOTPValid = checkOTP();
+                const isPassValid = checkPassword(true);
+                if (isOTPValid && isPassValid) handlePassword();
                 break;
+            }
             default:
                 break;
         }
@@ -190,7 +190,10 @@ const Login = () => {
 
     const handleNumberChange = (e) => {
         const value = e.target.value;
-        if (/^\d{0,10}$/.test(value)) setNumber(value);
+        if (/^\d{0,10}$/.test(value)) {
+            setNumber(value);
+            if (numberError) setNumberError("");
+        }
     };
 
     // 3. Fix handleLogin — ensure CheckSubscription awaits and subLoading gates navigation
@@ -381,6 +384,7 @@ const Login = () => {
                     disabled={isLoading}
                 />
             </div>
+            {numberError && <p className="text-red-500 text-xs mt-1.5 ml-1">{numberError}</p>}
         </div>
     );
 
@@ -392,7 +396,7 @@ const Login = () => {
                 <input
                     type={showPassword ? "text" : "password"}
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={(e) => { setPassword(e.target.value); if (passwordError) setPasswordError(""); }}
                     onKeyDown={handleKeyDown}
                     placeholder={`Enter your ${label.toLowerCase()}`}
                     className={`w-full pl-11 pr-10 py-3 border rounded-lg ${passwordError ? "border-red-500" : ""}`}
@@ -410,6 +414,7 @@ const Login = () => {
                     )}
                 </button>
             </div>
+            {passwordError && <p className="text-red-500 text-xs mt-1.5 ml-1">{passwordError}</p>}
         </div>
     );
 
@@ -582,13 +587,14 @@ const Login = () => {
                                     <input
                                         type="text"
                                         value={OTP}
-                                        onChange={(e) => setOTP(e.target.value)}
+                                        onChange={(e) => { setOTP(e.target.value); if (numberError) setNumberError(""); }}
                                         onKeyDown={handleKeyDown}
                                         placeholder="Enter OTP"
                                         className={`w-full px-4 py-3 border rounded-lg ${numberError ? "border-red-500" : ""}`}
                                         disabled={isLoading}
                                     />
                                 </div>
+                                {numberError && <p className="text-red-500 text-xs mt-1.5 ml-1">{numberError}</p>}
                             </div>
 
                             {renderPasswordInput("New Password")}

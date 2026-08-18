@@ -322,7 +322,7 @@ const App = () => {
                 path="/features"
                 element={
                   <LandingPageWrapper>
-                    <FeaturesPage />
+                    <FeaturesPage noBenefits={true} />
                   </LandingPageWrapper>
                 }
               />
@@ -894,7 +894,7 @@ const App = () => {
 
                 }
               />
-              
+
               <Route
                 path="/settings/add-setting"
                 element={

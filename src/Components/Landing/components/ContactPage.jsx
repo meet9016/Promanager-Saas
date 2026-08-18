@@ -106,6 +106,21 @@ const ContactPage = () => {
       answer:
         "Yes, promanager supports seamless integration with various HR, attendance, and accounting systems to ensure smooth payroll operations.",
     },
+    {
+      question: "Can I access promanager from multiple devices?",
+      answer:
+        "Yes! promanager is a cloud-based platform, allowing authorized users to securely access payroll, attendance, and employee information from multiple devices.",
+    },
+    {
+      question: "Is my employee and payroll data secure?",
+      answer:
+        "Yes! promanager is designed with secure and encrypted data handling to help protect sensitive employee and payroll information.",
+    },
+    {
+      question: "Can promanager grow with my business?",
+      answer:
+        "Absolutely! promanager is designed to support growing teams and streamline payroll and workforce operations as your organization expands.",
+    },
   ];
 
   return (
@@ -173,33 +188,8 @@ const ContactPage = () => {
                 streamline your payroll, attendance, and workforce management.
               </motion.p>
 
-              <motion.div
-                className="flex flex-col sm:flex-row gap-4"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5 }}
-              >
-                <Link to="pricing" className="inline-block">
-                  <motion.button
-                    className="bg-white text-[var(--color-primary)] px-8 py-4 rounded-full font-semibold shadow-xl hover:shadow-2xl transition-all"
-                    whileHover={{ scale: 1.05, y: -2 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    Plans For You
-                  </motion.button>
-                </Link>
-                <Link to="/login" className="inline-block">
 
-                  <motion.button
-                    className="border-2 border-white text-white px-8 py-4 rounded-full font-semibold hover:bg-white/10 transition-all"
-                    whileHover={{ scale: 1.05, y: -2 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    Login
-                  </motion.button>
-                </Link>
 
-              </motion.div>
             </motion.div>
 
 
@@ -287,7 +277,7 @@ const ContactPage = () => {
       </div>
 
 
-      <div className="bg-white py-20 relative">
+      <div className="bg-white pb-20 relative">
         <div
           className="absolute top-1/2 z-10 left-0 w-[400px] h-[500px] rounded-full
           bg-[#6c4cf1] blur-[90px] opacity-20"
@@ -336,7 +326,9 @@ const ContactPage = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
           >
-            <Card className="border-[var(--color-border)] bg-[var(--color-white)] shadow-xl">
+
+
+            <Card className="border-[#370d9594] bg-[var(--color-white)] shadow-xl">
               <CardContent className="p-8">
                 <form onSubmit={handleSubmit} className="space-y-6">
 
@@ -427,11 +419,13 @@ const ContactPage = () => {
                 </form>
               </CardContent>
             </Card>
+
+
           </motion.div>
         </div>
       </div>
 
-      <div className=" bg-white py-20">
+      <div className=" bg-white pb-20">
         <div
           className="absolute top-1/2 z-10 right-0 w-[400px] h-[500px] rounded-full
           bg-[#6c4cf1] blur-[90px] opacity-20"
@@ -482,8 +476,8 @@ const ContactPage = () => {
                 transition={{ delay: index * 0.1 }}
                 whileHover={{ y: -5 }}
               >
-                <Card className="border-[var(--color-border)] bg-[var(--color-bg-primary)] hover:shadow-lg transition-all">
-                  <CardContent className="p-8">
+                <Card className="border-[#370d9594] bg-[var(--color-bg-primary)] hover:shadow-lg transition-all">
+                  <CardContent className="p-5">
                     <div className="flex items-start gap-4">
                       <div className="w-8 h-8 bg-[var(--color-primary)] rounded-full flex items-center justify-center flex-shrink-0 mt-1">
                         <Check className="w-5 h-5 text-white" />
