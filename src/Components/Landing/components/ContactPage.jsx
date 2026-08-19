@@ -4,7 +4,7 @@ import { Card, CardContent } from "../ui/card";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
-import { Mail, Phone, MapPin, Clock, Check, Zap } from "lucide-react";
+import { Mail, Phone, MapPin, Clock, Check, Zap, User, Building2, MessageSquare, Send, MessageCircle } from "lucide-react";
 import { Helmet } from "@dr.pogodin/react-helmet";
 import { Link } from "react-router-dom";
 
@@ -46,13 +46,89 @@ const ContactPage = () => {
     message: "",
   });
 
+  // State for field-level validation errors
+  const [errors, setErrors] = useState({});
+
   // Handle input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
+
+    // Allow only numeric digits for mobile number (max 10 digits)
+    if (name === "mobileNo") {
+      const numericValue = value.replace(/\D/g, "").slice(0, 10);
+      setFormData((prev) => ({
+        ...prev,
+        [name]: numericValue,
+      }));
+      if (errors[name]) {
+        setErrors((prev) => ({
+          ...prev,
+          [name]: "",
+        }));
+      }
+      return;
+    }
+
     setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
+    if (errors[name]) {
+      setErrors((prev) => ({
+        ...prev,
+        [name]: "",
+      }));
+    }
+  };
+
+  // Handle input blur for immediate validation feedback
+  const handleBlur = (e) => {
+    const { name, value } = e.target;
+    if (name === "email" && value.trim()) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(value.trim())) {
+        setErrors((prev) => ({
+          ...prev,
+          email: "Invalid email address (e.g. name@example.com)",
+        }));
+      }
+    }
+    if (name === "mobileNo" && value.trim()) {
+      if (value.trim().length < 10) {
+        setErrors((prev) => ({
+          ...prev,
+          mobileNo: "Mobile number must be 10 digits",
+        }));
+      }
+    }
+  };
+
+  // Validate form fields
+  const validateForm = () => {
+    const newErrors = {};
+
+    if (!formData.fullName.trim()) {
+      newErrors.fullName = "Full name is required";
+    }
+
+    if (!formData.email.trim()) {
+      newErrors.email = "Email address is required";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim())) {
+      newErrors.email = "Invalid email address (e.g. name@example.com)";
+    }
+
+    if (!formData.mobileNo.trim()) {
+      newErrors.mobileNo = "Mobile number is required";
+    } else if (formData.mobileNo.trim().length < 10) {
+      newErrors.mobileNo = "Mobile number must be 10 digits";
+    }
+
+    if (!formData.companyName.trim()) {
+      newErrors.companyName = "Company name is required";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   // Handle form submission - opens WhatsApp
@@ -60,8 +136,7 @@ const ContactPage = () => {
     e.preventDefault();
 
     // Validate required fields
-    if (!formData.fullName || !formData.email || !formData.mobileNo || !formData.companyName) {
-      alert("Please fill in all required fields");
+    if (!validateForm()) {
       return;
     }
 
@@ -282,7 +357,7 @@ const ContactPage = () => {
           className="absolute top-1/2 z-10 left-0 w-[400px] h-[500px] rounded-full
           bg-[#6c4cf1] blur-[90px] opacity-20"
         />
-        <div className="max-w-3xl mx-auto px-4 md:px-8">
+        <div className="max-w-4xl mx-auto px-4 md:px-8">
 
           <div className="relative mb-16">
             <motion.div
@@ -328,92 +403,147 @@ const ContactPage = () => {
           >
 
 
-            <Card className="border-[#370d9594] bg-[var(--color-white)] shadow-xl">
-              <CardContent className="p-8">
-                <form onSubmit={handleSubmit} className="space-y-6">
+            <Card className="border border-purple-200/80 bg-white/95 backdrop-blur-xl shadow-2xl shadow-purple-900/10 rounded-3xl overflow-hidden relative">
+              <div className="h-1 w-full bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-500" />
+              <CardContent className="p-6 sm:p-8 md:p-10">
+                <form onSubmit={handleSubmit} noValidate className="space-y-6">
 
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-[var(--color-text-primary)]">
-                      Full Name <span className="text-red-500">*</span>
-                    </label>
-                    <Input
-                      name="fullName"
-                      value={formData.fullName}
-                      onChange={handleChange}
-                      placeholder="Enter your full name"
-                      className="border-[var(--color-border)] bg-white focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition-all"
-                      required
-                    />
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Full Name */}
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-bold uppercase tracking-wider text-slate-600 flex items-center justify-between">
+                        <span>Full Name <span className="text-purple-600 font-bold ml-0.5">*</span></span>
+                      </label>
+                      <div className="relative flex items-center">
+                        <User className={`absolute left-3.5 w-5 h-5 ${errors.fullName ? "text-red-400" : "text-slate-400"} pointer-events-none`} />
+                        <Input
+                          name="fullName"
+                          value={formData.fullName}
+                          onChange={handleChange}
+                          placeholder="Enter your full name"
+                          className={`pl-11 pr-4 h-12 bg-slate-50/80 border rounded-xl text-slate-800 text-sm placeholder:text-slate-400 focus:bg-white transition-all duration-200 shadow-sm ${errors.fullName
+                            ? "border-red-400 focus:border-red-500 focus:ring-4 focus:ring-red-500/10"
+                            : "border-slate-200 focus:border-purple-600 focus:ring-4 focus:ring-purple-600/10 hover:border-purple-300"
+                            }`}
+                        />
+                      </div>
+                      {errors.fullName && (
+                        <p className="text-xs text-red-500 font-medium pl-1 animate-fadeIn">
+                          {errors.fullName}
+                        </p>
+                      )}
+                    </div>
+
+                    {/* Email Address */}
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-bold uppercase tracking-wider text-slate-600 flex items-center justify-between">
+                        <span>Email Address <span className="text-purple-600 font-bold ml-0.5">*</span></span>
+                      </label>
+                      <div className="relative flex items-center">
+                        <Mail className={`absolute left-3.5 w-5 h-5 ${errors.email ? "text-red-400" : "text-slate-400"} pointer-events-none`} />
+                        <Input
+                          type="email"
+                          name="email"
+                          value={formData.email}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          placeholder="Enter your email address"
+                          className={`pl-11 pr-4 h-12 bg-slate-50/80 border rounded-xl text-slate-800 text-sm placeholder:text-slate-400 focus:bg-white transition-all duration-200 shadow-sm ${errors.email
+                            ? "border-red-400 focus:border-red-500 focus:ring-4 focus:ring-red-500/10"
+                            : "border-slate-200 focus:border-purple-600 focus:ring-4 focus:ring-purple-600/10 hover:border-purple-300"
+                            }`}
+                        />
+                      </div>
+                      {errors.email && (
+                        <p className="text-xs text-red-500 font-medium pl-1 animate-fadeIn">
+                          {errors.email}
+                        </p>
+                      )}
+                    </div>
+
+                    {/* Mobile Number */}
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-bold uppercase tracking-wider text-slate-600 flex items-center justify-between">
+                        <span>Mobile Number <span className="text-purple-600 font-bold ml-0.5">*</span></span>
+                      </label>
+                      <div className="relative flex items-center">
+                        <Phone className={`absolute left-3.5 w-5 h-5 ${errors.mobileNo ? "text-red-400" : "text-slate-400"} pointer-events-none`} />
+                        <Input
+                          type="tel"
+                          name="mobileNo"
+                          value={formData.mobileNo}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          maxLength={10}
+                          placeholder="Enter your mobile number"
+                          className={`pl-11 pr-4 h-12 bg-slate-50/80 border rounded-xl text-slate-800 text-sm placeholder:text-slate-400 focus:bg-white transition-all duration-200 shadow-sm ${errors.mobileNo
+                            ? "border-red-400 focus:border-red-500 focus:ring-4 focus:ring-red-500/10"
+                            : "border-slate-200 focus:border-purple-600 focus:ring-4 focus:ring-purple-600/10 hover:border-purple-300"
+                            }`}
+                        />
+                      </div>
+                      {errors.mobileNo && (
+                        <p className="text-xs text-red-500 font-medium pl-1 animate-fadeIn">
+                          {errors.mobileNo}
+                        </p>
+                      )}
+                    </div>
+
+                    {/* Company Name */}
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-bold uppercase tracking-wider text-slate-600 flex items-center justify-between">
+                        <span>Company Name <span className="text-purple-600 font-bold ml-0.5">*</span></span>
+                      </label>
+                      <div className="relative flex items-center">
+                        <Building2 className={`absolute left-3.5 w-5 h-5 ${errors.companyName ? "text-red-400" : "text-slate-400"} pointer-events-none`} />
+                        <Input
+                          name="companyName"
+                          value={formData.companyName}
+                          onChange={handleChange}
+                          placeholder="Enter your company name"
+                          className={`pl-11 pr-4 h-12 bg-slate-50/80 border rounded-xl text-slate-800 text-sm placeholder:text-slate-400 focus:bg-white transition-all duration-200 shadow-sm ${errors.companyName
+                            ? "border-red-400 focus:border-red-500 focus:ring-4 focus:ring-red-500/10"
+                            : "border-slate-200 focus:border-purple-600 focus:ring-4 focus:ring-purple-600/10 hover:border-purple-300"
+                            }`}
+                        />
+                      </div>
+                      {errors.companyName && (
+                        <p className="text-xs text-red-500 font-medium pl-1 animate-fadeIn">
+                          {errors.companyName}
+                        </p>
+                      )}
+                    </div>
                   </div>
 
-
+                  {/* Message */}
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-[var(--color-text-primary)]">
-                      Email Address <span className="text-red-500">*</span>
+                    <label className="text-xs font-bold uppercase tracking-wider text-slate-600 flex items-center justify-between">
+                      <span>Message</span>
+                      <span className="text-[11px] font-normal text-slate-400 lowercase">Optional</span>
                     </label>
-                    <Input
-                      type="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleChange}
-                      placeholder="Enter your email address"
-                      className="border-[var(--color-border)] bg-white focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition-all"
-                      required
-                    />
+                    <div className="relative">
+                      <MessageSquare className="absolute left-3.5 top-3.5 w-5 h-5 text-slate-400 pointer-events-none" />
+                      <Textarea
+                        name="message"
+                        value={formData.message}
+                        onChange={handleChange}
+                        placeholder="How can we help you?"
+                        rows={4}
+                        className="pl-11 pr-4 py-3 bg-slate-50/80 border border-slate-200 rounded-xl text-slate-800 text-sm placeholder:text-slate-400 focus:bg-white focus:border-purple-600 focus:ring-4 focus:ring-purple-600/10 hover:border-purple-300 transition-all duration-200 resize-none shadow-sm"
+                      />
+                    </div>
                   </div>
 
-
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-[var(--color-text-primary)]">
-                      Mobile Number <span className="text-red-500">*</span>
-                    </label>
-                    <Input
-                      type="tel"
-                      name="mobileNo"
-                      value={formData.mobileNo}
-                      onChange={handleChange}
-                      placeholder="Enter your mobile number"
-                      className="border-[var(--color-border)] bg-white focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition-all"
-                      required
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-[var(--color-text-primary)]">
-                      Company Name <span className="text-red-500">*</span>
-                    </label>
-                    <Input
-                      name="companyName"
-                      value={formData.companyName}
-                      onChange={handleChange}
-                      placeholder="Enter your company name"
-                      className="border-[var(--color-border)] bg-white focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition-all"
-                      required
-                    />
-                  </div>
-
-
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-[var(--color-text-primary)]">
-                      Message
-                    </label>
-                    <Textarea
-                      name="message"
-                      value={formData.message}
-                      onChange={handleChange}
-                      placeholder="How can we help you?"
-                      rows={4}
-                      className="border-[var(--color-border)] bg-white focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition-all resize-none"
-                    />
-                  </div>
-
+                  {/* Submit Button */}
                   <motion.button
                     type="submit"
-                    className="w-full bg-[var(--color-primary)] text-white py-4 rounded-full font-semibold shadow-xl hover:shadow-2xl transition-all"
-                    whileHover={{ scale: 1.02, y: -2 }}
-                    whileTap={{ scale: 0.98 }}
+                    className="w-full bg-gradient-to-r from-[#370d95] via-[#4a15bf] to-[#370d95] text-white py-4 px-8 rounded-xl font-bold text-base shadow-xl shadow-purple-900/25 flex items-center justify-center gap-3 transition-all duration-200 hover:shadow-2xl hover:shadow-purple-900/35 hover:-translate-y-0.5 active:translate-y-0"
+                    whileHover={{ scale: 1.01 }}
+                    whileTap={{ scale: 0.99 }}
                   >
-                    Send Message via WhatsApp
+
+                    <span>Send Message via WhatsApp</span>
+                    <Send className="w-4 h-4 ml-1 opacity-80" />
                   </motion.button>
 
                 </form>
