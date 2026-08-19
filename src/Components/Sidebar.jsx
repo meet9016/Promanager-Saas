@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
     Home, Users, Clock, Calendar, IndianRupee, Briefcase, BarChart2,
     User as UserIcon, Settings as SettingsIcon, Phone, Youtube,
-    ChevronRight, Star, ChevronLeft, CreditCard
+    ChevronRight, Star, ChevronLeft, CreditCard, FileText
 } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import { ThemeContext } from '../context/Themecontext';
@@ -115,6 +115,7 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
         },
         (permissions?.subscription || permissions?.subscription_view || permissions?.subscription_create || permissions?.subscription_edit || permissions?.subscription_delete) && { id: 'subscription', label: 'Subscription', icon: CreditCard, hasSubmenu: false, path: '/subscription' },
         (permissions?.configuration_view || permissions?.configuration_edit || permissions?.software_setting_view) && { id: 'settings', label: 'Settings', icon: SettingsIcon, hasSubmenu: false, path: '/settings' },
+        { id: 'document', label: 'Document', icon: FileText, hasSubmenu: false, path: '/document', external: true },
     ].filter(Boolean);
 
     const getActiveItemId = () => {
@@ -282,6 +283,8 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
                                     ) : (
                                         <Link
                                             to={item.path}
+                                            target={item.external ? "_blank" : undefined}
+                                            rel={item.external ? "noopener noreferrer" : undefined}
                                             className={`relative block rounded-xl transition-all duration-300 group
                                                 ${isActive
                                                     ? 'bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-primary-dark)] text-[var(--color-text-white)] shadow-lg transform scale-[1.02]'

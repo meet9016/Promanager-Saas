@@ -166,11 +166,15 @@ The system has different user roles with specific permissions:
    - Use filters (date, department, branch, etc.) to narrow down records
    - The **Dashboard** also shows high-level attendance summaries
 
+![Daily Attendance View](/document%20image/daily_attendance.png)
+
 2. **Attendance Reports**
    - Navigate to **"Reports"** → **"Daily Report"** or **"Detailed Daily Report"**
    - For monthly views, use **"Monthly Report"** or **"Monthly Muster Preview"**
    - For a specific date range, use **"Date Range Report"**
    - Export reports in **Excel** or **PDF** format using the export buttons
+
+![Monthly Attendance View](/document%20image/monthly_attendance.png)
 
 ### **Handling Attendance Exceptions**
 

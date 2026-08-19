@@ -72,6 +72,14 @@ After logging in, you will land on the interactive Dashboard. Depending on your 
 ### ⏰ Attendance & Shift Management
 *Track live attendance and manage work schedules.*
 
+**1. Daily Attendance**
+Daily Attendance page par aap sabhi employees ki aaj ki (current day) attendance aur unki details ek sath dekh sakte hain. Yahan aapko ek quick overview milta hai ki kitne employees Present, Absent, Late, ya Week Off par hain.
+![Daily Attendance View](/document%20image/daily_attendance.png)
+
+**2. Monthly Attendance**
+Monthly Attendance page aapko pure mahine ka attendance record ek hi jagah par summarize karke dikhata hai jisme color-coded calendar view hota hai (jaise Green = Present, Red = Absent).
+![Monthly Attendance View](/document%20image/monthly_attendance.png)
+
 - **Daily Check-in/out:** Employees can check in and out through the Dashboard or the Daily Attendance page. Time is captured in real-time.
 - **Monitoring Attendance:** HR and Managers can go to `Attendance > Daily Attendance` to monitor live punch-ins, late arrivals, and absences.
 - **Shift Management:** 

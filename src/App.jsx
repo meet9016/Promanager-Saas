@@ -107,6 +107,7 @@ const SettingsPage = lazy(() => import("./pages/Setting/SettingsPage"));
 const ProfilePage = lazy(() => import("./pages/Setting/ProfilePage"));
 const AddSettingPage = lazy(() => import("./pages/Setting/AddSettingPage"));
 const SubscriptionPage = lazy(() => import("./pages/Setting/SubscriptionPage"));
+const DocumentPage = lazy(() => import("./pages/Document/DocumentPage"));
 
 import { useNavigate } from "react-router-dom";
 import DailyAttendance from "./pages/Attendance/DailyAttendance";
@@ -159,6 +160,7 @@ const App = () => {
     "/terms-of-service",
     "/privacy-policy",
     "/coming-soon",
+    "/document",
   ].includes(location.pathname);
 
   const isLoginRoute = location.pathname === "/login";
@@ -169,15 +171,15 @@ const App = () => {
 
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [isCollapsed, setIsCollapsed] = useState(window.innerWidth < 768);
-  // Redirect to Daily Attendance for mobile/tablet users after login
+  // Redirect to Dashboard for users after login if they are on root or login page
   useEffect(() => {
     if (isAuthenticated) {
-      // Redirect to daily attendance instead of dashboard
-      navigate("/dashboard");
-
+      if (location.pathname === '/' || location.pathname === '/login') {
+        navigate("/dashboard");
+      }
       setIsCollapsed(false);
     }
-  }, [isAuthenticated, navigate]);
+  }, [isAuthenticated, navigate, location.pathname]);
 
   // Persist sidebar state
   useEffect(() => {
@@ -246,7 +248,7 @@ const App = () => {
 
       <div className="min-h-screen bg-[var(--color-bg-primary)]">
         {/* Landing Page Navbar - Show on all landing routes */}
-        {isLandingRoute && <LandingNavbar />}
+        {isLandingRoute && location.pathname !== "/document" && <LandingNavbar />}
 
         {/* Application Navbar */}
         {!shouldHideNavigation && (
@@ -913,6 +915,11 @@ const App = () => {
                 }
               />
 
+              <Route
+                path="/document"
+                element={<DocumentPage />}
+              />
+
               {/* 404 Error Page - Catch all unmatched routes */}
               <Route path="/404" element={<Error404Page />} />
               <Route
@@ -929,7 +936,7 @@ const App = () => {
         </main>
 
         {/* Footer for Landing Pages - Show only on landing routes */}
-        {isLandingRoute && <Footer />}
+        {isLandingRoute && location.pathname !== "/document" && <Footer />}
       </div>
 
     </ThemeProvider>
