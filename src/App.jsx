@@ -121,6 +121,54 @@ import { FaWhatsapp, FaArrowUp } from "react-icons/fa";
 import SubscriptionExpiredPage from "./Components/Subscription/SubscriptionExpiredPage";
 import Renew from "./Components/Landing/pages/Renew";
 
+// Auto-scroll to top on route change (outside App to prevent re-creation)
+const ScrollToTopOnRouteChange = () => {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
+  return null;
+};
+
+// Isolated, ultra-smooth Scroll To Top Floating Button (no App re-renders, passive event listener)
+const ScrollToTopButton = () => {
+  const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    let ticking = false;
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          if (window.scrollY > 200) {
+            setShow(true);
+          } else {
+            setShow(false);
+          }
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  if (!show) return null;
+
+  return (
+    <button
+      onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+      aria-label="Scroll to top"
+      className="bg-[var(--color-primary-dark)] hover:bg-[var(--color-primary)] text-white p-3.5 rounded-full shadow-lg shadow-black/20 transition-all duration-300 flex items-center justify-center hover:scale-110 active:scale-95 cursor-pointer"
+    >
+      <FaArrowUp className="w-5 h-5" />
+    </button>
+  );
+};
+
 const App = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -128,34 +176,11 @@ const App = () => {
     useSelector((state) => state.auth?.isAuthenticated) || false;
   const permissions = useSelector((state) => state.permissions) || {};
 
-  const ScrollToTop = () => {
-    const { pathname } = useLocation();
-
-    useEffect(() => {
-      window.scrollTo(0, 0);
-    }, [pathname]);
-
-    return null;
-  };
-
   // Detect 
   // if user is on mobile or tablet
   const [isMobileOrTablet, setIsMobileOrTablet] = useState(
     window.innerWidth <= 768,
   );
-  const [showScrollTop, setShowScrollTop] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 200) {
-        setShowScrollTop(true);
-      } else {
-        setShowScrollTop(false);
-      }
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   // Route categorization for better performance
   const isLandingRoute = [
@@ -257,7 +282,7 @@ const App = () => {
 
   return (
     <ThemeProvider>
-      <ScrollToTop />
+      <ScrollToTopOnRouteChange />
 
       <div className="min-h-screen bg-[var(--color-bg-primary)]">
         {/* Landing Page Navbar - Show on all landing routes */}
@@ -280,15 +305,7 @@ const App = () => {
 
         {isPublicRoute && !isLoginRoute ? (
           <div className="fixed bottom-6 right-6 z-[9999] flex flex-col gap-3 items-center">
-            {showScrollTop && (
-              <button
-                onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-                aria-label="Scroll to top"
-                className="bg-[var(--color-primary-dark)] hover:bg-[var(--color-primary)] text-white p-3.5 rounded-full shadow-lg shadow-black/20 transition-all duration-300 flex items-center justify-center hover:scale-110 active:scale-95"
-              >
-                <FaArrowUp className="w-5 h-5" />
-              </button>
-            )}
+            <ScrollToTopButton />
             <a
               href="https://wa.me/919274889008?text=Hello%2C%20I%20have%20visited%20your%20website%20and%20am%20interested%20in%20a%20demo%20of%20Promanager%20%F0%9F%98%80.%20Please%20share%20the%20details.%20Thank%20you!"
               target="_blank"
