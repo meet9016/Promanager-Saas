@@ -31,7 +31,7 @@ const CTASection = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
             >
-              <h3 className="text-xl lg:text-2xl font-bold text-black mb-2">
+              <h3 className="text-2xl lg:text-3xl font-bold text-[var(--color-text-primary)] ">
                 Start Your Journey Today
               </h3>
 
@@ -41,7 +41,7 @@ const CTASection = () => {
                 whileInView={{ pathLength: 1, opacity: 1 }}
                 viewport={{ once: true }}
                 transition={{ duration: 1.5, delay: 0.3, ease: "easeInOut" }}
-                className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-56 h-4"
+                className="absolute top-10 left-1/2 -translate-x-1/2 w-44 h-4 "
                 viewBox="0 0 220 12"
                 fill="none"
               >
@@ -61,7 +61,7 @@ const CTASection = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-3xl lg:text-5xl font-extrabold mb-6 leading-tight text-[var(--color-text-primary)]"
+            className="text-3xl lg:text-5xl font-bold mb-6 leading-tight text-[var(--color-text-primary)]"
           >
             Ready to Transform Your{" "}
             <span className="text-[var(--color-primary)]">Payroll Operations?</span>

@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 
 const HeroSection = () => {
   return (
-    <section className="relative pt-20 lg:py-32 overflow-hidden  bg-white  ">
+    <section className="relative pt-12 lg:py-20 overflow-hidden  bg-white  ">
       <div className="absolute top-28 z-10   -left-20 w-[400px] h-[500px] rounded-full
     bg-[#6c4cf1]
     blur-[90px]
@@ -41,10 +41,10 @@ const HeroSection = () => {
                 initial={{ opacity: 0, y: 50 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.2 }}
-                className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-extrabold leading-tight"
+                className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold leading-tight"
               >
                 <motion.span
-                  className="block text-[var(--color-text-primary)] mb-2"
+                  className="block text-[var(--color-text-primary)] mb-2 "
                   initial={{ opacity: 0, x: -50 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.8, delay: 0.3 }}

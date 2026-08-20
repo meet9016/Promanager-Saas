@@ -29,7 +29,7 @@ const services = [
 
 const ServicesSection = () => {
   return (
-    <section className="py-16 lg:py-20 bg-white relative ">
+    <section className="py-12 lg:py-20 bg-white relative ">
       <div className="absolute top-20 z-10   -left-20 w-[400px] h-[500px] rounded-full
     bg-[#6c4cf1]
     blur-[90px]
@@ -51,64 +51,53 @@ const ServicesSection = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
-          className="mb-16"
+          className="mb-16 text-center"
         >
-          <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
-            <div>
-              <div className="relative mb-8">
-                <motion.span
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.6 }}
-                  className="text-2xl lg:text-3xl font-bold text-[var(--color-text-primary)]"
-                >
-                  Our Services
-                </motion.span>
+          <div className="flex flex-col items-center justify-center">
+            <div className="relative mb-8 inline-block">
+              <motion.span
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+                className="text-2xl lg:text-3xl font-bold text-[var(--color-text-primary)]"
+              >
+                Our Services
+              </motion.span>
 
-                {/* Curved Line SVG */}
-                <motion.svg
-                  initial={{ pathLength: 0, opacity: 0 }}
-                  whileInView={{ pathLength: 1, opacity: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 1.5, delay: 0.3, ease: "easeInOut" }}
-                  className="absolute top-10 left-0 w-40 h-4"
-                  viewBox="0 0 160 12"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <motion.path
-                    d="M2 10C35 2, 70 2, 105 10C130 16, 145 10, 158 10"
-                    stroke="url(#gradient-services)"
-                    strokeWidth="3"
-                    strokeLinecap="round"
-                  />
-                  <defs>
-                    <linearGradient id="gradient-services" x1="0%" y1="0%" x2="100%" y2="0%">
-                      <stop offset="0%" stopColor="#6C4CF1" />
-                      <stop offset="100%" stopColor="#4B2EDB" />
-                    </linearGradient>
-                  </defs>
-                </motion.svg>
-              </div>
-
-              <h2 className="text-3xl lg:text-4xl font-extrabold text-[var(--color-text-primary)] leading-tight">
-                Future-Ready Payroll
-                <br />
-                <span className="bg-[var(--color-primary-dark)] bg-clip-text text-transparent">
-                  Management Platform
-                </span>
-              </h2>
+              {/* Curved Line SVG */}
+              <motion.svg
+                initial={{ pathLength: 0, opacity: 0 }}
+                whileInView={{ pathLength: 1, opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 1.5, delay: 0.3, ease: "easeInOut" }}
+                className="absolute top-10 left-0 w-40 h-4"
+                viewBox="0 0 160 12"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <motion.path
+                  d="M2 10C35 2, 70 2, 105 10C130 16, 145 10, 158 10"
+                  stroke="url(#gradient-services)"
+                  strokeWidth="3"
+                  strokeLinecap="round"
+                />
+                <defs>
+                  <linearGradient id="gradient-services" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stopColor="#6C4CF1" />
+                    <stop offset="100%" stopColor="#4B2EDB" />
+                  </linearGradient>
+                </defs>
+              </motion.svg>
             </div>
-            {/* <motion.p
-              initial={{ opacity: 0, x: 50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="text-base text-[var(--color-text-secondary)] max-w-md"
-            >
-              Streamline your workforce management with powerful automation and insights
-            </motion.p> */}
+
+            <h2 className="text-4xl lg:text-5xl font-bold text-[var(--color-text-primary)] leading-tight">
+              Future-Ready Payroll
+              <br />
+              <span className="bg-[var(--color-primary-dark)] bg-clip-text text-transparent">
+                Management Platform
+              </span>
+            </h2>
           </div>
         </motion.div>
 

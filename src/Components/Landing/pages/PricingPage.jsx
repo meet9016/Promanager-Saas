@@ -139,7 +139,7 @@ const PricingPage = () => {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.8 }}
-        className="text-center pt-16 pb-10 px-4"
+        className="text-center pt-16 pb-10 "
       >
         {/* Benefits Title with Curved Line */}
         <div className="relative inline-block mb-8">
@@ -185,7 +185,7 @@ const PricingPage = () => {
           </motion.svg>
         </div>
 
-        <h2 className="text-4xl lg:text-5xl font-extrabold text-[var(--color-text-primary)] mb-4">
+        <h2 className="text-4xl lg:text-5xl font-bold text-[var(--color-text-primary)] mb-4">
           Choose The Best Plan,{" "}
           <span className="bg-[var(--color-primary-dark)] bg-clip-text text-transparent">
             For Your Business
@@ -208,7 +208,7 @@ const PricingPage = () => {
               <div className="absolute -inset-4 bg-gradient-to-br from-[#6C4CF1]/20 via-[#a78bfa]/10 to-transparent rounded-[2.5rem] blur-2xl pointer-events-none" />
               <div className="relative bg-white/70 backdrop-blur-xl border border-white rounded-[1.75rem] p-5 shadow-[0_8px_40px_rgba(108,76,241,0.12)]">
                 <div className="text-center mb-4">
-                  <h3 className="text-base font-bold text-gray-900">Estimate Your Monthly Cost</h3>
+                  <h3 className="font-bold text-md text-gray-800">Estimate Your Monthly Cost</h3>
                 </div>
 
                 <div className="mb-1 px-1">
@@ -269,10 +269,10 @@ const PricingPage = () => {
                       </svg>
                     </div>
                     <div className="flex flex-col text-left">
-                      <span className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">
-                        USERS
+                      <span className="text-[14px] font-bold text-gray-500 ">
+                        Users
                       </span>
-                      <span className="text-2xl font-black text-gray-900 tracking-tight mt-0.5">
+                      <span className="text-2xl font-bold text-gray-900 tracking-tight mt-0.5">
                         {users}
                       </span>
                     </div>
@@ -286,10 +286,10 @@ const PricingPage = () => {
                       </svg>
                     </div>
                     <div className="flex flex-col text-left">
-                      <span className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">
-                        SELECTED PLAN
+                      <span className="text-[14px] font-bold text-gray-500 ">
+                        Selected Plan
                       </span>
-                      <span className="text-2xl font-black text-gray-900 tracking-tight mt-0.5">
+                      <span className="text-2xl font-bold text-gray-900 tracking-tight mt-0.5">
                         {plans[safeActivePlan]?.name || "Free"}
                       </span>
                     </div>
@@ -303,10 +303,10 @@ const PricingPage = () => {
                       </svg>
                     </div>
                     <div className="flex flex-col text-left">
-                      <span className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">
-                        EST. MONTHLY
+                      <span className="text-[14px] font-bold text-gray-500 ">
+                        Est. Monthly
                       </span>
-                      <span className="text-2xl font-black text-gray-900 tracking-tight mt-0.5">
+                      <span className="text-2xl font-bold text-gray-900 tracking-tight mt-0.5">
                         ₹{estimated}
                       </span>
                     </div>
@@ -333,7 +333,7 @@ const PricingPage = () => {
                       <>
                         {/* inner glow */}
                         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-px bg-gradient-to-r from-transparent via-white/40 to-transparent" />
-                        <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-white text-[var(--color-primary-darker)] text-[9px] font-black px-4 py-1 rounded-full shadow-md tracking-[0.15em] uppercase">
+                        <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-white text-[var(--color-primary-darker)] text-[13px] font-bold px-4 py-1 rounded-full shadow-md ">
                           Best Match
                         </span>
                       </>
@@ -342,18 +342,18 @@ const PricingPage = () => {
                     {/* Plan header */}
                     <div className="mb-5">
                       <div className="flex items-center justify-between mb-0.5">
-                        <h3 className={`text-lg font-black  ${isActive ? "text-white" : "text-[var(--color-text-primary)]"}`}>
+                        <h3 className={`text-lg font-bold  ${isActive ? "text-white" : "text-[var(--color-text-primary)]"}`}>
                           {plan.name}
                         </h3>
-                        <span className={`text-[12px] px-2 py-0.5 rounded-full font-semibold ${isActive ? "bg-white/15 text-white/80" : "bg-[#6C4CF1]/8 text-[var(--color-primary-darker)]"}`}>
+                        <span className={`text-[13px] px-2 py-0.5 rounded-full font-semibold ${isActive ? "bg-white/15 text-white/80" : "bg-[#6C4CF1]/8 text-[var(--color-primary-darker)]"}`}>
                           {plan.user_range} users
                         </span>
                       </div>
                       <div className="mt-4 flex items-end gap-1">
-                        <span className={`text-[2.6rem] font-black leading-none tracking-tighter ${isActive ? "text-white" : "text-[var(--color-primary-darker)]"}`}>
+                        <span className={`text-[2.6rem] font-bold leading-none tracking-tighter ${isActive ? "text-white" : "text-[var(--color-primary-darker)]"}`}>
                           ₹{plan.price_per_user}
                         </span>
-                        <span className={`text-sm pb-1.5 ${isActive ? "text-white/50" : "text-gray-400"}`}>/user/mo</span>
+                        <span className={`text-md pb-1.5 ${isActive ? "text-white/50" : "text-gray-400"}`}>/user/mo</span>
                       </div>
                       {/* Divider */}
                       <div className={`mt-5 h-px ${isActive ? "bg-white/15" : "bg-gray-100"}`} />

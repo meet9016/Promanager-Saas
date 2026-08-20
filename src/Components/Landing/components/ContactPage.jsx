@@ -4,7 +4,7 @@ import { Card, CardContent } from "../ui/card";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
-import { Mail, Phone, MapPin, Clock, Check, Zap, User, Building2, MessageSquare, Send, MessageCircle } from "lucide-react";
+import { Mail, Phone, MapPin, Clock, Check, Zap, User, Building2, MessageSquare, Send, MessageCircle, Sparkles, ArrowUpRight } from "lucide-react";
 import { Helmet } from "@dr.pogodin/react-helmet";
 import { Link } from "react-router-dom";
 
@@ -210,51 +210,49 @@ const ContactPage = () => {
       </Helmet>
 
 
-      <div className="relative bg-[var(--color-primary)] overflow-x-hidden">
-
-        <div className="absolute inset-0 overflow-hidden">
+      {/* Premium Hero Section */}
+      <div className="relative bg-gradient-to-br from-[#180544] via-[#340C8E] to-[#5516a8] text-white overflow-hidden pt-12 sm:pt-16 pb-24 sm:pb-32">
+        {/* Animated Ambient Light Orbs & Grid */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_30%,rgba(108,76,241,0.3),transparent_50%),radial-gradient(circle_at_80%_70%,rgba(192,132,252,0.2),transparent_50%)]" />
           <motion.div
-            className="absolute -top-40 -right-40 w-96 h-96 bg-white/10 rounded-full blur-3xl"
-            animate={{ scale: [1, 1.2, 1], rotate: [0, 90, 0] }}
-            transition={{ duration: 20, repeat: Infinity }}
+            className="absolute -top-32 -right-32 w-96 h-96 bg-purple-500/20 rounded-full blur-[100px]"
+            animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.6, 0.3] }}
+            transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
           />
           <motion.div
-            className="absolute -bottom-40 -left-40 w-96 h-96 bg-white/10 rounded-full blur-3xl"
-            animate={{ scale: [1.2, 1, 1.2], rotate: [90, 0, 90] }}
-            transition={{ duration: 15, repeat: Infinity }}
+            className="absolute -bottom-32 -left-32 w-96 h-96 bg-indigo-500/20 rounded-full blur-[100px]"
+            animate={{ scale: [1.2, 1, 1.2], opacity: [0.3, 0.6, 0.3] }}
+            transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
           />
         </div>
 
-        <div className="relative max-w-7xl mx-auto px-4 md:px-8 py-20 md:py-32">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 md:px-8 z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
 
+            {/* Left Column - Hero Headline */}
             <motion.div
-              className="space-y-8 z-10"
+              className="lg:col-span-6 space-y-6"
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
             >
-              <motion.span
-                className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md text-white px-5 py-2.5 rounded-full text-sm font-medium border border-white/20"
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.2 }}
-              >
-                <Zap className="w-4 h-4" />
-                Get in Touch
-              </motion.span>
+
 
               <motion.h1
-                className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-tight"
+                className="text-3xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight tracking-tight"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
               >
-                Let's Transform Your HR Together
+                Let's Transform Your{" "}
+                <span className="text-white">
+                  HR Together
+                </span>
               </motion.h1>
 
               <motion.p
-                className="text-white text-lg md:text-xl leading-relaxed"
+                className="text-purple-100/90 text-base sm:text-lg md:text-xl leading-relaxed max-w-xl font-normal"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 }}
@@ -262,90 +260,101 @@ const ContactPage = () => {
                 Book a personalized demo and discover how promanager can
                 streamline your payroll, attendance, and workforce management.
               </motion.p>
-
-
-
             </motion.div>
 
-
+            {/* Right Column - 4 Contact Cards Grid */}
             <motion.div
-              className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6"
-              initial={{ opacity: 0, x: 50 }}
+              className="lg:col-span-6 grid grid-cols-1 sm:grid-cols-2 gap-4"
+              initial={{ opacity: 0, x: 40 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, delay: 0.3 }}
             >
               {[
-                // Update the contact array items with href:
                 {
                   icon: Mail,
                   label: "Email",
                   value: "contact@promanager.in",
-                  color: "from-primary-400 to-primary-600",
+                  gradient: "from-indigo-500 to-purple-600",
                   href: "mailto:cotact@promanager.in",
+                  isExternal: false,
                 },
                 {
                   icon: Phone,
                   label: "Phone",
                   value: "+91 92748 89008",
-                  color: "from-green-400 to-green-600",
+                  gradient: "from-emerald-500 to-teal-600",
                   href: "tel:+919274889008",
+                  isExternal: false,
                 },
                 {
                   icon: MapPin,
                   label: "Location",
                   value: "Surat, India",
-                  color: "from-purple-400 to-purple-600",
+                  gradient: "from-purple-500 to-pink-600",
                   href: "https://maps.app.goo.gl/kHPcDofAdk9mjnJp7",
+                  isExternal: true,
                 },
                 {
                   icon: Clock,
                   label: "Support",
                   value: "10:00 AM to 5:00",
-                  color: "from-orange-400 to-orange-600",
-                  href: null, // no action for support hours
+                  gradient: "from-amber-500 to-orange-600",
+                  href: null,
+                  isExternal: false,
                 },
-              ].map((contact, index) => (
-                <a key={index}
-                  href={contact.href ?? undefined}
-                  target={contact.icon === MapPin ? "_blank" : undefined}
-                  rel={contact.icon === MapPin ? "noopener noreferrer" : undefined}
-                  className={contact.href ? "cursor-pointer" : "cursor-default"} >
-                  <motion.div
+              ].map((contact, index) => {
+                const ContactIcon = contact.icon;
+                const CardElement = contact.href ? 'a' : 'div';
+                return (
+                  <CardElement
                     key={index}
-                    className="bg-white/10 backdrop-blur-lg rounded-3xl p-8 border border-white/20 shadow-2xl"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.5 + index * 0.1 }}
-                    whileHover={{ y: -5, scale: 1.02 }}
+                    href={contact.href || undefined}
+                    target={contact.isExternal ? "_blank" : undefined}
+                    rel={contact.isExternal ? "noopener noreferrer" : undefined}
+                    className={`group relative bg-white/10 hover:bg-white/15 backdrop-blur-xl rounded-2xl p-6 border border-white/20 hover:border-white/40 shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 overflow-hidden flex flex-col justify-between ${contact.href ? "cursor-pointer" : "cursor-default"
+                      }`}
                   >
-                    <div
-                      className={`w-12 h-12 bg-gradient-to-br ${contact.color} rounded-2xl flex items-center justify-center mb-4 shadow-lg`}
-                    >
-                      <contact.icon className="w-6 h-6 text-white" />
-                    </div>
-                    <p className="text-white/80 text-sm mb-1">{contact.label}</p>
-                    <h3 className="text-white font-semibold text-base">
-                      {contact.value}
-                    </h3>
-                  </motion.div>
-                </a>
+                    {/* Top glass shine effect on hover */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 pointer-events-none" />
 
-              ))}
+                    <div>
+                      <div className="flex items-center justify-between mb-4">
+                        <div
+                          className={`w-11 h-11 rounded-xl bg-gradient-to-br ${contact.gradient} flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300`}
+                        >
+                          <ContactIcon className="w-5 h-5 text-white" />
+                        </div>
+                        {contact.href && (
+                          <ArrowUpRight className="w-4 h-4 text-white/50 group-hover:text-white group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
+                        )}
+                      </div>
+
+                      <p className="text-purple-200/80 text-xs font-semibold uppercase tracking-wider mb-1">
+                        {contact.label}
+                      </p>
+                      <h3 className="text-white font-bold text-base sm:text-lg truncate group-hover:text-purple-100 transition-colors">
+                        {contact.value}
+                      </h3>
+                    </div>
+                  </CardElement>
+                );
+              })}
             </motion.div>
+
           </div>
         </div>
 
-        {/* Curved Bottom */}
-        <div className="absolute bottom-0 left-0 right-0 leading-none">
+        {/* Curved Bottom Divider */}
+        <div className="absolute bottom-0 left-0 right-0 leading-none z-20 pointer-events-none">
           <svg
-            viewBox="0 0 1440 120"
+            viewBox="0 0 1440 90"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
-            className="w-full h-auto"
+            className="w-full h-auto text-white block"
           >
             <path
-              d="M0 120L60 105C120 90 240 60 360 45C480 30 600 30 720 37.5C840 45 960 60 1080 67.5C1200 75 1320 75 1380 75L1440 75V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z"
-              fill="white"
+              d="M0 90L60 78.8C120 68 240 45 360 33.8C480 23 600 23 720 31.5C840 40 960 56 1080 63C1200 70 1320 70 1380 70L1440 70V90H1380C1320 90 1200 90 1080 90C960 90 840 90 720 90C600 90 480 90 360 90C240 90 120 90 60 90H0Z"
+              fill="currentColor"
             />
           </svg>
         </div>

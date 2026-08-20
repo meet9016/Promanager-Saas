@@ -265,7 +265,7 @@ const LandingNavbar = () => {
 
     return (
         <>
-            <header className="bg-white backdrop-blur-sm border-[var(--color-border)] sticky top-0 z-50 shadow-sm">
+            <header className="bg-white backdrop-blur-sm border-[var(--color-border)] sticky top-0 z-[1000] shadow-sm">
                 <nav className="container mx-auto px-4 py-4">
                     <div className="flex items-center justify-between">
                         {/* Logo */}

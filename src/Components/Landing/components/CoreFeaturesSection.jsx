@@ -35,7 +35,7 @@ const coreFeatures = [
 
 const CoreFeaturesSection = () => {
   return (
-    <section className="relative overflow-hidden bg-[#FAFAFB] py-20 lg:py-28">
+    <section className="relative overflow-hidden bg-[#FAFAFB] py-12 lg:py-20">
       {/* Subtle decorative accents */}
       <div
         className="pointer-events-none absolute -left-40 top-20 h-96 w-96 rounded-full opacity-20 blur-3xl"
@@ -69,7 +69,7 @@ const CoreFeaturesSection = () => {
               color: BRAND,
             }}
           >
-            <Sparkles className="h-3.5 w-3.5" />
+           
             Core Features
           </motion.div>
 
@@ -78,15 +78,13 @@ const CoreFeaturesSection = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.7, delay: 0.1 }}
-            className="text-4xl font-extrabold leading-tight tracking-tight text-slate-900 md:text-5xl lg:text-6xl"
+            className="text-3xl font-bold leading-tight tracking-tight text-slate-900 md:text-4xl lg:text-5xl"
           >
             Smart Payroll. Zero Hassle.
             <br />
             <span
-              className="bg-clip-text text-transparent"
-              style={{
-                backgroundImage: `linear-gradient(135deg, ${BRAND} 0%, ${BRAND_DARK} 100%)`,
-              }}
+              className="bg-clip-text text-transparent bg-[var(--color-primary-dark)]"
+           
             >
               Maximum Accuracy.
             </span>

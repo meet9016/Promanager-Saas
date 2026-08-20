@@ -106,7 +106,7 @@ const features = [
 
 const FeaturesSection = ({ noMoreFeatures = false, noBenefits = false }) => {
   return (
-    <section className="py-10 lg:py-10 bg-white relative overflow-hidden">
+    <section className="pt-12 lg:py-20 bg-white relative overflow-hidden">
       <Helmet>
         <title>Payroll Software Features | promanager</title>
         <meta
@@ -179,7 +179,7 @@ const FeaturesSection = ({ noMoreFeatures = false, noBenefits = false }) => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.8, delay: 0.2 }}
-                className="text-4xl lg:text-5xl font-extrabold text-[var(--color-text-primary)] mb-6"
+                className="text-4xl lg:text-5xl font-bold text-[var(--color-text-primary)] mb-6"
               >
                 Smarter Payroll,{" "}
                 <span className="bg-[var(--color-primary-dark)] bg-clip-text text-transparent">
@@ -413,7 +413,7 @@ const FeaturesSection = ({ noMoreFeatures = false, noBenefits = false }) => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.8, delay: 0.2 }}
-                className="text-4xl lg:text-5xl font-extrabold text-[var(--color-text-primary)] mb-6"
+                className="text-4xl lg:text-5xl font-bold text-[var(--color-text-primary)] mb-6"
               >
                 Everything You Need to{" "}
                 <span className="bg-[var(--color-primary-dark)] bg-clip-text text-transparent">

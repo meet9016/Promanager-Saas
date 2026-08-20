@@ -79,11 +79,11 @@ const ResourceTemplatesSection = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
-          className="mb-16"
+          className="mb-16 text-center"
         >
-          <div className="max-w-3xl">
+          <div className="max-w-3xl mx-auto flex flex-col items-center">
             {/* Title with Curved Line */}
-            <div className="relative mb-8">
+            <div className="relative mb-8 inline-block">
               <motion.h3
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -125,7 +125,7 @@ const ResourceTemplatesSection = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="text-4xl lg:text-5xl font-extrabold text-[var(--color-text-primary)] mb-6 leading-tight"
+              className="text-4xl lg:text-5xl font-bold text-[var(--color-text-primary)] mb-6 leading-tight"
             >
               Streamline HR & Payroll with{" "}
               <span className="bg-[var(--color-primary-dark)] bg-clip-text text-transparent">

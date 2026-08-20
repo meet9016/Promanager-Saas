@@ -28,7 +28,7 @@ const AboutSection = () => {
   ];
 
   return (
-    <section className="pt-20 lg:pt-28 bg-white relative">
+    <section className="pt-12 lg:pt-20 bg-white relative">
 
       <div className="absolute top-1/2 z-10   right-0 w-[400px] h-[500px] rounded-full
     bg-[#6c4cf1]
@@ -37,6 +37,47 @@ const AboutSection = () => {
   "/>
 
       <div className="container mx-auto px-4 relative z-10">
+        {/* Section Heading Badge - Centered above both left and right columns */}
+        <div className="flex justify-center mb-8 lg:mb-12">
+          <div className="relative inline-block">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+            >
+              <span className="text-2xl lg:text-3xl font-bold text-[var(--color-text-primary)]">
+                About ProManager
+              </span>
+            </motion.div>
+
+            {/* Curved Line SVG under badge */}
+            <motion.svg
+              initial={{ pathLength: 0, opacity: 0 }}
+              whileInView={{ pathLength: 1, opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 1.5, delay: 0.3, ease: "easeInOut" }}
+              className="absolute top-10 left-0 w-56 h-4"
+              viewBox="0 0 220 12"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <motion.path
+                d="M2 10C50 2, 100 2, 150 10C180 16, 200 10, 218 10"
+                stroke="url(#gradient)"
+                strokeWidth="3"
+                strokeLinecap="round"
+              />
+              <defs>
+                <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stopColor="#5917A8" />
+                  <stop offset="100%" stopColor="#7300ff" />
+                </linearGradient>
+              </defs>
+            </motion.svg>
+          </div>
+        </div>
+
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           {/* Left Side - Image */}
           <motion.div
@@ -100,45 +141,6 @@ const AboutSection = () => {
             transition={{ duration: 0.8 }}
             className="space-y-8 order-1 lg:order-2"
           >
-            {/* Badge with Curved Line */}
-            <div className="relative">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6 }}
-                className="inline-block mb-6"
-              >
-                <span className="text-2xl lg:text-3xl font-bold text-[var(--color-text-primary)]">
-                  About ProManager
-                </span>
-              </motion.div>
-
-              {/* Curved Line SVG under badge */}
-              <motion.svg
-                initial={{ pathLength: 0, opacity: 0 }}
-                whileInView={{ pathLength: 1, opacity: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 1.5, delay: 0.3, ease: "easeInOut" }}
-                className="absolute top-10 left-0 w-56 h-4"
-                viewBox="0 0 220 12"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <motion.path
-                  d="M2 10C50 2, 100 2, 150 10C180 16, 200 10, 218 10"
-                  stroke="url(#gradient)"
-                  strokeWidth="3"
-                  strokeLinecap="round"
-                />
-                <defs>
-                  <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" stopColor="#5917A8" />
-                    <stop offset="100%" stopColor="#7300ff" />
-                  </linearGradient>
-                </defs>
-              </motion.svg>
-            </div>
 
             {/* Title */}
             <motion.h2
@@ -146,7 +148,7 @@ const AboutSection = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="text-4xl lg:text-5xl font-extrabold text-[var(--color-text-primary)] leading-tight mb-6"
+              className="text-4xl lg:text-5xl font-bold text-[var(--color-text-primary)] leading-tight mb-6"
             >
               Simplify Payroll,{" "}
               <span className="bg-[var(--color-primary-dark)] bg-clip-text text-transparent">

@@ -16,8 +16,8 @@ const AboutPage = () => {
             </Helmet>
 
             {/* Hero Section */}
-            <section className="py-20 px-4 bg-[var(--color-primary-dark)] text-white relative overflow-hidden">
-                {/* Decorative Background */}
+            {/* <section className="py-20 px-4 bg-[var(--color-primary-dark)] text-white relative overflow-hidden">
+                
                 <div className="absolute inset-0 opacity-10">
                     <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
                         <defs>
@@ -30,7 +30,7 @@ const AboutPage = () => {
                 </div>
 
                 <div className="container mx-auto  text-center relative z-10">
-                    {/* Title with Curved Line */}
+                 
                     <div className="relative inline-block mb-8">
                         <motion.h3
                             initial={{ opacity: 0, y: 20 }}
@@ -79,19 +79,52 @@ const AboutPage = () => {
                         Transform your payroll management with innovative solutions designed to simplify processes, ensure accuracy, and save time for modern businesses.
                     </motion.p>
                 </div>
-            </section>
+            </section> */}
 
             <AboutSection />
 
             {/* Detailed About Section */}
-            <section className="py-20 px-4 ">
-
+            <section className="pt-12 lg:py-20">
                 <div className="container mx-auto ">
                     <div className="absolute bottom-0 z-10   left-0 w-[400px] h-[500px] rounded-full
     bg-[#6c4cf1]
     blur-[90px]
     opacity-20
   "/>
+
+                    {/* Title with Curved Line - Centered above left and right parts */}
+                    <div className="flex justify-center mb-8 lg:mb-12">
+                        <div className="relative inline-block">
+                            <h3 className="text-2xl lg:text-3xl font-bold text-[var(--color-text-primary)]">
+                                Our Mission
+                            </h3>
+
+                            <motion.svg
+                                initial={{ pathLength: 0, opacity: 0 }}
+                                whileInView={{ pathLength: 1, opacity: 1 }}
+                                viewport={{ once: true }}
+                                transition={{ duration: 1.5, delay: 0.3, ease: "easeInOut" }}
+                                className="absolute top-10 left-0 w-40 h-4"
+                                viewBox="0 0 160 12"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                            >
+                                <motion.path
+                                    d="M2 10C35 2, 70 2, 105 10C130 16, 145 10, 158 10"
+                                    stroke="url(#gradient-mission)"
+                                    strokeWidth="3"
+                                    strokeLinecap="round"
+                                />
+                                <defs>
+                                    <linearGradient id="gradient-mission" x1="0%" y1="0%" x2="100%" y2="0%">
+                                        <stop offset="0%" stopColor="#6C4CF1" />
+                                        <stop offset="100%" stopColor="#4B2EDB" />
+                                    </linearGradient>
+                                </defs>
+                            </motion.svg>
+                        </div>
+                    </div>
+
                     <div className="grid lg:grid-cols-2 gap-12 items-center">
                         {/* Left - Image */}
                         <motion.div
@@ -145,38 +178,8 @@ const AboutPage = () => {
                             transition={{ duration: 0.8 }}
                             viewport={{ once: true }}
                         >
-                            {/* Title with Curved Line */}
-                            <div className="relative mb-8">
-                                <h3 className="text-2xl lg:text-3xl font-bold text-[var(--color-text-primary)]">
-                                    Our Mission
-                                </h3>
 
-                                <motion.svg
-                                    initial={{ pathLength: 0, opacity: 0 }}
-                                    whileInView={{ pathLength: 1, opacity: 1 }}
-                                    viewport={{ once: true }}
-                                    transition={{ duration: 1.5, delay: 0.3, ease: "easeInOut" }}
-                                    className="absolute top-10 left-0 w-40 h-4"
-                                    viewBox="0 0 160 12"
-                                    fill="none"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                >
-                                    <motion.path
-                                        d="M2 10C35 2, 70 2, 105 10C130 16, 145 10, 158 10"
-                                        stroke="url(#gradient-mission)"
-                                        strokeWidth="3"
-                                        strokeLinecap="round"
-                                    />
-                                    <defs>
-                                        <linearGradient id="gradient-mission" x1="0%" y1="0%" x2="100%" y2="0%">
-                                            <stop offset="0%" stopColor="#6C4CF1" />
-                                            <stop offset="100%" stopColor="#4B2EDB" />
-                                        </linearGradient>
-                                    </defs>
-                                </motion.svg>
-                            </div>
-
-                            <h2 className="text-3xl md:text-4xl font-extrabold text-[var(--color-text-primary)] mb-6 leading-tight">
+                            <h2 className="text-4xl md:text-5xl font-bold text-[var(--color-text-primary)] mb-6 leading-tight">
                                 Revolutionizing Payroll for{" "}
                                 <span className="bg-[var(--color-primary-dark)] bg-clip-text text-transparent">
                                     Modern Businesses
@@ -219,7 +222,7 @@ const AboutPage = () => {
             </section>
 
             {/* Vision Section */}
-            <section className="py-20 px-4 bg-white  text-black relative overflow-hidden">
+           <section className="pt-0 pb-12 lg:pt-0 lg:pb-20 bg-white text-black relative overflow-hidden">
                 {/* Animated Background */}
 
                 <div className="container mx-auto  relative z-10">
@@ -236,23 +239,29 @@ const AboutPage = () => {
                                 Our Vision
                             </h2>
 
+                           
                             <motion.svg
                                 initial={{ pathLength: 0, opacity: 0 }}
                                 whileInView={{ pathLength: 1, opacity: 1 }}
                                 viewport={{ once: true }}
                                 transition={{ duration: 1.5, delay: 0.3, ease: "easeInOut" }}
-                                className="absolute top-10 left-1/2 -translate-x-1/2 w-36 h-4"
-                                viewBox="0 0 140 12"
+                                className="absolute top-10 left-0 w-40 h-4"
+                                viewBox="0 0 160 12"
                                 fill="none"
                                 xmlns="http://www.w3.org/2000/svg"
                             >
                                 <motion.path
-                                    d="M2 10C30 2, 60 2, 90 10C110 16, 125 10, 138 10"
-                                    stroke="white"
+                                    d="M2 10C35 2, 70 2, 105 10C130 16, 145 10, 158 10"
+                                    stroke="url(#gradient-mission)"
                                     strokeWidth="3"
                                     strokeLinecap="round"
-                                    opacity="0.6"
                                 />
+                                <defs>
+                                    <linearGradient id="gradient-mission" x1="0%" y1="0%" x2="100%" y2="0%">
+                                        <stop offset="0%" stopColor="#6C4CF1" />
+                                        <stop offset="100%" stopColor="#4B2EDB" />
+                                    </linearGradient>
+                                </defs>
                             </motion.svg>
                         </div>
 
@@ -305,7 +314,7 @@ const AboutPage = () => {
                                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
 
                                         {/* Number Badge */}
-                                      
+
                                     </div>
 
                                     {/* Content */}

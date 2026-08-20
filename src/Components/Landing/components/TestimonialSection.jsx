@@ -114,7 +114,7 @@ const thirdColumn = testimonials.slice(6, 9);
 // Main Testimonials component
 const TestimonialSection = () => {
   return (
-    <section className="bg-white py-20 relative z-50">
+    <section className="bg-white pt-0 lg:py-20 relative">
       <div className="absolute z-10 hidden sm:block    right-0 w-[400px] h-[500px] rounded-full
     bg-[#6c4cf1]
     blur-[90px]
@@ -160,7 +160,7 @@ const TestimonialSection = () => {
             </motion.svg>
           </div>
 
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-[var(--color-text-primary)] mb-4">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[var(--color-text-primary)] mb-4">
             What Our{" "}
             <span className="bg-[var(--color-primary-dark)] bg-clip-text text-transparent">
               Users Say
