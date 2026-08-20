@@ -518,7 +518,6 @@ const Filters = ({
 const DetailedDailyReport = () => {
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [attendanceData, setAttendanceData] = useState([]);
-    console.log("selectedDate", selectedDate);
 
     // API-driven summary stats
     const [summaryStats, setSummaryStats] = useState({

@@ -261,7 +261,6 @@ const EmployeePayrollBlock = ({ empData, permissions, onDataChange, onUnsavedCha
       );
       const allowanceData =
         res.data.data || res.data || [];
-      console.log(allowanceData, "ppp")
       setAllowances(
         Array.isArray(allowanceData)
           ? allowanceData
@@ -1474,7 +1473,6 @@ const MonthlyPayroll = () => {
       formData.append('employees_data', JSON.stringify(employeesData));
 
       const response = await api.post('add_all_monthly_employee_salary', formData);
-      console.log("response", response)
       if (response.data?.success) {
         showToast('Payroll submitted successfully for all employees', 'success');
         setAllPayrollData([]);
@@ -1815,9 +1813,6 @@ const MonthlyPayroll = () => {
                     {hasAnyUnsaved && <p className="text-xs text-yellow-700 mt-1 flex items-center gap-1"><AlertTriangle className="w-3 h-3" /> Save all pending edits first</p>}
                     {missingRemarks.length > 0 && <p className="text-xs text-orange-700 mt-1 flex items-center gap-1"><AlertTriangle className="w-3 h-3" /> Add remarks for all edited employees</p>}
                   </div>
-                  {console.log(submitting, "a1")}
-                  {console.log(hasAnyUnsaved, "a2")}
-                  {console.log(missingRemarks.length > 0, "a3")}
                   {permissions['add_salary_payment'] && (
                     <button
                       onClick={handleSubmitPayroll}

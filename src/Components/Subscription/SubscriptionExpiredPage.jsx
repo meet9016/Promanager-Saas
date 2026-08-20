@@ -52,8 +52,6 @@ const SubscriptionExpiredPage = () => {
         document.addEventListener('selectstart', handleSelectStart);
         document.addEventListener('dragstart', handleDragStart);
 
-        const originalConsole = console.log;
-
         const detectDevTools = () => {
             const threshold = 160;
             setInterval(() => {
@@ -76,7 +74,6 @@ const SubscriptionExpiredPage = () => {
             document.removeEventListener('keydown', handleKeyDown);
             document.removeEventListener('selectstart', handleSelectStart);
             document.removeEventListener('dragstart', handleDragStart);
-            console.log = originalConsole;
         };
     }, []);
 

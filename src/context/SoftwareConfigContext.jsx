@@ -110,7 +110,7 @@ export const SoftwareConfigProvider = ({ children }) => {
         playstoreLink: '',
         gstNumber: '',
         mobile_number: '',
-    });console.log("config****",config);
+    });
     
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);

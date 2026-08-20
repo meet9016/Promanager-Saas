@@ -88,8 +88,6 @@ export default function FinalizePayroll() {
   const [totalRecords, setTotalRecords] = useState(0);
   const permissions = useSelector(state => state.permissions) || {};
 
-  console.log(permissions, "a")
-
   const navigate = useNavigate();
   const location = useLocation();
   const [toast, setToast] = useState(null);

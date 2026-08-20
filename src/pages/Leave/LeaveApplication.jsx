@@ -164,9 +164,7 @@ const LeaveApplication = () => {
         }));
     };
 
-    console.log("*****", employees);
     const handleSubmit = async (e) => {
-        console.log("99999999");
 
         e.preventDefault();
 
