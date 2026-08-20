@@ -192,7 +192,7 @@ const PaymentPage = () => {
     const { discountAmount, taxableAmount, gst, total } = useMemo(() => {
         const disc = couponApplied ? Math.round(baseAmount * couponApplied.discountPct / 100) : 0;
         const taxable = baseAmount - disc;
-        const tax = enabled ? Math.round(taxable * 0.18) : 0;
+        const tax = Math.round(taxable * 0.18);
 
         return {
             discountAmount: disc,
@@ -200,7 +200,7 @@ const PaymentPage = () => {
             gst: tax,
             total: taxable + tax
         };
-    }, [baseAmount, couponApplied, enabled]);
+    }, [baseAmount, couponApplied]);
 
     // getRange — handle "101+" correctly (max should allow current employees, not cap it)
     // const getRange = (range) => {
@@ -423,8 +423,8 @@ const PaymentPage = () => {
         formData.append("whatsapp", form.whatsapp);
         formData.append("address", form.address.trim());
 
-        formData.append("gst_number", enabled ? form.gst.trim() : "");
-        formData.append("is_gst", enabled ? "1" : "2");
+        formData.append("gst_number", form.gst.trim());
+        formData.append("is_gst", form.gst.trim() ? "1" : "2");
 
         formData.append("total_employee", employees);
         formData.append("billing_cycle", billingCycle);
@@ -439,8 +439,8 @@ const PaymentPage = () => {
         formData.append("coupon_amount", discountAmount || 0);
 
         // GST
-        formData.append("gst_percentage", enabled ? 18 : 0);
-        formData.append("gst_amount", enabled ? gst : 0);
+        formData.append("gst_percentage", 18);
+        formData.append("gst_amount", gst);
 
         // final
         formData.append("final_pay_amount", total);
@@ -714,26 +714,11 @@ focus:outline-none focus:border-[#6C4CF1] focus:ring-2 focus:ring-[#6C4CF1]/20" 
                                     <Field
                                         label="GST Number (Optional)"
                                         error={formErrors.gst}
-                                        right={
-                                            <button
-                                                type="button"
-                                                onClick={() => setEnabled(!enabled)}
-                                                className={`w-10 h-5 flex items-center rounded-full p-1 transition duration-300 ${enabled ? "bg-green-500" : "bg-gray-300"
-                                                    }`}
-
-                                            >
-                                                <div
-                                                    className={`bg-white w-4 h-4 rounded-full shadow-md transform transition duration-300 ${enabled ? "translate-x-5" : "translate-x-0"
-                                                        }`}
-                                                />
-                                            </button>
-                                        }
                                     >
                                         <Input
                                             placeholder="e.g. 29AAACK7411M1Z3"
                                             value={form.gst} error={formErrors.gst}
                                             onChange={e => handleFormChange('gst', e.target.value)}
-                                            disabled={!enabled}
                                         />
                                     </Field>
                                 </div>
@@ -806,10 +791,10 @@ focus:outline-none focus:border-[#6C4CF1] focus:ring-2 focus:ring-[#6C4CF1]/20" 
                                     </>)}
 
                                     {/* GST on taxable amount */}
-                                    {enabled && <div className="flex justify-between text-gray-500">
+                                    <div className="flex justify-between text-gray-500">
                                         <span>GST (18%)</span>
                                         <span className="font-semibold text-gray-700">Rs.{fmt(gst)}</span>
-                                    </div>}
+                                    </div>
 
                                     <div className="flex justify-between text-base  text-gray-900">
                                         {/* Coupon Field */}
