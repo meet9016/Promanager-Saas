@@ -106,7 +106,7 @@ const features = [
 
 const FeaturesSection = ({ noMoreFeatures = false, noBenefits = false }) => {
   return (
-    <section className="pt-12 lg:py-20 bg-white relative overflow-hidden">
+    <section className="py-12 lg:py-20 bg-white relative overflow-hidden">
       <Helmet>
         <title>Payroll Software Features | promanager</title>
         <meta
@@ -199,7 +199,7 @@ const FeaturesSection = ({ noMoreFeatures = false, noBenefits = false }) => {
               </motion.p>
             </motion.div>
 
-            <div className="grid lg:grid-cols-3 gap-12 items-start  mx-auto mb-24">
+            <div className={`grid lg:grid-cols-3 gap-12 items-start mx-auto ${noMoreFeatures ? "mb-0" : "mb-24"}`}>
 
               <div className="space-y-10">
                 {benefits.slice(0, 3).map((benefit, index) => {

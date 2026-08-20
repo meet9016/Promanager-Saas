@@ -43,10 +43,12 @@ const RegisterModal = ({ isOpen, onClose }) => {
         setForm((prev) => ({
             ...prev,
             [field]: value,
+            ...(field === "mobile" ? { whatsapp: value } : {}),
         }));
         setErrors((prev) => ({
             ...prev,
             [field]: "",
+            ...(field === "mobile" ? { whatsapp: "" } : {}),
         }));
     };
 
@@ -304,7 +306,7 @@ const RegisterModal = ({ isOpen, onClose }) => {
                                         {/* GST Number */}
                                         <div>
                                             <label className="text-sm font-medium text-gray-700 mb-2 block">
-                                                GST Number <span className="text-red-500">*</span>
+                                                GST Number
                                             </label>
                                             <input
                                                 type="text"

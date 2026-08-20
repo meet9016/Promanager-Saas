@@ -11,7 +11,7 @@ function TermsAndConditionsPage() {
     return (
         <div className="bg-gray-50">
             {/* Hero Section - matching PrivacyPolicyPage structure, using Terms content */}
-            <section className="relative overflow-hidden bg-[#6c4cf1] text-white py-20">
+            <section className="relative overflow-hidden bg-[var(--color-primary)] text-white py-20">
 
                 {/* Full Background Dots */}
                 <div className="absolute inset-0 opacity-20 pointer-events-none">
@@ -37,8 +37,7 @@ function TermsAndConditionsPage() {
 
                 </div>
 
-                {/* Bottom Fade */}
-                <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-[#6c4cf1] to-transparent"></div>
+              
             </section>
 
             {/* Content Section - matching PrivacyPolicyPage layout, with Terms content */}

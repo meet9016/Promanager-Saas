@@ -117,7 +117,7 @@ import ShiftReallocation from "./pages/ShiftManagement/ShiftReallocation";
 import PrivacyPolicyPage from "./Components/Landing/components/PrivacyPolicy";
 import TermsAndConditionsPage from "./Components/Landing/components/TermsPage";
 import PaymentPage from "./Components/Landing/pages/PaymentPage";
-import { FaWhatsapp } from "react-icons/fa";
+import { FaWhatsapp, FaArrowUp } from "react-icons/fa";
 import SubscriptionExpiredPage from "./Components/Subscription/SubscriptionExpiredPage";
 import Renew from "./Components/Landing/pages/Renew";
 
@@ -143,6 +143,19 @@ const App = () => {
   const [isMobileOrTablet, setIsMobileOrTablet] = useState(
     window.innerWidth <= 768,
   );
+  const [showScrollTop, setShowScrollTop] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 200) {
+        setShowScrollTop(true);
+      } else {
+        setShowScrollTop(false);
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   // Route categorization for better performance
   const isLandingRoute = [
@@ -266,16 +279,27 @@ const App = () => {
 
 
         {isPublicRoute && !isLoginRoute ? (
-          <a
-            href="https://wa.me/919274889008?text=Hello%2C%20I%20have%20visited%20your%20website%20and%20am%20interested%20in%20a%20demo%20of%20Promanager%20%F0%9F%98%80.%20Please%20share%20the%20details.%20Thank%20you!"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="fixed bottom-6 right-6 z-[9999] group"
-          >
-            <div className="bg-[#009745] hover:bg-[#1ebe5d] text-white p-3 rounded-full shadow-md shadow-black/20 transition-all duration-300 flex items-center justify-center">
-              <FaWhatsapp className="w-8 h-8" />
-            </div>
-          </a>
+          <div className="fixed bottom-6 right-6 z-[9999] flex flex-col gap-3 items-center">
+            {showScrollTop && (
+              <button
+                onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+                aria-label="Scroll to top"
+                className="bg-[var(--color-primary-dark)] hover:bg-[var(--color-primary)] text-white p-3.5 rounded-full shadow-lg shadow-black/20 transition-all duration-300 flex items-center justify-center hover:scale-110 active:scale-95"
+              >
+                <FaArrowUp className="w-5 h-5" />
+              </button>
+            )}
+            <a
+              href="https://wa.me/919274889008?text=Hello%2C%20I%20have%20visited%20your%20website%20and%20am%20interested%20in%20a%20demo%20of%20Promanager%20%F0%9F%98%80.%20Please%20share%20the%20details.%20Thank%20you!"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group"
+            >
+              <div className="bg-[#009745] hover:bg-[#1ebe5d] text-white p-3 rounded-full shadow-md shadow-black/20 transition-all duration-300 flex items-center justify-center hover:scale-110 active:scale-95">
+                <FaWhatsapp className="w-8 h-8" />
+              </div>
+            </a>
+          </div>
         ) : null}
 
         <main

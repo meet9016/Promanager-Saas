@@ -32,15 +32,6 @@ export const agreementSchema = yup.object().shape({
         .matches(/^[6-9]\d{9}$/, "Mobile number must be a valid 10-digit number")
         .required("Mobile number is required"),
 
-    gst_number: yup
-        .string()
-        .trim()
-        .matches(
-            /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/,
-            "Enter valid GST number"
-        )
-        .required("GST number is required"),
-
     whatsapp: yup
         .string()
         .trim()

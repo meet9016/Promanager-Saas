@@ -10,7 +10,7 @@ function PrivacyPolicyPage() {
   return (
     <div className="bg-gray-50">
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-[#6c4cf1] text-white py-20">
+      <section className="relative overflow-hidden bg-[var(--color-primary)] text-white py-20">
 
         {/* Dots Background */}
         <div className="absolute inset-0 opacity-20 pointer-events-none">
@@ -33,7 +33,7 @@ function PrivacyPolicyPage() {
         </div>
 
         {/* Bottom Fade */}
-        <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-[#6c4cf1] to-transparent"></div>
+        {/* <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-[#6c4cf1] to-transparent"></div> */}
       </section>
 
       {/* Content Section */}
@@ -435,8 +435,8 @@ function PrivacyPolicyPage() {
                 registered email address at:
               </p>
               <div className="p-4 rounded-lg">
-                <p className="font-semibold text-primary-700 flex items-center gap-2">
-                  <span className="text-xl">📧</span>
+                <p className="font-semibold text-[var(--color-primary)] flex items-center gap-2">
+                  <span className="text-xl ">📧</span>
                   {config?.email}
                 </p>
               </div>

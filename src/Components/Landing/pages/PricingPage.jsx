@@ -196,7 +196,7 @@ const PricingPage = () => {
         </p>
       </motion.div>
 
-      <section className="px-4 pb-20">
+      <section className=" pb-18  ">
         {loading || !plans.length ? (
           <div className="text-center py-20 text-[#6C4CF1] font-semibold animate-pulse">
             Loading pricing...
@@ -263,7 +263,7 @@ const PricingPage = () => {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
                   {/* Card 1: USERS */}
                   <div className="bg-white rounded-2xl border border-[#6c4cf19e] p-4 sm:p-5 shadow-[0_4px_20px_rgba(108,76,241,0.04)] flex items-center gap-4">
-                    <div className="w-16 h-16 rounded-full bg-[#EDE8FF] text-[#6C4CF1] flex items-center justify-center flex-shrink-0">
+                    <div className="w-16 h-16 rounded-full bg-[#EDE8FF] text-[#2F0B7F] flex items-center justify-center flex-shrink-0">
                       <svg className="w-8" fill="none" stroke="currentColor" strokeWidth={2.2} viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                       </svg>
@@ -280,7 +280,7 @@ const PricingPage = () => {
 
                   {/* Card 2: SELECTED PLAN */}
                   <div className="bg-white rounded-2xl border border-[#6c4cf19e] p-4 sm:p-5 shadow-[0_4px_20px_rgba(108,76,241,0.04)] flex items-center gap-4">
-                    <div className="w-16 h-16 rounded-full bg-[#EDE8FF] text-[#6C4CF1] flex items-center justify-center flex-shrink-0">
+                    <div className="w-16 h-16 rounded-full bg-[#EDE8FF] text-[#2F0B7F] flex items-center justify-center flex-shrink-0">
                       <svg className="w-8" fill="none" stroke="currentColor" strokeWidth={2.2} viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
                       </svg>
@@ -297,7 +297,7 @@ const PricingPage = () => {
 
                   {/* Card 3: EST. MONTHLY */}
                   <div className="bg-white rounded-2xl border border-[#6c4cf19e] p-4 sm:p-5 shadow-[0_4px_20px_rgba(108,76,241,0.04)] flex items-center gap-4">
-                    <div className="w-16 h-16 rounded-full bg-[#EDE8FF] text-[#6C4CF1] flex items-center justify-center flex-shrink-0">
+                    <div className="w-16 h-16 rounded-full bg-[#EDE8FF] text-[#2F0B7F] flex items-center justify-center flex-shrink-0">
                       <svg className="w-8" fill="none" stroke="currentColor" strokeWidth={2.2} viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                       </svg>
@@ -353,7 +353,7 @@ const PricingPage = () => {
                         <span className={`text-[2.6rem] font-bold leading-none tracking-tighter ${isActive ? "text-white" : "text-[var(--color-primary-darker)]"}`}>
                           ₹{plan.price_per_user}
                         </span>
-                        <span className={`text-md pb-1.5 ${isActive ? "text-white/50" : "text-gray-400"}`}>/user/mo</span>
+                        <span className={`text-[19px] pb-1.5 ${isActive ? "text-white/50" : "text-gray-400"}`}>/user/mo</span>
                       </div>
                       {/* Divider */}
                       <div className={`mt-5 h-px ${isActive ? "bg-white/15" : "bg-gray-100"}`} />
@@ -362,8 +362,8 @@ const PricingPage = () => {
                     {/* Features */}
                     <div className="space-y-2.5 mb-7">
                       {plan.features.map((f, j) => (
-                        <div key={j} className={`text-sm flex gap-2.5 items-center ${isActive ? "text-white/85" : "text-gray-500"}`}>
-                          <span className={`w-4 h-4 rounded-full flex-shrink-0 flex items-center justify-center text-[10px] font-black ${isActive ? "bg-white/20 text-white" : "bg-[#6C4CF1]/10 text-[var(--color-primary-darker)]"
+                        <div key={j} className={`text-md flex gap-2.5 items-center ${isActive ? "text-white/85" : "text-gray-500"}`}>
+                          <span className={`w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center text-[12px] font-black ${isActive ? "bg-white/20 text-white" : "bg-[#6C4CF1]/10 text-[var(--color-primary-darker)]"
                             }`}>✓</span>
                           {f}
                         </div>
@@ -371,9 +371,9 @@ const PricingPage = () => {
                     </div>
 
                     <button
-                      className={`w-full py-3 rounded-xl font-bold text-sm tracking-wide transition-all duration-200 ${isActive
+                      className={`w-full py-3 rounded-xl font-bold text-[17px] duration-200 ${isActive
                         ? "bg-white text-[var(--color-primary-darker)] hover:bg-white/90 shadow-md"
-                        : "bg-[#6C4CF1]/8 text-[var(--color-primary-darker)] border border-[#6C4CF1]/20 hover:bg-[#6C4CF1] hover:text-white hover:border-transparent"
+                        : "bg-[#6C4CF1]/8 text-[var(--color-primary-darker)] border border-[#6C4CF1]/20 hover:bg-[var(--color-primary)] hover:text-white hover:border-transparent"
                         }`}
                       onClick={() => {
                         const isFree =

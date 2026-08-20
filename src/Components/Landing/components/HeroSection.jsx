@@ -17,23 +17,7 @@ const HeroSection = () => {
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Left Content */}
           <div className="space-y-8">
-            {/* Badge */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              className="inline-flex items-center gap-2 px-5 py-2.5 bg-[var(--color-primary-dark)]  rounded-full border-2 border-[var(--color-primary-dark)] shadow-lg backdrop-blur-sm"
-            >
-              <motion.div
-                animate={{ rotate: 360 }}
-                transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-              >
-
-              </motion.div>
-              <span className="text-sm font-bold  text-white text-transparent">
-                Payroll Made Simple
-              </span>
-            </motion.div>
+          
 
             {/* Main Heading */}
             <div className="space-y-4">

@@ -7,6 +7,7 @@ import { Textarea } from "../ui/textarea";
 import { Mail, Phone, MapPin, Clock, Check, Zap, User, Building2, MessageSquare, Send, MessageCircle, Sparkles, ArrowUpRight } from "lucide-react";
 import { Helmet } from "@dr.pogodin/react-helmet";
 import { Link } from "react-router-dom";
+import { useSoftwareConfig } from "../../../context/SoftwareConfigContext";
 
 const AnimatedCounter = ({ from, to, duration, symbol }) => {
   const [count, setCount] = useState(from);
@@ -37,6 +38,8 @@ const AnimatedCounter = ({ from, to, duration, symbol }) => {
 };
 
 const ContactPage = () => {
+  const { config } = useSoftwareConfig();
+
   // State for form data - simplified to 5 fields
   const [formData, setFormData] = useState({
     fullName: "",
@@ -273,23 +276,23 @@ const ContactPage = () => {
                 {
                   icon: Mail,
                   label: "Email",
-                  value: "contact@promanager.in",
+                  value: config?.email || "-",
                   gradient: "from-indigo-500 to-purple-600",
-                  href: "mailto:cotact@promanager.in",
+                  href: config?.email ? `mailto:${config.email}` : "mailto:contact@promanager.in",
                   isExternal: false,
                 },
                 {
                   icon: Phone,
                   label: "Phone",
-                  value: "+91 92748 89008",
+                  value: config?.mobile_number || config?.mobileNumber || "-",
                   gradient: "from-emerald-500 to-teal-600",
-                  href: "tel:+919274889008",
+                  href: (config?.mobile_number || config?.mobileNumber) ? `tel:${config?.mobile_number || config?.mobileNumber}` : "tel:+919274889008",
                   isExternal: false,
                 },
                 {
                   icon: MapPin,
                   label: "Location",
-                  value: "Surat, India",
+                  value: config?.address || "-",
                   gradient: "from-purple-500 to-pink-600",
                   href: "https://maps.app.goo.gl/kHPcDofAdk9mjnJp7",
                   isExternal: true,
@@ -297,7 +300,7 @@ const ContactPage = () => {
                 {
                   icon: Clock,
                   label: "Support",
-                  value: "10:00 AM to 5:00",
+                  value: "10:00 AM to 5:00 PM",
                   gradient: "from-amber-500 to-orange-600",
                   href: null,
                   isExternal: false,
