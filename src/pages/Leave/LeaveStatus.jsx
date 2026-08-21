@@ -1,18 +1,15 @@
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
-import { Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useSelector } from 'react-redux';
+import { apiDateToFormattedSlash, formatToDDMMYYYYSlash, MONTH_NAMES_FULL, DAY_NAMES_INITIALS, getCalendarDaysInMonth } from '../../utils/helpers';
 import api from '../../api/axiosInstance';
 import { Toast } from '../../Components/ui/Toast';
 import LoadingSpinner from "../../Components/Loader/LoadingSpinner"
 import { Table, TableHeader, TableBody, TableRow, TableHeaderRow, Th, Td } from '../../Components/ui/Table';
-import CustomDatePicker from '../../Components/comman/CustomDatePicker';
 import CustomInput from '../../Components/comman/CustomInput';
 import CustomSelect from '../../Components/comman/CustomSelect';
 import NoDataFound from '../../Components/comman/NoDataFound';
 import CustomCheckbox from '../../Components/comman/CustomCheckbox';
-
-// Lucide React Icons
 import {
     Clock,
     CheckCircle,
@@ -32,13 +29,6 @@ import {
     X,
     User,
     CalendarDays,
-    Timer,
-    MessageSquare,
-    AlertTriangle,
-    ArrowLeft,
-    Mail,
-    Building,
-    Badge,
     Ban
 } from 'lucide-react';
 
@@ -119,7 +109,6 @@ const StatusChip = ({ status }) => {
 const LeaveManagement = () => {
     const { user, isAuthenticated, logout } = useAuth();
     const permissions = useSelector(state => state.permissions) || {};
-    const navigate = useNavigate();
 
     // State management
     const [leaveRequests, setLeaveRequests] = useState([]);
@@ -169,11 +158,10 @@ const LeaveManagement = () => {
         end_date: '',
         reason: ''
     });
+    const [leaveFormErrors, setLeaveFormErrors] = useState({});
 
     const [employees, setEmployees] = useState([]);
     const [leaveTypes, setLeaveTypes] = useState([]);
-    const [employeeSearch, setEmployeeSearch] = useState('');
-    const [selectedEmployeeName, setSelectedEmployeeName] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isLoadingData, setIsLoadingData] = useState(false);
     const [selectedDates, setSelectedDates] = useState([]);
@@ -201,6 +189,7 @@ const LeaveManagement = () => {
             const date = parseDate(dateString);
             return date.toLocaleDateString('en-GB');
         } catch (error) {
+            console.error(error);
             return dateString;
         }
     }, [parseDate]);
@@ -255,8 +244,6 @@ const LeaveManagement = () => {
             setLoading(false);
         }
     }, [user, selectedStatus, logout, showToast]);
-
-    // ====== ADD LEAVE POPUP FUNCTIONS (From LeaveApplication) ======
 
     // Set user_id from auth context
     useEffect(() => {
@@ -336,6 +323,24 @@ const LeaveManagement = () => {
         }
     }, []);
 
+    // Reset leave form
+    const resetLeaveForm = useCallback(() => {
+        setLeaveFormData({
+            user_id: user?.user_id || '',
+            employee_id: '',
+            leave_type: '',
+            start_date: '',
+            end_date: '',
+            reason: ''
+        });
+
+        setSelectedDates([]);
+        setIsPaidMap({});
+        setCalendarData(null);
+        setLeaveBalanceData(null);
+        setLeaveFormErrors({});
+    }, [user]);
+
     // Open Add Leave Popup - SMOOTH ANIMATION
     const handleOpenAddLeave = useCallback(async () => {
         // First set the modal data state
@@ -351,11 +356,11 @@ const LeaveManagement = () => {
             end_date: '',
             reason: ''
         });
-        setSelectedEmployeeName('');
-        setEmployeeSearch('');
+
         setSelectedDates([]);
         setIsPaidMap({});
         setCalendarData(null);
+        setLeaveFormErrors({});
 
         // Fetch data
         await Promise.all([fetchEmployees(), fetchLeaveTypes()]);
@@ -369,20 +374,37 @@ const LeaveManagement = () => {
 
     // Close Add Leave Popup - SMOOTH ANIMATION
     const handleCloseAddLeave = useCallback(() => {
-        // First animate out
         setShowAddLeaveModal(false);
-
-        // Then remove from DOM after animation completes
         setTimeout(() => {
             setAddLeaveModal({ isOpen: false });
+            resetLeaveForm();
         }, 300);
-    }, []);
+    }, [resetLeaveForm]);
 
     // Handle leave form change
     const handleLeaveFormChange = useCallback((e) => {
         const { name, value } = e.target;
         setLeaveFormData(prev => ({ ...prev, [name]: value }));
     }, []);
+
+    // Clear validation errors automatically when user inputs data
+    useEffect(() => {
+        if (leaveFormErrors.employee_id && leaveFormData.employee_id) {
+            setLeaveFormErrors(prev => ({ ...prev, employee_id: null }));
+        }
+        if (leaveFormErrors.leave_type && leaveFormData.leave_type) {
+            setLeaveFormErrors(prev => ({ ...prev, leave_type: null }));
+        }
+        if (leaveFormErrors.reason && leaveFormData.reason.trim() !== '') {
+            setLeaveFormErrors(prev => ({ ...prev, reason: null }));
+        }
+    }, [leaveFormData.employee_id, leaveFormData.leave_type, leaveFormData.reason, leaveFormErrors]);
+
+    useEffect(() => {
+        if (leaveFormErrors.dates && selectedDates.length > 0) {
+            setLeaveFormErrors(prev => ({ ...prev, dates: null }));
+        }
+    }, [selectedDates, leaveFormErrors.dates]);
 
     // Handle employee select
     const handleEmployeeSelect = useCallback((e) => {
@@ -397,58 +419,14 @@ const LeaveManagement = () => {
             employee_id: selectedEmployee.employee_id,
         }));
 
-        setSelectedEmployeeName(selectedEmployee.full_name);
-        setEmployeeSearch(selectedEmployee.full_name);
+
 
         // Fetch calendar data for selected employee
         fetchLeaveCalendar(selectedEmployee.employee_id);
         fetchLeaveBalance(selectedEmployee.employee_id);
     }, [employees, fetchLeaveCalendar, fetchLeaveBalance]);
 
-    // Format date for API
-    const formatDateForAPI = useCallback((dateString) => {
-        if (!dateString) return '';
-        const date = new Date(dateString);
-        const day = String(date.getDate()).padStart(2, '0');
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const year = date.getFullYear();
-        return `${day}-${month}-${year}`;
-    }, []);
 
-    // Handle start date change
-    const handleStartDateChange = useCallback((date) => {
-        setLeaveFormData(prev => ({
-            ...prev,
-            start_date: date,
-            end_date: prev.end_date && date && prev.end_date < date ? '' : prev.end_date
-        }));
-    }, []);
-
-    // Handle end date change
-    const handleEndDateChange = useCallback((date) => {
-        setLeaveFormData(prev => ({
-            ...prev,
-            end_date: date
-        }));
-    }, []);
-
-    // Reset leave form
-    const resetLeaveForm = useCallback(() => {
-        setLeaveFormData({
-            user_id: user?.user_id || '',
-            employee_id: '',
-            leave_type: '',
-            start_date: '',
-            end_date: '',
-            reason: ''
-        });
-        setSelectedEmployeeName('');
-        setEmployeeSearch('');
-        setSelectedDates([]);
-        setIsPaidMap({});
-        setCalendarData(null);
-        setLeaveBalanceData(null);
-    }, [user]);
 
     // Validate and toggle paid leave status
     const handlePaidToggle = useCallback((dateStr, isChecked) => {
@@ -459,7 +437,7 @@ const LeaveManagement = () => {
 
         // Validate if we can set it to paid based on leaveBalanceData
         if (leaveBalanceData && leaveBalanceData.month_wise) {
-            const [day, month, year] = dateStr.split('/');
+            const [, month, year] = dateStr.split('/');
             const monthKey = `${year}-${month}`; // matches API format e.g. "2026-07"
 
             const monthData = leaveBalanceData.month_wise.find(m => m.month === monthKey);
@@ -489,16 +467,27 @@ const LeaveManagement = () => {
     const handleSubmitLeave = useCallback(async (e) => {
         e.preventDefault();
 
+        // Validation
+        let errors = {};
         if (!leaveFormData.employee_id) {
-            showToast('Please select an employee', 'error');
-            return;
+            errors.employee_id = "Please select an employee";
         }
-
+        if (!leaveFormData.leave_type) {
+            errors.leave_type = "Please select a leave type";
+        }
         if (selectedDates.length === 0) {
-            showToast('Please select at least one date', 'error');
+            errors.dates = "Please select at least one date";
+        }
+        if (!leaveFormData.reason || leaveFormData.reason.trim() === '') {
+            errors.reason = "Please provide a reason";
+        }
+
+        if (Object.keys(errors).length > 0) {
+            setLeaveFormErrors(errors);
             return;
         }
 
+        setLeaveFormErrors({});
         setIsSubmitting(true);
 
         try {
@@ -506,20 +495,13 @@ const LeaveManagement = () => {
             submitData.append('employee_id', leaveFormData.employee_id);
             submitData.append('leave_type', leaveFormData.leave_type);
 
-            const earliestDate = selectedDates[0];
-            const latestDate = selectedDates[selectedDates.length - 1];
 
             const formatDDMMYYYY = (dateStr) => {
                 if (!dateStr) return '';
                 return dateStr.replace(/\//g, '-');
             };
-
-            // submitData.append('start_date', formatDDMMYYYY(earliestDate));
-            // submitData.append('end_date', formatDDMMYYYY(latestDate));
             submitData.append('reason', leaveFormData.reason);
 
-            // Add leave_dates and is_paid arrays to FormData
-            // Default is unpaid (2), checked = paid (1)
             selectedDates.forEach((date, index) => {
                 const formattedDate = formatDDMMYYYY(date);
                 const isPaidVal = isPaidMap[date] === 1 ? 1 : 2;
@@ -530,18 +512,14 @@ const LeaveManagement = () => {
             const response = await api.post('/add_leave', submitData);
 
             if (response.data.success === false) {
-                // API returned success: false - show error toast, keep popup open
                 showToast(response.data.message || 'Failed to submit leave request', 'error');
                 return;
             }
 
             showToast(response.data.message || 'Leave request submitted successfully!', 'success');
 
-            // Reset form and close popup only on actual success
             resetLeaveForm();
             handleCloseAddLeave();
-
-            // Refresh leave list
             fetchLeaveRequests();
 
         } catch (error) {
@@ -551,12 +529,7 @@ const LeaveManagement = () => {
         }
     }, [leaveFormData, showToast, resetLeaveForm, handleCloseAddLeave, fetchLeaveRequests, selectedDates, isPaidMap]);
 
-    // Get today's date at midnight for comparison
-    const today = useMemo(() => {
-        const date = new Date();
-        date.setHours(0, 0, 0, 0);
-        return date;
-    }, []);
+
 
     // Search and filter effect
     useEffect(() => {
@@ -930,666 +903,15 @@ const LeaveManagement = () => {
                     )}
                 </div>
 
-                {/* Rejection Modal */}
-                {rejectionModal.isOpen && (
-                    <div className="fixed inset-0 bg-black/50  flex items-center justify-center p-4 z-50">
-                        <div className="bg-[var(--color-bg-secondary)] rounded-xl shadow-2xl w-full max-w-md border border-[var(--color-border-primary)]">
-                            <div className="p-8 border-b border-[var(--color-border-primary)] ">
-                                <div className="flex items-center space-x-3">
-                                    <div className="w-10 h-10 bg-red-100  rounded-full flex items-center justify-center">
-                                        <XCircle className="w-5 h-5 text-red-600" />
-                                    </div>
-                                    <div>
-                                        <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">Reject Leave Request</h2>
-                                        <p className="text-sm text-[var(--color-text-secondary)]">Provide reason for rejection</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="p-8">
-                                <div className="mb-4">
-                                    <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-2">
-                                        Rejection Reason *
-                                    </label>
-                                    <textarea
-                                        className="w-full border border-[var(--color-border-secondary)] rounded-lg p-3 h-32 focus:ring-2 focus:ring-red-500 focus:border-red-500 text-[var(--color-text-primary)] bg-[var(--color-bg-secondary)] resize-none placeholder:text-[var(--color-text-muted)]"
-                                        placeholder="Enter detailed reason for rejecting this leave request..."
-                                        value={rejectionModal.reason}
-                                        onChange={(e) => setRejectionModal(prev => ({ ...prev, reason: e.target.value }))}
-                                    />
-                                    <p className="text-xs text-[var(--color-text-secondary)] mt-1">
-                                        This reason will be visible to the employee
-                                    </p>
-                                </div>
-                            </div>
-                            <div className="p-4 bg-[var(--color-bg-primary)] flex justify-end space-x-3 rounded-b-xl border-t border-[var(--color-border-primary)]">
-                                <button
-                                    className="px-4 py-2 text-[var(--color-text-secondary)] bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] rounded-lg shadow-sm hover:bg-[var(--color-bg-hover)] transition-colors"
-                                    onClick={() => setRejectionModal({ isOpen: false, leaveData: null, reason: '' })}
-                                >
-                                    Cancel
-                                </button>
-                                <button
-                                    className="px-4 py-2 text-white bg-red-600 hover:bg-red-700   border border-transparent rounded-lg shadow-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                                    onClick={submitRejection}
-                                    disabled={!rejectionModal.reason.trim()}
-                                >
-                                    Submit Rejection
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                )}
+                <RejectionModal rejectionModal={rejectionModal} setRejectionModal={setRejectionModal} submitRejection={submitRejection} />
 
-                {/* Cancel Modal */}
-                {cancelModal.isOpen && (
-                    <div className="fixed inset-0 bg-black/50  flex items-center justify-center p-4 z-50">
-                        <div className="bg-[var(--color-bg-secondary)] rounded-xl shadow-2xl w-full max-w-md border border-[var(--color-border-primary)]">
-                            <div className="p-8 border-b border-[var(--color-border-primary)] bg-[var(--color-primary-dark)]">
-                                <div className="flex items-center space-x-3">
-                                    <div className="w-10 h-10 bg-[var(--color-primary-lighter)] rounded-full flex items-center justify-center">
-                                        <Ban className="w-5 h-5 text-[var(--color-primary-dark)]" />
-                                    </div>
-                                    <div>
-                                        <h2 className="text-lg font-semibold text-white">Cancel Leave Request</h2>
-                                        <p className="text-sm text-white">Provide reason for cancellation</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="p-8">
-                                <div className="mb-4">
-                                    <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-2">
-                                        Cancellation Reason *
-                                    </label>
-                                    <textarea
-                                        className="w-full border border-[var(--color-border-secondary)] rounded-lg p-3 h-32 focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] text-[var(--color-text-primary)] bg-[var(--color-bg-secondary)] resize-none placeholder:text-[var(--color-text-muted)]"
-                                        placeholder="Enter detailed reason for cancelling this leave request..."
-                                        value={cancelModal.reason}
-                                        onChange={(e) => setCancelModal(prev => ({ ...prev, reason: e.target.value }))}
-                                    />
-                                    <p className="text-xs text-[var(--color-text-secondary)] mt-1">
-                                        This reason will be visible to the employee
-                                    </p>
-                                </div>
-                            </div>
-                            <div className="p-4 bg-[var(--color-bg-primary)] flex justify-end space-x-3 rounded-b-xl border-t border-[var(--color-border-primary)]">
-                                <button
-                                    className="px-4 py-2 text-[var(--color-text-secondary)] bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] rounded-lg shadow-sm hover:bg-[var(--color-bg-hover)] transition-colors"
-                                    onClick={() => setCancelModal({ isOpen: false, leaveData: null, reason: '' })}
-                                >
-                                    Close
-                                </button>
-                                <button
-                                    className="px-4 py-2 text-white bg-[var(--color-primary-dark)] hover:opacity-90 border border-transparent rounded-lg shadow-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                                    onClick={submitCancel}
-                                    disabled={!cancelModal.reason.trim()}
-                                >
-                                    Submit Cancellation
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                )}
+                <CancelModal cancelModal={cancelModal} setCancelModal={setCancelModal} submitCancel={submitCancel} />
 
-                {/* Approval Modal */}
-                {approvalModal.isOpen && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-                        <div className="w-full max-w-md overflow-hidden rounded-2xl bg-[var(--color-bg-secondary)] shadow-2xl border border-[var(--color-border-primary)] animate-in fade-in zoom-in-95 duration-200">
+                <ApprovalModal approvalModal={approvalModal} setApprovalModal={setApprovalModal} handleApprove={handleApprove} />
 
-                            {/* Header */}
-                            <div className="relative bg-[var(--color-primary-dark)] px-6 py-6">
-                                <div className="flex items-center gap-4">
-                                    <div className="flex h-14 w-14 items-center justify-center rounded-full bg-white/20 backdrop-blur">
-                                        <CheckCircle className="h-7 w-7 text-white" />
-                                    </div>
+                <ViewModal viewModal={viewModal} setViewModal={setViewModal} setApprovalModal={setApprovalModal} setCancelModal={setCancelModal} handleReject={handleReject} permissions={permissions} />
 
-                                    <div>
-                                        <h2 className="text-xl font-semibold text-white">
-                                            Approve Leave
-                                        </h2>
-                                        <p className="text-sm text-green-100">
-                                            Please confirm your action
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Body */}
-                            <div className="px-6 py-8">
-                                <div className="flex items-start gap-4">
-
-
-                                    <div>
-                                        <h3 className="text-lg font-semibold text-[var(--color-text-primary)]">
-                                            Approve this leave request?
-                                        </h3>
-
-                                        <p className="mt-2 text-sm leading-6 text-[var(--color-text-secondary)]">
-                                            This action will approve the employee's leave request.
-                                            Once approved, the employee will be notified.
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Footer */}
-                            <div className="flex justify-end gap-3 border-t border-[var(--color-border-primary)] bg-[var(--color-bg-primary)] px-6 py-5">
-
-                                <button
-                                    onClick={() =>
-                                        setApprovalModal({
-                                            isOpen: false,
-                                            leaveId: null,
-                                        })
-                                    }
-                                    className="rounded-xl border border-[var(--color-border-secondary)] bg-[var(--color-bg-secondary)] px-5 py-2.5 text-sm font-medium text-[var(--color-text-secondary)] transition-all duration-200 hover:bg-[var(--color-bg-hover)] hover:shadow"
-                                >
-                                    Cancel
-                                </button>
-
-                                <button
-                                    onClick={() => {
-                                        handleApprove(approvalModal.leaveId);
-                                        setApprovalModal({
-                                            isOpen: false,
-                                            leaveId: null,
-                                        });
-                                    }}
-                                    className="rounded-xl bg-[var(--color-primary-dark)] px-5 py-2.5 text-sm font-semibold text-white shadow-lg transition-all duration-200"
-                                >
-                                    Yes, Approve
-                                </button>
-
-                            </div>
-                        </div>
-                    </div>
-                )}
-
-                {/* View Modal Section */}
-                {viewModal.isOpen && viewModal.leaveData && (
-                    <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 backdrop-blur-sm">
-                        <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden ">
-
-                            {/* Header */}
-                            <div className="bg-[var(--color-primary-dark)] px-6 py-5 flex items-center justify-between">
-                                <div className="flex items-center space-x-4">
-                                    <div className="flex items-center justify-center">
-                                        <User className="w-5 h-5 text-white" strokeWidth={2} />
-                                    </div>
-                                    <div>
-                                        <h2 className="text-xl font-bold text-white tracking-wide">Leave Request Details</h2>
-                                        <p className="text-sm text-white/80 font-medium mt-0.5">Employee Information</p>
-                                    </div>
-                                </div>
-                                <button
-                                    onClick={() => setViewModal({ isOpen: false, leaveData: null })}
-                                    className="p-1 hover:bg-white/10 rounded-lg transition-all duration-200"
-                                >
-                                    <X className="w-5 h-5 text-white" />
-                                </button>
-                            </div>
-
-                            {/* Content */}
-                            <div className="p-8 overflow-y-auto flex-1 custom-scrollbar bg-white">
-
-                                {/* Employee Info Card */}
-                                <div className="bg-white rounded-xl shadow-sm border border-[var(--color-border-divider)] p-6 mb-6 flex items-center justify-between">
-                                    <div className="flex items-center space-x-6">
-                                        <div className="w-20 h-20 bg-[var(--color-primary-lightest)] rounded-full flex items-center justify-center shadow-inner">
-                                            <User className="w-10 h-10 text-[var(--color-primary-dark)] fill-current opacity-80" />
-                                        </div>
-                                        <div>
-                                            <p className="text-xs text-[var(--color-text-secondary)] font-semibold mb-1 uppercase tracking-wider">Employee Name</p>
-                                            <h3 className="text-lg font-bold text-[var(--color-text-primary)] mb-3">{viewModal.leaveData.full_name}</h3>
-
-                                            <p className="text-xs text-[var(--color-text-secondary)] font-semibold mb-1 uppercase tracking-wider">Leave Type</p>
-                                            <div className="inline-flex items-center px-3 py-1.5 bg-[#fbf9ff] text-[var(--color-primary-dark)] rounded-lg text-xs font-bold border border-[#ebdffc] shadow-sm">
-                                                <Calendar className="w-3.5 h-3.5 mr-2" />
-                                                {viewModal.leaveData.leave_type}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="text-right">
-                                        <p className="text-xs text-[var(--color-text-secondary)] font-semibold mb-2 uppercase tracking-wider">Status</p>
-                                        <StatusChip status={viewModal.leaveData.status} />
-                                    </div>
-                                </div>
-
-                                {/* Stats Row */}
-                                {(() => {
-                                    const dates = viewModal.leaveData.leave_dates || [];
-                                    const startDate = viewModal.leaveData.start_date || (dates.length > 0 ? dates[0].leave_date : '-');
-                                    const endDate = viewModal.leaveData.end_date || (dates.length > 0 ? dates[dates.length - 1].leave_date : '-');
-                                    const totalDays = viewModal.leaveData.total_days || dates.length;
-                                    const paidDays = dates.filter(d => d.is_paid === "1").length;
-                                    const unpaidDays = dates.filter(d => d.is_paid !== "1").length;
-
-                                    return (
-                                        <div className="flex bg-white rounded-xl shadow-sm border border-[var(--color-border-divider)] mb-6 py-4 md:py-5 divide-x divide-[var(--color-border-divider)] w-full overflow-hidden">
-                                            <div className="flex flex-1 items-center justify-center gap-2 md:gap-4 px-2 md:px-4">
-                                                <div className="hidden sm:flex w-10 h-10 md:w-12 md:h-12 rounded-xl bg-[#fbf9ff] items-center justify-center text-[var(--color-primary-dark)] border border-[#ebdffc] shrink-0">
-                                                    <Calendar className="w-4 h-4 md:w-5 md:h-5" />
-                                                </div>
-                                                <div className="min-w-0">
-                                                    <p className="text-[10px] md:text-xs text-[var(--color-text-secondary)] font-semibold mb-0.5 md:mb-1 tracking-wide truncate">Start Date</p>
-                                                    <p className="font-bold text-[var(--color-text-primary)] text-xs md:text-sm truncate">{startDate}</p>
-                                                </div>
-                                            </div>
-                                            <div className="flex flex-1 items-center justify-center gap-2 md:gap-4 px-2 md:px-4">
-                                                <div className="hidden sm:flex w-10 h-10 md:w-12 md:h-12 rounded-xl bg-[#fbf9ff] items-center justify-center text-[var(--color-primary-dark)] border border-[#ebdffc] shrink-0">
-                                                    <Calendar className="w-4 h-4 md:w-5 md:h-5" />
-                                                </div>
-                                                <div className="min-w-0">
-                                                    <p className="text-[10px] md:text-xs text-[var(--color-text-secondary)] font-semibold mb-0.5 md:mb-1 tracking-wide truncate">End Date</p>
-                                                    <p className="font-bold text-[var(--color-text-primary)] text-xs md:text-sm truncate">{endDate}</p>
-                                                </div>
-                                            </div>
-                                            <div className="flex flex-1 items-center justify-center gap-2 md:gap-4 px-2 md:px-4">
-                                                <div className="hidden sm:flex w-10 h-10 md:w-12 md:h-12 rounded-xl bg-blue-50 items-center justify-center text-blue-500 border border-blue-100 shrink-0">
-                                                    <CalendarDays className="w-4 h-4 md:w-5 md:h-5" />
-                                                </div>
-                                                <div className="min-w-0">
-                                                    <p className="text-[10px] md:text-xs text-[var(--color-text-secondary)] font-semibold mb-0.5 md:mb-1 tracking-wide truncate">Total Days</p>
-                                                    <p className="font-bold text-[var(--color-text-primary)] text-xs md:text-sm truncate">{totalDays} {totalDays === 1 ? 'Day' : 'Days'}</p>
-                                                </div>
-                                            </div>
-                                            <div className="flex flex-1 items-center justify-center gap-2 md:gap-4 px-2 md:px-4">
-                                                <div className="hidden sm:flex w-10 h-10 md:w-12 md:h-12 rounded-xl bg-green-50 items-center justify-center text-green-500 border border-green-100 shrink-0">
-                                                    <div className="w-5 h-5 md:w-6 md:h-6 rounded-[4px] border-2 border-current relative">
-                                                        <div className="absolute top-1/2 right-0 w-2 h-1 md:w-2.5 md:h-1 bg-current -translate-y-1/2"></div>
-                                                    </div>
-                                                </div>
-                                                <div className="min-w-0">
-                                                    <p className="text-[10px] md:text-xs text-[var(--color-text-secondary)] font-semibold mb-0.5 md:mb-1 tracking-wide truncate">Paid Days</p>
-                                                    <p className="font-bold text-green-600 text-xs md:text-sm truncate">{paidDays} {paidDays === 1 ? 'Day' : 'Days'}</p>
-                                                </div>
-                                            </div>
-                                            <div className="flex flex-1 items-center justify-center gap-2 md:gap-4 px-2 md:px-4">
-                                                <div className="hidden sm:flex w-10 h-10 md:w-12 md:h-12 rounded-xl bg-red-50 items-center justify-center text-red-500 border border-red-100 shrink-0">
-                                                    <div className="w-5 h-5 md:w-6 md:h-6 rounded-[4px] border-2 border-current relative">
-                                                        <div className="absolute top-1/2 right-0 w-2 h-1 md:w-2.5 md:h-1 bg-current -translate-y-1/2"></div>
-                                                    </div>
-                                                </div>
-                                                <div className="min-w-0">
-                                                    <p className="text-[10px] md:text-xs text-[var(--color-text-secondary)] font-semibold mb-0.5 md:mb-1 tracking-wide truncate">Unpaid Days</p>
-                                                    <p className="font-bold text-red-600 text-xs md:text-sm truncate">{unpaidDays} {unpaidDays === 1 ? 'Day' : 'Days'}</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    );
-                                })()}
-
-                                {/* Leave Reason */}
-                                {viewModal.leaveData.reason && (
-                                    <div className="bg-[#faf7ff] border border-[#f3ebff] rounded-xl p-5 mb-6">
-                                        <div className="flex items-center gap-2 mb-4">
-                                            <FileText className="w-4 h-4 text-[var(--color-primary-dark)]" />
-                                            <h4 className="text-sm font-bold text-[var(--color-primary-dark)]">Leave Reason</h4>
-                                        </div>
-                                        <p className="text-[var(--color-text-primary)] text-sm ml-6">{viewModal.leaveData.reason}</p>
-                                    </div>
-                                )}
-
-                                {/* Additional Reasons (Rejection/Cancellation) */}
-                                {viewModal.leaveData.status === '3' && viewModal.leaveData.reject_reason && (
-                                    <div className="bg-red-50 border border-red-100 rounded-xl p-5 mb-6">
-                                        <div className="flex items-center gap-2 mb-4">
-                                            <FileText className="w-4 h-4 text-red-700" />
-                                            <h4 className="text-sm font-bold text-red-700">Rejection Reason</h4>
-                                        </div>
-                                        <p className="text-red-900 text-sm ml-6">{viewModal.leaveData.reject_reason}</p>
-                                    </div>
-                                )}
-                                {viewModal.leaveData.status === '4' && viewModal.leaveData.cancel_reason && (
-                                    <div className="bg-gray-50 border border-gray-200 rounded-xl p-5 mb-6">
-                                        <div className="flex items-center gap-2 mb-4">
-                                            <FileText className="w-4 h-4 text-gray-700" />
-                                            <h4 className="text-sm font-bold text-gray-700">Cancellation Reason</h4>
-                                        </div>
-                                        <p className="text-gray-900 text-sm ml-6">{viewModal.leaveData.cancel_reason}</p>
-                                    </div>
-                                )}
-
-                                {/* Day Wise Details Section */}
-                                {viewModal.leaveData.leave_dates?.length > 0 && (
-                                    <div className="mb-2">
-                                        <div className="flex items-center gap-2 mb-3">
-                                            <CalendarDays className="w-5 h-5 text-[var(--color-primary-dark)]" />
-                                            <h4 className="text-sm font-bold text-[var(--color-primary-dark)]">Day Wise Details</h4>
-                                        </div>
-                                        <div className="border border-[var(--color-border-divider)] rounded-xl overflow-hidden shadow-sm bg-white">
-                                            <table className="w-full text-left text-sm">
-                                                <thead className="bg-[var(--color-primary-dark)] text-white">
-                                                    <tr>
-                                                        <th className="px-6 py-4 font-semibold text-xs tracking-wider">Date</th>
-                                                        <th className="px-6 py-4 font-semibold text-xs tracking-wider text-center w-[200px]">Paid / Unpaid Status</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody className="divide-y divide-[var(--color-border-divider)] bg-white">
-                                                    {viewModal.leaveData.leave_dates.map((d, i) => {
-                                                        const dateStr = d.leave_date;
-                                                        let displayDate = dateStr;
-
-
-                                                        return (
-                                                            <tr key={i} className="hover:bg-gray-50 transition-colors">
-                                                                <td className="px-6 py-5 text-[var(--color-text-primary)] font-medium">
-                                                                    {displayDate}
-                                                                </td>
-                                                                <td className="px-6 py-5 flex justify-center">
-                                                                    {d.is_paid === "1" ? (
-                                                                        <span className="inline-flex items-center gap-2 px-3 py-1 bg-green-50 text-green-700 rounded-md text-xs font-bold border border-green-200">
-                                                                            <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span>
-                                                                            Paid
-                                                                        </span>
-                                                                    ) : (
-                                                                        <span className="inline-flex items-center gap-2 px-3 py-1 bg-red-50 text-red-700 rounded-md text-xs font-bold border border-red-200">
-                                                                            <span className="w-1.5 h-1.5 rounded-full bg-red-500"></span>
-                                                                            Unpaid
-                                                                        </span>
-                                                                    )}
-                                                                </td>
-                                                            </tr>
-                                                        );
-                                                    })}
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
-
-                            {/* Footer */}
-                            <div className="bg-white px-6 py-4 border-t border-[var(--color-border-divider)] flex justify-end items-center rounded-b-2xl">
-                                <div className="flex space-x-4">
-                                    {viewModal.leaveData.status === '1' && (
-                                        <>
-                                            {permissions['leave_approved'] && (
-                                                <button
-                                                    onClick={() => {
-                                                        setViewModal({ isOpen: false, leaveData: null });
-                                                        setApprovalModal({ isOpen: true, leaveId: viewModal.leaveData.leave_id });
-                                                    }}
-                                                    className="flex items-center px-6 py-2.5 text-sm font-bold text-white bg-[var(--color-primary-dark)] hover:opacity-90 rounded-xl shadow-md duration-200 transform"
-                                                >
-                                                    <CheckCircle className="w-4 h-4 mr-2" />
-                                                    Approve
-                                                </button>
-                                            )}
-                                            {permissions['leave_rejected'] && (
-                                                <button
-                                                    onClick={() => {
-                                                        setViewModal({ isOpen: false, leaveData: null });
-                                                        handleReject(viewModal.leaveData);
-                                                    }}
-                                                    className="flex items-center px-6 py-2.5 text-sm font-bold text-white bg-red-600 hover:bg-red-700 rounded-xl shadow-md duration-200 transform "
-                                                >
-                                                    <XCircle className="w-4 h-4 mr-2" />
-                                                    Reject
-                                                </button>
-                                            )}
-                                        </>
-                                    )}
-                                    {viewModal.leaveData.status === '2' && (
-                                        <button
-                                            onClick={() => {
-                                                setViewModal({ isOpen: false, leaveData: null });
-                                                setCancelModal({
-                                                    isOpen: true,
-                                                    leaveData: viewModal.leaveData,
-                                                    reason: ''
-                                                });
-                                            }}
-                                            className="flex items-center px-6 py-2.5 text-sm font-bold text-white bg-[var(--color-primary-dark)] hover:opacity-90 rounded-xl shadow-md duration-200 transform "
-                                        >
-                                            <Ban className="w-4 h-4 mr-2" />
-                                            Cancel Leave
-                                        </button>
-                                    )}
-                                    <button
-                                        onClick={() => setViewModal({ isOpen: false, leaveData: null })}
-                                        className="px-6 py-2.5 text-sm font-bold text-[var(--color-primary-dark)] bg-white border border-[var(--color-primary-dark)] hover:bg-[#fbf9ff] rounded-xl transition-all duration-200"
-                                    >
-                                        Close
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                )}
-
-                {/* ====== ADD LEAVE POPUP MODAL - SMOOTH ANIMATION ====== */}
-                {addLeaveModal.isOpen && (
-                    <div
-                        className={`fixed inset-0 flex items-center justify-center p-4 z-50 overflow-y-auto transition-all duration-300 ease-out ${showAddLeaveModal ? 'bg-black/50 backdrop-blur-sm' : 'bg-black/0'
-                            }`}
-                    >
-                        <div
-                            className={`bg-[var(--color-bg-secondary)] rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col overflow-visible my-8 transition-all duration-300 ease-out ${showAddLeaveModal
-                                ? 'opacity-100 scale-100 translate-y-0'
-                                : 'opacity-0 scale-95 translate-y-4'
-                                }`}
-                        >
-                            {/* Popup Header */}
-                            <div className="bg-[var(--color-primary-dark)] px-6 py-4 flex items-center justify-between rounded-t-2xl">
-                                <div className="flex items-center space-x-3">
-                                    <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
-                                        <Plus className="w-5 h-5 text-white" />
-                                    </div>
-                                    <div>
-                                        <h2 className="text-xl font-bold text-white">Apply for Leave</h2>
-                                        <p className="text-sm text-white/80">Fill in the details below</p>
-                                    </div>
-                                </div>
-                                <button
-                                    onClick={handleCloseAddLeave}
-                                    className="p-2 hover:bg-white/15 rounded-xl transition-all duration-200"
-                                >
-                                    <X className="w-6 h-6 text-white" />
-                                </button>
-                            </div>
-
-                            {/* Popup Content */}
-                            <div className="p-6 overflow-visible flex-1 bg-[var(--color-bg-primary)] rounded-b-2xl">
-                                {isLoadingData ? (
-                                    <div className="flex items-center justify-center py-12">
-                                        <LoadingSpinner />
-                                    </div>
-                                ) : (
-                                    <form onSubmit={handleSubmitLeave} className="grid grid-cols-1 md:grid-cols-2 gap-5">
-
-                                        {/* Employee Selection */}
-                                        <div className="space-y-2">
-                                            <label className="block text-sm font-medium text-[var(--color-text-secondary)]">
-                                                Select Employee <span className="text-[var(--color-error)]">*</span>
-                                            </label>
-                                            <CustomSelect
-                                                name="employee_id"
-                                                value={leaveFormData.employee_id}
-                                                onChange={handleEmployeeSelect}
-                                                placeholder="Search and select employee"
-                                                searchable={true}
-                                                required
-                                                options={employees.map((employee) => ({
-                                                    value: employee.employee_id,
-                                                    label: employee.full_name,
-                                                }))}
-                                            />
-                                        </div>
-
-                                        {/* Leave Type Selection */}
-                                        <div className="space-y-2">
-                                            <label className="block text-sm font-medium text-[var(--color-text-secondary)]">
-                                                Leave Type <span className="text-[var(--color-error)]">*</span>
-                                            </label>
-                                            <CustomSelect
-                                                name="leave_type"
-                                                value={leaveFormData.leave_type}
-                                                onChange={handleLeaveFormChange}
-                                                options={
-                                                    Array.isArray(leaveTypes)
-                                                        ? leaveTypes.map((leaveType) => ({
-                                                            value: leaveType.leave_type_id,
-                                                            label: leaveType.leave_type,
-                                                        }))
-                                                        : []
-                                                }
-                                                placeholder="Select leave type"
-                                                required
-                                                searchable={true}
-                                            />
-                                        </div>
-
-                                        {/* Select Dates Calendar & Right Side */}
-                                        <div className="space-y-2 md:col-span-2">
-                                            <div className="flex items-center justify-between">
-                                                <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">
-                                                    Select Dates <span className="text-[var(--color-error)]">*</span>
-                                                </label>
-                                                {/* Legend inline with label */}
-                                                <div className="flex items-center gap-3">
-                                                    <div className="flex items-center gap-1.5">
-                                                        <span className="w-2.5 h-2.5 rounded-full bg-green-500 inline-block flex-shrink-0" />
-                                                        <span className="text-[10px] text-[var(--color-text-secondary)] font-medium">Holiday</span>
-                                                    </div>
-                                                    <div className="flex items-center gap-1.5">
-                                                        <span className="w-2.5 h-2.5 rounded-full bg-amber-400 inline-block flex-shrink-0" />
-                                                        <span className="text-[10px] text-[var(--color-text-secondary)] font-medium">Leave Applied</span>
-                                                    </div>
-                                                    <div className="flex items-center gap-1.5">
-                                                        <span className="w-2.5 h-2.5 rounded-full bg-indigo-600 inline-block flex-shrink-0" />
-                                                        <span className="text-[10px] text-[var(--color-text-secondary)] font-medium">Selected</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div className="grid grid-cols-1 md:grid-cols-12 gap-5">
-                                                {/* Calendar Left Side */}
-                                                <div className="md:col-span-7 border border-[var(--color-border-secondary)] rounded-xl p-2 bg-[var(--color-bg-primary)] shadow-sm transition-all flex justify-center">
-                                                    {calendarLoading ? (
-                                                        <div className="flex items-center justify-center h-[260px] w-full">
-                                                            <div className="flex flex-col items-center gap-2">
-                                                                <div className="w-8 h-8 border-2 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin"></div>
-                                                                <span className="text-xs text-[var(--color-text-secondary)]">Loading calendar...</span>
-                                                            </div>
-                                                        </div>
-                                                    ) : (
-                                                        <DatePickerComponent
-                                                            selectedDates={selectedDates}
-                                                            setSelectedDates={setSelectedDates}
-                                                            calendarData={calendarData}
-                                                        />
-                                                    )}
-                                                </div>
-
-                                                {/* Selected Dates Right Side */}
-                                                <div className="md:col-span-5 bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] rounded-xl p-4 shadow-sm flex flex-col h-[300px]">
-                                                    <div className="flex items-center justify-between pb-3 mb-3 border-b border-[var(--color-border-primary)]">
-                                                        <h4 className="text-sm font-semibold text-[var(--color-text-primary)]">
-                                                            Selected Dates
-                                                        </h4>
-                                                        <span className="bg-[var(--color-primary-lighter)] text-[var(--color-primary-dark)] py-0.5 px-2.5 rounded-full text-xs font-bold">
-                                                            {selectedDates.length}
-                                                        </span>
-                                                    </div>
-
-                                                    {selectedDates.length === 0 ? (
-                                                        <div className="flex-1 flex flex-col items-center justify-center text-center p-4">
-                                                            <div className="w-12 h-12 bg-[var(--color-primary-lightest)] rounded-full flex items-center justify-center mb-3">
-                                                                <CalendarDays className="w-6 h-6 text-[var(--color-primary-light)]" />
-                                                            </div>
-                                                            <p className="text-sm text-[var(--color-text-secondary)] font-medium">No dates selected</p>
-                                                            <p className="text-xs text-[var(--color-text-secondary)] mt-1 opacity-70">Click on the calendar to select leave dates</p>
-                                                        </div>
-                                                    ) : (
-                                                        <div className="flex-1 overflow-y-auto pr-1 space-y-2 custom-scrollbar">
-                                                            {selectedDates.map((d) => {
-                                                                const isPaid = isPaidMap[d] === 1;
-                                                                return (
-                                                                    <div
-                                                                        key={d}
-                                                                        className="flex items-center justify-between bg-[var(--color-bg-primary)] border border-[var(--color-border-secondary)] hover:border-[var(--color-primary-light)] px-3 py-2 rounded-lg text-sm transition-all group shadow-sm hover:shadow"
-                                                                    >
-                                                                        <div className="flex items-center gap-2.5 text-[var(--color-text-primary)] font-medium">
-                                                                            <CalendarDays size={16} className="text-[var(--color-primary)]" />
-                                                                            <span>{d}</span>
-                                                                        </div>
-
-                                                                        <div className="flex items-center gap-2 flex-shrink-0">
-                                                                            <CustomCheckbox
-                                                                                id={`is-paid-${d}`}
-                                                                                checked={isPaid}
-                                                                                onChange={(e) => {
-                                                                                    handlePaidToggle(d, e.target.checked);
-                                                                                }}
-                                                                            />
-                                                                            <label
-                                                                                htmlFor={`is-paid-${d}`}
-                                                                                className={`text-xs font-semibold w-10 text-right cursor-pointer select-none ${isPaid
-                                                                                    ? 'text-[var(--color-primary-dark)]'
-                                                                                    : 'text-[var(--color-text-secondary)]'
-                                                                                    }`}
-                                                                            >
-                                                                                {isPaid ? 'Paid' : 'Unpaid'}
-                                                                            </label>
-                                                                        </div>
-                                                                    </div>
-                                                                );
-                                                            })}
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        {/* Reason */}
-                                        <div className="space-y-2 md:col-span-2">
-                                            <label className="block text-sm font-medium text-[var(--color-text-secondary)]">
-                                                Reason for Leave <span className="text-[var(--color-error)]">*</span>
-                                            </label>
-                                            <textarea
-                                                name="reason"
-                                                value={leaveFormData.reason}
-                                                onChange={handleLeaveFormChange}
-                                                required
-                                                rows="3"
-                                                className="w-full px-3 py-2 border border-[var(--color-border-secondary)] rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)] resize-none"
-                                                placeholder="Please provide details about your leave request"
-                                            />
-                                        </div>
-
-                                        {/* Action Buttons */}
-                                        <div className="md:col-span-2 flex items-center justify-end pt-4 space-x-4 border-t border-[var(--color-border-primary)]">
-                                            <button
-                                                type="button"
-                                                onClick={() => {
-                                                    resetLeaveForm();
-                                                    handleCloseAddLeave();
-                                                }}
-                                                className="px-5 py-2.5 text-sm font-medium bg-transparent text-[var(--color-primary)] border-2 hover:bg-[var(--color-primary-lightest)] border-[var(--color-primary)] rounded-xl transition-colors"
-                                            >
-                                                Cancel
-                                            </button>
-                                            <button
-                                                type="submit"
-                                                className="px-6 py-2.5 min-w-[150px] flex justify-center text-sm font-medium text-[var(--color-text-white)] bg-[var(--color-primary-dark)] hover:bg-[var(--color-primary-darker)] rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--color-primary)] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                                                disabled={isSubmitting}
-                                            >
-                                                {isSubmitting ? (
-                                                    <span className="flex items-center gap-2">
-                                                        <RefreshCw className="w-4 h-4 animate-spin" />
-                                                        <span>Submitting...</span>
-                                                    </span>
-                                                ) : (
-                                                    <span>Submit Request</span>
-                                                )}
-                                            </button>
-                                        </div>
-                                    </form>
-                                )}
-                            </div>
-                        </div>
-                    </div>
-                )}
+                <AddLeaveModal addLeaveModal={addLeaveModal} showAddLeaveModal={showAddLeaveModal} handleCloseAddLeave={handleCloseAddLeave} isLoadingData={isLoadingData} handleSubmitLeave={handleSubmitLeave} leaveFormData={leaveFormData} handleEmployeeSelect={handleEmployeeSelect} employees={employees} handleLeaveFormChange={handleLeaveFormChange} leaveTypes={leaveTypes} calendarLoading={calendarLoading} selectedDates={selectedDates} setSelectedDates={setSelectedDates} calendarData={calendarData} isPaidMap={isPaidMap} handlePaidToggle={handlePaidToggle} resetLeaveForm={resetLeaveForm} isSubmitting={isSubmitting} leaveFormErrors={leaveFormErrors} />
 
                 {/* Toast Component */}
                 {toast.show && (
@@ -1612,12 +934,11 @@ function DatePickerComponent({ selectedDates, setSelectedDates, calendarData }) 
         return d;
     }, []);
 
-    // Parse available months from API: e.g. ["2025-07", "2025-08"]
     const availableMonths = useMemo(() => {
         if (!calendarData?.months) return null;
         return calendarData.months.map(m => {
             const [y, mo] = m.split('-').map(Number);
-            return { year: y, month: mo - 1 }; // month is 0-indexed
+            return { year: y, month: mo - 1 };
         });
     }, [calendarData]);
 
@@ -1637,25 +958,14 @@ function DatePickerComponent({ selectedDates, setSelectedDates, calendarData }) 
         setCurrentMonth(initialMonth);
     }, [initialMonth]);
 
-    // Build sets for O(1) lookup
-    // API returns YYYY-MM-DD format, formatDate() returns DD/MM/YYYY
-    // Helper: convert "YYYY-MM-DD" → "DD/MM/YYYY"
-    const apiDateToFormatted = (raw) => {
-        if (!raw) return null;
-        const parts = raw.split('-');
-        if (parts.length === 3) {
-            const [y, m, d] = parts;
-            return `${d}/${m}/${y}`; // DD/MM/YYYY
-        }
-        return null;
-    };
+
 
     const holidaySet = useMemo(() => {
         const set = new Set();
         if (calendarData?.holidays) {
             calendarData.holidays.forEach(h => {
                 // API field: holiday_date, format: YYYY-MM-DD
-                const formatted = apiDateToFormatted(h.holiday_date || h.date);
+                const formatted = apiDateToFormattedSlash(h.holiday_date || h.date);
                 if (formatted) set.add(formatted);
             });
         }
@@ -1666,27 +976,18 @@ function DatePickerComponent({ selectedDates, setSelectedDates, calendarData }) 
         const set = new Set();
         if (calendarData?.leave_dates) {
             calendarData.leave_dates.forEach(d => {
-                // API field: leave_date, format: YYYY-MM-DD
-                const formatted = apiDateToFormatted(d.leave_date || d.date);
+                const formatted = apiDateToFormattedSlash(d.leave_date || d.date);
                 if (formatted) set.add(formatted);
             });
         }
         return set;
     }, [calendarData]);
 
-    const formatDate = (date) => {
-        const d = String(date.getDate()).padStart(2, "0");
-        const m = String(date.getMonth() + 1).padStart(2, "0");
-        const y = date.getFullYear();
-        return `${d}/${m}/${y}`;
-    };
 
-    const monthNames = [
-        "January", "February", "March", "April", "May", "June",
-        "July", "August", "September", "October", "November", "December"
-    ];
 
-    const dayNames = ["S", "M", "T", "W", "T", "F", "S"];
+
+
+
 
     // Check if prev/next navigation is allowed based on available months
     const canGoPrev = useMemo(() => {
@@ -1701,20 +1002,9 @@ function DatePickerComponent({ selectedDates, setSelectedDates, calendarData }) 
         return availableMonths.some(m => m.year === nextDate.getFullYear() && m.month === nextDate.getMonth());
     }, [availableMonths, currentMonth]);
 
-    const getDaysInMonth = (date) => {
-        const year = date.getFullYear();
-        const month = date.getMonth();
-        const firstDay = new Date(year, month, 1);
-        const lastDay = new Date(year, month + 1, 0);
-        const daysInMonth = lastDay.getDate();
-        const startingDayOfWeek = firstDay.getDay();
-        const days = [];
-        for (let i = 0; i < startingDayOfWeek; i++) days.push(null);
-        for (let day = 1; day <= daysInMonth; day++) days.push(new Date(year, month, day));
-        return days;
-    };
 
-    const days = getDaysInMonth(currentMonth);
+
+    const days = getCalendarDaysInMonth(currentMonth);
 
     const nextMonth = () => {
         if (!canGoNext) return;
@@ -1729,7 +1019,7 @@ function DatePickerComponent({ selectedDates, setSelectedDates, calendarData }) 
     const handleDateClick = (date) => {
         const dateCopy = new Date(date);
         dateCopy.setHours(0, 0, 0, 0);
-        const formatted = formatDate(date);
+        const formatted = formatToDDMMYYYYSlash(date);
         // Only disable holidays and already applied leave dates (past dates are selectable)
         if (holidaySet.has(formatted) || leaveDateSet.has(formatted)) return;
 
@@ -1750,9 +1040,6 @@ function DatePickerComponent({ selectedDates, setSelectedDates, calendarData }) 
         });
     };
 
-    // Legend
-    const hasCalendarData = calendarData && (holidaySet.size > 0 || leaveDateSet.size > 0);
-
     return (
         <div className="w-full max-w-[290px]">
             {/* Header */}
@@ -1770,7 +1057,7 @@ function DatePickerComponent({ selectedDates, setSelectedDates, calendarData }) 
                 </button>
 
                 <h3 className="text-xs font-semibold text-[var(--color-text-primary)]">
-                    {monthNames[currentMonth.getMonth()]}{" "}{currentMonth.getFullYear()}
+                    {MONTH_NAMES_FULL[currentMonth.getMonth()]}{" "}{currentMonth.getFullYear()}
                 </h3>
 
                 <button
@@ -1788,7 +1075,7 @@ function DatePickerComponent({ selectedDates, setSelectedDates, calendarData }) 
 
             {/* Day names */}
             <div className="grid grid-cols-7 gap-1 text-center mb-1">
-                {dayNames.map((day, idx) => (
+                {DAY_NAMES_INITIALS.map((day, idx) => (
                     <div key={idx} className="text-[10px] font-semibold text-[var(--color-text-secondary)] py-1">
                         {day}
                     </div>
@@ -1800,7 +1087,7 @@ function DatePickerComponent({ selectedDates, setSelectedDates, calendarData }) 
                 {days.map((date, idx) => {
                     if (!date) return <div key={`empty-${idx}`} className="w-8 h-8" />;
 
-                    const formatted = formatDate(date);
+                    const formatted = formatToDDMMYYYYSlash(date);
                     const isSelected = selectedDates.includes(formatted);
                     const isHoliday = holidaySet.has(formatted);
                     const isLeaveDate = leaveDateSet.has(formatted);
@@ -1831,15 +1118,685 @@ function DatePickerComponent({ selectedDates, setSelectedDates, calendarData }) 
                             >
                                 {date.getDate()}
                             </button>
-                            {/* No dots - bg color is sufficient indicator */}
                         </div>
                     );
                 })}
             </div>
-
-
         </div>
     );
 }
 
 export default LeaveManagement;
+
+const RejectionModal = ({ rejectionModal, setRejectionModal, submitRejection }) => {
+    if (!rejectionModal.isOpen) return null;
+    return (
+        <div className="fixed inset-0 bg-black/50  flex items-center justify-center p-4 z-50">
+            <div className="bg-[var(--color-bg-secondary)] rounded-xl shadow-2xl w-full max-w-md border border-[var(--color-border-primary)]">
+                <div className="p-8 border-b border-[var(--color-border-primary)] ">
+                    <div className="flex items-center space-x-3">
+                        <div className="w-10 h-10 bg-red-100  rounded-full flex items-center justify-center">
+                            <XCircle className="w-5 h-5 text-red-600" />
+                        </div>
+                        <div>
+                            <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">Reject Leave Request</h2>
+                            <p className="text-sm text-[var(--color-text-secondary)]">Provide reason for rejection</p>
+                        </div>
+                    </div>
+                </div>
+                <div className="p-8">
+                    <div className="mb-4">
+                        <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-2">
+                            Rejection Reason *
+                        </label>
+                        <textarea
+                            className="w-full border border-[var(--color-border-secondary)] rounded-lg p-3 h-32 focus:ring-2 focus:ring-red-500 focus:border-red-500 text-[var(--color-text-primary)] bg-[var(--color-bg-secondary)] resize-none placeholder:text-[var(--color-text-muted)]"
+                            placeholder="Enter detailed reason for rejecting this leave request..."
+                            value={rejectionModal.reason}
+                            onChange={(e) => setRejectionModal(prev => ({ ...prev, reason: e.target.value }))}
+                        />
+                        <p className="text-xs text-[var(--color-text-secondary)] mt-1">
+                            This reason will be visible to the employee
+                        </p>
+                    </div>
+                </div>
+                <div className="p-4 bg-[var(--color-bg-primary)] flex justify-end space-x-3 rounded-b-xl border-t border-[var(--color-border-primary)]">
+                    <button
+                        className="px-4 py-2 text-[var(--color-text-secondary)] bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] rounded-lg shadow-sm hover:bg-[var(--color-bg-hover)] transition-colors"
+                        onClick={() => setRejectionModal({ isOpen: false, leaveData: null, reason: '' })}
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        className="px-4 py-2 text-white bg-red-600 hover:bg-red-700   border border-transparent rounded-lg shadow-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        onClick={submitRejection}
+                        disabled={!rejectionModal.reason.trim()}
+                    >
+                        Submit Rejection
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+const CancelModal = ({ cancelModal, setCancelModal, submitCancel }) => {
+    if (!cancelModal.isOpen) return null;
+    return (
+        <div className="fixed inset-0 bg-black/50  flex items-center justify-center p-4 z-50">
+            <div className="bg-[var(--color-bg-secondary)] rounded-xl shadow-2xl w-full max-w-md border border-[var(--color-border-primary)]">
+                <div className="p-8 border-b border-[var(--color-border-primary)] bg-[var(--color-primary-dark)]">
+                    <div className="flex items-center space-x-3">
+                        <div className="w-10 h-10 bg-[var(--color-primary-lighter)] rounded-full flex items-center justify-center">
+                            <Ban className="w-5 h-5 text-[var(--color-primary-dark)]" />
+                        </div>
+                        <div>
+                            <h2 className="text-lg font-semibold text-white">Cancel Leave Request</h2>
+                            <p className="text-sm text-white">Provide reason for cancellation</p>
+                        </div>
+                    </div>
+                </div>
+                <div className="p-8">
+                    <div className="mb-4">
+                        <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-2">
+                            Cancellation Reason *
+                        </label>
+                        <textarea
+                            className="w-full border border-[var(--color-border-secondary)] rounded-lg p-3 h-32 focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] text-[var(--color-text-primary)] bg-[var(--color-bg-secondary)] resize-none placeholder:text-[var(--color-text-muted)]"
+                            placeholder="Enter detailed reason for cancelling this leave request..."
+                            value={cancelModal.reason}
+                            onChange={(e) => setCancelModal(prev => ({ ...prev, reason: e.target.value }))}
+                        />
+                        <p className="text-xs text-[var(--color-text-secondary)] mt-1">
+                            This reason will be visible to the employee
+                        </p>
+                    </div>
+                </div>
+                <div className="p-4 bg-[var(--color-bg-primary)] flex justify-end space-x-3 rounded-b-xl border-t border-[var(--color-border-primary)]">
+                    <button
+                        className="px-4 py-2 text-[var(--color-text-secondary)] bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] rounded-lg shadow-sm hover:bg-[var(--color-bg-hover)] transition-colors"
+                        onClick={() => setCancelModal({ isOpen: false, leaveData: null, reason: '' })}
+                    >
+                        Close
+                    </button>
+                    <button
+                        className="px-4 py-2 text-white bg-[var(--color-primary-dark)] hover:opacity-90 border border-transparent rounded-lg shadow-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        onClick={submitCancel}
+                        disabled={!cancelModal.reason.trim()}
+                    >
+                        Submit Cancellation
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+const ApprovalModal = ({ approvalModal, setApprovalModal, handleApprove }) => {
+    if (!approvalModal.isOpen) return null;
+    return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+            <div className="w-full max-w-md overflow-hidden rounded-2xl bg-[var(--color-bg-secondary)] shadow-2xl border border-[var(--color-border-primary)] animate-in fade-in zoom-in-95 duration-200">
+
+                {/* Header */}
+                <div className="relative bg-[var(--color-primary-dark)] px-6 py-6">
+                    <div className="flex items-center gap-4">
+                        <div className="flex h-14 w-14 items-center justify-center rounded-full bg-white/20 backdrop-blur">
+                            <CheckCircle className="h-7 w-7 text-white" />
+                        </div>
+
+                        <div>
+                            <h2 className="text-xl font-semibold text-white">
+                                Approve Leave
+                            </h2>
+                            <p className="text-sm text-green-100">
+                                Please confirm your action
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Body */}
+                <div className="px-6 py-8">
+                    <div className="flex items-start gap-4">
+                        <div>
+                            <h3 className="text-lg font-semibold text-[var(--color-text-primary)]">
+                                Approve this leave request?
+                            </h3>
+
+                            <p className="mt-2 text-sm leading-6 text-[var(--color-text-secondary)]">
+                                This action will approve the employee's leave request.
+                                Once approved, the employee will be notified.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Footer */}
+                <div className="flex justify-end gap-3 border-t border-[var(--color-border-primary)] bg-[var(--color-bg-primary)] px-6 py-5">
+
+                    <button
+                        onClick={() =>
+                            setApprovalModal({
+                                isOpen: false,
+                                leaveId: null,
+                            })
+                        }
+                        className="rounded-xl border border-[var(--color-border-secondary)] bg-[var(--color-bg-secondary)] px-5 py-2.5 text-sm font-medium text-[var(--color-text-secondary)] transition-all duration-200 hover:bg-[var(--color-bg-hover)] hover:shadow"
+                    >
+                        Cancel
+                    </button>
+
+                    <button
+                        onClick={() => {
+                            handleApprove(approvalModal.leaveId);
+                            setApprovalModal({
+                                isOpen: false,
+                                leaveId: null,
+                            });
+                        }}
+                        className="rounded-xl bg-[var(--color-primary-dark)] px-5 py-2.5 text-sm font-semibold text-white shadow-lg transition-all duration-200"
+                    >
+                        Yes, Approve
+                    </button>
+
+                </div>
+            </div>
+        </div>
+    );
+};
+
+const ViewModal = ({ viewModal, setViewModal, setApprovalModal, setCancelModal, handleReject, permissions }) => {
+    if (!viewModal.isOpen) return null;
+    return (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 backdrop-blur-sm">
+            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden ">
+
+                {/* Header */}
+                <div className="bg-[var(--color-primary-dark)] px-6 py-5 flex items-center justify-between">
+                    <div className="flex items-center space-x-4">
+                        <div className="flex items-center justify-center">
+                            <User className="w-5 h-5 text-white" strokeWidth={2} />
+                        </div>
+                        <div>
+                            <h2 className="text-xl font-bold text-white tracking-wide">Leave Request Details</h2>
+                            <p className="text-sm text-white/80 font-medium mt-0.5">Employee Information</p>
+                        </div>
+                    </div>
+                    <button
+                        onClick={() => setViewModal({ isOpen: false, leaveData: null })}
+                        className="p-1 hover:bg-white/10 rounded-lg transition-all duration-200"
+                    >
+                        <X className="w-5 h-5 text-white" />
+                    </button>
+                </div>
+
+                {/* Content */}
+                <div className="p-8 overflow-y-auto flex-1 custom-scrollbar bg-white">
+
+                    {/* Employee Info Card */}
+                    <div className="bg-white rounded-xl shadow-sm border border-[var(--color-border-divider)] p-6 mb-6 flex items-center justify-between">
+                        <div className="flex items-center space-x-6">
+                            <div className="w-20 h-20 bg-[var(--color-primary-lightest)] rounded-full flex items-center justify-center shadow-inner">
+                                <User className="w-10 h-10 text-[var(--color-primary-dark)] fill-current opacity-80" />
+                            </div>
+                            <div>
+                                <p className="text-xs text-[var(--color-text-secondary)] font-semibold mb-1 uppercase tracking-wider">Employee Name</p>
+                                <h3 className="text-lg font-bold text-[var(--color-text-primary)] mb-3">{viewModal.leaveData.full_name}</h3>
+
+                                <p className="text-xs text-[var(--color-text-secondary)] font-semibold mb-1 uppercase tracking-wider">Leave Type</p>
+                                <div className="inline-flex items-center px-3 py-1.5 bg-[#fbf9ff] text-[var(--color-primary-dark)] rounded-lg text-xs font-bold border border-[#ebdffc] shadow-sm">
+                                    <Calendar className="w-3.5 h-3.5 mr-2" />
+                                    {viewModal.leaveData.leave_type}
+                                </div>
+                            </div>
+                        </div>
+                        <div className="text-right">
+                            <p className="text-xs text-[var(--color-text-secondary)] font-semibold mb-2 uppercase tracking-wider">Status</p>
+                            <StatusChip status={viewModal.leaveData.status} />
+                        </div>
+                    </div>
+
+                    {/* Stats Row */}
+                    {(() => {
+                        const dates = viewModal.leaveData.leave_dates || [];
+                        const startDate = viewModal.leaveData.start_date || (dates.length > 0 ? dates[0].leave_date : '-');
+                        const endDate = viewModal.leaveData.end_date || (dates.length > 0 ? dates[dates.length - 1].leave_date : '-');
+                        const totalDays = viewModal.leaveData.total_days || dates.length;
+                        const paidDays = dates.filter(d => d.is_paid === "1").length;
+                        const unpaidDays = dates.filter(d => d.is_paid !== "1").length;
+
+                        return (
+                            <div className="flex bg-white rounded-xl shadow-sm border border-[var(--color-border-divider)] mb-6 py-4 md:py-5 divide-x divide-[var(--color-border-divider)] w-full overflow-hidden">
+                                <div className="flex flex-1 items-center justify-center gap-2 md:gap-4 px-2 md:px-4">
+                                    <div className="hidden sm:flex w-10 h-10 md:w-12 md:h-12 rounded-xl bg-[#fbf9ff] items-center justify-center text-[var(--color-primary-dark)] border border-[#ebdffc] shrink-0">
+                                        <Calendar className="w-4 h-4 md:w-5 md:h-5" />
+                                    </div>
+                                    <div className="min-w-0">
+                                        <p className="text-[10px] md:text-xs text-[var(--color-text-secondary)] font-semibold mb-0.5 md:mb-1 tracking-wide truncate">Start Date</p>
+                                        <p className="font-bold text-[var(--color-text-primary)] text-xs md:text-sm truncate">{startDate}</p>
+                                    </div>
+                                </div>
+                                <div className="flex flex-1 items-center justify-center gap-2 md:gap-4 px-2 md:px-4">
+                                    <div className="hidden sm:flex w-10 h-10 md:w-12 md:h-12 rounded-xl bg-[#fbf9ff] items-center justify-center text-[var(--color-primary-dark)] border border-[#ebdffc] shrink-0">
+                                        <Calendar className="w-4 h-4 md:w-5 md:h-5" />
+                                    </div>
+                                    <div className="min-w-0">
+                                        <p className="text-[10px] md:text-xs text-[var(--color-text-secondary)] font-semibold mb-0.5 md:mb-1 tracking-wide truncate">End Date</p>
+                                        <p className="font-bold text-[var(--color-text-primary)] text-xs md:text-sm truncate">{endDate}</p>
+                                    </div>
+                                </div>
+                                <div className="flex flex-1 items-center justify-center gap-2 md:gap-4 px-2 md:px-4">
+                                    <div className="hidden sm:flex w-10 h-10 md:w-12 md:h-12 rounded-xl bg-blue-50 items-center justify-center text-blue-500 border border-blue-100 shrink-0">
+                                        <CalendarDays className="w-4 h-4 md:w-5 md:h-5" />
+                                    </div>
+                                    <div className="min-w-0">
+                                        <p className="text-[10px] md:text-xs text-[var(--color-text-secondary)] font-semibold mb-0.5 md:mb-1 tracking-wide truncate">Total Days</p>
+                                        <p className="font-bold text-[var(--color-text-primary)] text-xs md:text-sm truncate">{totalDays} {totalDays === 1 ? 'Day' : 'Days'}</p>
+                                    </div>
+                                </div>
+                                <div className="flex flex-1 items-center justify-center gap-2 md:gap-4 px-2 md:px-4">
+                                    <div className="hidden sm:flex w-10 h-10 md:w-12 md:h-12 rounded-xl bg-green-50 items-center justify-center text-green-500 border border-green-100 shrink-0">
+                                        <div className="w-5 h-5 md:w-6 md:h-6 rounded-[4px] border-2 border-current relative">
+                                            <div className="absolute top-1/2 right-0 w-2 h-1 md:w-2.5 md:h-1 bg-current -translate-y-1/2"></div>
+                                        </div>
+                                    </div>
+                                    <div className="min-w-0">
+                                        <p className="text-[10px] md:text-xs text-[var(--color-text-secondary)] font-semibold mb-0.5 md:mb-1 tracking-wide truncate">Paid Days</p>
+                                        <p className="font-bold text-green-600 text-xs md:text-sm truncate">{paidDays} {paidDays === 1 ? 'Day' : 'Days'}</p>
+                                    </div>
+                                </div>
+                                <div className="flex flex-1 items-center justify-center gap-2 md:gap-4 px-2 md:px-4">
+                                    <div className="hidden sm:flex w-10 h-10 md:w-12 md:h-12 rounded-xl bg-red-50 items-center justify-center text-red-500 border border-red-100 shrink-0">
+                                        <div className="w-5 h-5 md:w-6 md:h-6 rounded-[4px] border-2 border-current relative">
+                                            <div className="absolute top-1/2 right-0 w-2 h-1 md:w-2.5 md:h-1 bg-current -translate-y-1/2"></div>
+                                        </div>
+                                    </div>
+                                    <div className="min-w-0">
+                                        <p className="text-[10px] md:text-xs text-[var(--color-text-secondary)] font-semibold mb-0.5 md:mb-1 tracking-wide truncate">Unpaid Days</p>
+                                        <p className="font-bold text-red-600 text-xs md:text-sm truncate">{unpaidDays} {unpaidDays === 1 ? 'Day' : 'Days'}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        );
+                    })()}
+
+                    {/* Leave Reason */}
+                    {viewModal.leaveData.reason && (
+                        <div className="bg-[#faf7ff] border border-[#f3ebff] rounded-xl p-5 mb-6">
+                            <div className="flex items-center gap-2 mb-4">
+                                <FileText className="w-4 h-4 text-[var(--color-primary-dark)]" />
+                                <h4 className="text-sm font-bold text-[var(--color-primary-dark)]">Leave Reason</h4>
+                            </div>
+                            <p className="text-[var(--color-text-primary)] text-sm ml-6">{viewModal.leaveData.reason}</p>
+                        </div>
+                    )}
+
+                    {/* Additional Reasons (Rejection/Cancellation) */}
+                    {viewModal.leaveData.status === '3' && viewModal.leaveData.reject_reason && (
+                        <div className="bg-red-50 border border-red-100 rounded-xl p-5 mb-6">
+                            <div className="flex items-center gap-2 mb-4">
+                                <FileText className="w-4 h-4 text-red-700" />
+                                <h4 className="text-sm font-bold text-red-700">Rejection Reason</h4>
+                            </div>
+                            <p className="text-red-900 text-sm ml-6">{viewModal.leaveData.reject_reason}</p>
+                        </div>
+                    )}
+                    {viewModal.leaveData.status === '4' && viewModal.leaveData.cancel_reason && (
+                        <div className="bg-gray-50 border border-gray-200 rounded-xl p-5 mb-6">
+                            <div className="flex items-center gap-2 mb-4">
+                                <FileText className="w-4 h-4 text-gray-700" />
+                                <h4 className="text-sm font-bold text-gray-700">Cancellation Reason</h4>
+                            </div>
+                            <p className="text-gray-900 text-sm ml-6">{viewModal.leaveData.cancel_reason}</p>
+                        </div>
+                    )}
+
+                    {/* Day Wise Details Section */}
+                    {viewModal.leaveData.leave_dates?.length > 0 && (
+                        <div className="mb-2">
+                            <div className="flex items-center gap-2 mb-3">
+                                <CalendarDays className="w-5 h-5 text-[var(--color-primary-dark)]" />
+                                <h4 className="text-sm font-bold text-[var(--color-primary-dark)]">Day Wise Details</h4>
+                            </div>
+                            <div className="border border-[var(--color-border-divider)] rounded-xl overflow-hidden shadow-sm bg-white">
+                                <table className="w-full text-left text-sm">
+                                    <thead className="bg-[var(--color-primary-dark)] text-white">
+                                        <tr>
+                                            <th className="px-6 py-4 font-semibold text-xs tracking-wider">Date</th>
+                                            <th className="px-6 py-4 font-semibold text-xs tracking-wider text-center w-[200px]">Paid / Unpaid Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="divide-y divide-[var(--color-border-divider)] bg-white">
+                                        {viewModal.leaveData.leave_dates.map((d, i) => {
+                                            const dateStr = d.leave_date;
+                                            let displayDate = dateStr;
+
+
+                                            return (
+                                                <tr key={i} className="hover:bg-gray-50 transition-colors">
+                                                    <td className="px-6 py-5 text-[var(--color-text-primary)] font-medium">
+                                                        {displayDate}
+                                                    </td>
+                                                    <td className="px-6 py-5 flex justify-center">
+                                                        {d.is_paid === "1" ? (
+                                                            <span className="inline-flex items-center gap-2 px-3 py-1 bg-green-50 text-green-700 rounded-md text-xs font-bold border border-green-200">
+                                                                <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+                                                                Paid
+                                                            </span>
+                                                        ) : (
+                                                            <span className="inline-flex items-center gap-2 px-3 py-1 bg-red-50 text-red-700 rounded-md text-xs font-bold border border-red-200">
+                                                                <span className="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                                                                Unpaid
+                                                            </span>
+                                                        )}
+                                                    </td>
+                                                </tr>
+                                            );
+                                        })}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    )}
+                </div>
+
+                {/* Footer */}
+                <div className="bg-white px-6 py-4 border-t border-[var(--color-border-divider)] flex justify-end items-center rounded-b-2xl">
+                    <div className="flex space-x-4">
+                        {viewModal.leaveData.status === '1' && (
+                            <>
+                                {permissions['leave_approved'] && (
+                                    <button
+                                        onClick={() => {
+                                            setViewModal({ isOpen: false, leaveData: null });
+                                            setApprovalModal({ isOpen: true, leaveId: viewModal.leaveData.leave_id });
+                                        }}
+                                        className="flex items-center px-6 py-2.5 text-sm font-bold text-white bg-[var(--color-primary-dark)] hover:opacity-90 rounded-xl shadow-md duration-200 transform"
+                                    >
+                                        <CheckCircle className="w-4 h-4 mr-2" />
+                                        Approve
+                                    </button>
+                                )}
+                                {permissions['leave_rejected'] && (
+                                    <button
+                                        onClick={() => {
+                                            setViewModal({ isOpen: false, leaveData: null });
+                                            handleReject(viewModal.leaveData);
+                                        }}
+                                        className="flex items-center px-6 py-2.5 text-sm font-bold text-white bg-red-600 hover:bg-red-700 rounded-xl shadow-md duration-200 transform "
+                                    >
+                                        <XCircle className="w-4 h-4 mr-2" />
+                                        Reject
+                                    </button>
+                                )}
+                            </>
+                        )}
+                        {viewModal.leaveData.status === '2' && (
+                            <button
+                                onClick={() => {
+                                    setViewModal({ isOpen: false, leaveData: null });
+                                    setCancelModal({
+                                        isOpen: true,
+                                        leaveData: viewModal.leaveData,
+                                        reason: ''
+                                    });
+                                }}
+                                className="flex items-center px-6 py-2.5 text-sm font-bold text-white bg-[var(--color-primary-dark)] hover:opacity-90 rounded-xl shadow-md duration-200 transform "
+                            >
+                                <Ban className="w-4 h-4 mr-2" />
+                                Cancel Leave
+                            </button>
+                        )}
+                        <button
+                            onClick={() => setViewModal({ isOpen: false, leaveData: null })}
+                            className="px-6 py-2.5 text-sm font-bold text-[var(--color-primary-dark)] bg-white border border-[var(--color-primary-dark)] hover:bg-[#fbf9ff] rounded-xl transition-all duration-200"
+                        >
+                            Close
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+const AddLeaveModal = ({ addLeaveModal, showAddLeaveModal, handleCloseAddLeave, isLoadingData, handleSubmitLeave, leaveFormData, handleEmployeeSelect, employees, handleLeaveFormChange, leaveTypes, calendarLoading, selectedDates, setSelectedDates, calendarData, isPaidMap, handlePaidToggle, resetLeaveForm, isSubmitting, leaveFormErrors }) => {
+    if (!addLeaveModal.isOpen) return null;
+    return (
+        <div
+            className={`fixed inset-0 flex items-center justify-center p-4 z-50 overflow-y-auto transition-all duration-300 ease-out ${showAddLeaveModal ? 'bg-black/50 backdrop-blur-sm' : 'bg-black/0'
+                }`}
+        >
+            <div
+                className={`bg-[var(--color-bg-secondary)] rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col overflow-visible my-8 transition-all duration-300 ease-out ${showAddLeaveModal
+                    ? 'opacity-100 scale-100 translate-y-0'
+                    : 'opacity-0 scale-95 translate-y-4'
+                    }`}
+            >
+                {/* Popup Header */}
+                <div className="bg-[var(--color-primary-dark)] px-6 py-4 flex items-center justify-between rounded-t-2xl">
+                    <div className="flex items-center space-x-3">
+                        <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
+                            <Plus className="w-5 h-5 text-white" />
+                        </div>
+                        <div>
+                            <h2 className="text-xl font-bold text-white">Apply for Leave</h2>
+                            <p className="text-sm text-white/80">Fill in the details below</p>
+                        </div>
+                    </div>
+                    <button
+                        onClick={handleCloseAddLeave}
+                        className="p-2 hover:bg-white/15 rounded-xl transition-all duration-200"
+                    >
+                        <X className="w-6 h-6 text-white" />
+                    </button>
+                </div>
+
+                {/* Popup Content */}
+                <div className="p-6 overflow-visible flex-1 bg-[var(--color-bg-primary)] rounded-b-2xl">
+                    {isLoadingData ? (
+                        <div className="flex items-center justify-center py-12">
+                            <LoadingSpinner />
+                        </div>
+                    ) : (
+                        <form onSubmit={handleSubmitLeave} className="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+                            {/* Employee Selection */}
+                            <div className="space-y-2">
+                                <label className="block text-sm font-medium text-[var(--color-text-secondary)]">
+                                    Select Employee <span className="text-[var(--color-error)]">*</span>
+                                </label>
+                                <CustomSelect
+                                    name="employee_id"
+                                    value={leaveFormData.employee_id}
+                                    onChange={handleEmployeeSelect}
+                                    placeholder="Search and select employee"
+                                    searchable={true}
+                                    options={employees.map((employee) => ({
+                                        value: employee.employee_id,
+                                        label: employee.full_name,
+                                    }))}
+                                    error={!!leaveFormErrors.employee_id}
+                                />
+                                {leaveFormErrors.employee_id && <span className="text-sm text-[var(--color-error)] mt-1 block">{leaveFormErrors.employee_id}</span>}
+                            </div>
+
+                            {/* Leave Type Selection */}
+                            <div className="space-y-2">
+                                <label className="block text-sm font-medium text-[var(--color-text-secondary)]">
+                                    Leave Type <span className="text-[var(--color-error)]">*</span>
+                                </label>
+                                <CustomSelect
+                                    name="leave_type"
+                                    value={leaveFormData.leave_type}
+                                    onChange={handleLeaveFormChange}
+                                    options={
+                                        Array.isArray(leaveTypes)
+                                            ? leaveTypes.map((leaveType) => ({
+                                                value: leaveType.leave_type_id,
+                                                label: leaveType.leave_type,
+                                            }))
+                                            : []
+                                    }
+                                    placeholder="Select leave type"
+                                    searchable={true}
+                                    error={!!leaveFormErrors.leave_type}
+                                />
+                                {leaveFormErrors.leave_type && <span className="text-sm text-[var(--color-error)] mt-1 block">{leaveFormErrors.leave_type}</span>}
+                            </div>
+
+                            {/* Select Dates Calendar & Right Side */}
+                            <div className="space-y-2 md:col-span-2">
+                                <div className="flex items-center justify-between">
+                                    <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">
+                                        Select Dates <span className="text-[var(--color-error)]">*</span>
+                                    </label>
+                                    {/* Legend inline with label */}
+                                    <div className="flex items-center gap-3">
+                                        <div className="flex items-center gap-1.5">
+                                            <span className="w-2.5 h-2.5 rounded-full bg-green-500 inline-block flex-shrink-0" />
+                                            <span className="text-[10px] text-[var(--color-text-secondary)] font-medium">Holiday</span>
+                                        </div>
+                                        <div className="flex items-center gap-1.5">
+                                            <span className="w-2.5 h-2.5 rounded-full bg-amber-400 inline-block flex-shrink-0" />
+                                            <span className="text-[10px] text-[var(--color-text-secondary)] font-medium">Leave Applied</span>
+                                        </div>
+                                        <div className="flex items-center gap-1.5">
+                                            <span className="w-2.5 h-2.5 rounded-full bg-indigo-600 inline-block flex-shrink-0" />
+                                            <span className="text-[10px] text-[var(--color-text-secondary)] font-medium">Selected</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div className="grid grid-cols-1 md:grid-cols-12 gap-5">
+                                    {/* Calendar Left Side */}
+                                    <div className={`md:col-span-7 border ${leaveFormErrors.dates ? 'border-red-500' : 'border-[var(--color-border-secondary)]'} rounded-xl p-2 bg-[var(--color-bg-primary)] shadow-sm transition-all flex justify-center`}>
+                                        {calendarLoading ? (
+                                            <div className="flex items-center justify-center h-[260px] w-full">
+                                                <div className="flex flex-col items-center gap-2">
+                                                    <div className="w-8 h-8 border-2 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin"></div>
+                                                    <span className="text-xs text-[var(--color-text-secondary)]">Loading calendar...</span>
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            <DatePickerComponent
+                                                selectedDates={selectedDates}
+                                                setSelectedDates={setSelectedDates}
+                                                calendarData={calendarData}
+                                            />
+                                        )}
+                                    </div>
+
+                                    {/* Selected Dates Right Side */}
+                                    <div className="md:col-span-5 bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] rounded-xl p-4 shadow-sm flex flex-col h-[300px]">
+                                        <div className="flex items-center justify-between pb-3 mb-3 border-b border-[var(--color-border-primary)]">
+                                            <h4 className="text-sm font-semibold text-[var(--color-text-primary)]">
+                                                Selected Dates
+                                            </h4>
+                                            <span className="bg-[var(--color-primary-lighter)] text-[var(--color-primary-dark)] py-0.5 px-2.5 rounded-full text-xs font-bold">
+                                                {selectedDates.length}
+                                            </span>
+                                        </div>
+
+                                        {selectedDates.length === 0 ? (
+                                            <div className="flex-1 flex flex-col items-center justify-center text-center p-4">
+                                                <div className="w-12 h-12 bg-[var(--color-primary-lightest)] rounded-full flex items-center justify-center mb-3">
+                                                    <CalendarDays className="w-6 h-6 text-[var(--color-primary-light)]" />
+                                                </div>
+                                                <p className="text-sm text-[var(--color-text-secondary)] font-medium">No dates selected</p>
+                                                <p className="text-xs text-[var(--color-text-secondary)] mt-1 opacity-70">Click on the calendar to select leave dates</p>
+                                            </div>
+                                        ) : (
+                                            <div className="flex-1 overflow-y-auto pr-1 space-y-2 custom-scrollbar">
+                                                {selectedDates.map((d) => {
+                                                    const isPaid = isPaidMap[d] === 1;
+                                                    return (
+                                                        <div
+                                                            key={d}
+                                                            className="flex items-center justify-between bg-[var(--color-bg-primary)] border border-[var(--color-border-secondary)] hover:border-[var(--color-primary-light)] px-3 py-2 rounded-lg text-sm transition-all group shadow-sm hover:shadow"
+                                                        >
+                                                            <div className="flex items-center gap-2.5 text-[var(--color-text-primary)] font-medium">
+                                                                <CalendarDays size={16} className="text-[var(--color-primary)]" />
+                                                                <span>{d}</span>
+                                                            </div>
+
+                                                            <div className="flex items-center gap-2 flex-shrink-0">
+                                                                <CustomCheckbox
+                                                                    id={`is-paid-${d}`}
+                                                                    checked={isPaid}
+                                                                    onChange={(e) => {
+                                                                        handlePaidToggle(d, e.target.checked);
+                                                                    }}
+                                                                />
+                                                                <label
+                                                                    htmlFor={`is-paid-${d}`}
+                                                                    className={`text-xs font-semibold w-10 text-right cursor-pointer select-none ${isPaid
+                                                                        ? 'text-[var(--color-primary-dark)]'
+                                                                        : 'text-[var(--color-text-secondary)]'
+                                                                        }`}
+                                                                >
+                                                                    {isPaid ? 'Paid' : 'Unpaid'}
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    );
+                                                })}
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                                {leaveFormErrors.dates && <span className="text-sm text-[var(--color-error)] mt-1 block">{leaveFormErrors.dates}</span>}
+                            </div>
+
+                            {/* Reason */}
+                            <div className="space-y-2 md:col-span-2">
+                                <label className="block text-sm font-medium text-[var(--color-text-secondary)]">
+                                    Reason for Leave <span className="text-[var(--color-error)]">*</span>
+                                </label>
+                                <textarea
+                                    name="reason"
+                                    value={leaveFormData.reason}
+                                    onChange={handleLeaveFormChange}
+                                    rows="3"
+                                    className={`w-full px-3 py-2 border ${leaveFormErrors.reason ? 'border-red-500 ring-1 ring-red-500' : 'border-[var(--color-border-secondary)]'} rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)] resize-none`}
+                                    placeholder="Please provide details about your leave request"
+                                />
+                                {leaveFormErrors.reason && <span className="text-sm text-[var(--color-error)] mt-1 block">{leaveFormErrors.reason}</span>}
+                            </div>
+
+                            {/* Action Buttons */}
+                            <div className="md:col-span-2 flex items-center justify-end pt-4 space-x-4 border-t border-[var(--color-border-primary)]">
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        resetLeaveForm();
+                                        handleCloseAddLeave();
+                                    }}
+                                    className="px-5 py-2.5 text-sm font-medium bg-transparent text-[var(--color-primary)] border-2 hover:bg-[var(--color-primary-lightest)] border-[var(--color-primary)] rounded-xl transition-colors"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type="submit"
+                                    className="px-6 py-2.5 min-w-[150px] flex justify-center text-sm font-medium text-[var(--color-text-white)] bg-[var(--color-primary-dark)] hover:bg-[var(--color-primary-darker)] rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--color-primary)] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                    disabled={isSubmitting}
+                                >
+                                    {isSubmitting ? (
+                                        <span className="flex items-center gap-2">
+                                            <RefreshCw className="w-4 h-4 animate-spin" />
+                                            <span>Submitting...</span>
+                                        </span>
+                                    ) : (
+                                        <span>Submit Request</span>
+                                    )}
+                                </button>
+                            </div>
+                        </form>
+                    )}
+                </div>
+            </div>
+        </div>
+    );
+};

@@ -1,14 +1,12 @@
 import { useState, useEffect } from "react";
 import { Toast } from '../ui/Toast';
-import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Trash2, Calendar, CreditCard, Plus, History, User, FileText } from "lucide-react";
+import { Calendar, Plus, History } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import api from "../../api/axiosInstance";
 import CustomSelect from "../comman/CustomSelect";
 import NoDataFound from "../comman/NoDataFound";
 
 const PaidLeave = () => {
-    const navigate = useNavigate();
     const [toast, setToast] = useState(null);
 
     const { user, isAuthenticated } = useAuth();

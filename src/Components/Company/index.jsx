@@ -4,7 +4,6 @@ import useCompanies from "../../hooks/useCompanies";
 import { useSelector } from 'react-redux';
 import { Toast } from '../ui/Toast';
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft } from 'lucide-react';
 
 const Company = () => {
     const {
@@ -12,15 +11,15 @@ const Company = () => {
         loading,
         deleteCompany,
     } = useCompanies();
-    
+
     const navigate = useNavigate();
     const [toast, setToast] = useState(null);
-    
+
     const showToast = (message, type) => {
         setToast({ message, type });
         setTimeout(() => setToast(null), 5000);
     };
-    
+
     const permissions = useSelector(state => state.permissions) || {};
 
     const handleDeleteCompany = async (id) => {
@@ -31,7 +30,6 @@ const Company = () => {
     return (
         <div className="h-full bg-[var(--color-bg-primary)]">
             <div className="mx-auto h-full flex flex-col">
-
 
                 {/* Main Content */}
                 <div className="flex-1 min-h-0">

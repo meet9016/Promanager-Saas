@@ -9,8 +9,6 @@ import DeleteModal from "../comman/DeleteModal";
 import CustomSelect from "../comman/CustomSelect";
 import NoDataFound from "../comman/NoDataFound";
 
-// ─── Shared layout primitives (same as DepartmentForm) ────────────────────────
-
 const SectionDivider = ({ label }) => (
     <div className="col-span-2 flex items-center gap-2 pt-2">
         <span className="text-xs font-semibold text-[var(--color-text-secondary)] uppercase tracking-wider whitespace-nowrap">
@@ -26,15 +24,6 @@ const OTRow = ({ otFormula, onFormulaChange, minValue, onMinChange, disabled }) 
         <>
             <div className="flex items-center gap-3 pr-4">
                 <span className="text-sm text-[var(--color-text-primary)] whitespace-nowrap">OT Formula</span>
-                {/* <select
-                    value={otFormula}
-                    onChange={(e) => onFormulaChange(e.target.value)}
-                    disabled={disabled}
-                    className="flex-1 px-3 py-1.5 text-sm border border-[var(--color-border-secondary)] rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)] disabled:opacity-50 cursor-pointer"
-                >
-                    <option value="1">OT Not Applicable</option>
-                    <option value="2">OT Applied</option>
-                </select> */}
                 <CustomSelect
                     value={otFormula}
                     onChange={(e) => onFormulaChange(e.target.value)}
@@ -75,34 +64,6 @@ const OTRow = ({ otFormula, onFormulaChange, minValue, onMinChange, disabled }) 
     );
 };
 
-const CheckboxRow = ({ checked, onCheck, label, value, onChange, disabled }) => (
-    <>
-        <label className="flex items-center gap-2 cursor-pointer select-none pr-4">
-            <input
-                type="checkbox"
-                checked={checked}
-                onChange={(e) => onCheck(e.target.checked)}
-                disabled={disabled}
-                className="w-4 h-4 rounded border-gray-300 accent-[var(--color-primary-dark)] cursor-pointer disabled:cursor-not-allowed flex-shrink-0"
-            />
-            <span className={`text-sm leading-snug ${checked ? "text-[var(--color-text-primary)]" : "text-[var(--color-text-secondary)]"}`}>
-                {label}
-            </span>
-        </label>
-        <div className="flex items-center justify-end gap-2">
-            <input
-                type="number"
-                min="0"
-                value={value}
-                onChange={(e) => onChange(e.target.value)}
-                disabled={!checked || disabled}
-                className="w-20 px-2 py-1.5 text-sm text-right border border-[var(--color-border-secondary)] rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)] disabled:opacity-40 disabled:cursor-not-allowed transition-opacity"
-            />
-            <span className="text-xs text-[var(--color-text-secondary)] w-8 shrink-0">Mins</span>
-        </div>
-    </>
-);
-
 const AlwaysRow = ({ label, value, onChange, disabled }) => (
     <>
         <span className="text-sm text-[var(--color-text-primary)] pr-4 leading-snug">{label}</span>
@@ -126,24 +87,13 @@ const DepartmentAccordion = ({ department, onSave, saving }) => {
     const [d, setD] = useState({ ...department });
 
     const set = (key, value) => setD((prev) => ({ ...prev, [key]: value }));
-    const checked = (fKey) => String(d[fKey]) === "2";
-
+    
     const handleOTChange = (value) => {
         setD((prev) => ({
             ...prev,
             ot_formula: value,
             overtime: value === "2"
                 ? (prev.overtime === "0" || prev.overtime === 0 ? "30" : prev.overtime)
-                : "0",
-        }));
-    };
-
-    const handleCheck = (formulaKey, minKey, defaultMin, val) => {
-        setD((prev) => ({
-            ...prev,
-            [formulaKey]: val ? "2" : "1",
-            [minKey]: val
-                ? (prev[minKey] === "0" || prev[minKey] === 0 ? defaultMin : prev[minKey])
                 : "0",
         }));
     };
@@ -189,44 +139,6 @@ const DepartmentAccordion = ({ department, onSave, saving }) => {
                     onChange={(v) => set("early_going", v)}
                     disabled={saving}
                 />
-
-                {/* <SectionDivider label="Half Day" />
-                <CheckboxRow
-                    checked={checked("half_day_work_formula")}
-                    onCheck={(v) => handleCheck("half_day_work_formula", "half_day_work_min", "240", v)}
-                    label="Calculate Half Day if Work Duration is less than"
-                    value={d.half_day_work_min}
-                    onChange={(v) => set("half_day_work_min", v)}
-                    disabled={saving}
-                />
-
-                <SectionDivider label="Absent" />
-                <CheckboxRow
-                    checked={checked("absent_formula")}
-                    onCheck={(v) => handleCheck("absent_formula", "absent_min", "120", v)}
-                    label="Calculate Absent if Work Duration is less than"
-                    value={d.absent_min}
-                    onChange={(v) => set("absent_min", v)}
-                    disabled={saving}
-                />
-
-                <SectionDivider label="On Partial Day" />
-                <CheckboxRow
-                    checked={checked("par_half_day_work_formula")}
-                    onCheck={(v) => handleCheck("par_half_day_work_formula", "par_half_day_work_min", "240", v)}
-                    label="Calculate Half Day if Work Duration is less than"
-                    value={d.par_half_day_work_min}
-                    onChange={(v) => set("par_half_day_work_min", v)}
-                    disabled={saving}
-                />
-                <CheckboxRow
-                    checked={checked("par_absent_formula")}
-                    onCheck={(v) => handleCheck("par_absent_formula", "par_absent_min", "120", v)}
-                    label="Calculate Absent if Work Duration is less than"
-                    value={d.par_absent_min}
-                    onChange={(v) => set("par_absent_min", v)}
-                    disabled={saving}
-                /> */}
             </div>
 
             {/* Save button */}
@@ -244,10 +156,6 @@ const DepartmentAccordion = ({ department, onSave, saving }) => {
         </div>
     );
 };
-
-
-// ─── Animated accordion wrapper ───────────────────────────────────────────────
-// Uses a ref to measure real content height and animates max-height smoothly.
 
 const AccordionPanel = ({ isOpen, children }) => {
     const ref = useRef(null);
@@ -292,7 +200,6 @@ const DepartmentList = () => {
 
     const permissions = useSelector((state) => state.permissions) || {};
     const { departments, loading, initialLoad, addDepartment, updateDepartment, deleteDepartment } = useDepartments();
-
 
     const [toast, setToast] = useState(null);
     const [confirmModal, setConfirmModal] = useState({
@@ -350,7 +257,7 @@ const DepartmentList = () => {
             } else {
                 showToast(result?.message || "Failed to delete department.", "error");
             }
-        } catch (error) {
+        } catch {
             showToast("An error occurred while deleting.", "error");
         }
     };
@@ -507,9 +414,6 @@ const DepartmentList = () => {
                                                 </button>
                                             )}
                                         </div>
-
-
-
                                     </div>
 
                                     {/* Accordion body — smooth animated height */}

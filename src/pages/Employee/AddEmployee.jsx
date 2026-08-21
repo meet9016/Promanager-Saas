@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronDown, ChevronUp, Plus, Trash2, ArrowLeft, User, CreditCard, FileText, Phone, Users, Edit, Eye } from 'lucide-react';
+import { ChevronDown, ChevronUp, Plus, Trash2, ArrowLeft, User, CreditCard, FileText, Phone, Users, Edit, Eye, X } from 'lucide-react';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import api from '../../api/axiosInstance';
 import { useAuth } from '../../context/AuthContext';
@@ -168,7 +168,7 @@ const AddEmployee = () => {
                 }));
             }
         }
-    }, [formData.salaryType]);
+    }, [formData.salaryType, formData.allowances, formData.deductions]);
 
     useEffect(() => {
         const fetchEmployeeData = async () => {
@@ -660,12 +660,7 @@ const AddEmployee = () => {
                             className="p-2 hover:bg-gray-200 rounded-full transition-all duration-200 group"
                             title="Close preview"
                         >
-                            <svg
-                                className="w-5 h-5 text-gray-500 group-hover:text-gray-700 group-hover:rotate-90 transition-all duration-200"
-                                fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                            >
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                            </svg>
+                            <X className="w-5 h-5 text-gray-500 group-hover:text-gray-700 group-hover:rotate-90 transition-all duration-200" />
                         </button>
                     </div>
                     <div className="p-8 flex items-center justify-center bg-gray-50 min-h-[300px]">

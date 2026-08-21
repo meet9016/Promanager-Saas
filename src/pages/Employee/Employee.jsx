@@ -7,7 +7,6 @@ import {
     Users,
     Plus,
     Search,
-    ArrowLeft,
     RefreshCw,
     XCircle,
     Eye,
@@ -224,7 +223,8 @@ export default function Employee() {
 
     const navigate = useNavigate();
     const { user, isAuthenticated, logout } = useAuth();
-    const permissions = useSelector(state => state.permissions) || {};
+    const rawPermissions = useSelector(state => state.permissions);
+    const permissions = useMemo(() => rawPermissions || {}, [rawPermissions]);
 
     // Toast helper function
     const showToast = useCallback((message, type = 'info') => {

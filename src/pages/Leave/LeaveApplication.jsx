@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import api from '../../api/axiosInstance';
 import CustomDatePicker from '../../Components/comman/CustomDatePicker';
@@ -7,6 +7,7 @@ import LoadingSpinner from "../../Components/Loader/LoadingSpinner"
 import { ArrowLeft } from 'lucide-react';
 import CustomInput from '../../Components/comman/CustomInput';
 import CustomSelect from '../../Components/comman/CustomSelect';
+import { formatToDDMMYYYY } from '../../utils/helpers';
 
 const LeaveApplication = () => {
     const { user } = useAuth();
@@ -21,19 +22,12 @@ const LeaveApplication = () => {
 
     const [employees, setEmployees] = useState([]);
     const [leaveTypes, setLeaveTypes] = useState([]);
-    const [filteredEmployees, setFilteredEmployees] = useState([]);
-    const [employeeSearch, setEmployeeSearch] = useState('');
-    // eslint-disable-next-line no-unused-vars
-    const [selectedEmployeeName, setSelectedEmployeeName] = useState('');
-    const [showEmployeeDropdown, setShowEmployeeDropdown] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isLoadingData, setIsLoadingData] = useState(true);
     const [notification, setNotification] = useState({ show: false, type: '', message: '' });
 
 
-    const employeeDropdownRef = useRef(null);
 
-    // Set user_id from auth context
     useEffect(() => {
         if (user && user.user_id) {
             setFormData(prev => ({ ...prev, user_id: user.user_id }));
@@ -49,29 +43,7 @@ const LeaveApplication = () => {
         fetchLeaveTypes();
     }, [formData.user_id]);
 
-    // Filter employees based on search
-    useEffect(() => {
-        if (employeeSearch) {
-            const filtered = employees.filter(emp =>
-                emp.full_name.toLowerCase().includes(employeeSearch.toLowerCase())
-            );
-            setFilteredEmployees(filtered);
-        } else {
-            setFilteredEmployees(employees);
-        }
-    }, [employeeSearch, employees]);
 
-    // Close dropdown when clicking outside
-    useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (employeeDropdownRef.current && !employeeDropdownRef.current.contains(event.target)) {
-                setShowEmployeeDropdown(false);
-            }
-        };
-
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => document.removeEventListener('mousedown', handleClickOutside);
-    }, []);
 
     const fetchEmployees = async () => {
         try {
@@ -85,7 +57,6 @@ const LeaveApplication = () => {
 
             if (response.data.success && response.data.data.employee_list) {
                 setEmployees(response.data.data.employee_list);
-                setFilteredEmployees(response.data.data.employee_list);
             }
         } catch (error) {
             console.error('Error fetching employees:', error);
@@ -126,33 +97,7 @@ const LeaveApplication = () => {
         setFormData({ ...formData, [name]: value });
     };
 
-    const handleEmployeeSearch = (e) => {
-        const value = e.target.value;
-        setEmployeeSearch(value);
-        setSelectedEmployeeName(value);
-        setShowEmployeeDropdown(true);
 
-        // Clear employee_id if search is cleared
-        if (!value) {
-            setFormData({ ...formData, employee_id: '' });
-        }
-    };
-
-    const selectEmployee = (employee) => {
-        setFormData({ ...formData, employee_id: employee.employee_id });
-        setSelectedEmployeeName(employee.full_name);
-        setEmployeeSearch(employee.full_name);
-        setShowEmployeeDropdown(false);
-    };
-
-    const formatDateForAPI = (dateString) => {
-        if (!dateString) return '';
-        const date = new Date(dateString);
-        const day = String(date.getDate()).padStart(2, '0');
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const year = date.getFullYear();
-        return `${day}-${month}-${year}`;
-    };
 
     // Handle start date change and clear end date if it's before the new start date
     const handleStartDateChange = (date) => {
@@ -184,8 +129,8 @@ const LeaveApplication = () => {
             const submitData = new FormData();
             submitData.append('employee_id', formData.employee_id);
             submitData.append('leave_type', formData.leave_type);
-            submitData.append('start_date', formatDateForAPI(formData.start_date));
-            submitData.append('end_date', formatDateForAPI(formData.end_date));
+            submitData.append('start_date', formatToDDMMYYYY(formData.start_date));
+            submitData.append('end_date', formatToDDMMYYYY(formData.end_date));
             submitData.append('reason', formData.reason);
 
             const response = await api.post('/add_leave', submitData);
@@ -205,8 +150,6 @@ const LeaveApplication = () => {
                 end_date: '',
                 reason: ''
             });
-            setSelectedEmployeeName('');
-            setEmployeeSearch('');
 
         } catch (error) {
             setNotification({
@@ -231,8 +174,6 @@ const LeaveApplication = () => {
             end_date: '',
             reason: ''
         });
-        setSelectedEmployeeName('');
-        setEmployeeSearch('');
     };
 
     // Get today's date at midnight for comparison
@@ -249,14 +190,14 @@ const LeaveApplication = () => {
 
     return (
         <div className="min-h-screen bg-[var(--color-bg-primary)] py-8 px-4">
-            <div className=" mx-auto px-4 py-8">
-                <div className="bg-[var(--color-bg-secondary)] shadow-lg rounded-lg ">
-                    <div className="bg-[var(--color-primary-dark)] py-4 px-6">
-                        <h2 className="text-xl font-bold text-[var(--color-text-white)]">Apply for Leave</h2>
+            <div className=" mx-auto px-4 py-8 max-w-7xl">
+                <div className="bg-white shadow-xl rounded-2xl overflow-hidden border border-[var(--color-border-secondary)]">
+                    <div className="bg-gradient-to-r from-[var(--color-primary-dark)] to-[#6d28d9] py-5 px-8">
+                        <h2 className="text-2xl font-black tracking-tight text-white">Apply for Leave</h2>
                     </div>
 
                     {notification.show && (
-                        <div className={`mx-6 mt-4 px-4 py-3 text-sm font-medium rounded-md ${notification.type === 'success'
+                        <div className={`mx-8 mt-6 px-4 py-3 text-sm font-semibold rounded-xl ${notification.type === 'success'
                             ? 'bg-green-100 text-green-700 border border-green-300'
                             : 'bg-[var(--color-error-light)] text-[var(--color-error-dark)] border border-red-300'
                             }`}>
@@ -264,25 +205,15 @@ const LeaveApplication = () => {
                         </div>
                     )}
 
-                    <form onSubmit={handleSubmit} className="p-8 grid grid-cols-1 md:grid-cols-3 gap-6 ">
+                    <form onSubmit={handleSubmit} className="p-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {/* Employee Selection with Search */}
-                        <div className="space-y-2" ref={employeeDropdownRef}>
-                            <label className="block text-sm font-medium text-[var(--color-text-secondary)]">
+                        <div className="space-y-2">
+                            <label className="block text-sm font-semibold text-[var(--color-text-primary)]">
                                 Select Employee <span className="text-[var(--color-error)]">*</span>
                             </label>
                             <div className="relative">
-                                {/* <input
-                                    type="text"
-                                    value={employeeSearch}
-                                    onChange={handleEmployeeSearch}
-                                    onFocus={() => setShowEmployeeDropdown(true)}
-                                    placeholder="Search and select employee"
-                                    className="w-full px-3 py-2 border border-[var(--color-border-secondary)] rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)]"
-                                    required
-                                /> */}
-
                                 <CustomSelect
-                                    name="employeeSearch"
+                                    name="employee_id"
                                     value={formData.employee_id}
                                     onChange={(e) => {
 
@@ -298,11 +229,6 @@ const LeaveApplication = () => {
                                             employee_id: selectedEmployee.employee_id,
                                         });
 
-                                        setSelectedEmployeeName(selectedEmployee.full_name);
-
-                                        setEmployeeSearch(selectedEmployee.full_name);
-
-                                        setShowEmployeeDropdown(false);
                                     }}
                                     placeholder="Search and select employee"
                                     searchable={true}
@@ -313,45 +239,14 @@ const LeaveApplication = () => {
                                     }))}
                                 />
 
-                                {/* {showEmployeeDropdown && (
-                                    <div className="absolute z-10 w-full mt-1 bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] rounded-md shadow-lg max-h-60 overflow-y-auto">
-                                        {filteredEmployees.length > 0 ? (
-                                            filteredEmployees.map((employee) => (
-                                                <div
-                                                    key={employee.employee_id}
-                                                    onClick={() => selectEmployee(employee)}
-                                                    className="px-3 py-2 hover:bg-[var(--color-primary-lightest)] cursor-pointer border-b border-[var(--color-border-primary)] last:border-b-0"
-                                                >
-                                                    <div className="font-medium text-[var(--color-text-primary)]">{employee.full_name}</div>
-                                                </div>
-                                            ))
-                                        ) : (
-                                            <div className="px-3 py-2 text-[var(--color-text-secondary)]">No employees found</div>
-                                        )}
-                                    </div>
-                                )} */}
                             </div>
                         </div>
 
                         {/* Leave Type Selection */}
                         <div className="space-y-2">
-                            <label className="block text-sm font-medium text-[var(--color-text-secondary)]">
+                            <label className="block text-sm font-semibold text-[var(--color-text-primary)]">
                                 Leave Type <span className="text-[var(--color-error)]">*</span>
                             </label>
-                            {/* <select
-                                name="leave_type"
-                                value={formData.leave_type}
-                                onChange={handleChange}
-                                required
-                                className="w-full px-3 py-2 border border-[var(--color-border-secondary)] rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)]"
-                            >
-                                <option value="">Select leave type</option>
-                                {Array.isArray(leaveTypes) && leaveTypes.map((leaveType) => (
-                                    <option key={leaveType.leave_type_id} value={leaveType.leave_type_id}>
-                                        {leaveType.leave_type}
-                                    </option>
-                                ))}
-                            </select> */}
                             <CustomSelect
                                 name="leave_type"
                                 value={formData.leave_type}
@@ -372,7 +267,7 @@ const LeaveApplication = () => {
 
                         {/* <div className="grid md:grid-cols-2 gap-6"> */}
                         <div className="space-y-2">
-                            <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Start Date *</label>
+                            <label className="block text-sm font-semibold text-[var(--color-text-primary)]">Start Date *</label>
                             <CustomDatePicker
                                 name="start_date"
                                 value={formData.start_date}
@@ -382,7 +277,7 @@ const LeaveApplication = () => {
                             />
                         </div>
                         <div className="space-y-2">
-                            <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">End Date *</label>
+                            <label className="block text-sm font-semibold text-[var(--color-text-primary)]">End Date *</label>
                             <CustomDatePicker
                                 name="end_date"
                                 value={formData.end_date}
@@ -395,8 +290,8 @@ const LeaveApplication = () => {
 
 
                         {/* Reason */}
-                        <div className="space-y-2">
-                            <label className="block text-sm font-medium text-[var(--color-text-secondary)]">
+                        <div className="space-y-2 md:col-span-2 lg:col-span-3">
+                            <label className="block text-sm font-semibold text-[var(--color-text-primary)]">
                                 Reason for Leave <span className="text-[var(--color-error)]">*</span>
                             </label>
                             <textarea

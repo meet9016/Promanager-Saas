@@ -4,7 +4,6 @@ import useDepartments from "../../hooks/useDepartments";
 import { useSelector } from 'react-redux';
 import { Toast } from '../ui/Toast';
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft } from 'lucide-react';
 
 const Department = () => {
     const {
@@ -22,16 +21,9 @@ const Department = () => {
     };
     const permissions = useSelector(state => state.permissions) || {};
 
-    // const handleAddDepartment = async (name) => {
-    //     const result = await addDepartment(name);
-    //     return result;
-    // };
-
-
     return (
         <div className="flex-1 flex flex-col min-h-0 bg-[var(--color-bg-primary)]">
             <div className="flex-1 flex flex-col min-h-0 mx-auto w-full">
-
 
                 {/* Main Content */}
                 <div className="flex-1 flex flex-col min-h-0 space-y-8">

@@ -1,16 +1,18 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState, useLayoutEffect } from 'react';
 import NoDataFound from '../../Components/comman/NoDataFound';
 import { createPortal } from 'react-dom';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import api from '../../api/axiosInstance';
-import { Filter, Users, Calendar, Building, Award, RefreshCw, HelpCircle, ChevronDown, Search, X, CheckCircle, XCircle, Clock, AlertTriangle, Minus, Loader2 } from 'lucide-react';
+import { Filter, Users, Calendar, Building, Award, RefreshCw, HelpCircle, ChevronDown, Search, X, Loader2 } from 'lucide-react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { Toast } from '../../Components/ui/Toast';
 import CustomDatePicker from '../../Components/comman/CustomDatePicker';
 import CustomSelect from '../../Components/comman/CustomSelect';
 import LoadingSpinner from '../../Components/Loader/LoadingSpinner';
+import { localDateFromYmd, getDaysInMonth, getDayOfWeek, DAY_SHORT, normalizeCode } from '../../utils/helpers';
+import CustomInput from '../../Components/comman/CustomInput';
 
 /* ============ Anchored Position Utility ============ */
 const getScrollParents = (node) => {
@@ -82,29 +84,6 @@ const useAnchoredPosition = (anchorRef, isOpen, opts = {}) => {
     return pos;
 };
 
-/* ============ Utils ============ */
-const pad2 = (n) => (n < 10 ? `0${n}` : String(n));
-
-const localDateFromYmd = (ymd) => {
-    if (!ymd) return null;
-    const [y, m, d] = ymd.split('-').map(Number);
-    return new Date(y, m - 1, d);
-};
-
-const getDaysInMonth = (yyyyMm) => {
-    if (!yyyyMm) return 31;
-    const [y, m] = yyyyMm.split('-').map(Number);
-    return new Date(y, m, 0).getDate();
-};
-
-const getDayOfWeek = (yyyyMm, day) => {
-    if (!yyyyMm) return -1;
-    const [y, m] = yyyyMm.split('-').map(Number);
-    return new Date(y, m - 1, day).getDay();
-};
-
-const DAY_SHORT = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
-
 /* Status codes */
 const CODE_LABELS = {
     P: 'Present', A: 'Absent', WO: 'Week Off',
@@ -156,38 +135,6 @@ const NAME_COL_W = 170;
 const CODE_COL_W_MOBILE = 68;
 const NAME_COL_W_MOBILE = 130;
 
-const normalizeCode = (rawShort, rawStatus, isLate) => {
-    const s = (rawShort || '').toString().trim().toUpperCase();
-    if (s === 'P') return 'P'; if (s === 'A') return 'A';
-    if (s === 'WO') return 'WO'; if (s === 'H') return 'H';
-    if (s === 'L') return 'L';
-    if (s === '½P' || s === '1/2P' || s === 'HP') return '½P';
-    if (s === 'INC' || s === 'INCOMPLETE') return 'INC';
-    if (s === 'OT') return 'OT';
-    const st = (rawStatus || '').toLowerCase();
-    if (st.includes('incomplete')) return 'INC';
-    if (st.includes('week') && st.includes('off')) return 'WO';
-    if (st.includes('half') && st.includes('present')) return '½P';
-    if (st === 'late' || isLate) return 'L';
-    if (st.includes('present')) return 'P';
-    if (st.includes('absent')) return 'A';
-    if (st.includes('holiday')) return 'H';
-    return '';
-};
-
-/* ── Stat Card ── */
-const StatCard = ({ label, value, color, icon: Icon, iconBg }) => (
-    <div className="flex flex-col gap-1 px-5 py-4 flex-1 min-w-0">
-        <div className="flex items-center justify-between">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">{label}</span>
-            <span className={`w-6 h-6 rounded-full flex items-center justify-center ${iconBg}`}>
-                <Icon size={13} className={color} />
-            </span>
-        </div>
-        <span className={`text-3xl font-extrabold tracking-tight ${color}`}>{value}</span>
-    </div>
-);
-
 /* ============ Active Filters Badge ============ */
 const getActiveFiltersCount = (appliedFilters) => {
     let count = 0;
@@ -199,7 +146,6 @@ const getActiveFiltersCount = (appliedFilters) => {
 
 /* ===================== MAIN COMPONENT ===================== */
 const MonthlyAttendance = () => {
-    const navigate = useNavigate();
     const location = useLocation();
     const { user } = useAuth();
     const containerRef = useRef(null);
@@ -223,12 +169,6 @@ const MonthlyAttendance = () => {
         employee_id: '', month_year: new Date().toISOString().slice(0, 7),
     };
 
-    /* 
-     * SEPARATION OF CONCERNS:
-     * - filters: current values in the filter form (mutable by user)
-     * - appliedFilters: values that were last applied via "Apply Filters" button
-     * Table data only updates when appliedFilters changes, NOT when filters change.
-     */
     const [filters, setFilters] = useState(initialFilters);
     const [appliedFilters, setAppliedFilters] = useState(initialFilters);
     const [loading, setLoading] = useState(true);
@@ -314,28 +254,9 @@ const MonthlyAttendance = () => {
 
     const gridTemplate = useMemo(() => {
         return `${codeColW}px ${nameColW}px repeat(${daysInMonth}, ${cellWidth}px) ${SUMMARY_COL_W}px`;
-    }, [daysInMonth, isMobile, cellWidth, codeColW, nameColW, SUMMARY_COL_W]);
+    }, [daysInMonth, cellWidth, codeColW, nameColW, SUMMARY_COL_W]);
 
     const minInnerWidth = codeColW + nameColW + daysInMonth * cellWidth + SUMMARY_COL_W;
-
-    /* Summary stats */
-    const summaryStats = useMemo(() => {
-        const totals = TOTALS_ORDER.reduce((acc, c) => { acc[c] = 0; return acc; }, {});
-        let late = 0, early = 0, ot = 0;
-        gridData.forEach(r => {
-            TOTALS_ORDER.forEach(c => { totals[c] += r.totals[c] || 0; });
-            late += r.lateDays; early += r.earlyDays; ot += r.overtimeDays;
-        });
-        return { totals, late, early, ot };
-    }, [gridData]);
-
-    /* Attendance rate */
-    const attendanceRate = useMemo(() => {
-        const total = TOTALS_ORDER.reduce((s, c) => s + (summaryStats.totals[c] || 0), 0);
-        const present = (summaryStats.totals['P'] || 0) + (summaryStats.totals['½P'] || 0) * 0.5;
-        if (!total) return 0;
-        return Math.round((present / total) * 100);
-    }, [summaryStats]);
 
     /* ---------- Data fetching ---------- */
     const fetchDropdownData = useCallback(async () => {
@@ -429,12 +350,6 @@ const MonthlyAttendance = () => {
         setShowFilters(false);
     };
 
-    const formatMonthYear = (my) => {
-        if (!my) return '--';
-        const [y, m] = my.split('-');
-        return new Date(parseInt(y), parseInt(m) - 1).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
-    };
-
     const formatMonthYearShort = (my) => {
         if (!my) return '--';
         const [y, m] = my.split('-');
@@ -497,20 +412,17 @@ const MonthlyAttendance = () => {
                         <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto mt-4 sm:mt-0">
                             {/* Search */}
                             <div className="relative flex-shrink-0 w-full sm:w-auto">
-                                <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
-                                <input
+                                <Search className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 h-3 w-3 sm:h-4 sm:w-4 text-[var(--color-text-muted)] z-10" />
+
+                                <CustomInput
                                     type="text"
+                                    name="searchQuery"
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
-                                    placeholder="Search employee or code..."
-                                    className="pl-8 pr-8 py-2 text-xs rounded-xl border border-slate-200 bg-white text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-400 focus:border-transparent w-full sm:w-60 transition-all"
+                                    placeholder="Search employees..."
+                                    clearable={true}
+                                    className="!h-[37px] sm:!h-[40px] [&_input]:!h-[37px] sm:[&_input]:!h-[40px] [&_input]:!pl-8 sm:[&_input]:!pl-10 [&_input]:!pr-8 sm:[&_input]:!pr-10 [&_input]:!rounded-xl [&_input]:!text-xs sm:[&_input]:!text-sm"
                                 />
-                                {searchQuery && (
-                                    <button onClick={() => setSearchQuery('')}
-                                        className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
-                                        <X size={13} />
-                                    </button>
-                                )}
                             </div>
 
                             <button

@@ -51,20 +51,7 @@ const AllowanceForm = ({ onSubmit, loading = false, showToast }) => {
                         <label htmlFor="allowanceName" className=" text-sm font-medium text-[var(--color-text-secondary)] mb-2 ">
                             Add New Allowance <span className="text-[var(--color-error)]">*</span>
                         </label>
-                        {/* <input
-                            id="allowanceName"
-                            type="text"
-                            placeholder="Enter allowance name"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                            className="w-full px-4 py-3 border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-all duration-200 placeholder-gray-400 bg-[var(--color-bg-secondary)]"
-                            disabled={isSubmitting || loading}
-                            onKeyDown={(e) => {
-                                if (e.key === 'Enter') {
-                                    handleSubmit(e);
-                                }
-                            }}
-                        /> */}
+
                         <div className="w-[500px]">
                             <CustomInput
                                 type="text"

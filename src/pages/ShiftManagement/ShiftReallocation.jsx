@@ -1,10 +1,10 @@
-import { useState, useMemo, useEffect, useRef, useCallback } from 'react';
-import { ArrowLeft, Users, Calendar, RefreshCw, X, Building, Filter, CheckCircle2, XCircle, Plus, Search, Eye } from 'lucide-react';
+import { useState, useMemo, useEffect, useCallback } from 'react';
+import { Users, Calendar, RefreshCw, X, Building, Filter, CheckCircle2, XCircle, Plus, Search } from 'lucide-react';
 import CustomDatePicker from '../../Components/comman/CustomDatePicker';
 import { useAuth } from '../../context/AuthContext';
 import { useSelector } from 'react-redux';
 import api from '../../api/axiosInstance';
-import { useNavigate } from 'react-router-dom';
+
 import { Toast } from '../../Components/ui/Toast';
 import Pagination from '../../Components/Pagination';
 import CustomSelect from '../../Components/comman/CustomSelect';
@@ -12,15 +12,14 @@ import CustomInput from '../../Components/comman/CustomInput';
 import NoDataFound from '../../Components/comman/NoDataFound';
 import { Table, TableHeader, TableBody, TableRow, TableHeaderRow, Th, Td } from '../../Components/ui/Table';
 import LoadingSpinner from '../../Components/Loader/LoadingSpinner';
+import { getStatusBadge, formatDate } from '../../utils/helpers';
 
 const ShiftReallocation = () => {
     const { user } = useAuth();
-    const navigate = useNavigate();
-    const permissions = useSelector(state => state.permissions) || {};
-    // View state - 'list' or 'form'
-    const [view, setView] = useState('list');
 
-    // List view states
+    const permissions = useSelector(state => state.permissions) || {};
+
+    const [view, setView] = useState('list');
     const [reallocationHistory, setReallocationHistory] = useState([]);
     const [historyLoading, setHistoryLoading] = useState(true);
     const [historyError, setHistoryError] = useState(null);
@@ -50,8 +49,6 @@ const ShiftReallocation = () => {
         branch_id: '',
         department_id: ''
     });
-
-    const hasInitialized = useRef(false);
 
     const minDate = useMemo(() => {
         const tomorrow = new Date();
@@ -246,13 +243,6 @@ const ShiftReallocation = () => {
         setSearchQuery(e.target.value);
     };
 
-    // Clear search
-    const clearSearch = () => {
-        setSearchQuery('');
-        setCurrentPage(1);
-        fetchReallocationHistory(1, '');
-    };
-
     // Open reallocation form
     const handleOpenForm = () => {
         setView('form');
@@ -402,78 +392,68 @@ const ShiftReallocation = () => {
         }
     };
 
-    const handleBack = () => {
-        navigate(-1);
-    };
-
     // Get status badge color
-    const getStatusBadge = (status) => {
-        const statusLower = status?.toLowerCase();
-        if (statusLower === 'Done' || statusLower === 'done') {
-            return 'bg-green-100 text-green-800 border-green-200';
-        } else if (statusLower === 'pending' || statusLower === 'scheduled') {
-            return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-        } else if (statusLower === 'cancelled' || statusLower === 'failed') {
-            return 'bg-red-100 text-red-800 border-red-200';
-        }
-        return 'bg-gray-100 text-gray-800 border-gray-200';
-    };
-    const formatDate = (dateString) => {
-        if (!dateString) return 'N/A';
-
-        const date = new Date(dateString);
-        if (isNaN(date.getTime())) return dateString; // Return original if invalid
-
-        const day = String(date.getDate()).padStart(2, '0');
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const year = date.getFullYear();
-
-        return `${day}-${month}-${year}`;
-    };
 
     // Employee Modal Component
     const EmployeeModal = ({ isOpen, onClose, employees, shiftName }) => {
         if (!isOpen) return null;
 
         return (
-            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-                <div className="bg-[var(--color-bg-secondary)] rounded-lg shadow-xl w-full mx-4 max-h-96">
-                    <div className="p-8">
-                        <div className="flex justify-between items-center mb-4">
-                            <h3 className="text-lg font-semibold text-[var(--color-text-primary)]">
-                                Selected Employees - {shiftName}
-                            </h3>
-                            <button
-                                onClick={onClose}
-                                className="text-[var(--color-text-muted)] hover:text-[var(--color-text-secondary)]"
-                            >
-                                <X className="w-5 h-5" />
-                            </button>
+            <div
+                className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm transition-opacity"
+                onClick={onClose}
+            >
+                <div
+                    className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-2xl w-full max-w-2xl mx-4 overflow-hidden transform transition-all"
+                    onClick={(e) => e.stopPropagation()}
+                >
+                    <div className="flex justify-between items-center px-6 py-4 border-b border-[var(--color-border-primary)] bg-[var(--color-bg-primary)]/50">
+                        <div className="flex flex-col min-w-0 pr-4">
+                            <p className="text-lg font-semibold text-[var(--color-text-muted)] mt-0.5 truncate">
+                                {shiftName || 'Unknown Shift'} • <span className="font-medium">{employees.length}</span> {employees.length === 1 ? 'Employee' : 'Employees'}
+                            </p>
                         </div>
+                        <button
+                            onClick={onClose}
+                            className="p-2 rounded-full text-[var(--color-text-muted)] hover:text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-secondary)] transition-colors"
+                        >
+                            <X className="w-5 h-5" />
+                        </button>
+                    </div>
 
+                    <div className="p-6">
                         {employees.length > 0 ? (
-                            <div className="max-h-64 overflow-y-auto">
-                                <div className="space-y-2">
+                            <div className="max-h-[60vh] overflow-y-auto custom-scrollbar pr-2 -mr-2">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                     {employees.map((employee, index) => (
-                                        <div key={employee.employee_id || index} className="flex items-center gap-3 p-3 bg-[var(--color-bg-primary)] rounded-lg">
-                                            <div className="w-8 h-8 bg-[var(--color-primary-dark)] rounded-full flex items-center justify-center">
-                                                <span className="text-[var(--color-text-white)] text-sm font-medium">
+                                        <div
+                                            key={employee.employee_id || index}
+                                            className="flex items-center gap-4 p-3 bg-[var(--color-bg-primary)] rounded-xl border border-transparent hover:border-[var(--color-border-primary)] hover:shadow-sm transition-all duration-200"
+                                        >
+                                            <div className="w-10 h-10 bg-gradient-to-br from-[var(--color-primary-dark)] to-[var(--color-primary)] rounded-full flex items-center justify-center shadow-inner shrink-0">
+                                                <span className="text-[var(--color-text-white)] text-sm font-semibold">
                                                     {employee.employee_name?.charAt(0)?.toUpperCase() || 'E'}
                                                 </span>
                                             </div>
-                                            <div>
-                                                <p className="font-medium text-[var(--color-text-primary)]">
+                                            <div className="flex-1 min-w-0">
+                                                <p className="font-medium text-[var(--color-text-primary)] truncate">
                                                     {employee.employee_name || 'Unknown Employee'}
                                                 </p>
+                                                {/* <p className="text-xs text-[var(--color-text-muted)] truncate mt-0.5">
+                                                    {employee.employee_code || 'No Code'}
+                                                </p> */}
                                             </div>
                                         </div>
                                     ))}
                                 </div>
                             </div>
                         ) : (
-                            <div className="text-center py-8">
-                                <Users className="w-12 h-12 text-[var(--color-text-muted)] mx-auto mb-3" />
-                                <p className="text-[var(--color-text-secondary)]">No employees selected</p>
+                            <div className="flex flex-col items-center justify-center py-10 text-center">
+                                <div className="w-16 h-16 bg-[var(--color-bg-primary)] rounded-full flex items-center justify-center mb-4 shadow-sm">
+                                    <Users className="w-8 h-8 text-[var(--color-text-muted)]" />
+                                </div>
+                                <p className="text-base font-medium text-[var(--color-text-primary)]">No employees found</p>
+                                <p className="text-sm text-[var(--color-text-muted)] mt-1">There are no employees currently assigned.</p>
                             </div>
                         )}
                     </div>
@@ -485,23 +465,6 @@ const ShiftReallocation = () => {
     return (
         <div className="h-[calc(100vh-64px)] bg-[var(--color-bg-primary)] overflow-hidden flex flex-col">
             <div className="flex-1 flex flex-col mx-auto p-8 overflow-hidden h-0 w-full">
-                {/* Header */}
-                {/* <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-xl mb-8 overflow-hidden">
-                    <div className="bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] p-8">
-                        <div className="flex items-center gap-4">
-                            <button
-                                onClick={view === 'form' ? handleCloseForm : handleBack}
-                                className="flex items-center gap-2 text-[var(--color-text-white)] hover:text-[var(--color-text-white)] transition-colors bg-[var(--color-bg-secondary-20)] hover:bg-[var(--color-bg-secondary-30)] px-4 py-2 rounded-lg backdrop-blur-sm"
-                            >
-                                <ArrowLeft size={18} />
-                                <span className="font-medium">Back</span>
-                            </button>
-                            <div className="flex items-center gap-3">
-                                <h1 className="text-2xl font-bold text-[var(--color-text-white)]">Shift Reallocation</h1>
-                            </div>
-                        </div>
-                    </div>
-                </div> */}
 
                 {/* List View */}
                 {view === 'list' && (
@@ -513,31 +476,7 @@ const ShiftReallocation = () => {
                                     Reallocation History
                                 </h2>
                                 <div className="flex items-center gap-3">
-                                    {/* <div className="relative w-full sm:w-64">
-                                        <input
-                                            type="text"
-                                            placeholder="Search..."
-                                            value={searchQuery}
-                                            onChange={handleSearchChange}
-                                            className="w-full pl-10 pr-10 py-2 border border-[var(--color-border-secondary)] rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-text-white)] focus:border-[var(--color-border-primary)] text-sm"
-                                        />
-                                        <Search className="absolute left-3 top-2.5 h-4 w-4 text-[var(--color-text-muted)]" />
-                                        {searchQuery && (
-                                            <button
-                                                onClick={clearSearch}
-                                                className="absolute right-3 top-2.5 h-4 w-4 text-[var(--color-text-muted)] hover:text-[var(--color-text-secondary)]"
-                                            >
-                                                <X className="h-4 w-4" />
-                                            </button>
-                                        )}
-                                        {searchLoading && (
-                                            <div className="absolute right-3 top-2.5">
-                                                <RefreshCw className="h-4 w-4 animate-spin text-[var(--color-text-muted)]" />
-                                            </div>
-                                        )}
-                                    </div> */}
                                     <div className="relative w-full sm:w-64">
-
                                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--color-text-muted)] z-10" />
 
                                         <CustomInput
@@ -574,8 +513,6 @@ const ShiftReallocation = () => {
                             <div className="overflow-hidden" style={{ height: 'calc(86vh - 73px)' }}>
                                 <LoadingSpinner />
                             </div>
-
-
 
                         ) : historyError ? (
                             <div className="px-6 py-12 text-center">
@@ -731,18 +668,6 @@ const ShiftReallocation = () => {
                                                     <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
                                                         From Shift <span className="text-[var(--color-error)]">*</span>
                                                     </label>
-                                                    {/* <select
-                                                    value={sourceShift}
-                                                    onChange={(e) => handleSourceShiftChange(e.target.value)}
-                                                    className="w-full px-3 py-2 border border-[var(--color-border-secondary)] rounded-md focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)]"
-                                                >
-                                                    <option value="">Select source shift</option>
-                                                    {shifts.map((shift) => (
-                                                        <option key={shift.shift_id} value={shift.shift_id}>
-                                                            {shift.shift_name}
-                                                        </option>
-                                                    ))}
-                                                </select> */}
                                                     <CustomSelect
                                                         name="sourceShift"
                                                         value={sourceShift}
@@ -760,19 +685,6 @@ const ShiftReallocation = () => {
                                                     <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
                                                         To Shift <span className="text-[var(--color-error)]">*</span>
                                                     </label>
-                                                    {/* <select
-                                                    value={targetShift}
-                                                    onChange={(e) => setTargetShift(e.target.value)}
-                                                    disabled={!sourceShift}
-                                                    className="w-full px-3 py-2 border border-[var(--color-border-secondary)] rounded-md focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)] disabled:bg-[var(--color-bg-gray-light)] disabled:cursor-not-allowed"
-                                                >
-                                                    <option value="">Select target shift</option>
-                                                    {shifts.filter(s => s.shift_id !== sourceShift).map((shift) => (
-                                                        <option key={shift.shift_id} value={shift.shift_id}>
-                                                            {shift.shift_name}
-                                                        </option>
-                                                    ))}
-                                                </select> */}
                                                     <CustomSelect
                                                         name="targetShift"
                                                         value={targetShift}
@@ -831,19 +743,6 @@ const ShiftReallocation = () => {
                                                             <Building className="w-4 h-4 inline mr-1" />
                                                             Branch
                                                         </label>
-                                                        {/* <select
-                                                        value={filters.branch_id}
-                                                        onChange={(e) => handleFilterChange('branch_id', e.target.value)}
-                                                        disabled={dropdownLoading}
-                                                        className="w-full px-3 py-2 border border-[var(--color-border-secondary)] rounded-md focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)] disabled:bg-[var(--color-bg-gray-light)] disabled:cursor-not-allowed"
-                                                    >
-                                                        <option value="">All Branches</option>
-                                                        {branches.map(branch => (
-                                                            <option key={branch.id} value={branch.id}>
-                                                                {branch.name}
-                                                            </option>
-                                                        ))}
-                                                    </select> */}
                                                         <CustomSelect
                                                             name="branch_id"
                                                             value={filters.branch_id}
@@ -863,19 +762,6 @@ const ShiftReallocation = () => {
                                                             <Users className="w-4 h-4 inline mr-1" />
                                                             Department
                                                         </label>
-                                                        {/* <select
-                                                        value={filters.department_id}
-                                                        onChange={(e) => handleFilterChange('department_id', e.target.value)}
-                                                        disabled={dropdownLoading}
-                                                        className="w-full px-3 py-2 border border-[var(--color-border-secondary)] rounded-md focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)] disabled:bg-[var(--color-bg-gray-light)] disabled:cursor-not-allowed"
-                                                    >
-                                                        <option value="">All Departments</option>
-                                                        {departments.map(dept => (
-                                                            <option key={dept.id} value={dept.id}>
-                                                                {dept.name}
-                                                            </option>
-                                                        ))}
-                                                    </select> */}
                                                         <CustomSelect
                                                             name="department_id"
                                                             value={filters.department_id}
@@ -894,13 +780,6 @@ const ShiftReallocation = () => {
                                                         <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
                                                             Search Employee
                                                         </label>
-                                                        {/* <input
-                                                        type="text"
-                                                        placeholder="Name..."
-                                                        value={searchTerm}
-                                                        onChange={(e) => setSearchTerm(e.target.value)}
-                                                        className="w-full px-3 py-2 border border-[var(--color-border-secondary)] rounded-md focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)]"
-                                                    /> */}
                                                         <CustomInput
                                                             type="text"
                                                             name="search"

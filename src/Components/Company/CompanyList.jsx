@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import { Trash2, MapPin, Building2, Phone, User, FileText, Search, X, Eye, ArrowRight, Edit } from "lucide-react";
+import { Trash2, MapPin, Building2, FileText, Search, X, Eye, Edit } from "lucide-react";
 import { useSelector } from 'react-redux';
 import { ConfirmDialog } from '../comman/ConfirmDialog';
 import CompanyForm from "./CompanyForm";
@@ -390,8 +390,6 @@ const CompanyList = () => {
                                                     </button>
                                                 )}
                                             </div>
-
-
                                         </div>
                                     </div>
                                 );

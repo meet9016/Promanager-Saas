@@ -90,10 +90,6 @@ const DesignationList = () => {
         }
     };
 
-    const clearSearch = () => {
-        setSearchTerm("");
-    };
-
     if (initialLoad) {
         return (
             <div>

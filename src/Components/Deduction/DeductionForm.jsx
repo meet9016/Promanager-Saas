@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Plus, Calculator } from "lucide-react";
+import { Plus } from "lucide-react";
 import CustomInput from "../comman/CustomInput";
 
 const DeductionForm = ({ onSubmit, loading = false, showToast }) => {
@@ -51,20 +51,7 @@ const DeductionForm = ({ onSubmit, loading = false, showToast }) => {
                         <label htmlFor="deductionName" className=" text-sm font-medium text-[var(--color-text-secondary)] mb-2 ">
                             Add New Deduction <span className="text-[var(--color-error)]">*</span>
                         </label>
-                        {/* <input
-                            id="deductionName"
-                            type="text"
-                            placeholder="Enter deduction name"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                            className="w-full px-4 py-3 border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-all duration-200 placeholder-gray-400 bg-[var(--color-bg-secondary)]"
-                            disabled={isSubmitting || loading}
-                            onKeyDown={(e) => {
-                                if (e.key === 'Enter') {
-                                    handleSubmit(e);
-                                }
-                            }}
-                        /> */}
+
                         <div className="w-[500px]">
                             <CustomInput
                                 type="text"

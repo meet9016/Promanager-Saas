@@ -1,9 +1,5 @@
 import { useState, useEffect } from "react";
-
-import { useSelector } from 'react-redux';
 import { Toast } from '../ui/Toast';
-import { useNavigate } from "react-router-dom";
-import { ArrowLeft } from 'lucide-react';
 import { Trash2, IndianRupee } from "lucide-react";
 import { Plus } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
@@ -14,9 +10,7 @@ import NoDataFound from '../comman/NoDataFound';
 
 const Increment = () => {
 
-    const navigate = useNavigate();
     const [toast, setToast] = useState(null);
-
     const { user, isAuthenticated } = useAuth();
     const [isLoadingDropdowns, setIsLoadingDropdowns] = useState(true);
     const [employeeId, setEmployeeId] = useState();
@@ -121,12 +115,6 @@ const Increment = () => {
         fetchIncrementData();
     }, [user, isAuthenticated, employeeId]);
 
-
-    const getValidDate = (value) => {
-        if (!value) return null;
-        const date = new Date(value);
-        return isNaN(date.getTime()) ? null : date;
-    };
     const formatLocalDate = (d) => {
         const year = d.getFullYear();
         const month = String(d.getMonth() + 1).padStart(2, "0");
@@ -244,8 +232,6 @@ const Increment = () => {
                 formData.append('salary[]', increment.salary || "");
             });
 
-
-
             const response = await api.post('/employee_increment', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
@@ -273,7 +259,6 @@ const Increment = () => {
             setIsSubmitting(false)
         }
     }
-
 
     return (
         <>
@@ -310,7 +295,6 @@ const Increment = () => {
                                     placeholder="Select Employee"
                                     required
                                     searchable={true}
-
                                 />
                             </div>
                         </div>
@@ -338,7 +322,6 @@ const Increment = () => {
                             <div className="flex-1 overflow-y-auto custom-scrollbar pr-2">
                                 {incrementList && incrementList.map((item, index) => {
                                     return (
-
                                         <div key={index} className="border border-[var(--color-border-primary)] my-4 rounded-lg p-4 bg-[var(--color-bg-card)]">
                                             <div className="flex items-center justify-between mb-4">
                                                 <h4 className="text-sm font-semibold text-[var(--color-text-secondary)]">
@@ -352,7 +335,6 @@ const Increment = () => {
                                                 >
                                                     <Trash2 className="w-4 h-4" strokeWidth={2.5} />
                                                 </button>
-
                                             </div>
 
                                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -378,27 +360,6 @@ const Increment = () => {
 
                                                 <div className="space-y-2">
                                                     <label className="block text-sm font-medium text-[var(--color-text-secondary)]">Salary Type <span className="text-[var(--color-error)]">*</span></label>
-                                                    {/* <select
-                                                            className="w-full px-3 py-2 border border-[var(--color-border-primary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition-all"
-                                                            required
-                                                            value={item?.salary_type_id || ""}
-                                                            onChange={(e) => {
-                                                                const value = e.target.value;
-                                                                setIncrementList(prev =>
-                                                                    prev.map((row, i) =>
-                                                                        i === index ? { ...row, salary_type_id: value } : row
-                                                                    )
-                                                                );
-                                                            }}
-
-                                                        >
-                                                            <option value="">Select Salary Type</option>
-                                                            {salaryTypeList.map(option => (
-                                                                <option key={option.salary_type_id} value={option.salary_type_id}>{option.name}</option>
-                                                            ))}
-
-
-                                                        </select> */}
                                                     <CustomSelect
                                                         name="salary_type_id"
                                                         value={item?.salary_type_id || ""}
@@ -452,7 +413,6 @@ const Increment = () => {
                                                                         ending_date: prevFormatted
                                                                     };
                                                                 }
-
                                                                 return updated;
                                                             });
                                                         }}
@@ -500,7 +460,6 @@ const Increment = () => {
                                                         }
                                                     </button>
                                                 </div>
-                                                // </div>
                                             )}
                                         </div>)
                                 }
@@ -508,31 +467,6 @@ const Increment = () => {
                             </div>
                         )}
                     </div>
-                    {/* 
-                                    {employeeId &&
-
-                                        <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-lg border border-[var(--color-border-primary)] p-8">
-                                            <div className="flex gap-4 justify-end">
-                                                <button
-                                                    type="button"
-                                                    className="px-6 py-3 border border-[var(--color-border-secondary)] text-[var(--color-text-secondary)] rounded-lg hover:bg-[var(--color-bg-primary)] transition-colors font-medium"
-                                                >
-                                                    Cancel
-                                                </button>
-                                                <button
-                                                    onClick={handleSubmit}
-                                                    className="px-8 py-3 bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] text-[var(--color-text-white)] rounded-lg hover:from-[var(--color-primary-darker)] hover:to-[var(--color-primary-darkest)] transition-all duration-200 font-medium shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-                                                >
-                                                    {isSubmitting && (
-                                                        <div className="w-4 h-4 border-2 border-[var(--color-border-primary)] border-t-transparent rounded-full animate-spin"></div>
-                                                    )}
-                                                    {isSubmitting ?
-                                                        'Please wait' : 'Submit'
-                                                    }
-                                                </button>
-                                            </div>
-                                        </div>
-                                    } */}
                 </div>
 
                 {/* Toast Notification */}

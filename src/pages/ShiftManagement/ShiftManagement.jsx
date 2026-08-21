@@ -1,8 +1,8 @@
 /* eslint-disable no-unused-vars */
 import { useState, useEffect, useRef } from 'react';
-import { Calendar, Users, Edit, Trash2, Plus, X, CheckCircle, ArrowLeft, Info, Search, RefreshCw, XCircle } from 'lucide-react';
-import { useAuth } from '../../context/AuthContext'; // Adjust path as needed
-import api from '../../api/axiosInstance'; // Adjust path as needed
+import { Calendar, Users, Edit, Trash2, Plus, X, Search, RefreshCw, XCircle } from 'lucide-react';
+import { useAuth } from '../../context/AuthContext';
+import api from '../../api/axiosInstance';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Toast } from '../../Components/ui/Toast';
@@ -59,7 +59,6 @@ const ShiftManagement = () => {
     const [employeeModal, setEmployeeModal] = useState({ isOpen: false, employees: [], loading: false, shiftName: '' });
     const [employeeCounts, setEmployeeCounts] = useState({});
     const permissions = useSelector(state => state.permissions) || {};
-    const hasInitialized = useRef(false);
 
     // Pagination states
     const [currentPage, setCurrentPage] = useState(1);
@@ -276,7 +275,6 @@ const ShiftManagement = () => {
 
             const response = await api.post('shift_list', formData);
 
-
             if (response.data.success) {
                 const shiftsData = response.data.data || [];
                 setShifts(shiftsData);
@@ -291,17 +289,9 @@ const ShiftManagement = () => {
                     setTotalShifts(paginationData.total_records || shiftsData.length);
                     setCurrentPage(paginationData.current_page || page);
                 } else {
-                    // Backend is paginating but not sending metadata
-                    // If we received exactly ITEMS_PER_PAGE items, there might be more pages
-
-
-                    // Simple approach: if we get exactly 10 items, assume there might be more pages
-                    // Show next page button, and disable it if next page returns 0 items
                     if (shiftsData.length === ITEMS_PER_PAGE) {
-                        // Assume there might be more pages - show pagination
-                        setTotalPages(page + 1); // Show at least next page
+                        setTotalPages(page + 1);
                     } else {
-                        // Less than ITEMS_PER_PAGE means this is the last page
                         setTotalPages(page);
                     }
 
@@ -345,15 +335,6 @@ const ShiftManagement = () => {
     const handleSearchChange = (e) => {
         setSearchQuery(e.target.value);
     };
-
-    // Clear search
-    const clearSearch = () => {
-        setSearchQuery('');
-        setCurrentPage(1);
-        fetchShifts(1, '');
-    };
-
-
 
     // Handle edit shift
     const handleEditShift = (shiftId) => {
@@ -480,8 +461,6 @@ const ShiftManagement = () => {
                                     </div>
                                 </div>
                             </div>
-
-
 
                             {/* Content section */}
                             {loading ? (
@@ -628,7 +607,6 @@ const ShiftManagement = () => {
                                     </Table>
                                 </div>
                             )}
-
 
                             {/* Pagination Component - Always show if there are shifts */}
                             {!loading && !error && shifts.length > 0 && (

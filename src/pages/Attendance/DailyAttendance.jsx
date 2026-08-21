@@ -1,14 +1,11 @@
-/* eslint-disable no-unused-vars */
 // src/pages/Attendance/DailyAttendance.jsx
-import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import {
   Calendar,
   Users,
   TrendingUp,
   Search,
-  ArrowLeft,
   CheckCircle,
   XCircle,
   AlertCircle,
@@ -24,7 +21,6 @@ import {
   ChevronDown,
   ChevronUp,
   Clock,
-  Briefcase,
   LogOut,
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
@@ -39,49 +35,32 @@ import CustomDatePicker from '../../Components/comman/CustomDatePicker';
 import CustomInput from '../../Components/comman/CustomInput';
 import LoadingSpinner from '../../Components/Loader/LoadingSpinner';
 import NoDataFound from '../../Components/comman/NoDataFound';
+import {
+  parseDDMMYYYY,
+  formatToDDMMYYYY,
+  convertToTimeObject,
+  timeToMinutes,
+  formatDisplayTime,
+  formatDateTimeForAPI,
+  hourOptions,
+  minuteOptions
+} from '../../utils/helpers';
 
 
 
-const SummaryCard = ({ label, value, icon: Icon, tone = 'text-[var(--color-text-primary)]', onClick, isActive = false }) => {
-  // Map tone classes to a rich color scheme
-  const getScheme = (t) => {
-    const tones = {
-      'text-green-600': {
-        base: 'green', light: 'bg-green-500/10', border: 'border-green-500/20',
-        accent: 'bg-green-500', icon: 'text-green-600'
-      },
-      'text-red-600': {
-        base: 'red', light: 'bg-red-500/10', border: 'border-red-500/20',
-        accent: 'bg-red-500', icon: 'text-red-600'
-      },
-      'text-purple-600': {
-        base: 'purple', light: 'bg-purple-500/10', border: 'border-purple-500/20',
-        accent: 'bg-purple-500', icon: 'text-purple-600'
-      },
-      'text-orange-600': {
-        base: 'orange', light: 'bg-orange-500/10', border: 'border-orange-500/20',
-        accent: 'bg-orange-500', icon: 'text-orange-600'
-      },
-      'text-amber-600': {
-        base: 'amber', light: 'bg-amber-500/10', border: 'border-amber-500/20',
-        accent: 'bg-amber-500', icon: 'text-amber-600'
-      },
-      'text-primary-600': {
-        base: 'indigo', light: 'bg-indigo-500/10', border: 'border-indigo-500/20',
-        accent: 'bg-indigo-500', icon: 'text-indigo-600'
-      },
-      'text-teal-600': {
-        base: 'teal', light: 'bg-teal-500/10', border: 'border-teal-500/20',
-        accent: 'bg-teal-500', icon: 'text-teal-600'
-      },
-    };
-    return tones[t] || {
-      base: 'blue', light: 'bg-blue-500/10', border: 'border-blue-500/20',
-      accent: 'bg-blue-500', icon: 'text-blue-600'
-    };
-  };
+const TONES = {
+  'text-green-600': { base: 'green', light: 'bg-green-500/10', border: 'border-green-500/20', accent: 'bg-green-500', icon: 'text-green-600' },
+  'text-red-600': { base: 'red', light: 'bg-red-500/10', border: 'border-red-500/20', accent: 'bg-red-500', icon: 'text-red-600' },
+  'text-purple-600': { base: 'purple', light: 'bg-purple-500/10', border: 'border-purple-500/20', accent: 'bg-purple-500', icon: 'text-purple-600' },
+  'text-orange-600': { base: 'orange', light: 'bg-orange-500/10', border: 'border-orange-500/20', accent: 'bg-orange-500', icon: 'text-orange-600' },
+  'text-amber-600': { base: 'amber', light: 'bg-amber-500/10', border: 'border-amber-500/20', accent: 'bg-amber-500', icon: 'text-amber-600' },
+  'text-primary-600': { base: 'indigo', light: 'bg-indigo-500/10', border: 'border-indigo-500/20', accent: 'bg-indigo-500', icon: 'text-indigo-600' },
+  'text-teal-600': { base: 'teal', light: 'bg-teal-500/10', border: 'border-teal-500/20', accent: 'bg-teal-500', icon: 'text-teal-600' },
+  'default': { base: 'blue', light: 'bg-blue-500/10', border: 'border-blue-500/20', accent: 'bg-blue-500', icon: 'text-blue-600' }
+};
 
-  const scheme = getScheme(tone);
+const SummaryCard = React.memo(({ label, value, icon: Icon, tone = 'text-[var(--color-text-primary)]', onClick, isActive = false }) => {
+  const scheme = TONES[tone] || TONES['default'];
 
   return (
     <div
@@ -125,18 +104,10 @@ const SummaryCard = ({ label, value, icon: Icon, tone = 'text-[var(--color-text-
         ${isActive ? 'w-full opacity-100' : 'w-0 opacity-0 group-hover:w-full group-hover:opacity-60'} ${scheme.accent}`} />
     </div>
   );
-};
-
-const Legend = ({ color, label }) => (
-  <span className="flex items-center text-xs sm:text-sm">
-    <span className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full mr-1 sm:mr-2 ${color}`} />
-    <span className="hidden sm:inline">{label}</span>
-    <span className="sm:hidden">{label.split(' ')[0]}</span>
-  </span>
-);
+});
 
 /** ---------- Mobile Card Component ---------- **/
-const MobileAttendanceCard = ({ employee, onEdit, getTimeColor, getRowStyling }) => {
+const MobileAttendanceCard = React.memo(({ employee, onEdit, getTimeColor, getRowStyling }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const permissions = useSelector(state => state.permissions) || {};
   const timeColorClass = getTimeColor(employee);
@@ -330,69 +301,20 @@ const MobileAttendanceCard = ({ employee, onEdit, getTimeColor, getRowStyling })
       )}
     </div>
   );
-};
+});
+
 
 const EditAttendanceModal = ({ employee, onClose, onSave }) => {
   const [clockEntries, setClockEntries] = useState([]);
   const [editReason, setEditReason] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
-  const { user } = useAuth();
   const [toast, setToast] = useState(null);
   const [minDate, setMinDate] = useState(null);
   const [maxDate, setMaxDate] = useState(null);
 
   const showToast = (message, type = "info") => setToast({ message, type });
   const closeToast = () => setToast(null);
-
-  const hourOptions = Array.from({ length: 12 }, (_, i) => String(i + 1).padStart(2, '0'));
-  const minuteOptions = Array.from({ length: 60 }, (_, i) => String(i).padStart(2, '0'));
-
-  const parseDDMMYYYY = (dateStr) => {
-    if (!dateStr) return null;
-    const [day, month, year] = dateStr.split('-').map(Number);
-    return new Date(year, month - 1, day);
-  };
-
-  const formatToDDMMYYYY = (date) => {
-    if (!date) return "";
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const year = date.getFullYear();
-    return `${day}-${month}-${year}`;
-  };
-
-  const convertToTimeObject = (dateTimeStr) => {
-    if (!dateTimeStr) return { hours: "", minutes: "", period: "AM" };
-    const match = dateTimeStr.match(/^(\d{2}-\d{2}-\d{4})\s+(\d{1,2}):(\d{2})\s*(AM|PM)$/i);
-    if (!match) return { hours: "", minutes: "", period: "AM" };
-    const hours = match[2].padStart(2, '0');
-    const minutes = match[3].padStart(2, '0');
-    const period = match[4].toUpperCase();
-    return { hours, minutes, period };
-  };
-
-  const timeToMinutes = (timeObj, dateObj) => {
-    if (!timeObj.hours || !timeObj.minutes || !dateObj) return null;
-    let hours = parseInt(timeObj.hours, 10);
-    const minutes = parseInt(timeObj.minutes, 10);
-    if (timeObj.period === "PM" && hours !== 12) hours += 12;
-    if (timeObj.period === "AM" && hours === 12) hours = 0;
-    const date = new Date(dateObj);
-    date.setHours(hours, minutes, 0, 0);
-    return date.getTime();
-  };
-
-  const formatDisplayTime = (timeObj) => {
-    if (!timeObj.hours || !timeObj.minutes) return "--:-- --";
-    return `${timeObj.hours}:${timeObj.minutes} ${timeObj.period}`;
-  };
-
-  const formatDateTimeForAPI = (dateObj, timeObj) => {
-    if (!dateObj || !timeObj.hours || !timeObj.minutes) return "";
-    const dateStr = formatToDDMMYYYY(dateObj);
-    return `${dateStr} ${timeObj.hours}:${timeObj.minutes} ${timeObj.period}`;
-  };
 
   const validateEntries = () => {
     if (clockEntries.length === 0) {
@@ -721,7 +643,6 @@ const EditAttendanceModal = ({ employee, onClose, onSave }) => {
   );
 };
 
-
 /** ---------- Main Component ---------- **/
 const DailyAttendance = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -739,14 +660,12 @@ const DailyAttendance = () => {
 
   const [loading, setLoading] = useState(true);
   const [initialLoad, setInitialLoad] = useState(true);
-  const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [toast, setToast] = useState(null);
   const [editingEmployee, setEditingEmployee] = useState(null);
   const [isMobile, setIsMobile] = useState(false);
   const [activeFilter, setActiveFilter] = useState('total'); // 'total'|'present'|'absent'|'weekOff'|'incomplete'|'late'|'overtime'|'earlyGoing'
 
-  const navigate = useNavigate();
   const { user } = useAuth();
   const permissions = useSelector(state => state.permissions) || {};
 
@@ -803,13 +722,10 @@ const DailyAttendance = () => {
     return `${year}-${month}-${day}`;
   };
 
-  const handleDateChange = (date) => setSelectedDate(date);
-
   const fetchAttendanceData = useCallback(
     async (date) => {
       if (!user?.user_id) return;
       setLoading(true);
-      setError(null);
       try {
         const formData = new FormData();
         formData.append('date', date);
@@ -951,23 +867,6 @@ const DailyAttendance = () => {
       {toast && <Toast message={toast.message} type={toast.type} onClose={closeToast} />}
 
       <div className="p-3 sm:p-6  mx-auto  ">
-        {/* Header */}
-        {/* <div className="bg-[var(--color-bg-secondary)] rounded-xl sm:rounded-2xl shadow-xl mb-4 sm:mb-8 overflow-hidden">
-          <div className="bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] p-4 sm:p-8">
-            <div className="flex items-center justify-between gap-2">
-              <div className="flex items-center gap-2 sm:gap-4 min-w-0 flex-1">
-                <button
-                  onClick={() => navigate(-1)}
-                  className="flex items-center gap-1 sm:gap-2 text-[var(--color-text-white)] transition-colors bg-[var(--color-bg-secondary-20)] hover:bg-[var(--color-bg-secondary-30)] px-2 sm:px-4 py-1.5 sm:py-2 rounded-lg backdrop-blur-sm text-xs sm:text-sm flex-shrink-0"
-                >
-                  <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
-                  <span className="hidden sm:inline">Back</span>
-                </button>
-                <h1 className="text-base sm:text-2xl font-bold text-[var(--color-text-white)] truncate">Daily Attendance</h1>
-              </div>
-            </div>
-          </div>
-        </div> */}
 
         {/* Summary cards — 8 columns on large screens */}
         <div className="grid grid-cols-2 sm:grid-cols-4 xl:grid-cols-8 gap-2 sm:gap-4 mb-4 sm:mb-6">
@@ -1002,25 +901,6 @@ const DailyAttendance = () => {
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3">
 
                 {/* Search */}
-                {/* <div className="relative w-full sm:w-64">
-                  <input
-                    type="text"
-                    placeholder="Search employees..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full pl-8 sm:pl-10 pr-8 sm:pr-10 py-1.5 sm:py-2 border border-[var(--color-border-secondary)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent text-xs sm:text-sm bg-[var(--color-bg-primary)] hover:bg-[var(--color-bg-hover)] text-[var(--color-text-primary)] transition-all duration-200"
-                  />
-                  <Search className="absolute left-2 sm:left-3 top-2 sm:top-2.5 h-3 w-3 sm:h-4 sm:w-4 text-[var(--color-text-muted)]" />
-                  {searchQuery && (
-                    <button
-                      onClick={() => setSearchQuery('')}
-                      className="absolute right-2 sm:right-3 top-2 sm:top-2.5 h-3 w-3 sm:h-4 sm:w-4 text-[var(--color-text-muted)] hover:text-[var(--color-text-secondary)]"
-                    >
-                      <XCircle className="h-3 w-3 sm:h-4 sm:w-4" />
-                    </button>
-                  )}
-                </div> */}
-                {/* Search */}
                 <div className="relative w-full sm:w-64">
 
                   <Search className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 h-3 w-3 sm:h-4 sm:w-4 text-[var(--color-text-muted)] z-10" />
@@ -1037,19 +917,8 @@ const DailyAttendance = () => {
 
                 </div>
 
-
                 {/* Date */}
                 <div className="relative flex items-center z-[40] min-w-[140px] sm:min-w-[160px]">
-                  {/* <Calendar className="absolute left-3 w-4 h-4 text-[var(--color-primary)] pointer-events-none z-10" />
-
-                  <DatePicker
-                    selected={selectedDate}
-                    onChange={handleDateChange}
-                    dateFormat="dd-MM-yyyy"
-                    placeholderText="DD-MM-YYYY"
-                    className="w-full bg-[var(--color-bg-primary)] hover:bg-[var(--color-bg-hover)] border border-[var(--color-border-secondary)] rounded-xl pl-9 pr-3 py-1.5 sm:py-2 text-xs sm:text-sm text-[var(--color-text-primary)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent transition-all duration-200 cursor-pointer font-medium shadow-sm"
-                  /> */}
-
                   <CustomDatePicker
                     name="selected_date"
                     value={selectedDate}
@@ -1279,21 +1148,6 @@ const DailyAttendance = () => {
             </div>
           )}
 
-          {/* Summary legend at bottom */}
-          {/* <div className="px-3 sm:px-6 py-3 sm:py-4 border-t border-[var(--color-border-secondary)] bg-[var(--color-bg-primary)]">
-            <div className="flex justify-center sm:justify-end items-center text-xs sm:text-sm text-[var(--color-text-secondary)]">
-              <div className="flex items-center flex-wrap justify-center gap-2 sm:gap-4">
-                <Legend color="bg-green-500" label={`Present (${summaryStats.present})`} />
-                <Legend color="bg-red-500" label={`Absent (${summaryStats.absent})`} />
-                <Legend color="bg-orange-500" label={`Incomplete (${summaryStats.incomplete})`} />
-                <Legend color="bg-amber-500" label={`Late (${summaryStats.late})`} />
-                <Legend color="bg-primary-500" label={`Overtime (${summaryStats.overtime})`} />
-                <Legend color="bg-purple-600" label={`Week Off (${summaryStats.weekOff})`} />
-                <Legend color="bg-teal-500" label={`Early Going (${summaryStats.earlyGoing})`} />
-                <Legend color="bg-primary-400" label="Edited Entries" />
-              </div>
-            </div>
-          </div> */}
         </div>
       </div>
 

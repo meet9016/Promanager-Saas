@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Plus, Settings2, ChevronDown, ChevronUp, Clock, AlarmClock, CalendarX, CalendarCheck, Timer } from "lucide-react";
+import { Plus, Settings2, ChevronDown, ChevronUp, Clock, AlarmClock } from "lucide-react";
 import CustomInput from "../comman/CustomInput";
 import CustomSelect from "../comman/CustomSelect";
 
@@ -62,27 +62,6 @@ const FieldRow = ({ label, children }) => (
     </div>
 );
 
-// ─── Toggle-style checkbox row ──────────────────────────────────────────────────
-const ToggleRow = ({ checked, onCheck, label, value, onChange, disabled }) => (
-    <div className="flex items-center justify-between gap-3">
-        <div
-            className="flex items-center gap-2 cursor-pointer select-none flex-1 min-w-0"
-            onClick={() => !disabled && onCheck(!checked)}
-        >
-            <div
-                className={`relative shrink-0 rounded-full transition-all duration-200 ${checked ? "bg-[var(--color-primary-dark)]" : "bg-gray-300"} ${disabled ? "opacity-40 cursor-not-allowed" : "cursor-pointer"}`}
-                style={{ width: 32, height: 18 }}
-            >
-                <div className={`absolute top-0.5 w-3.5 h-3.5 rounded-full bg-white shadow transition-all duration-200 ${checked ? "left-[14px]" : "left-0.5"}`} />
-            </div>
-            <span className={`text-xs leading-snug truncate ${checked ? "text-[var(--color-text-primary)] font-medium" : "text-[var(--color-text-secondary)]"}`}>
-                {label}
-            </span>
-        </div>
-        <MinInput value={value} onChange={onChange} disabled={!checked || disabled} />
-    </div>
-);
-
 // ─── DepartmentForm ────────────────────────────────────────────────────────────
 const DepartmentForm = ({ onSubmit, loading = false, showToast }) => {
     const [name, setName] = useState("");
@@ -91,17 +70,6 @@ const DepartmentForm = ({ onSubmit, loading = false, showToast }) => {
     const [f, setF] = useState(defaultFormulas());
 
     const set = (key, value) => setF((prev) => ({ ...prev, [key]: value }));
-    const isChecked = (formulaKey) => f[formulaKey] === "2";
-
-    const handleCheck = (formulaKey, minKey, defaultMin, checked) => {
-        setF((prev) => ({
-            ...prev,
-            [formulaKey]: checked ? "2" : "1",
-            [minKey]: checked
-                ? (prev[minKey] === "0" || prev[minKey] === 0 ? defaultMin : prev[minKey])
-                : "0",
-        }));
-    };
 
     const handleOTChange = (value) => {
         setF((prev) => ({
@@ -144,16 +112,6 @@ const DepartmentForm = ({ onSubmit, loading = false, showToast }) => {
                         <label htmlFor="departmentName" className="text-sm font-medium text-[var(--color-text-secondary)]">
                             Add New Department <span className="text-[var(--color-error)]">*</span>
                         </label>
-                        {/* <input
-                            id="departmentName"
-                            type="text"
-                            placeholder="Enter department name"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                            className="w-full px-4 py-3 border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-all duration-200 placeholder-gray-400 bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)]"
-                            disabled={isSubmitting || loading}
-                            onKeyDown={(e) => { if (e.key === "Enter") handleSubmit(e); }}
-                        /> */}
                         <div className="w-[500px]">
                             <CustomInput
                                 type="text"
@@ -240,55 +198,6 @@ const DepartmentForm = ({ onSubmit, loading = false, showToast }) => {
                                     <MinInput value={f.early_going} onChange={(v) => set("early_going", v)} disabled={isSubmitting} />
                                 </FieldRow>
                             </SectionCard>
-
-                            {/* Half Day Card */}
-                            <SectionCard icon={Timer} label="Half Day" accentColor="rose">
-                                <ToggleRow
-                                    checked={isChecked("half_day_work_formula")}
-                                    onCheck={(v) => handleCheck("half_day_work_formula", "half_day_work_min", "240", v)}
-                                    label="Mark Half Day if work is less than"
-                                    value={f.half_day_work_min}
-                                    onChange={(v) => set("half_day_work_min", v)}
-                                    disabled={isSubmitting}
-                                />
-                            </SectionCard>
-
-                            {/* Absent Card */}
-                            <SectionCard icon={CalendarX} label="Absent" accentColor="rose">
-                                <ToggleRow
-                                    checked={isChecked("absent_formula")}
-                                    onCheck={(v) => handleCheck("absent_formula", "absent_min", "120", v)}
-                                    label="Mark Absent if work is less than"
-                                    value={f.absent_min}
-                                    onChange={(v) => set("absent_min", v)}
-                                    disabled={isSubmitting}
-                                />
-                            </SectionCard>
-
-                            {/* Partial Day Card — full width */}
-                            <div className="col-span-2">
-                                <SectionCard icon={CalendarCheck} label="On Partial Day" accentColor="violet">
-                                    <div className="grid grid-cols-2 gap-x-6 gap-y-2.5">
-                                        <ToggleRow
-                                            checked={isChecked("par_half_day_work_formula")}
-                                            onCheck={(v) => handleCheck("par_half_day_work_formula", "par_half_day_work_min", "240", v)}
-                                            label="Half Day if less than"
-                                            value={f.par_half_day_work_min}
-                                            onChange={(v) => set("par_half_day_work_min", v)}
-                                            disabled={isSubmitting}
-                                        />
-                                        <ToggleRow
-                                            checked={isChecked("par_absent_formula")}
-                                            onCheck={(v) => handleCheck("par_absent_formula", "par_absent_min", "120", v)}
-                                            label="Absent if less than"
-                                            value={f.par_absent_min}
-                                            onChange={(v) => set("par_absent_min", v)}
-                                            disabled={isSubmitting}
-                                        />
-                                    </div>
-                                </SectionCard>
-                            </div>
-
                         </div>
                     </div>
                 )}

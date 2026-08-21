@@ -1,11 +1,9 @@
 import { useState } from "react";
-import BranchForm from "./BranchForm";
 import BranchList from "./BranchList";
 import useBranches from "../../hooks/useBranches";
 import { useSelector } from 'react-redux';
 import { Toast } from '../ui/Toast';
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft } from 'lucide-react';
 
 const Branch = () => {
     const {
@@ -23,11 +21,6 @@ const Branch = () => {
     };
     const permissions = useSelector(state => state.permissions) || {};
 
-    // const handleAddBranch = async (name) => {
-    //     const result = await addBranch(name);
-    //     return result;
-    // };
-
     const handleDeleteBranch = async (id) => {
         const result = await deleteBranch(id);
         return result;
@@ -36,7 +29,6 @@ const Branch = () => {
     return (
         <div className="h-screen bg-[var(--color-bg-primary)] overflow-hidden">
             <div className="h-full mx-auto">
-
 
                 {/* Main Content */}
                 <div className="space-y-8">

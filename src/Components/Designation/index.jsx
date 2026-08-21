@@ -1,11 +1,9 @@
 import { useState } from "react";
-import DesignationForm from "./DesignationForm";
 import DesignationList from "./DesignationList";
 import useDesignations from "../../hooks/useDesignations";
 import { useSelector } from 'react-redux';
 import { Toast } from '../ui/Toast';
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft } from 'lucide-react';
 
 const Designation = () => {
     const {
@@ -14,7 +12,6 @@ const Designation = () => {
         // addDesignation,
         deleteDesignation,
     } = useDesignations();
-    const navigate = useNavigate();
     const [toast, setToast] = useState(null);
 
     const showToast = (message, type) => {
@@ -22,11 +19,6 @@ const Designation = () => {
         setTimeout(() => setToast(null), 5000);
     };
     const permissions = useSelector(state => state.permissions) || {};
-
-    // const handleAddDesignation = async (name) => {
-    //     const result = await addDesignation(name);
-    //     return result;
-    // };
 
     const handleDeleteDesignation = async (id) => {
         const result = await deleteDesignation(id);

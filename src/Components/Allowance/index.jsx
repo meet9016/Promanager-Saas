@@ -30,7 +30,6 @@ const Allowance = () => {
         <div className="h-screen bg-[var(--color-bg-primary)] overflow-hidden">
             <div className=" mx-auto  ">
 
-
                 {/* Main Content */}
                 <div className="space-y-8">
                     {permissions['allowance_view'] &&

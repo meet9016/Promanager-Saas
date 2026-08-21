@@ -158,10 +158,7 @@ const BranchList = () => {
                             initialData={editingBranch}
                             onCancelEdit={() => setEditingBranch(null)}
                         />
-
                     )}
-
-
 
                     {/* Search Bar */}
                     {totalBranches > 0 && (
@@ -186,7 +183,6 @@ const BranchList = () => {
                             )}
                         </div>
                     )}
-
 
                     {totalBranches === 0 ? (
                         <div className="bg-[#FBF9FD]">
@@ -236,10 +232,6 @@ const BranchList = () => {
 
                                             <div className="flex items-center space-x-2">
                                                 <button
-                                                    // onClick={(e) => {
-                                                    //     e.stopPropagation();
-                                                    //     setEditingBranch(branch);
-                                                    // }}
                                                     className="w-9 h-9 flex items-center justify-center rounded-xl bg-green-50 text-green-600 hover:bg-green-100 hover:scale-110 hover:shadow-md transition-all duration-200"
                                                     title="Info"
                                                 >
