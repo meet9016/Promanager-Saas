@@ -770,7 +770,6 @@ const AttendanceExceptionReport = () => {
         return (
             <TableRow key={emp.employee_id || emp.employee_code || idx}
                 className="hover:bg-[var(--color-bg-hover)] transition-colors border-b border-[var(--color-border-secondary)]">
-                <Td className="text-center text-sm text-[var(--color-text-muted)]">{sno}</Td>
                 <Td>
                     <div className="flex flex-col items-start">
                         <span className="font-medium text-sm text-[var(--color-text-primary)] truncate max-w-[160px]" title={emp.employee_name}>{emp.employee_name || '--'}</span>

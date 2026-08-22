@@ -87,7 +87,7 @@ const DepartmentAccordion = ({ department, onSave, saving }) => {
     const [d, setD] = useState({ ...department });
 
     const set = (key, value) => setD((prev) => ({ ...prev, [key]: value }));
-    
+
     const handleOTChange = (value) => {
         setD((prev) => ({
             ...prev,
@@ -127,18 +127,36 @@ const DepartmentAccordion = ({ department, onSave, saving }) => {
                 />
 
                 <SectionDivider label="Late Coming & Early Going" />
-                <AlwaysRow
-                    label="Grace Time for Late Coming"
-                    value={d.late_coming}
-                    onChange={(v) => set("late_coming", v)}
-                    disabled={saving}
-                />
-                <AlwaysRow
-                    label="Grace Time for Early Going"
-                    value={d.early_going}
-                    onChange={(v) => set("early_going", v)}
-                    disabled={saving}
-                />
+                <div className="col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-3">
+                    <div className="flex items-center justify-between sm:justify-start gap-4">
+                        <span className="text-sm text-[var(--color-text-primary)] leading-snug">Grace Time for Late Coming</span>
+                        <div className="flex items-center justify-end gap-2 sm:ml-auto">
+                            <input
+                                type="number"
+                                min="0"
+                                value={d.late_coming}
+                                onChange={(e) => set("late_coming", e.target.value)}
+                                disabled={saving}
+                                className="w-20 px-2 py-1.5 text-sm text-right border border-[var(--color-border-secondary)] rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)] disabled:opacity-40 transition-opacity"
+                            />
+                            <span className="text-xs text-[var(--color-text-secondary)] w-8 shrink-0">Mins</span>
+                        </div>
+                    </div>
+                    <div className="flex items-center justify-between sm:justify-start gap-4">
+                        <span className="text-sm text-[var(--color-text-primary)] leading-snug">Grace Time for Early Going</span>
+                        <div className="flex items-center justify-end gap-2 sm:ml-auto">
+                            <input
+                                type="number"
+                                min="0"
+                                value={d.early_going}
+                                onChange={(e) => set("early_going", e.target.value)}
+                                disabled={saving}
+                                className="w-20 px-2 py-1.5 text-sm text-right border border-[var(--color-border-secondary)] rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)] disabled:opacity-40 transition-opacity"
+                            />
+                            <span className="text-xs text-[var(--color-text-secondary)] w-8 shrink-0">Mins</span>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             {/* Save button */}
