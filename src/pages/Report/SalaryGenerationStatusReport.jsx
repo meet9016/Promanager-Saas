@@ -266,7 +266,7 @@ const SalaryGenerationStatusReport = () => {
                                     <button
                                         ref={filterBtnRef}
                                         onClick={() => setFilterDropdown((v) => !v)}
-                                        className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-lg font-medium transition-colors"
+                                        className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-lg font-medium transition-colors text-[14px]"
                                     >
                                         <Filter className="h-4 w-4" />
                                         Filters
@@ -402,7 +402,7 @@ const SalaryGenerationStatusReport = () => {
                                 <div className="relative">
                                     <button ref={exportBtnRef} onClick={() => setExportDropdown(v => !v)} disabled={!reportData || reportData.length === 0}
                                         // className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                                        className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-lg font-medium transition-colors"
+                                        className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-lg font-medium transition-colors text-[14px]"
 
                                     >
                                         <Download className="h-4 w-4" /> Export <ChevronDown className="h-4 w-4" />
@@ -455,7 +455,7 @@ const SalaryGenerationStatusReport = () => {
                         <Table wrapperClassName="flex-1 min-h-0 max-h-none overflow-auto custom-scrollbar" className="w-full">
                             <TableHeader>
                                 <TableHeaderRow className="bg-[var(--color-primary-dark)] border-b border-[var(--color-border-primary)]">
-                                    <Th className="text-left font-semibold text-white w-8">#</Th>
+
                                     <Th className="text-left font-semibold text-white">
                                         <div className="flex items-center gap-2"><User className="h-4 w-4" />Employee</div>
                                     </Th>
@@ -476,9 +476,7 @@ const SalaryGenerationStatusReport = () => {
 
                                     return (
                                         <TableRow key={emp.employee_id || idx} className="bg-[var(--color-bg-secondary)] hover:bg-[var(--color-bg-primary)] transition-colors">
-                                            <Td className="text-sm text-[var(--color-text-secondary)]">
-                                                {(currentPage - 1) * itemsPerPage + idx + 1}
-                                            </Td>
+
                                             <Td>
                                                 <div className="font-semibold text-sm text-[var(--color-text-primary)]">{emp.employee_name || '--'}</div>
                                                 <div className="text-xs text-[var(--color-text-secondary)] bg-[var(--color-bg-primary)] px-2 py-0.5 rounded mt-1 inline-block">{emp.employee_code || '--'}</div>
@@ -525,7 +523,7 @@ const SalaryGenerationStatusReport = () => {
                         </Table>
 
                         <div className="border-t border-[var(--color-border-primary)] bg-[var(--color-bg-primary)]">
-                            <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} loading={loading} />
+                            <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} loading={loading} className='!py-4' />
                         </div>
                     </div>
                 )}

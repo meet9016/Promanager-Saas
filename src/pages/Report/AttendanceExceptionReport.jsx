@@ -516,7 +516,7 @@ const AttendanceExceptionReport = () => {
     const renderTableHead = () => {
         if (activeTab === 'all_employees') {
             return [
-                { label: '#', key: 'sno' },
+                // { label: '#', key: 'sno' },
                 { label: 'Employee', key: 'employee' },
                 { label: 'Shift', key: 'shift' },
                 { label: 'Clock In', key: 'clock_in' },
@@ -529,7 +529,7 @@ const AttendanceExceptionReport = () => {
         }
 
         const baseHeaders = [
-            { label: '#', key: 'sno' },
+            // { label: '#', key: 'sno' },
             { label: 'Employee', key: 'employee' },
             { label: 'Shift', key: 'shift' },
             { label: 'Shift Time', key: 'shift_time' },
@@ -620,7 +620,7 @@ const AttendanceExceptionReport = () => {
                     className={`hover:bg-[var(--color-bg-hover)] transition-all duration-200 ${rowClass}`}>
 
                     {/* # */}
-                    <Td className="text-center text-sm font-medium text-[var(--color-text-muted)] w-12">{sno}</Td>
+                    {/* <Td className="text-center text-sm font-medium text-[var(--color-text-muted)] w-12">{sno}</Td> */}
 
                     {/* Employee */}
                     <Td className="min-w-[180px]">
@@ -692,10 +692,10 @@ const AttendanceExceptionReport = () => {
                             <div className="flex flex-wrap gap-2 max-w-[280px]">
                                 {exDetails.map((ex) => (
                                     <div key={ex.key} className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md shadow-sm border ${ex.pill}`}>
-                                        <span className="text-[11px] font-bold uppercase tracking-wider opacity-80">
+                                        <span className="text-[11px] font-bold  opacity-80">
                                             {ex.label}
                                         </span>
-                                        <span className={`text-[12px] font-black ${ex.valueColor}`}>
+                                        <span className={`text-slate-600 font-medium ${ex.valueColor}`}>
                                             {ex.value}
                                         </span>
                                     </div>
@@ -797,176 +797,173 @@ const AttendanceExceptionReport = () => {
             <div className="p-8  mx-auto h-full flex flex-col overflow-hidden">
 
                 {/* ── New Purple Header ── */}
-                <div className="shrink-0 bg-[var(--color-bg-secondary)] rounded-2xl shadow-xl mb-6 overflow-hidden">
-                    <div className="bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)]">
-                        <div className="bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] p-6">
-                            <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4">
-                                <div className="flex items-center gap-4">
-                                    <button
-                                        onClick={() => navigate(-1)}
-                                        className="flex items-center gap-2 text-[var(--color-text-white)] hover:text-[var(--color-text-white)] transition-colors bg-[var(--color-bg-secondary-20)] hover:bg-[var(--color-bg-secondary-30)] px-2 py-2 rounded-lg backdrop-blur-sm"
-                                    >
-                                        <ArrowLeft size={18} />
-                                    </button>
-                                    <h2 className="text-2xl font-bold text-[var(--color-text-white)] m-0">
-                                        Attendance Exception
-                                    </h2>
-                                </div>
+                <div className="shrink-0 rounded-2xl overflow-hidden shadow-xl mb-6 bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] p-6">
+                    <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4">
+                        <div className="flex items-center gap-4">
+                            <button
+                                onClick={() => navigate(-1)}
+                                className="flex items-center gap-2 text-[var(--color-text-white)] hover:text-[var(--color-text-white)] transition-colors bg-[var(--color-bg-secondary-20)] hover:bg-[var(--color-bg-secondary-30)] px-2 py-2 rounded-lg backdrop-blur-sm"
+                            >
+                                <ArrowLeft size={18} />
+                            </button>
+                            <h2 className="text-2xl font-bold text-[var(--color-text-white)] m-0">
+                                Attendance Exception
+                            </h2>
+                        </div>
 
-                                <div className="flex items-center gap-3 flex-wrap">
-                                    <div className="relative w-full sm:w-56">
-                                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--color-text-muted)] z-10" />
-                                        <CustomInput
-                                            type="text"
-                                            name="searchQuery"
-                                            value={searchQuery}
-                                            onChange={(e) => setSearchQuery(e.target.value)}
-                                            placeholder="Search employees..."
-                                            clearable={true}
-                                            className="!h-[37px] [&_input]:!h-[40px] [&_input]:!pl-10 [&_input]:!pr-10 [&_input]:!rounded-lg"
-                                        />
-                                    </div>
+                        <div className="flex items-center gap-3 flex-wrap">
+                            <div className="relative w-full sm:w-56 flex items-center">
+                                <CustomInput
+                                    type="text"
+                                    name="searchQuery"
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    placeholder="Search employees..."
+                                    clearable={true}
+                                    icon={<Search className="w-4 h-4 text-[var(--color-text-secondary)] shrink-0" />}
+                                    className="!h-[40px] [&_input]:!h-[40px] [&_input]:!leading-[40px] [&_input]:!py-0 [&_input]:!rounded-xl [&_input]:!text-xs sm:[&_input]:!text-sm"
+                                />
+                            </div>
 
-                                    <div className="relative flex items-center z-[40] min-w-[140px] sm:min-w-[160px]">
-                                        <CustomDatePicker
-                                            name="selected_date"
-                                            value={selectedDate}
-                                            onChange={(e) => setSelectedDate(new Date(e.target.value))}
-                                            placeholder="DD-MM-YYYY"
-                                            maxDate={new Date()}
-                                            clearable={true}
-                                        />
-                                    </div>
+                            <div className="relative flex items-center min-w-[140px] sm:min-w-[160px]">
+                                <CustomDatePicker
+                                    name="selected_date"
+                                    value={selectedDate}
+                                    onChange={(e) => setSelectedDate(new Date(e.target.value))}
+                                    placeholder="DD-MM-YYYY"
+                                    maxDate={new Date()}
+                                    clearable={true}
+                                    className="!h-[40px] [&_button]:!h-[40px] [&_button]:!py-0 [&_button]:!rounded-xl [&_button]:!text-xs sm:[&_button]:!text-sm"
+                                />
+                            </div>
 
-                                    <div className="relative">
-                                        <button
-                                            ref={filterBtnRef}
-                                            onClick={() => setFilterDropdown((v) => !v)}
-                                            className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-lg font-medium transition-colors"
+                            <div className="relative">
+                                <button
+                                    ref={filterBtnRef}
+                                    onClick={() => setFilterDropdown((v) => !v)}
+                                    className="flex items-center justify-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 h-[40px] py-0 rounded-xl font-medium text-xs sm:text-sm transition-colors whitespace-nowrap shrink-0"
+                                >
+                                    <Filter className="h-4 w-4" />
+                                    <span className="lg:hidden sm:hidden xl:inline">Filters</span>
+                                    {getActiveFiltersCount() > 0 && (
+                                        <span className="bg-[var(--color-primary-dark)] text-white text-xs rounded-full px-2 py-0.5 min-w-[20px] text-center">{getActiveFiltersCount()}</span>
+                                    )}
+                                    <ChevronDown className="h-4 w-4 lg:hidden sm:hidden xl:inline" />
+                                </button>
+
+                                {filterDropdown && createPortal(
+                                    <>
+                                        <div className="fixed inset-0 z-[100] bg-black/40" onClick={() => setFilterDropdown(false)} />
+                                        <div
+                                            className="hidden sm:flex flex-col absolute z-[110] bg-[var(--color-bg-secondary)] rounded-lg shadow-2xl border border-[var(--color-border-secondary)] max-h-[80vh] overflow-visible"
+                                            style={{ position: 'absolute', top: filterPos.ready ? filterPos.top : -9999, left: filterPos.ready ? Math.max(12, filterPos.left) : -9999, width: Math.max(420, filterPos.width), minWidth: 420 }}
                                         >
-                                            <Filter className="h-6 w-6" />
-                                            <span className="lg:hidden sm:hidden xl:inline">Filters</span>
-                                            {getActiveFiltersCount() > 0 && (
-                                                <span className="bg-[var(--color-primary-dark)] text-white text-xs rounded-full px-2 py-1">{getActiveFiltersCount()}</span>
-                                            )}
-                                            <ChevronDown className="h-4 w-4 lg:hidden sm:hidden xl:inline" />
-                                        </button>
-
-                                        {filterDropdown && createPortal(
-                                            <>
-                                                <div className="fixed inset-0 z-[100] bg-black/40" onClick={() => setFilterDropdown(false)} />
-                                                <div
-                                                    className="hidden sm:flex flex-col absolute z-[110] bg-[var(--color-bg-secondary)] rounded-lg shadow-2xl border border-[var(--color-border-secondary)] max-h-[80vh] overflow-visible"
-                                                    style={{ position: 'absolute', top: filterPos.ready ? filterPos.top : -9999, left: filterPos.ready ? Math.max(12, filterPos.left) : -9999, width: Math.max(420, filterPos.width), minWidth: 420 }}
+                                            <div className="flex items-center justify-between p-4 border-b border-[var(--color-border-secondary)]">
+                                                <div className="flex items-center gap-3">
+                                                    <div className="p-2 bg-[var(--color-primary-lightest)] rounded-lg">
+                                                        <Filter className="h-5 w-5 text-[var(--color-primary)]" />
+                                                    </div>
+                                                    <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">Filters</h2>
+                                                </div>
+                                                <button
+                                                    onClick={() => setFilterDropdown(false)}
+                                                    className="text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] p-1 rounded-lg hover:bg-[var(--color-bg-hover)]"
                                                 >
-                                                    <div className="flex items-center justify-between p-4 border-b border-[var(--color-border-secondary)]">
-                                                        <div className="flex items-center gap-3">
-                                                            <div className="p-2 bg-[var(--color-primary-lightest)] rounded-lg">
-                                                                <Filter className="h-5 w-5 text-[var(--color-primary)]" />
-                                                            </div>
-                                                            <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">Filters</h2>
-                                                        </div>
-                                                        <button
-                                                            onClick={() => setFilterDropdown(false)}
-                                                            className="text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] p-1 rounded-lg hover:bg-[var(--color-bg-hover)]"
-                                                        >
-                                                            <X className="h-4 w-4" />
-                                                        </button>
-                                                    </div>
-                                                    {dropdownLoading && (
-                                                        <div className="flex items-center gap-2 p-4 text-[var(--color-text-secondary)] border-b border-[var(--color-border-secondary)]">
-                                                            <Loader2 className="h-4 w-4 animate-spin" />
-                                                            <span className="text-sm">Loading filter options...</span>
-                                                        </div>
-                                                    )}
-                                                    <div className="flex-1 overflow-visible p-4">
-                                                        <div className="grid grid-cols-2 gap-4">
-                                                            <FilterSelect label="Branch" icon={Building} value={filters.branch_id} onChange={(v) => handleFilterChange('branch_id', v)} options={branches} disabled={dropdownLoading} placeholder="All Branches" />
-                                                            <FilterSelect label="Department" icon={Users} value={filters.department_id} onChange={(v) => handleFilterChange('department_id', v)} options={departments} disabled={dropdownLoading} placeholder="All Departments" />
-                                                            <FilterSelect label="Designation" icon={Award} value={filters.designation_id} onChange={(v) => handleFilterChange('designation_id', v)} options={designations} disabled={dropdownLoading} placeholder="All Designations" />
-                                                            <FilterSelect label="Shift" icon={Timer} value={filters.shift_id} onChange={(v) => handleFilterChange('shift_id', v)} options={shifts} disabled={dropdownLoading} placeholder="All Shifts" />
-                                                        </div>
-                                                    </div>
-                                                    <div className="flex flex-col sm:flex-row justify-end gap-2 p-4 border-t border-[var(--color-border-secondary)] rounded-b-2xl">
-                                                        <button
-                                                            onClick={resetFilters}
-                                                            className="flex items-center justify-center gap-2 px-4 py-2 bg-transparent text-[var(--color-primary)] border-2 hover:bg-[var(--color-primary-lightest)] border-[var(--color-primary)] rounded-lg hover:bg-[var(--color-bg-hover)] transition-colors text-sm font-medium min-w-[100px]"
-                                                        >
-                                                            <RefreshCw size={14} />
-                                                            Reset
-                                                        </button>
-
-                                                        <button
-                                                            onClick={applyFilters}
-                                                            disabled={loading}
-                                                            className="w-auto sm:w-[140px] flex items-center justify-center gap-2 px-4 py-2 bg-[var(--color-primary-dark)] text-[var(--color-text-white)] rounded-lg hover:bg-[var(--color-primary-darker)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
-                                                        >
-                                                            {loading ? <Loader2 size={14} className="animate-spin" /> : <Filter size={14} />}
-                                                            {loading ? 'Loading...' : 'Apply Filters'}
-                                                        </button>
-                                                    </div>
+                                                    <X className="h-4 w-4" />
+                                                </button>
+                                            </div>
+                                            {dropdownLoading && (
+                                                <div className="flex items-center gap-2 p-4 text-[var(--color-text-secondary)] border-b border-[var(--color-border-secondary)]">
+                                                    <Loader2 className="h-4 w-4 animate-spin" />
+                                                    <span className="text-sm">Loading filter options...</span>
                                                 </div>
-
-                                                <div className="sm:hidden fixed inset-0 z-[110] flex">
-                                                    <div className="ml-auto h-full w-full bg-[var(--color-bg-secondary)] flex flex-col">
-                                                        <div className="flex items-center justify-between p-4 border-b border-[var(--color-border-secondary)]">
-                                                            <h3 className="text-lg font-semibold text-[var(--color-text-primary)]">Filter Exceptions</h3>
-                                                            <button onClick={() => setFilterDropdown(false)} className="text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] p-1 rounded-lg hover:bg-[var(--color-bg-hover)]">
-                                                                <X className="h-5 w-5" />
-                                                            </button>
-                                                        </div>
-                                                        <div className="flex-1 overflow-y-auto p-4 grid grid-cols-1 gap-4">
-                                                            <FilterSelect label="Branch" icon={Building} value={filters.branch_id} onChange={(v) => handleFilterChange('branch_id', v)} options={branches} disabled={dropdownLoading} placeholder="All Branches" />
-                                                            <FilterSelect label="Department" icon={Users} value={filters.department_id} onChange={(v) => handleFilterChange('department_id', v)} options={departments} disabled={dropdownLoading} placeholder="All Departments" />
-                                                            <FilterSelect label="Designation" icon={Award} value={filters.designation_id} onChange={(v) => handleFilterChange('designation_id', v)} options={designations} disabled={dropdownLoading} placeholder="All Designations" />
-                                                            <FilterSelect label="Shift" icon={Timer} value={filters.shift_id} onChange={(v) => handleFilterChange('shift_id', v)} options={shifts} disabled={dropdownLoading} placeholder="All Shifts" />
-                                                        </div>
-                                                        <div className="p-4 border-t border-[var(--color-border-secondary)] grid grid-cols-1 gap-2">
-                                                            <button onClick={applyFilters} className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-[var(--color-primary-dark)] text-[var(--color-text-white)] rounded-lg hover:bg-[var(--color-primary-darker)] transition-colors text-sm font-medium">
-                                                                <Filter className="h-4 w-4" /> Apply Filters
-                                                            </button>
-                                                            <button onClick={resetFilters} className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-[var(--color-bg-gray-light)] text-[var(--color-text-secondary)] rounded-lg hover:bg-[var(--color-bg-hover)] transition-colors text-sm font-medium">
-                                                                Reset
-                                                            </button>
-                                                        </div>
-                                                    </div>
+                                            )}
+                                            <div className="flex-1 overflow-visible p-4">
+                                                <div className="grid grid-cols-2 gap-4">
+                                                    <FilterSelect label="Branch" icon={Building} value={filters.branch_id} onChange={(v) => handleFilterChange('branch_id', v)} options={branches} disabled={dropdownLoading} placeholder="All Branches" />
+                                                    <FilterSelect label="Department" icon={Users} value={filters.department_id} onChange={(v) => handleFilterChange('department_id', v)} options={departments} disabled={dropdownLoading} placeholder="All Departments" />
+                                                    <FilterSelect label="Designation" icon={Award} value={filters.designation_id} onChange={(v) => handleFilterChange('designation_id', v)} options={designations} disabled={dropdownLoading} placeholder="All Designations" />
+                                                    <FilterSelect label="Shift" icon={Timer} value={filters.shift_id} onChange={(v) => handleFilterChange('shift_id', v)} options={shifts} disabled={dropdownLoading} placeholder="All Shifts" />
                                                 </div>
-                                            </>,
-                                            document.body
-                                        )}
-                                    </div>
+                                            </div>
+                                            <div className="flex flex-col sm:flex-row justify-end gap-2 p-4 border-t border-[var(--color-border-secondary)] rounded-b-2xl">
+                                                <button
+                                                    onClick={resetFilters}
+                                                    className="flex items-center justify-center gap-2 px-4 py-2 bg-transparent text-[var(--color-primary)] border-2 hover:bg-[var(--color-primary-lightest)] border-[var(--color-primary)] rounded-lg hover:bg-[var(--color-bg-hover)] transition-colors text-sm font-medium min-w-[100px]"
+                                                >
+                                                    <RefreshCw size={14} />
+                                                    Reset
+                                                </button>
 
-                                    {/* Export */}
-                                    <div className="relative">
-                                        <button
-                                            ref={exportBtnRef}
-                                            onClick={() => setExportDropdown((v) => !v)}
-                                            className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-lg font-medium transition-colors"
-                                        >
-                                            <Download className="h-6 w-6" />
-                                            <span className='lg:hidden sm:hidden xl:inline'>Export</span>
-                                            <ChevronDown className="h-4 w-4 lg:hidden sm:hidden xl:inline" />
-                                        </button>
+                                                <button
+                                                    onClick={applyFilters}
+                                                    disabled={loading}
+                                                    className="w-auto sm:w-[140px] flex items-center justify-center gap-2 px-4 py-2 bg-[var(--color-primary-dark)] text-[var(--color-text-white)] rounded-lg hover:bg-[var(--color-primary-darker)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
+                                                >
+                                                    {loading ? <Loader2 size={14} className="animate-spin" /> : <Filter size={14} />}
+                                                    {loading ? 'Loading...' : 'Apply Filters'}
+                                                </button>
+                                            </div>
+                                        </div>
 
-                                        {exportDropdown && exportPos.ready && createPortal(
-                                            <>
-                                                <div className="fixed inset-0 z-40" onClick={() => setExportDropdown(false)} />
-                                                <div className="absolute z-50 bg-[var(--color-bg-secondary)] rounded-lg shadow-2xl border border-[var(--color-border-secondary)] py-2"
-                                                    style={{ position: 'absolute', top: exportPos.top, left: exportPos.left, width: Math.max(192, exportPos.width), minWidth: 192 }}>
-                                                    <button onClick={handleExportToExcel} className="flex items-center gap-2 w-full px-4 py-2 text-left hover:bg-[var(--color-bg-hover)] transition-colors text-[var(--color-text-primary)]">
-                                                        <FileSpreadsheet className="h-4 w-4 text-primary-600" />
-                                                        Export to Excel
-                                                    </button>
-                                                    <button onClick={handleExportToPDF} className="flex items-center gap-2 w-full px-4 py-2 text-left hover:bg-[var(--color-bg-hover)] transition-colors text-[var(--color-text-primary)]">
-                                                        <FileDown className="h-4 w-4 text-red-600" />
-                                                        Export to PDF
+                                        <div className="sm:hidden fixed inset-0 z-[110] flex">
+                                            <div className="ml-auto h-full w-full bg-[var(--color-bg-secondary)] flex flex-col">
+                                                <div className="flex items-center justify-between p-4 border-b border-[var(--color-border-secondary)]">
+                                                    <h3 className="text-lg font-semibold text-[var(--color-text-primary)]">Filter Exceptions</h3>
+                                                    <button onClick={() => setFilterDropdown(false)} className="text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] p-1 rounded-lg hover:bg-[var(--color-bg-hover)]">
+                                                        <X className="h-5 w-5" />
                                                     </button>
                                                 </div>
-                                            </>,
-                                            document.body
-                                        )}
-                                    </div>
-                                </div>
+                                                <div className="flex-1 overflow-y-auto p-4 grid grid-cols-1 gap-4">
+                                                    <FilterSelect label="Branch" icon={Building} value={filters.branch_id} onChange={(v) => handleFilterChange('branch_id', v)} options={branches} disabled={dropdownLoading} placeholder="All Branches" />
+                                                    <FilterSelect label="Department" icon={Users} value={filters.department_id} onChange={(v) => handleFilterChange('department_id', v)} options={departments} disabled={dropdownLoading} placeholder="All Departments" />
+                                                    <FilterSelect label="Designation" icon={Award} value={filters.designation_id} onChange={(v) => handleFilterChange('designation_id', v)} options={designations} disabled={dropdownLoading} placeholder="All Designations" />
+                                                    <FilterSelect label="Shift" icon={Timer} value={filters.shift_id} onChange={(v) => handleFilterChange('shift_id', v)} options={shifts} disabled={dropdownLoading} placeholder="All Shifts" />
+                                                </div>
+                                                <div className="p-4 border-t border-[var(--color-border-secondary)] grid grid-cols-1 gap-2">
+                                                    <button onClick={applyFilters} className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-[var(--color-primary-dark)] text-[var(--color-text-white)] rounded-lg hover:bg-[var(--color-primary-darker)] transition-colors text-sm font-medium">
+                                                        <Filter className="h-4 w-4" /> Apply Filters
+                                                    </button>
+                                                    <button onClick={resetFilters} className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-[var(--color-bg-gray-light)] text-[var(--color-text-secondary)] rounded-lg hover:bg-[var(--color-bg-hover)] transition-colors text-sm font-medium">
+                                                        Reset
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </>,
+                                    document.body
+                                )}
+                            </div>
+
+                            {/* Export */}
+                            <div className="relative">
+                                <button
+                                    ref={exportBtnRef}
+                                    onClick={() => setExportDropdown((v) => !v)}
+                                    className="flex items-center justify-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 h-[40px] py-0 rounded-xl font-medium text-xs sm:text-sm transition-colors whitespace-nowrap shrink-0"
+                                >
+                                    <Download className="h-4 w-4" />
+                                    <span className='lg:hidden sm:hidden xl:inline'>Export</span>
+                                    <ChevronDown className="h-4 w-4 lg:hidden sm:hidden xl:inline" />
+                                </button>
+
+                                {exportDropdown && exportPos.ready && createPortal(
+                                    <>
+                                        <div className="fixed inset-0 z-40" onClick={() => setExportDropdown(false)} />
+                                        <div className="absolute z-50 bg-[var(--color-bg-secondary)] rounded-lg shadow-2xl border border-[var(--color-border-secondary)] py-2"
+                                            style={{ position: 'absolute', top: exportPos.top, left: exportPos.left, width: Math.max(192, exportPos.width), minWidth: 192 }}>
+                                            <button onClick={handleExportToExcel} className="flex items-center gap-2 w-full px-4 py-2 text-left hover:bg-[var(--color-bg-hover)] transition-colors text-[var(--color-text-primary)]">
+                                                <FileSpreadsheet className="h-4 w-4 text-primary-600" />
+                                                Export to Excel
+                                            </button>
+                                            <button onClick={handleExportToPDF} className="flex items-center gap-2 w-full px-4 py-2 text-left hover:bg-[var(--color-bg-hover)] transition-colors text-[var(--color-text-primary)]">
+                                                <FileDown className="h-4 w-4 text-red-600" />
+                                                Export to PDF
+                                            </button>
+                                        </div>
+                                    </>,
+                                    document.body
+                                )}
                             </div>
                         </div>
                     </div>
@@ -998,24 +995,20 @@ const AttendanceExceptionReport = () => {
                     </div>
 
                     {/* ── Table ── */}
-                    <div className="overflow-x-auto flex flex-col flex-1 min-h-0 custom-scrollbar">
-                        {loading ? (
-                            <div className="p-12 text-center text-[var(--color-text-secondary)]">
-                                <div className="flex items-center justify-center gap-3">
-                                    {/* <Loader2 className="h-8 w-8 animate-spin" />
-                                    Loading... */}
-                                    <LoadingSpinner />
-                                </div>
-                            </div>
-                        ) : activeData.length === 0 ? (
-                            <div className="flex-1 flex items-center justify-center bg-[#FBF9FD] rounded-xl shadow-sm min-h-[500px]">
-                                <NoDataFound
-                                    title={activeTab === 'all_employees' ? 'No employees found' : `No ${currentTab?.label} exceptions found`}
-                                    subtitle={searchQuery ? 'Try a different search term' : `No data for ${formatDate(selectedDate)}`}
-                                />
-                            </div>
-                        ) : (
-                            <>
+                    {loading ? (
+                        <div className="p-12 text-center text-[var(--color-text-secondary)] flex-1 flex items-center justify-center">
+                            <LoadingSpinner />
+                        </div>
+                    ) : activeData.length === 0 ? (
+                        <div className="flex-1 flex items-center justify-center bg-[#FBF9FD] rounded-xl shadow-sm min-h-[500px]">
+                            <NoDataFound
+                                title={activeTab === 'all_employees' ? 'No employees found' : `No ${currentTab?.label} exceptions found`}
+                                subtitle={searchQuery ? 'Try a different search term' : `No data for ${formatDate(selectedDate)}`}
+                            />
+                        </div>
+                    ) : (
+                        <>
+                            <div className="overflow-auto flex-1 min-h-0 custom-scrollbar">
                                 <Table className="w-full min-w-[900px]">
                                     <TableHeader className="bg-[var(--color-primary-dark)] border-b border-[var(--color-border-secondary)]">
                                         <TableHeaderRow>
@@ -1037,28 +1030,19 @@ const AttendanceExceptionReport = () => {
                                         ))}
                                     </TableBody>
                                 </Table>
+                            </div>
 
-                                <Pagination
-                                    currentPage={currentPage}
-                                    totalPages={totalPages}
-                                    onPageChange={setCurrentPage}
-                                    loading={loading}
-                                />
-                            </>
-                        )}
-                    </div>
+                            <Pagination
+                                currentPage={currentPage}
+                                totalPages={totalPages}
+                                onPageChange={setCurrentPage}
+                                loading={loading}
+                                className="shrink-0 !py-5 "
+                            />
+                        </>
+                    )}
 
-                    {/* ── Footer legend ── */}
-                    {/* <div className="px-6 py-4 border-t border-[var(--color-border-secondary)] bg-[var(--color-bg-primary)]">
-                        <div className="flex flex-wrap justify-end items-center gap-4 text-sm text-[var(--color-text-secondary)]">
-                            {TABS.map((tab) => (
-                                <span key={tab.key} className="flex items-center gap-1.5">
-                                    <tab.icon className={`h-3.5 w-3.5 ${tab.color}`} />
-                                    {tab.label} ({summaryCounts[tab.key]})
-                                </span>
-                            ))}
-                        </div>
-                    </div> */}
+
                 </div>
             </div>
         </div>

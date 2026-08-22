@@ -310,12 +310,12 @@ const Filters = ({
             <button
                 ref={filterBtnRef}
                 onClick={() => setFilterDropdown((v) => !v)}
-                className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)]  px-4 py-2 rounded-lg font-medium transition-colors backdrop-blur-sm"
+                className="flex items-center justify-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 h-[40px] py-0 rounded-xl font-medium text-xs sm:text-sm transition-colors whitespace-nowrap shrink-0"
             >
-                <Filter className="h-6 w-6" />
+                <Filter className="h-4 w-4" />
                 <span className="lg:hidden sm:hidden xl:inline">Filters</span>
                 {activeFiltersCount > 0 && (
-                    <span className="bg-[var(--color-bg-secondary)] text-primary-600 text-xs rounded-full px-2 py-1">
+                    <span className="bg-[var(--color-primary-dark)] text-white text-xs rounded-full px-2 py-0.5 min-w-[20px] text-center">
                         {activeFiltersCount}
                     </span>
                 )}
@@ -1017,10 +1017,7 @@ const GeolocationReport = () => {
                                         </button>
                                     )}
                                 </div> */}
-                                <div className="relative w-full sm:w-64">
-
-                                    <Search className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 h-3 w-3 sm:h-4 sm:w-4 text-[var(--color-text-muted)] z-10" />
-
+                                <div className="relative w-full sm:w-64 flex items-center">
                                     <CustomInput
                                         type="text"
                                         name="searchQuery"
@@ -1028,21 +1025,12 @@ const GeolocationReport = () => {
                                         onChange={(e) => setSearchQuery(e.target.value)}
                                         placeholder="Search employees..."
                                         clearable={true}
-                                        className="!h-[37px] [&_input]:!h-[40px] [&_input]:!pl-8 sm:[&_input]:!pl-10 [&_input]:!pr-8 sm:[&_input]:!pr-10 [&_input]:!rounded-xl"
+                                        icon={<Search className="w-4 h-4 text-[var(--color-text-secondary)] shrink-0" />}
+                                        className="!h-[40px] [&_input]:!h-[40px] [&_input]:!leading-[40px] [&_input]:!py-0 [&_input]:!rounded-xl [&_input]:!text-xs sm:[&_input]:!text-sm"
                                     />
-
                                 </div>
 
-                                <div className="relative flex items-center z-[40] min-w-[140px] sm:min-w-[160px]">
-                                    {/* <Calendar className="absolute left-3 w-4 h-4 text-[var(--color-primary)] pointer-events-none z-10" />
-
-                                    <DatePicker
-                                        selected={selectedDate}
-                                        onChange={handleDateChange}
-                                        dateFormat="dd-MM-yyyy"
-                                        placeholderText="DD-MM-YYYY"
-                                        className="w-full bg-[var(--color-bg-primary)] border border-[var(--color-border-secondary)] rounded-xl pl-9 pr-3 py-1.5 sm:py-2 text-xs sm:text-sm text-[var(--color-text-primary)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent transition-all duration-200 cursor-pointer font-medium shadow-sm"
-                                    /> */}
+                                <div className="relative flex items-center min-w-[140px] sm:min-w-[160px]">
                                     <CustomDatePicker
                                         name="selected_date"
                                         value={selectedDate}
@@ -1050,7 +1038,7 @@ const GeolocationReport = () => {
                                         placeholder="DD-MM-YYYY"
                                         maxDate={new Date()}
                                         clearable={true}
-                                        className="w-full h-[40px]"
+                                        className="!h-[40px] [&_button]:!h-[40px] [&_button]:!py-0 [&_button]:!rounded-xl [&_button]:!text-xs sm:[&_button]:!text-sm"
                                     />
                                 </div>
 
@@ -1079,9 +1067,9 @@ const GeolocationReport = () => {
                                     <button
                                         ref={exportBtnRef}
                                         onClick={() => setExportDropdown((v) => !v)}
-                                        className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-lg font-medium transition-colors"
+                                        className="flex items-center justify-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 h-[40px] py-0 rounded-xl font-medium text-xs sm:text-sm transition-colors whitespace-nowrap shrink-0"
                                     >
-                                        <Download className="h-6 w-6" />
+                                        <Download className="h-4 w-4" />
                                         <span className='lg:hidden sm:hidden xl:inline'>Export</span>
                                         <ChevronDown className="h-4 w-4 lg:hidden sm:hidden xl:inline" />
                                     </button>
@@ -1249,12 +1237,12 @@ const GeolocationReport = () => {
                                         {/* Filler rows to keep 10 visible */}
                                         {Array.from({ length: emptyRowCount }).map((_, i) => (
                                             <TableRow key={`empty-${i}`} className="transition-colors">
-                                                <Td className="text-transparent">—</Td>
-                                                <Td className="text-transparent">—</Td>
-                                                <Td className="text-transparent">—</Td>
-                                                <Td className="text-transparent">—</Td>
-                                                <Td className="text-transparent">—</Td>
-                                                <Td className="text-transparent">—</Td>
+                                                <Td className="px-6 py-4 text-transparent">—</Td>
+                                                <Td className="px-6 py-4 text-transparent">—</Td>
+                                                <Td className="px-6 py-4 text-transparent">—</Td>
+                                                <Td className="px-6 py-4 text-transparent">—</Td>
+                                                <Td className="px-6 py-4 text-transparent">—</Td>
+                                                <Td className="px-6 py-4 text-transparent">—</Td>
                                             </TableRow>
                                         ))}
                                     </TableBody>
@@ -1266,7 +1254,7 @@ const GeolocationReport = () => {
                                     totalPages={totalPages}
                                     onPageChange={setCurrentPage}
                                     loading={loading}
-
+                                    className="!py-5 bg-white border-t border-[var(--color-border-secondary)] "
                                 />
                             </>
                         )}

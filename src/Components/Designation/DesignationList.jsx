@@ -2,6 +2,7 @@ import React, { useState, useMemo } from "react";
 import { Trash2, Briefcase, X, Search } from "lucide-react";
 import { useSelector } from 'react-redux';
 import { ConfirmDialog } from '../comman/ConfirmDialog';
+import { Toast } from "../ui/Toast";
 import DesignationForm from "./DesignationForm";
 import useDesignations from "../../hooks/useDesignations";
 import LoadingSpinner from "../Loader/LoadingSpinner"
@@ -25,7 +26,6 @@ const DesignationList = () => {
         deleteDesignation,
     } = useDesignations();
 
-    // eslint-disable-next-line no-unused-vars
     const [toast, setToast] = useState(null);
 
     const showToast = (message, type) => {
@@ -40,10 +40,10 @@ const DesignationList = () => {
 
     const handleDeleteDesignation = async (id) => {
         const result = await deleteDesignation(id);
-        if (result && result.success) {
-            showToast("Designation deleted successfully!", "success");
+        if (result && (result.success === true || result.status === true || result.status === 1)) {
+            showToast(result.message || "Designation deleted successfully!", "success");
         } else {
-            showToast("Failed to delete designation. Please try again.", "error");
+            showToast(result?.message || result?.error || "Failed to delete designation. Please try again.", "error");
         }
     };
 
@@ -213,6 +213,13 @@ const DesignationList = () => {
                 />
             </div>
 
+            {toast && (
+                <Toast
+                    message={toast.message}
+                    type={toast.type}
+                    onClose={() => setToast(null)}
+                />
+            )}
         </>
     );
 };

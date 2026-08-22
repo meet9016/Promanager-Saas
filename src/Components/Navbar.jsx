@@ -511,14 +511,14 @@ const Navbar = ({ isCollapsed, setIsCollapsed }) => {
                                     {/* Logout */}
                                     <button
                                         onClick={handleLogoutClick}
-                                        className="flex items-center gap-3 w-full p-3 rounded-xl transition-all duration-200 hover:opacity-90 mt-1 bg-red-50 group border border-transparent hover:border-red-100"
+                                        className="flex items-center gap-3 w-full p-3 rounded-xl  hover:opacity-90 mt-1 bg-red-50 group border border-transparent hover:border-red-100"
                                     >
-                                        <div className="flex items-center justify-center w-10 h-10 rounded-xl text-red-500 bg-red-50 group-hover:bg-red-100 transition-colors">
+                                        <div className="flex items-center justify-center w-10 h-10 rounded-xl text-red-500 bg-red-50 group-hover:bg-red-100 ">
                                             <LogOut size={20} strokeWidth={2.5} className="ml-1" />
                                         </div>
                                         <div className="flex flex-col items-start text-left">
                                             <span className="text-sm font-semibold text-red-600">Logout</span>
-                                            <span className="text-[12px] text-red-400 mt-0.5">Sign out from your account</span>
+                                            <span className="text-[12px] text-red-500 mt-0.5">Sign out from your account</span>
                                         </div>
                                     </button>
                                 </div>

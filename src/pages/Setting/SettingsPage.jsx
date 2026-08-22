@@ -361,7 +361,7 @@ const SettingsContent = () => {
                 </div>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <SectionCard titleIcon={<Calendar className="w-6 h-6 text-[var(--color-text-white)]" />} title="Leave Settings">
+                    <SectionCard titleIcon={<Calendar className="w-6 h-6 text-[var(--color-primary-darker)]" />} title="Leave Settings">
                         <div className="flex flex-col items-center justify-center p-6 bg-[var(--color-bg-primary)] rounded-xl border border-[var(--color-border-secondary)]">
                             <div className="w-16 h-16 bg-[var(--color-primary-lightest)] rounded-full flex items-center justify-center mb-4">
                                 <Calendar className="w-8 h-8 text-[var(--color-primary-dark)]" />

@@ -30,7 +30,7 @@ const MinInput = ({ value, onChange, disabled }) => (
             disabled={disabled}
             className="w-16 px-2 py-1 text-xs text-right font-medium border border-[var(--color-border-secondary)] rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] bg-[var(--color-bg-primary)] text-[var(--color-text-primary)] disabled:opacity-40 disabled:cursor-not-allowed transition-all"
         />
-        <span className="text-[10px] font-medium text-[var(--color-text-secondary)] uppercase tracking-wide">min</span>
+        <span className="text-[12.5px] font-medium text-[var(--color-text-secondary)] ">Min</span>
     </div>
 );
 
@@ -47,7 +47,7 @@ const SectionCard = ({ icon: Icon, label, accentColor = "primary", children }) =
         <div className="rounded-xl border border-[var(--color-border-secondary)] overflow-visible bg-[var(--color-bg-secondary)] shadow-sm">
             <div className={`flex items-center gap-2 px-3 py-2 border-b rounded-[10px] ${headerStyles[accentColor] || headerStyles.primary}`}>
                 {Icon && <Icon className="w-3.5 h-3.5 shrink-0" />}
-                <span className="text-[11px] font-bold uppercase tracking-widest">{label}</span>
+                <span className="text-[14px] font-bold ">{label}</span>
             </div>
             <div className="p-3 space-y-2.5">{children}</div>
         </div>
@@ -104,8 +104,8 @@ const DepartmentForm = ({ onSubmit, loading = false, showToast }) => {
     };
 
     return (
-        <div className="bg-[var(--color-bg-secondary)] rounded-xl shadow-sm border border-[var(--color-primary-dark)] overflow-hidden">
-            <div className="p-6">
+        <div className="bg-[var(--color-bg-secondary)] rounded-xl shadow-sm border border-[var(--color-primary-dark)] overflow-visible">
+            <div className="p-5">
                 {/* ── Name + Submit ── */}
                 <div className="flex w-full flex-col sm:flex-row items-end gap-3 mb-4">
                     <div className="flex-1 space-y-1 w-full">
@@ -152,15 +152,15 @@ const DepartmentForm = ({ onSubmit, loading = false, showToast }) => {
 
                 {/* ── Advanced panel ── */}
                 {showAdvanced && (
-                    <div className="mt-3 rounded-xl border border-[var(--color-border-secondary)] overflow-hidden bg-[var(--color-bg-primary)]">
+                    <div className="mt-3 rounded-xl border border-[var(--color-border-secondary)] overflow-visible bg-[var(--color-bg-primary)]">
 
                         {/* Panel header strip */}
-                        <div className="flex items-center gap-2 px-4 py-2.5 bg-[var(--color-primary-dark)]">
+                        <div className="flex items-center gap-2 px-4 py-2.5 bg-[var(--color-primary-dark)] rounded-t-[7px]">
                             <Settings2 className="w-3.5 h-3.5 text-white/70" />
-                            <span className="text-[11px] font-bold text-white uppercase tracking-widest">
+                            <span className="text-[15px] font-md text-white ">
                                 Attendance &amp; Payroll Rules
                             </span>
-                            <span className="ml-auto text-[10px] text-white/50 italic hidden sm:block">Applied to all employees in this department</span>
+                            {/* <span className="ml-auto text-[10px] text-white/50 italic hidden sm:block">Applied to all employees in this department</span> */}
                         </div>
 
                         {/* Cards grid */}

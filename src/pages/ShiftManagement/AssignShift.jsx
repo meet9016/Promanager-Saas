@@ -688,8 +688,9 @@ const AssignShift = () => {
                                     type="button"
                                     onClick={handleBack}
                                     disabled={submitting}
-                                    className="px-4 py-2 text-sm border border-[var(--color-border-secondary)] text-[var(--color-text-secondary)] rounded-lg hover:bg-[var(--color-bg-primary)] transition-colors font-medium"
+                                    className="px-4 py-2 text-sm border border-[var(--color-border-secondary)] text-[var(--color-text-secondary)] rounded-lg hover:bg-[var(--color-bg-primary)] transition-colors font-medium flex items-center gap-2"
                                 >
+                                    <X className="w-4 h-4" />
                                     Cancel
                                 </button>
 

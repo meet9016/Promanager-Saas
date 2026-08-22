@@ -411,9 +411,7 @@ const MonthlyAttendance = () => {
                         {/* Right: filter btn */}
                         <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto mt-4 sm:mt-0">
                             {/* Search */}
-                            <div className="relative flex-shrink-0 w-full sm:w-auto">
-                                <Search className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 h-3 w-3 sm:h-4 sm:w-4 text-[var(--color-text-muted)] z-10" />
-
+                            <div className="relative flex-shrink-0 w-full sm:w-auto flex items-center">
                                 <CustomInput
                                     type="text"
                                     name="searchQuery"
@@ -421,14 +419,15 @@ const MonthlyAttendance = () => {
                                     onChange={(e) => setSearchQuery(e.target.value)}
                                     placeholder="Search employees..."
                                     clearable={true}
-                                    className="!h-[37px] sm:!h-[40px] [&_input]:!h-[37px] sm:[&_input]:!h-[40px] [&_input]:!pl-8 sm:[&_input]:!pl-10 [&_input]:!pr-8 sm:[&_input]:!pr-10 [&_input]:!rounded-xl [&_input]:!text-xs sm:[&_input]:!text-sm"
+                                    icon={<Search className="w-4 h-4 text-[var(--color-text-secondary)]" />}
+                                    className="!h-[40px] [&_input]:!h-[40px] [&_input]:!py-0 [&_input]:!rounded-xl [&_input]:!text-xs sm:[&_input]:!text-sm"
                                 />
                             </div>
 
                             <button
                                 ref={filterBtnRef}
                                 onClick={() => setShowFilters(!showFilters)}
-                                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold border transition-all duration-200
+                                className={`flex items-center justify-center gap-2 px-4 h-[40px] py-0 rounded-xl text-xs sm:text-sm font-semibold border transition-all duration-200
                                     ${showFilters
                                         ? 'bg-white  text-[var(--color-primary-dark)] border-violet-600 shadow-lg'
                                         : 'bg-white  text-[var(--color-primary-dark)] border-slate-200 '

@@ -121,56 +121,102 @@ const ShiftManagement = () => {
         if (!isOpen) return null;
 
         return (
-            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-                <div className="bg-[var(--color-bg-secondary)] rounded-lg shadow-xl max-w-md w-full mx-4 max-h-96">
-                    <div className="p-8">
-                        <div className="flex justify-between items-center mb-4">
-                            <h3 className="text-lg font-semibold text-[var(--color-text-primary)]">
-                                Assigned Employees - {shiftName}
-                            </h3>
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fadeIn">
+                <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-2xl border border-[var(--color-border-secondary)] max-w-lg w-full overflow-hidden flex flex-col max-h-[85vh] transition-all">
+                    {/* Header */}
+                    <div className="px-6 py-4 bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] text-white flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                            <div className="p-2 bg-white/10 rounded-xl backdrop-blur-md">
+                                <Users className="w-5 h-5 text-white" />
+                            </div>
+                            <div>
+                                <h3 className="text-base sm:text-lg font-bold text-white leading-tight">
+                                    Assigned Employees
+                                </h3>
+                                <p className="text-xs text-white/80 font-medium">
+                                    Shift: {shiftName}
+                                </p>
+                            </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <span className="bg-white/20 text-white text-xs font-semibold px-2.5 py-1 rounded-full backdrop-blur-md">
+                                {loading ? '...' : `${employees.length} Total`}
+                            </span>
                             <button
                                 onClick={onClose}
-                                className="text-[var(--color-text-muted)] hover:text-[var(--color-text-secondary)]"
+                                className="p-1.5 rounded-lg text-white/80 hover:text-white hover:bg-white/20 transition-colors"
+                                aria-label="Close"
                             >
                                 <X className="w-5 h-5" />
                             </button>
                         </div>
+                    </div>
 
+                    {/* Content */}
+                    <div className="p-6 flex-1 overflow-y-auto custom-scrollbar">
                         {loading ? (
-                            <div className="flex justify-center items-center h-32">
-                                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--color-primary-dark)]"></div>
+                            <div className="flex flex-col items-center justify-center py-12 gap-3">
+                                <div className="animate-spin rounded-full h-8 w-8 border-2 border-[var(--color-primary-dark)] border-t-transparent"></div>
+                                <span className="text-xs sm:text-sm text-[var(--color-text-secondary)] font-medium">
+                                    Loading assigned employees...
+                                </span>
                             </div>
                         ) : employees.length > 0 ? (
-                            <div className="max-h-64 overflow-y-auto">
-                                <div className="space-y-2">
-                                    {employees.map((employee, index) => (
-                                        <div key={employee.id || index} className="flex items-center gap-3 p-3 bg-[var(--color-bg-primary)] rounded-lg">
-                                            <div className="w-8 h-8 bg-[var(--color-primary-dark)] rounded-full flex items-center justify-center">
-                                                <span className="text-[var(--color-text-white)] text-sm font-medium">
-                                                    {employee.full_name?.charAt(0)?.toUpperCase() || 'E'}
-                                                </span>
+                            <div className="space-y-3">
+                                {employees.map((employee, index) => (
+                                    <div
+                                        key={employee.id || employee.employee_id || index}
+                                        className="flex items-center justify-between p-3.5 bg-[var(--color-bg-primary)] hover:bg-[var(--color-bg-hover,#f9fafb)] border border-[var(--color-border-secondary)] rounded-xl transition-all duration-200 shadow-sm"
+                                    >
+                                        <div className="flex items-center gap-3 min-w-0">
+                                            <div className="w-10 h-10 bg-gradient-to-br from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] rounded-xl flex items-center justify-center text-white font-bold text-sm shadow-sm shrink-0">
+                                                {(employee.full_name || employee.name)?.charAt(0)?.toUpperCase() || 'E'}
                                             </div>
-                                            <div>
-                                                <p className="font-medium text-[var(--color-text-primary)]">
-                                                    {employee.full_name || 'Unknown Employee'}
+                                            <div className="min-w-0">
+                                                <p className="font-semibold text-sm text-[var(--color-text-primary)] truncate">
+                                                    {employee.full_name || employee.name || 'Unknown Employee'}
                                                 </p>
-
-                                                {employee.cdate && (
-                                                    <p className="text-sm text-[var(--color-text-secondary)]">
-                                                        Assigned: {employee.cdate}
+                                                {employee.employee_code && (
+                                                    <p className="text-xs text-[var(--color-text-muted)] font-mono">
+                                                        {employee.employee_code}
                                                     </p>
                                                 )}
                                             </div>
                                         </div>
-                                    ))}
-                                </div>
+                                        {employee.cdate && (
+                                            <div className="text-right shrink-0">
+                                                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] text-[11px] font-medium text-[var(--color-text-secondary)]">
+                                                    <Calendar className="w-3 h-3 text-[var(--color-primary-dark)]" />
+                                                    {employee.cdate}
+                                                </span>
+                                            </div>
+                                        )}
+                                    </div>
+                                ))}
                             </div>
                         ) : (
-                            <div className="text-center py-8">
-                                <Users className="w-12 h-12 text-[var(--color-text-muted)] mx-auto mb-3" />
-                                <p className="text-[var(--color-text-secondary)]">No employees assigned to this shift</p>
+                            <div className="text-center py-12 px-4">
+                                <div className="w-16 h-16 bg-[var(--color-primary-lightest,#f3e8ff)] rounded-2xl flex items-center justify-center mx-auto mb-3">
+                                    <Users className="w-8 h-8 text-[var(--color-primary-dark)]" />
+                                </div>
+                                <h4 className="text-base font-semibold text-[var(--color-text-primary)] mb-1">
+                                    No Employees Assigned
+                                </h4>
+                                <p className="text-xs sm:text-sm text-[var(--color-text-secondary)] max-w-xs mx-auto">
+                                    There are currently no employees assigned to this shift configuration.
+                                </p>
                             </div>
                         )}
+                    </div>
+
+                    {/* Footer */}
+                    <div className="px-6 py-3 bg-[var(--color-bg-primary)] border-t border-[var(--color-border-secondary)] flex justify-end">
+                        <button
+                            onClick={onClose}
+                            className="px-4 py-2 bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] text-[var(--color-text-primary)] hover:bg-[var(--color-bg-hover)] text-xs sm:text-sm font-medium rounded-xl transition-colors"
+                        >
+                            Close
+                        </button>
                     </div>
                 </div>
             </div>
@@ -554,15 +600,14 @@ const ShiftManagement = () => {
                                                             ))}
                                                         </div>
                                                     </Td>
-                                                    <Td className="px-6 py-4 text-left whitespace-nowrap text-[var(--color-text-secondary)] border-b border-[var(--color-border-divider)]">
+                                                    <Td className="px-6 py-4 text-left whitespace-nowrap text-[var(--color-text-secondary)] border-b border-[var(--color-border-divider)] ">
                                                         <button
                                                             onClick={() => fetchAssignedEmployees(shift.shift_id, shift.shift_name)}
-                                                            className="flex items-center gap-2 text-[var(--color-primary-dark)] hover:text-primary-800 transition-colors"
+                                                            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[var(--color-primary-lightest,#f3e8ff)] text-[var(--color-primary-dark)]  hover:shadow-sm transition-all duration-200 border border-[var(--color-primary-light,#d8b4fe)] font-medium text-xs sm:text-sm group cursor-pointer"
+                                                            title="Click to view assigned employees"
                                                         >
-                                                            <span className="font-medium text-lg">
-                                                                {employeeCounts[shift.shift_id] || 0}
-                                                            </span>
-                                                            <Users className="w-4 h-4" />
+                                                            <Users className="w-4 h-4 text-[var(--color-primary-dark)]  group-hover:scale-110 transition-transform " />
+                                                            <span>{employeeCounts[shift.shift_id] || 0} Employees</span>
                                                         </button>
                                                     </Td>
                                                     <Td className="px-6 py-4 text-left whitespace-nowrap text-[var(--color-text-secondary)] border-b border-[var(--color-border-divider)]">

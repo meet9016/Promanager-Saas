@@ -19,25 +19,20 @@ const AllowanceForm = ({ onSubmit, loading = false, showToast }) => {
         try {
             const result = await onSubmit(name.trim());
 
-            // Handle the response based on the success property
-            if (result && Object.prototype.hasOwnProperty.call(result, 'success')) {
-                if (result.success === true) {
-                    // Success case
-                    setName("");
-                    showToast("Allowance added successfully!", "success");
-                } else {
-                    // success: false case - show the specific error message
-                    const errorMessage = result.message || "Failed to add allowance. Please try again.";
-                    showToast(errorMessage, "error");
-                }
+            if (result && (result.success === true || result.status === true || result.status === 1)) {
+                // Success case
+                setName("");
+                const successMessage = result.message || "Allowance added successfully!";
+                showToast(successMessage, "success");
             } else {
-                // Handle case where result doesn't have success property or is null/undefined
-                showToast("Failed to add allowance. Please try again.", "error");
+                // success: false case - show the specific error message
+                const errorMessage = result?.message || result?.error || "Failed to add allowance. Please try again.";
+                showToast(errorMessage, "error");
             }
         } catch (error) {
-            // Handle network errors or other exceptions
             console.error("Error adding allowance:", error);
-            showToast("An error occurred while adding the allowance.", "error");
+            const errorMessage = error?.response?.data?.message || error?.response?.data?.error || error?.message || "An error occurred while adding the allowance.";
+            showToast(errorMessage, "error");
         } finally {
             setIsSubmitting(false);
         }

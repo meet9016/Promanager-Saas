@@ -661,8 +661,7 @@ const DailyReport = () => {
                                 {/* Export */}
 
 
-                                <div className="relative flex items-center z-[40] w-full sm:w-[180px] xl:w-[250px] h-[40px]">
-                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--color-text-muted)] z-20" />
+                                <div className="relative flex items-center z-[40] w-full sm:w-[180px] xl:w-[250px]">
                                     <CustomInput
                                         type="text"
                                         name="searchQuery"
@@ -670,11 +669,12 @@ const DailyReport = () => {
                                         onChange={(e) => setSearchQuery(e.target.value)}
                                         placeholder="Search employees..."
                                         clearable={true}
-                                        className="!h-[39px] [&_input]:!h-[39px] [&_input]:!pl-10"
+                                        icon={<Search className="w-4 h-4 text-[var(--color-text-secondary)] shrink-0" />}
+                                        className="!h-[40px] [&_input]:!h-[40px] [&_input]:!leading-[40px] [&_input]:!py-0 [&_input]:!rounded-xl [&_input]:!text-xs sm:[&_input]:!text-sm"
                                     />
                                 </div>
 
-                                <div className="relative flex items-center z-[40] min-w-[140px] sm:min-w-[160px] h-[40px]">
+                                <div className="relative flex items-center z-[40] min-w-[140px] sm:min-w-[160px]">
                                     <CustomDatePicker
                                         name="dateOfBirth"
                                         value={selectedDate}
@@ -682,7 +682,7 @@ const DailyReport = () => {
                                         placeholder="DD-MM-YYYY"
                                         maxDate={new Date()}
                                         clearable={true}
-
+                                        className="!h-[40px] [&_button]:!h-[40px] [&_button]:!py-0 [&_button]:!rounded-xl [&_button]:!text-xs sm:[&_button]:!text-sm"
                                     />
                                 </div>
 
@@ -690,13 +690,13 @@ const DailyReport = () => {
                                     <button
                                         ref={filterBtnRef}
                                         onClick={() => setFilterDropdown((v) => !v)}
-                                        className="w-full sm:w-auto  flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-lg font-medium transition-colors"
+                                        className="w-full sm:w-auto flex items-center justify-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 h-[40px] py-0 rounded-xl font-medium text-xs sm:text-sm transition-colors whitespace-nowrap shrink-0"
                                     >
-                                        <Filter className="h-6 w-6" />
+                                        <Filter className="h-4 w-4" />
                                         <span className="lg:hidden sm:hidden xl:inline">Filters</span>
 
                                         {getActiveFiltersCount() > 0 && (
-                                            <span className="bg-[var(--color-primary-dark)] text-white text-xs rounded-full px-2 py-1">
+                                            <span className="bg-[var(--color-primary-dark)] text-white text-xs rounded-full px-2 py-0.5 min-w-[20px] text-center">
                                                 {getActiveFiltersCount()}
                                             </span>
                                         )}
@@ -1125,9 +1125,9 @@ const DailyReport = () => {
                                     <button
                                         ref={exportBtnRef}
                                         onClick={() => setExportDropdown((v) => !v)}
-                                        className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-lg font-medium transition-colors"
+                                        className="flex items-center justify-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 h-[40px] py-0 rounded-xl text-xs sm:text-sm font-medium transition-colors whitespace-nowrap shrink-0"
                                     >
-                                        <Download className="h-6 w-6" />
+                                        <Download className="h-4 w-4" />
                                         <span className='lg:hidden sm:hidden xl:inline'>Export</span>
                                         <ChevronDown className="h-4 w-4 lg:hidden sm:hidden xl:inline" />
                                     </button>
@@ -1168,14 +1168,6 @@ const DailyReport = () => {
                                 </div>
                             </div>
                         </div>
-
-
-
-
-
-
-
-
                     </div>
 
                     {/* Table */}
@@ -1300,27 +1292,26 @@ const DailyReport = () => {
                                         {/* ⬇️ Filler rows to keep 10 rows visible */}
                                         {Array.from({ length: emptyRowCount }).map((_, i) => (
                                             <TableRow key={`empty-${i}`} className="hover:bg-[var(--color-bg-hover)] transition-colors">
-                                                <Td className="px-6 py-6 text-center text-sm text-transparent">—</Td>
-                                                <Td className="px-6 py-6 text-center text-sm text-transparent">—</Td>
-                                                <Td className="px-6 py-6 text-center text-sm text-transparent">—</Td>
-                                                <Td className="px-6 py-6 text-center text-sm text-transparent">—</Td>
-                                                <Td className="px-6 py-6 text-center text-sm text-transparent">—</Td>
-                                                <Td className="px-6 py-6 text-center text-sm text-transparent">—</Td>
-                                                <Td className="px-6 py-6 text-center text-sm text-transparent">—</Td>
-                                                <Td className="px-6 py-6 text-center text-sm text-transparent">—</Td>
+                                                <Td className="px-6 py-4 text-center text-sm text-transparent">—</Td>
+                                                <Td className="px-6 py-4 text-center text-sm text-transparent">—</Td>
+                                                <Td className="px-6 py-4 text-center text-sm text-transparent">—</Td>
+                                                <Td className="px-6 py-4 text-center text-sm text-transparent">—</Td>
+                                                <Td className="px-6 py-4 text-center text-sm text-transparent">—</Td>
+                                                <Td className="px-6 py-4 text-center text-sm text-transparent">—</Td>
+                                                <Td className="px-6 py-4 text-center text-sm text-transparent">—</Td>
+                                                <Td className="px-6 py-4 text-center text-sm text-transparent">—</Td>
                                             </TableRow>
                                         ))}
                                     </TableBody>
                                 </Table>
 
                                 {/* ⬇️ Pagination controls */}
-
-
                                 <Pagination
                                     currentPage={currentPage}
                                     totalPages={totalPages}
                                     onPageChange={setCurrentPage}
                                     loading={loading}
+                                    className="!py-5 bg-white border-t border-[var(--color-border-secondary)] !my-0"
                                 />
                             </>
                         )}

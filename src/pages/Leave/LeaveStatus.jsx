@@ -1335,10 +1335,10 @@ const ViewModal = ({ viewModal, setViewModal, setApprovalModal, setCancelModal, 
                 <div className="p-8 overflow-y-auto flex-1 custom-scrollbar bg-white">
 
                     {/* Employee Info Card */}
-                    <div className="bg-white rounded-xl shadow-sm border border-[var(--color-border-divider)] p-6 mb-6 flex items-center justify-between">
+                    <div className="bg-white rounded-xl shadow-sm border border-[var(--color-border-divider)] p-3 mb-6 flex items-center justify-between">
                         <div className="flex items-center space-x-6">
-                            <div className="w-20 h-20 bg-[var(--color-primary-lightest)] rounded-full flex items-center justify-center shadow-inner">
-                                <User className="w-10 h-10 text-[var(--color-primary-dark)] fill-current opacity-80" />
+                            <div className="w-16 h-16 bg-[var(--color-primary-lightest)] rounded-full flex items-center justify-center shadow-inner">
+                                <User className="w-8 h-8 text-[var(--color-primary-dark)] fill-current opacity-80" />
                             </div>
                             <div>
                                 <p className="text-xs text-[var(--color-text-secondary)] font-semibold mb-1 uppercase tracking-wider">Employee Name</p>
@@ -1423,7 +1423,7 @@ const ViewModal = ({ viewModal, setViewModal, setApprovalModal, setCancelModal, 
 
                     {/* Leave Reason */}
                     {viewModal.leaveData.reason && (
-                        <div className="bg-[#faf7ff] border border-[#f3ebff] rounded-xl p-5 mb-6">
+                        <div className="bg-[#faf7ff] border border-[#f3ebff] rounded-xl p-4 mb-6">
                             <div className="flex items-center gap-2 mb-4">
                                 <FileText className="w-4 h-4 text-[var(--color-primary-dark)]" />
                                 <h4 className="text-sm font-bold text-[var(--color-primary-dark)]">Leave Reason</h4>
@@ -1475,10 +1475,10 @@ const ViewModal = ({ viewModal, setViewModal, setApprovalModal, setCancelModal, 
 
                                             return (
                                                 <tr key={i} className="hover:bg-gray-50 transition-colors">
-                                                    <td className="px-6 py-5 text-[var(--color-text-primary)] font-medium">
+                                                    <td className="px-6 py-3 text-[var(--color-text-primary)] font-medium">
                                                         {displayDate}
                                                     </td>
-                                                    <td className="px-6 py-5 flex justify-center">
+                                                    <td className="px-6 py-3 flex justify-center">
                                                         {d.is_paid === "1" ? (
                                                             <span className="inline-flex items-center gap-2 px-3 py-1 bg-green-50 text-green-700 rounded-md text-xs font-bold border border-green-200">
                                                                 <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span>
@@ -1619,7 +1619,7 @@ const AddLeaveModal = ({ addLeaveModal, showAddLeaveModal, handleCloseAddLeave, 
                                     }))}
                                     error={!!leaveFormErrors.employee_id}
                                 />
-                                {leaveFormErrors.employee_id && <span className="text-sm text-[var(--color-error)] mt-1 block">{leaveFormErrors.employee_id}</span>}
+                                {leaveFormErrors.employee_id && <span className="text-sm text-[var(--color-error)] !mt-[1px] block">{leaveFormErrors.employee_id}</span>}
                             </div>
 
                             {/* Leave Type Selection */}
@@ -1643,7 +1643,7 @@ const AddLeaveModal = ({ addLeaveModal, showAddLeaveModal, handleCloseAddLeave, 
                                     searchable={true}
                                     error={!!leaveFormErrors.leave_type}
                                 />
-                                {leaveFormErrors.leave_type && <span className="text-sm text-[var(--color-error)] mt-1 block">{leaveFormErrors.leave_type}</span>}
+                                {leaveFormErrors.leave_type && <span className="text-sm text-[var(--color-error)] !mt-[1px] block">{leaveFormErrors.leave_type}</span>}
                             </div>
 
                             {/* Select Dates Calendar & Right Side */}
@@ -1747,7 +1747,7 @@ const AddLeaveModal = ({ addLeaveModal, showAddLeaveModal, handleCloseAddLeave, 
                                         )}
                                     </div>
                                 </div>
-                                {leaveFormErrors.dates && <span className="text-sm text-[var(--color-error)] mt-1 block">{leaveFormErrors.dates}</span>}
+                                {leaveFormErrors.dates && <span className="text-sm text-[var(--color-error)] !mt-[1px] block">{leaveFormErrors.dates}</span>}
                             </div>
 
                             {/* Reason */}
@@ -1763,7 +1763,7 @@ const AddLeaveModal = ({ addLeaveModal, showAddLeaveModal, handleCloseAddLeave, 
                                     className={`w-full px-3 py-2 border ${leaveFormErrors.reason ? 'border-red-500 ring-1 ring-red-500' : 'border-[var(--color-border-secondary)]'} rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)] resize-none`}
                                     placeholder="Please provide details about your leave request"
                                 />
-                                {leaveFormErrors.reason && <span className="text-sm text-[var(--color-error)] mt-1 block">{leaveFormErrors.reason}</span>}
+                                {leaveFormErrors.reason && <span className="text-sm text-[var(--color-error)] !mt-[1px] block">{leaveFormErrors.reason}</span>}
                             </div>
 
                             {/* Action Buttons */}
@@ -1774,8 +1774,9 @@ const AddLeaveModal = ({ addLeaveModal, showAddLeaveModal, handleCloseAddLeave, 
                                         resetLeaveForm();
                                         handleCloseAddLeave();
                                     }}
-                                    className="px-5 py-2.5 text-sm font-medium bg-transparent text-[var(--color-primary)] border-2 hover:bg-[var(--color-primary-lightest)] border-[var(--color-primary)] rounded-xl transition-colors"
+                                    className="px-5 py-2.5 text-sm font-medium bg-transparent text-[var(--color-primary)] border-2 hover:bg-[var(--color-primary-lightest)] border-[var(--color-primary)] rounded-xl transition-colors flex items-center gap-2"
                                 >
+                                    <X className="w-4 h-4" />
                                     Cancel
                                 </button>
                                 <button

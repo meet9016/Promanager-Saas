@@ -399,63 +399,87 @@ const ShiftReallocation = () => {
         if (!isOpen) return null;
 
         return (
-            <div
-                className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm transition-opacity"
-                onClick={onClose}
-            >
-                <div
-                    className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-2xl w-full max-w-2xl mx-4 overflow-hidden transform transition-all"
-                    onClick={(e) => e.stopPropagation()}
-                >
-                    <div className="flex justify-between items-center px-6 py-4 border-b border-[var(--color-border-primary)] bg-[var(--color-bg-primary)]/50">
-                        <div className="flex flex-col min-w-0 pr-4">
-                            <p className="text-lg font-semibold text-[var(--color-text-muted)] mt-0.5 truncate">
-                                {shiftName || 'Unknown Shift'} • <span className="font-medium">{employees.length}</span> {employees.length === 1 ? 'Employee' : 'Employees'}
-                            </p>
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fadeIn">
+                <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-2xl border border-[var(--color-border-secondary)] max-w-lg w-full overflow-hidden flex flex-col max-h-[85vh] transition-all">
+                    {/* Header */}
+                    <div className="px-6 py-4 bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] text-white flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                            <div className="p-2 bg-white/10 rounded-xl backdrop-blur-md">
+                                <Users className="w-5 h-5 text-white" />
+                            </div>
+                            <div>
+                                <h3 className="text-base sm:text-lg font-bold text-white leading-tight">
+                                    Reallocated Employees
+                                </h3>
+                                <p className="text-xs text-white/80 font-medium">
+                                    Shift: {shiftName}
+                                </p>
+                            </div>
                         </div>
-                        <button
-                            onClick={onClose}
-                            className="p-2 rounded-full text-[var(--color-text-muted)] hover:text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-secondary)] transition-colors"
-                        >
-                            <X className="w-5 h-5" />
-                        </button>
+                        <div className="flex items-center gap-2">
+                            <span className="bg-white/20 text-white text-xs font-semibold px-2.5 py-1 rounded-full backdrop-blur-md">
+                                {`${employees.length} Total`}
+                            </span>
+                            <button
+                                onClick={onClose}
+                                className="p-1.5 rounded-lg text-white/80 hover:text-white hover:bg-white/20 transition-colors"
+                                aria-label="Close"
+                            >
+                                <X className="w-5 h-5" />
+                            </button>
+                        </div>
                     </div>
 
-                    <div className="p-6">
+                    {/* Content */}
+                    <div className="p-6 flex-1 overflow-y-auto custom-scrollbar">
                         {employees.length > 0 ? (
-                            <div className="max-h-[60vh] overflow-y-auto custom-scrollbar pr-2 -mr-2">
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                    {employees.map((employee, index) => (
-                                        <div
-                                            key={employee.employee_id || index}
-                                            className="flex items-center gap-4 p-3 bg-[var(--color-bg-primary)] rounded-xl border border-transparent hover:border-[var(--color-border-primary)] hover:shadow-sm transition-all duration-200"
-                                        >
-                                            <div className="w-10 h-10 bg-gradient-to-br from-[var(--color-primary-dark)] to-[var(--color-primary)] rounded-full flex items-center justify-center shadow-inner shrink-0">
-                                                <span className="text-[var(--color-text-white)] text-sm font-semibold">
-                                                    {employee.employee_name?.charAt(0)?.toUpperCase() || 'E'}
-                                                </span>
+                            <div className="space-y-3">
+                                {employees.map((employee, index) => (
+                                    <div
+                                        key={employee.employee_id || index}
+                                        className="flex items-center justify-between p-3.5 bg-[var(--color-bg-primary)] hover:bg-[var(--color-bg-hover,#f9fafb)] border border-[var(--color-border-secondary)] rounded-xl transition-all duration-200 shadow-sm"
+                                    >
+                                        <div className="flex items-center gap-3 min-w-0">
+                                            <div className="w-10 h-10 bg-gradient-to-br from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] rounded-xl flex items-center justify-center text-white font-bold text-sm shadow-sm shrink-0">
+                                                {(employee.employee_name || employee.name)?.charAt(0)?.toUpperCase() || 'E'}
                                             </div>
-                                            <div className="flex-1 min-w-0">
-                                                <p className="font-medium text-[var(--color-text-primary)] truncate">
-                                                    {employee.employee_name || 'Unknown Employee'}
+                                            <div className="min-w-0">
+                                                <p className="font-semibold text-sm text-[var(--color-text-primary)] truncate">
+                                                    {employee.employee_name || employee.name || 'Unknown Employee'}
                                                 </p>
-                                                {/* <p className="text-xs text-[var(--color-text-muted)] truncate mt-0.5">
-                                                    {employee.employee_code || 'No Code'}
-                                                </p> */}
+                                                {employee.employee_code && (
+                                                    <p className="text-xs text-[var(--color-text-muted)] font-mono">
+                                                        {employee.employee_code}
+                                                    </p>
+                                                )}
                                             </div>
                                         </div>
-                                    ))}
-                                </div>
+                                    </div>
+                                ))}
                             </div>
                         ) : (
-                            <div className="flex flex-col items-center justify-center py-10 text-center">
-                                <div className="w-16 h-16 bg-[var(--color-bg-primary)] rounded-full flex items-center justify-center mb-4 shadow-sm">
-                                    <Users className="w-8 h-8 text-[var(--color-text-muted)]" />
+                            <div className="text-center py-12 px-4">
+                                <div className="w-16 h-16 bg-[var(--color-primary-lightest,#f3e8ff)] rounded-2xl flex items-center justify-center mx-auto mb-3">
+                                    <Users className="w-8 h-8 text-[var(--color-primary-dark)]" />
                                 </div>
-                                <p className="text-base font-medium text-[var(--color-text-primary)]">No employees found</p>
-                                <p className="text-sm text-[var(--color-text-muted)] mt-1">There are no employees currently assigned.</p>
+                                <h4 className="text-base font-semibold text-[var(--color-text-primary)] mb-1">
+                                    No Employees Found
+                                </h4>
+                                <p className="text-xs sm:text-sm text-[var(--color-text-secondary)] max-w-xs mx-auto">
+                                    There are no employees currently assigned to this reallocation schedule.
+                                </p>
                             </div>
                         )}
+                    </div>
+
+                    {/* Footer */}
+                    <div className="px-6 py-3 bg-[var(--color-bg-primary)] border-t border-[var(--color-border-secondary)] flex justify-end">
+                        <button
+                            onClick={onClose}
+                            className="px-4 py-2 bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] text-[var(--color-text-primary)] hover:bg-[var(--color-bg-hover)] text-xs sm:text-sm font-medium rounded-xl transition-colors"
+                        >
+                            Close
+                        </button>
                     </div>
                 </div>
             </div>
@@ -598,12 +622,11 @@ const ShiftReallocation = () => {
                                                                     employees: item.employees || [],
                                                                     shiftName: `${item.from_shift_name} → ${item.to_shift_name}`
                                                                 })}
-                                                                className="flex items-center gap-2 text-[var(--color-primary-dark)] hover:text-primary-800 transition-colors"
+                                                                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[var(--color-primary-lightest,#f3e8ff)] text-[var(--color-primary-dark)]  transition-all duration-200 border border-[var(--color-primary-light,#d8b4fe)] font-medium text-xs sm:text-sm group cursor-pointer"
+                                                                title="Click to view reallocated employees"
                                                             >
-                                                                <span className="font-medium">
-                                                                    {item.employee_count || (item.employees?.length) || 0}
-                                                                </span>
-                                                                <Users className="w-4 h-4" />
+                                                                <Users className="w-4 h-4 text-[var(--color-primary-dark)] group-hover:scale-110 transition-transform" />
+                                                                <span>{item.employee_count || (item.employees?.length) || 0} Employees</span>
                                                             </button>
                                                         )}
                                                     </Td>
@@ -896,8 +919,9 @@ const ShiftReallocation = () => {
                                             type="button"
                                             onClick={handleCloseForm}
                                             disabled={submitting}
-                                            className="px-6 py-2 bg-transparent text-[var(--color-primary)] border-2 hover:bg-[var(--color-primary-lightest)] border-[var(--color-primary)] rounded-xl font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                            className="px-4 py-2 bg-transparent text-[var(--color-primary)] border-2 hover:bg-[var(--color-primary-lightest)] border-[var(--color-primary)] rounded-md font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
                                         >
+                                            <X className="w-4 h-4" />
                                             Cancel
                                         </button>
                                         <button

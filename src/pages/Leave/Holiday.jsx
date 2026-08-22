@@ -321,14 +321,13 @@ export default function HolidayManagement() {
                     <StatCard title="Public Holidays" value={stats.byType["Public Holiday"] || 0} subtext="This Year" icon={<Building2 size={24} />} color="pink" />
                 </div>
                 <section className="bg-white rounded-xl shadow-sm border border-[var(--color-border-secondary)] overflow-hidden flex flex-col flex-1 min-h-0">
-                    <div className="px-6 py-5 border-b border-[var(--color-border-secondary)] bg-[#FBF9FF]">
+                    <div className="px-6 py-5 border-b border-[var(--color-border-secondary)] bg-[var(--color-primary-lighter)]">
                         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                            <h3 className="text-lg font-bold text-[var(--color-text-primary)]">
+                            <h3 className="text-lg font-bold text-[var(--color-primary)]">
                                 Holiday Calendar
                             </h3>
-                            <div className="flex gap-3">
-                                <div className="relative w-full sm:w-80">
-                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--color-text-muted)] z-10" />
+                            <div className="flex items-center gap-3 flex-wrap sm:flex-nowrap">
+                                <div className="relative w-full sm:w-80 flex items-center">
                                     <CustomInput
                                         type="text"
                                         name="searchTerm"
@@ -336,7 +335,8 @@ export default function HolidayManagement() {
                                         onChange={(e) => setSearchTerm(e.target.value)}
                                         placeholder="Search holidays..."
                                         clearable={true}
-                                        className="!h-[42px] [&_input]:!h-[42px] [&_input]:!pl-10 [&_input]:!pr-4 [&_input]:!rounded-lg"
+                                        icon={<Search className="w-4 h-4 text-[var(--color-text-secondary)]" />}
+                                        className="!h-[40px] [&_input]:!h-[40px] [&_input]:!py-0 [&_input]:!rounded-lg [&_input]:!text-xs sm:[&_input]:!text-sm"
                                     />
                                 </div>
 
@@ -356,14 +356,13 @@ export default function HolidayManagement() {
                                             })),
                                         ]}
                                         searchable={false}
-                                        className="w-full min-w-[180px] !h-[40px] [&_button]:!h-[40px] [&_button]:!min-h-[40px]"
-
+                                        className="w-full min-w-[180px] !h-[40px] [&_button]:!h-[40px] [&_button]:!min-h-[40px] [&_button]:!py-0 [&_button]:!rounded-lg [&_button]:!text-xs sm:[&_button]:!text-sm"
                                     />
                                 </div>
 
                                 <button
                                     onClick={() => setShowCalendarView(!showCalendarView)}
-                                    className="flex items-center gap-2 px-4 py-2 bg-white text-[var(--color-primary)] border border-[var(--color-primary)] rounded-lg transition-colors font-medium text-sm shadow-sm hover:bg-purple-50"
+                                    className="flex items-center justify-center gap-2 px-4 h-[40px] py-0 bg-white text-[var(--color-primary)] border  rounded-lg transition-colors font-medium text-xs sm:text-sm shadow-sm hover:bg-purple-50 shrink-0"
                                 >
                                     <CalendarDays size={16} />
                                     {showCalendarView ? "List View" : "Calendar View"}
@@ -375,7 +374,7 @@ export default function HolidayManagement() {
                                             resetForm();
                                             setCreateModal(true);
                                         }}
-                                        className="flex items-center gap-2 bg-[var(--color-primary)] text-white px-4 py-2 rounded-lg font-medium text-sm transition-colors shadow-sm hover:bg-[var(--color-primary-dark)]"
+                                        className="flex items-center justify-center gap-2 bg-white text-[var(--color-primary)] px-4 h-[40px] py-0 rounded-lg font-medium text-xs sm:text-sm transition-colors shadow-sm shrink-0 whitespace-nowrap border "
                                     >
                                         <Plus size={16} /> Add Holiday
                                     </button>
@@ -470,7 +469,7 @@ export default function HolidayManagement() {
                                 <Table className="min-w-full divide-y divide-[var(--color-border-divider)]">
                                     <TableHeader className="bg-[var(--color-primary-dark)]">
                                         <TableHeaderRow>
-                                            {["Holiday Name", "Type", "Paid", "Dates", "Description", "Actions"].map((head) => (
+                                            {["Holiday Name", "Type", "Paid", "Dates", "Actions"].map((head) => (
                                                 <Th key={head} className="px-6 py-3 text-left font-semibold">
                                                     {head}
                                                 </Th>
@@ -484,16 +483,16 @@ export default function HolidayManagement() {
                                                 return (
                                                     <TableRow key={h.holiday_id} className="hover:bg-[var(--color-bg-hover)] transition-colors align-top">
                                                         <Td className="px-6 py-4 align-top">
-                                                            <div className="font-semibold text-[var(--color-text-primary)]">{h.holiday_name}</div>
+                                                            <div className="font-semibold text-[var(--color-text-primary)] text-justify">{h.holiday_name}</div>
                                                         </Td>
-                                                        <Td className="px-6 py-4 align-top">
-                                                            <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border ${getTypeColor(h.holiday_type_name)}`}>
+                                                        <Td className="px-6 py-4 align-top text-justify">
+                                                            <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border  ${getTypeColor(h.holiday_type_name)}`}>
                                                                 {getTypeIcon(h.holiday_type_name)}
                                                                 {h.holiday_type_name}
                                                             </span>
                                                         </Td>
 
-                                                        <Td className="px-6 py-4 align-top">
+                                                        <Td className="px-6 py-4 align-top text-justify">
                                                             {h.holiday_paid === "1" ? (
                                                                 <span className="px-3 py-1 text-xs bg-green-100 text-green-700 rounded-full">Paid</span>
                                                             ) : (
@@ -511,9 +510,9 @@ export default function HolidayManagement() {
                                                             </div>
                                                         </Td>
 
-                                                        <Td className="px-6 py-4 text-sm text-[var(--color-text-secondary)] max-w-xs align-top">
+                                                        {/* <Td className="px-6 py-4 text-sm text-[var(--color-text-secondary)] max-w-xs align-top">
                                                             <div className="truncate">{h.description || "-"}</div>
-                                                        </Td>
+                                                        </Td> */}
                                                         <Td className="px-6 py-4 align-top">
                                                             <div className="flex items-center gap-3">
                                                                 {permissions['holiday_view'] && (
@@ -740,9 +739,10 @@ export default function HolidayManagement() {
                             <button
                                 type="button"
                                 onClick={() => { setCreateModal(false); resetForm(); }}
-                                className="px-4 py-2 text-sm font-medium bg-transparent text-[var(--color-primary)] border-2 hover:bg-[var(--color-primary-lightest)] border-[var(--color-primary)] rounded-lg transition-colors"
+                                className="px-4 py-2 text-sm font-medium bg-transparent text-[var(--color-primary)] border-2 hover:bg-[var(--color-primary-lightest)] border-[var(--color-primary)] rounded-lg transition-colors flex items-center gap-2"
                                 disabled={isSubmitting}
                             >
+                                <X size={16} />
                                 Cancel
                             </button>
                             <button
@@ -836,7 +836,14 @@ function StatCard({ title, value, subtext, icon, color }) {
 /* --- Calendar Component --- */
 function CalendarComponent({ currentMonth, setCurrentMonth, getHolidayForDate }) {
 
-    const days = getCalendarDaysInMonth(currentMonth);
+    let days = getCalendarDaysInMonth(currentMonth);
+    // Pad trailing empty slots so the last week row completes to 7 items with clean white cells
+    const remainder = days.length % 7;
+    if (remainder !== 0) {
+        for (let i = 0; i < 7 - remainder; i++) {
+            days.push(null);
+        }
+    }
 
     const nextMonth = () => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1));
     const prevMonth = () => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1));
@@ -878,6 +885,21 @@ function CalendarComponent({ currentMonth, setCurrentMonth, getHolidayForDate })
                 </button>
             </div>
 
+            {/* Legend */}
+            <div className="px-6 py-3 bg-white flex flex-wrap items-center gap-5 border-b border-[var(--color-border-secondary)]">
+                {[
+                    { label: "Public", c: "bg-[#8b5cf6]" },
+                    { label: "National", c: "bg-[#10b981]" },
+                    { label: "Festival", c: "bg-[#ec4899]" },
+                    { label: "Other", c: "bg-[#f59e0b]" },
+                ].map((t) => (
+                    <span key={t.label} className="inline-flex items-center gap-2 text-[11px] font-medium text-[var(--color-text-secondary)]">
+                        <span className={`w-2 h-2 rounded-full ${t.c}`} />
+                        {t.label}
+                    </span>
+                ))}
+            </div>
+
             {/* Calendar Grid Header */}
             <div className="grid grid-cols-7 border-b border-[var(--color-border-secondary)] bg-[#FBF9FF]">
                 {DAY_NAMES_SHORT.map((day, i) => (
@@ -891,7 +913,7 @@ function CalendarComponent({ currentMonth, setCurrentMonth, getHolidayForDate })
             </div>
 
             {/* Day grid */}
-            <div className="grid grid-cols-7 bg-[var(--color-border-secondary)] gap-[1px] flex-1">
+            <div className="grid grid-cols-7 bg-[#EFEAF6] gap-[1px] flex-1">
                 {days.map((date, idx) => {
                     if (!date) return <div key={`empty-${idx}`} className="bg-white h-16 sm:h-[82px]"></div>;
 
@@ -949,21 +971,6 @@ function CalendarComponent({ currentMonth, setCurrentMonth, getHolidayForDate })
                         </div>
                     );
                 })}
-            </div>
-
-            {/* Legend */}
-            <div className="px-6 py-4 bg-white flex flex-wrap items-center gap-5">
-                {[
-                    { label: "Public", c: "bg-[#8b5cf6]" },
-                    { label: "National", c: "bg-[#10b981]" },
-                    { label: "Festival", c: "bg-[#ec4899]" },
-                    { label: "Other", c: "bg-[#f59e0b]" },
-                ].map((t) => (
-                    <span key={t.label} className="inline-flex items-center gap-2 text-[11px] font-medium text-[var(--color-text-secondary)]">
-                        <span className={`w-2 h-2 rounded-full ${t.c}`} />
-                        {t.label}
-                    </span>
-                ))}
             </div>
         </div>
     );
@@ -1166,7 +1173,7 @@ function Modal({ onClose, title, children, icon: Icon = null, subtitle = "View c
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-[2px] p-4">
             <div className="w-full max-w-[800px] bg-white rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.2)] overflow-hidden">
                 {/* Header */}
-                <div className="flex items-center justify-between px-8 py-5 bg-[#2a1b54] text-white">
+                <div className="flex items-center justify-between px-8 py-5 bg-[var(--color-primary-dark)] text-white">
                     <div className="flex items-center gap-4">
                         {Icon ? (
                             <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center">
@@ -1220,7 +1227,7 @@ function HolidayDetailsModal({ viewModal, setViewModal, getTypeIcon, currentYear
             <div className="flex flex-col space-y-6">
 
                 {/* Header Banner - Glassmorphism style */}
-                <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[var(--color-primary-dark)] to-[#6d28d9] p-6 shadow-lg shadow-purple-500/20">
+                <div className="relative overflow-hidden rounded-2xl bg-[var(--color-primary-dark)] p-6 shadow-lg shadow-purple-500/20">
                     {/* Decorative Background Elements */}
                     <div className="absolute top-0 right-0 -mr-16 -mt-16 w-48 h-48 rounded-full bg-white/10 blur-3xl pointer-events-none"></div>
                     <div className="absolute bottom-0 left-0 -ml-16 -mb-16 w-32 h-32 rounded-full bg-white/10 blur-2xl pointer-events-none"></div>

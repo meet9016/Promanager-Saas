@@ -408,7 +408,7 @@ const SubscriptionPage = () => {
 
             {/* History Table */}
             <div className="bg-[var(--color-primary-lighter)] rounded-3xl shadow-sm border border-[var(--color-border-primary)] overflow-hidden ">
-                <div className="flex items-center justify-between p-6 border-b border-[var(--color-border-primary)]">
+                <div className="flex items-center justify-between p-3 border-b border-[var(--color-border-primary)]">
                     <div className="flex items-center gap-3">
                         <div className="w-12 h-12 rounded-xl flex items-center justify-center">
                             <UsersIcon className="w-6 h-6 text-[var(--color-primary-dark)]" />

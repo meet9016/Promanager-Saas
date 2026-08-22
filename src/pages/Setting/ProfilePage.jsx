@@ -64,7 +64,7 @@ const ProfilePage = () => {
 
                 {/* Profile Content */}
                 <div className="grid grid-cols-1 gap-6">
-                    <SectionCard titleIcon={<User className="w-6 h-6 text-[var(--color-text-white)]" />} title="User Profile">
+                    <SectionCard  title="User Profile">
                         <div className="flex items-center gap-4 mb-6">
                             <div className="w-16 h-16 bg-[var(--color-primary)] rounded-full flex items-center justify-center text-white text-xl font-bold shadow-lg">
                                 {getInitials(user?.full_name || user?.name || user?.username || 'User')}

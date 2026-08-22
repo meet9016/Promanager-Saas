@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronDown, ChevronUp, Plus, Trash2, ArrowLeft, User, CreditCard, FileText, Phone, Users, Edit, Eye, X } from 'lucide-react';
+import { ChevronDown, ChevronUp, Plus, Trash2, ArrowLeft, User, CreditCard, FileText, Phone, Users, Edit, Eye, X, UserPlus, Check } from 'lucide-react';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import api from '../../api/axiosInstance';
 import { useAuth } from '../../context/AuthContext';
@@ -1028,8 +1028,9 @@ const AddEmployee = () => {
                                 <button
                                     type="button"
                                     onClick={goBack}
-                                    className="px-5 py-2 border border-white/30 text-white rounded-lg hover:bg-white/10 transition-colors font-medium backdrop-blur-sm text-sm"
+                                    className="px-5 py-2 border border-white/30 text-white rounded-lg hover:bg-white/10 transition-colors font-medium backdrop-blur-sm text-sm flex items-center gap-2"
                                 >
+                                    <X size={16} />
                                     Cancel
                                 </button>
                                 <button
@@ -1038,8 +1039,10 @@ const AddEmployee = () => {
                                     disabled={isSubmitting}
                                     className="px-5 py-2 bg-white text-[var(--color-primary-dark)] rounded-lg hover:bg-gray-50 transition-all duration-200 font-medium shadow-md disabled:opacity-70 disabled:cursor-not-allowed flex items-center gap-2 text-sm"
                                 >
-                                    {isSubmitting && (
+                                    {isSubmitting ? (
                                         <div className="w-4 h-4 border-2 border-[var(--color-primary-dark)] border-t-transparent rounded-full animate-spin"></div>
+                                    ) : (
+                                        isEditMode ? <Check size={16} /> : <UserPlus size={16} />
                                     )}
                                     {isSubmitting ? (isEditMode ? 'Updating...' : 'Adding...') : (isEditMode ? 'Update Employee' : 'Add Employee')}
                                 </button>

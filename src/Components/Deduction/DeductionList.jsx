@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Trash2, Calculator } from "lucide-react";
 import { useSelector } from 'react-redux';
 import { ConfirmDialog } from '../comman/ConfirmDialog';
+import { Toast } from "../ui/Toast";
 import DeductionForm from "./DeductionForm";
 import useDeductions from "../../hooks/useDeductions";
 import LoadingSpinner from "../Loader/LoadingSpinner"
@@ -14,7 +15,6 @@ const DeductionList = () => {
         type: null,
         data: null
     });
-    // eslint-disable-next-line no-unused-vars
     const [toast, setToast] = useState(null);
 
     const permissions = useSelector(state => state.permissions) || {};
@@ -31,10 +31,10 @@ const DeductionList = () => {
 
     const handleDeleteDeduction = async (id) => {
         const result = await deleteDeduction(id);
-        if (result?.success) {
-            showToast("Deduction deleted successfully!", "success");
+        if (result && (result.success === true || result.status === true || result.status === 1)) {
+            showToast(result.message || "Deduction deleted successfully!", "success");
         } else {
-            showToast("Failed to delete deduction. Please try again.", "error");
+            showToast(result?.message || result?.error || "Failed to delete deduction. Please try again.", "error");
         }
     };
 
@@ -110,7 +110,7 @@ const DeductionList = () => {
                             />
                         </div>
                     ) : (
-                        <div className="grid gap-4  max-h-[300px] md:max-h-[420px] xl:max-h-[540px] overflow-y-auto custom-scrollbar ">
+                        <div className="grid gap-4  max-h-[300px] md:max-h-[420px] xl:max-h-[520px] overflow-y-auto custom-scrollbar">
                             {deductions.map((deduction) => {
                                 const deductionId = deduction.deduction_id || deduction.id;
                                 const isDeleting = deletingId === deductionId;
@@ -175,6 +175,14 @@ const DeductionList = () => {
                 cancelText="Cancel"
                 type="danger"
             />
+
+            {toast && (
+                <Toast
+                    message={toast.message}
+                    type={toast.type}
+                    onClose={() => setToast(null)}
+                />
+            )}
         </>
     );
 };

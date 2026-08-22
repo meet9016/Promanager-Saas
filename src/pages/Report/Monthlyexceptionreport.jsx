@@ -492,7 +492,6 @@ const MonthlyExceptionReport = () => {
     const renderTableHead = () => {
         if (activeTab === 'all_employees') {
             return [
-                { label: '#', key: 'sno' },
                 { label: 'Employee', key: 'employee' },
                 { label: 'Working Days', key: 'total_days' },
                 { label: 'Late Days', key: 'late_days' },
@@ -586,7 +585,7 @@ const MonthlyExceptionReport = () => {
             return (
                 <TableRow key={emp.employee_code || idx}
                     className={`hover:bg-[var(--color-bg-hover)] transition-colors border-b border-[var(--color-border-secondary)] ${rowClass}`}>
-                    <Td className="text-center text-sm font-medium text-[var(--color-text-muted)] w-12">{sno}</Td>
+
                     <Td>
                         <div className="flex flex-col items-start py-1">
                             <span className="font-semibold text-sm text-[var(--color-text-primary)] tracking-tight">{emp.employee_name || '--'}</span>
@@ -752,10 +751,7 @@ const MonthlyExceptionReport = () => {
                                                 </button>
                                             )}
                                         </div> */}
-                                <div className="relative w-full sm:w-56">
-
-                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--color-text-muted)] z-10" />
-
+                                <div className="relative w-full sm:w-56 flex items-center">
                                     <CustomInput
                                         type="text"
                                         name="searchQuery"
@@ -763,9 +759,9 @@ const MonthlyExceptionReport = () => {
                                         onChange={(e) => setSearchQuery(e.target.value)}
                                         placeholder="Search employees..."
                                         clearable={true}
-                                        className="!h-[37px] [&_input]:!h-[37px] [&_input]:!pl-10 [&_input]:!pr-10 [&_input]:!rounded-lg"
+                                        icon={<Search className="w-4 h-4 text-[var(--color-text-secondary)] shrink-0" />}
+                                        className="!h-[40px] [&_input]:!h-[40px] [&_input]:!leading-[40px] [&_input]:!py-0 [&_input]:!rounded-xl [&_input]:!text-xs sm:[&_input]:!text-sm"
                                     />
-
                                 </div>
 
                                 {/* Filter button */}
@@ -773,12 +769,12 @@ const MonthlyExceptionReport = () => {
                                     <button
                                         ref={filterBtnRef}
                                         onClick={() => setFilterDropdown((v) => !v)}
-                                        className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-lg font-medium transition-colors"
+                                        className="flex items-center justify-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 h-[40px] py-0 rounded-xl font-medium text-xs sm:text-sm transition-colors whitespace-nowrap shrink-0"
                                     >
                                         <Filter className="h-4 w-4" />
                                         Filters
                                         {getActiveFiltersCount() > 0 && (
-                                            <span className="bg-[var(--color-primary-dark)] text-white text-xs rounded-full px-2 py-1">{getActiveFiltersCount()}</span>
+                                            <span className="bg-[var(--color-primary-dark)] text-white text-xs rounded-full px-2 py-0.5 min-w-[20px] text-center">{getActiveFiltersCount()}</span>
                                         )}
                                         <ChevronDown className="h-4 w-4" />
                                     </button>
@@ -944,8 +940,7 @@ const MonthlyExceptionReport = () => {
                                         ref={exportBtnRef}
                                         onClick={() => setExportDropdown((v) => !v)}
                                         disabled={!hasGenerated || rawData.length === 0}
-
-                                        className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-lg font-medium transition-colors"
+                                        className="flex items-center justify-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 h-[40px] py-0 rounded-xl font-medium text-xs sm:text-sm transition-colors whitespace-nowrap shrink-0 disabled:opacity-50 disabled:cursor-not-allowed"
                                     >
                                         <Download className="h-4 w-4" />
                                         Export
@@ -1250,6 +1245,7 @@ const MonthlyExceptionReport = () => {
                                             totalPages={totalPages}
                                             onPageChange={setCurrentPage}
                                             loading={loading}
+                                            className="!py-5"
                                         />
                                     </>
                                 )}

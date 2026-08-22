@@ -19,22 +19,20 @@ const DesignationForm = ({ onSubmit, loading = false, showToast }) => {
         try {
             const result = await onSubmit(name.trim());
 
-            if (result && Object.prototype.hasOwnProperty.call(result, 'success')) {
-                if (result.success === true) {
-                    // Success case
-                    setName("");
-                    showToast("Designation added successfully!", "success");
-                } else {
-                    // success: false case - show the specific error message
-                    const errorMessage = result.message || "Failed to add designation. Please try again.";
-                    showToast(errorMessage, "error");
-                }
+            if (result && (result.success === true || result.status === true || result.status === 1)) {
+                // Success case
+                setName("");
+                const successMessage = result.message || "Designation added successfully!";
+                showToast(successMessage, "success");
             } else {
-                showToast("Failed to add designation. Please try again.", "error");
+                // success: false case - show the specific error message
+                const errorMessage = result?.message || result?.error || "Failed to add designation. Please try again.";
+                showToast(errorMessage, "error");
             }
         } catch (error) {
             console.error("Error adding designation:", error);
-            showToast("An error occurred while adding the designation.", "error");
+            const errorMessage = error?.response?.data?.message || error?.response?.data?.error || error?.message || "An error occurred while adding the designation.";
+            showToast(errorMessage, "error");
         } finally {
             setIsSubmitting(false);
         }
@@ -42,7 +40,7 @@ const DesignationForm = ({ onSubmit, loading = false, showToast }) => {
 
     return (
         <div className="bg-[var(--color-bg-secondary)] rounded-xl shadow-sm border border-[var(--color-primary-dark)] overflow-hidden">
-            <div className="p-8 bg-[var(--color-bg-secondary)]">
+            <div className="p-5 bg-[var(--color-bg-secondary)]">
                 <div className="flex w-full flex-row items-center justify-between mb-4">
                     <div className="space-y-2" >
                         <label htmlFor="designationName" className=" text-sm font-medium text-[var(--color-text-secondary)] mb-2 ">

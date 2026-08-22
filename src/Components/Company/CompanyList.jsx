@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { Trash2, MapPin, Building2, FileText, Search, X, Eye, Edit } from "lucide-react";
 import { useSelector } from 'react-redux';
 import { ConfirmDialog } from '../comman/ConfirmDialog';
@@ -6,6 +6,111 @@ import CompanyForm from "./CompanyForm";
 import useCompanies from "../../hooks/useCompanies";
 import LoadingSpinner from "../Loader/LoadingSpinner";
 import { Toast } from "../ui/Toast";
+
+// Standalone Preview Item Component (outside CompanyList to prevent re-render unmounting jerk)
+const PreviewItem = React.memo(({ content, title, isText = false, companyName, onPreview }) => {
+    const hasContent = Boolean(content && content.trim() !== '');
+
+    return (
+        <div className="flex items-center justify-between p-3 bg-[var(--color-bg-secondary)] rounded-lg border border-[var(--color-border-primary)] hover:border-[var(--color-primary-dark)] transition-colors">
+            <span className="text-sm font-medium text-[var(--color-text-primary)]">{title}</span>
+            <button
+                type="button"
+                onClick={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    if (hasContent) {
+                        onPreview(content, `${companyName} - ${title}`, isText);
+                    }
+                }}
+                disabled={!hasContent}
+                className={`p-2 rounded-lg transition-all duration-200 ${hasContent
+                    ? 'bg-[var(--color-primary-lightest,#f3e8ff)] hover:bg-[var(--color-primary-lighter,#e9d5ff)] text-[var(--color-primary-dark)] active:scale-95 cursor-pointer shadow-sm'
+                    : 'bg-[var(--color-bg-secondary)] text-[var(--color-text-disabled)] cursor-not-allowed'
+                    }`}
+                title={hasContent ? `Preview ${title.toLowerCase()}` : `No ${title.toLowerCase()} available`}
+            >
+                <Eye className="w-4 h-4" />
+            </button>
+        </div>
+    );
+});
+
+// Standalone Preview Modal Component with smooth popup & image fade-in
+const PreviewModal = React.memo(({ isOpen, onClose, title, image, text }) => {
+    const [imgLoading, setImgLoading] = useState(true);
+
+    useEffect(() => {
+        setImgLoading(true);
+    }, [image]);
+
+    if (!isOpen) return null;
+
+    const isTextPreview = text && !image;
+
+    return (
+        <div
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 transition-all duration-300 animate-fadeIn"
+            onClick={onClose}
+        >
+            <div
+                className="relative bg-[var(--color-bg-primary)] rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col animate-modalPop"
+                onClick={(e) => e.stopPropagation()}
+            >
+                <div className="flex items-center justify-between p-4 border-b border-[var(--color-border-primary)] bg-[var(--color-bg-secondary)] shrink-0">
+                    <h3 className="text-lg font-semibold text-[var(--color-text-primary)] flex items-center">
+                        {isTextPreview ? (
+                            <FileText className="w-5 h-5 mr-2 text-[var(--color-primary-dark)]" />
+                        ) : (
+                            <Eye className="w-5 h-5 mr-2 text-[var(--color-primary-dark)]" />
+                        )}
+                        {title}
+                    </h3>
+                    <button
+                        type="button"
+                        onClick={onClose}
+                        className="p-2 hover:bg-[var(--color-bg-hover,#f3f4f6)] rounded-lg transition-colors"
+                        title="Close preview"
+                    >
+                        <X className="w-5 h-5 text-[var(--color-text-secondary)]" />
+                    </button>
+                </div>
+
+                <div className="overflow-auto flex-1 p-6 bg-[var(--color-bg-secondary)] custom-scrollbar min-h-[350px] flex items-center justify-center">
+                    {isTextPreview ? (
+                        <div className="w-full">
+                            <div className="bg-[var(--color-bg-primary)] rounded-lg p-4 border border-[var(--color-border-primary)]">
+                                <pre className="whitespace-pre-wrap text-sm text-[var(--color-text-primary)] font-mono leading-relaxed">
+                                    {text}
+                                </pre>
+                            </div>
+                        </div>
+                    ) : image ? (
+                        <div className="relative w-full h-full min-h-[350px] flex items-center justify-center">
+                            {imgLoading && (
+                                <div className="absolute inset-0 flex items-center justify-center">
+                                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--color-primary-dark)]"></div>
+                                </div>
+                            )}
+                            <img
+                                src={image}
+                                alt="Preview"
+                                onLoad={() => setImgLoading(false)}
+                                onError={() => setImgLoading(false)}
+                                className={`max-w-full max-h-[70vh] object-contain rounded-lg shadow-lg transition-opacity duration-300 ${imgLoading ? 'opacity-0' : 'opacity-100'
+                                    }`}
+                            />
+                        </div>
+                    ) : null}
+                </div>
+
+                <div className="px-4 py-3 bg-[var(--color-bg-secondary)] border-t border-[var(--color-border-primary)] shrink-0">
+                    <p className="text-xs text-[var(--color-text-muted)] text-center">Click outside to close</p>
+                </div>
+            </div>
+        </div>
+    );
+});
 
 const CompanyList = () => {
     const [deletingId, setDeletingId] = useState(null);
@@ -59,24 +164,18 @@ const CompanyList = () => {
         }
     };
 
-    // Image preview handler
-    const handleImagePreview = (imageSrc, title = "Preview") => {
-        if (imageSrc) {
-            setPreviewImage(imageSrc);
+    // Unified Preview handler
+    const handlePreview = (content, title, isText = false) => {
+        if (isText) {
+            setPreviewImage('');
+            setPreviewTitle(title);
+            setPreviewText(content);
+        } else {
+            setPreviewImage(content);
             setPreviewTitle(title);
             setPreviewText('');
-            setShowPreviewModal(true);
         }
-    };
-
-    // Text preview handler for salary slip policy
-    const handleTextPreview = (textContent, title = "Text Preview") => {
-        if (textContent) {
-            setPreviewImage(''); // Clear image
-            setPreviewTitle(title);
-            setPreviewText(textContent);
-            setShowPreviewModal(true);
-        }
+        setShowPreviewModal(true);
     };
 
     const closePreviewModal = () => {
@@ -132,93 +231,6 @@ const CompanyList = () => {
         setSearchTerm("");
     };
 
-    // Enhanced Preview Item Component with name and eye button
-    const PreviewItem = ({ content, title, isText = false, company }) => {
-        const hasContent = content && content.trim() !== '';
-
-        return (
-            <div className="flex items-center justify-between p-3 bg-[var(--color-bg-secondary)] rounded-lg border border-[var(--color-border-primary)] hover:border-[var(--color-primary-dark)] transition-colors">
-                <span className="text-sm font-medium text-[var(--color-text-primary)]">{title}</span>
-                <button
-                    type="button"
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        if (hasContent) {
-                            if (isText) {
-                                handleTextPreview(content, `${company.company_name} - ${title}`);
-                            } else {
-                                handleImagePreview(content, `${company.company_name} - ${title}`);
-                            }
-                        }
-                    }}
-                    disabled={!hasContent}
-                    className={`p-2 rounded-lg transition-colors ${hasContent
-                        ? 'bg-[var(--color-primary-)] hover:bg-[var(--color-primary-)] text-[var(--color-primary-dark)]'
-                        : 'bg-[var(--color-bg-)] text-[var(--color-text-disabled)] cursor-not-allowed'
-                        }`}
-                    title={hasContent ? `Preview ${title.toLowerCase()}` : `No ${title.toLowerCase()} available`}
-                >
-                    <Eye className="w-4 h-4" />
-                </button>
-            </div>
-        );
-    };
-
-    // Enhanced Preview Modal Component
-    const PreviewModal = () => {
-        if (!showPreviewModal) return null;
-
-        const isTextPreview = previewText && !previewImage;
-
-        return (
-            <div
-                className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50"
-                onClick={closePreviewModal}
-            >
-                <div className="relative bg-[var(--color-bg-primary)] rounded-xl shadow-2xl max-w-4xl max-h-[90vh] m-4 overflow-hidden">
-                    <div className="flex items-center justify-between p-4 border-b border-[var(--color-border-primary)] bg-[var(--color-bg-secondary)]">
-                        <h3 className="text-lg font-semibold text-[var(--color-text-primary)] flex items-center">
-                            {isTextPreview ? <FileText className="w-5 h-5 mr-2 text-[var(--color-primary-dark)]" /> : <Eye className="w-5 h-5 mr-2 text-[var(--color-primary-dark)]" />}
-                            {previewTitle}
-                        </h3>
-                        <button
-                            onClick={closePreviewModal}
-                            className="p-2 hover:bg-[var(--color-bg-secondary)] rounded-lg transition-colors"
-                            title="Close preview"
-                        >
-                            <X className="w-5 h-5 text-[var(--color-text-secondary)]" />
-                        </button>
-                    </div>
-
-                    <div className="overflow-auto max-h-[75vh]">
-                        {isTextPreview ? (
-                            <div className="p-8">
-                                <div className="bg-[var(--color-bg-secondary)] rounded-lg p-4 border border-[var(--color-border-primary)]">
-                                    <pre className="whitespace-pre-wrap text-sm text-[var(--color-text-primary)] font-mono leading-relaxed">
-                                        {previewText}
-                                    </pre>
-                                </div>
-                            </div>
-                        ) : previewImage ? (
-                            <div className="p-4 flex items-center justify-center bg-[var(--color-bg-secondary)] min-h-[400px]">
-                                <img
-                                    src={previewImage}
-                                    alt="Preview"
-                                    className="max-w-full max-h-[70vh] object-contain rounded-lg shadow-lg"
-                                    onClick={(e) => e.stopPropagation()}
-                                />
-                            </div>
-                        ) : null}
-                    </div>
-
-                    <div className="px-4 py-3 bg-[var(--color-bg-secondary)] border-t border-[var(--color-border-primary)]">
-                        <p className="text-xs text-[var(--color-text-muted)] text-center">Click outside to close</p>
-                    </div>
-                </div>
-            </div>
-        );
-    };
-
     if (loading) {
         return (
             <div>
@@ -232,8 +244,14 @@ const CompanyList = () => {
 
     return (
         <>
-            {/* Preview Modal */}
-            <PreviewModal />
+            {/* Standalone Preview Modal */}
+            <PreviewModal
+                isOpen={showPreviewModal}
+                onClose={closePreviewModal}
+                title={previewTitle}
+                image={previewImage}
+                text={previewText}
+            />
 
             <div className="bg-[var(--color-bg-secondary)] rounded-xl shadow-sm border border-[var(--color-primary-dark)] overflow-hidden flex flex-col h-full">
                 <div className="relative shrink-0">
@@ -345,19 +363,22 @@ const CompanyList = () => {
                                                             content={company.company_logo}
                                                             title="Company Logo"
                                                             isText={false}
-                                                            company={company}
+                                                            companyName={company.company_name}
+                                                            onPreview={handlePreview}
                                                         />
                                                         <PreviewItem
                                                             content={company.authorized_signatory}
                                                             title="Authorized Signature"
                                                             isText={false}
-                                                            company={company}
+                                                            companyName={company.company_name}
+                                                            onPreview={handlePreview}
                                                         />
                                                         <PreviewItem
                                                             content={company.salary_slip_policy}
                                                             title="Salary Slip Policy"
                                                             isText={true}
-                                                            company={company}
+                                                            companyName={company.company_name}
+                                                            onPreview={handlePreview}
                                                         />
                                                     </div>
                                                 </div>

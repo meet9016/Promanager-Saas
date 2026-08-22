@@ -158,8 +158,8 @@ const CreateShift = () => {
     const applyDefaultValues = (days) => {
         return days.map(day => ({
             ...day,
-            from_time: day.from_time || '09:00 PM',
-            to_time: day.to_time || '06:00 AM',
+            from_time: day.from_time || '09:00 AM',
+            to_time: day.to_time || '06:00 PM',
             shift_type: day.shift_type || '1',
             occasional_days: day.occasional_day || '', // Map occasional_day to occasional_days
             min_half_day: day.min_half_day || '04:00',
@@ -792,8 +792,9 @@ const CreateShift = () => {
                                     type="button"
                                     onClick={() => navigate('/shift-management')}
                                     disabled={submitting}
-                                    className="px-5 py-2 border border-white/30 text-white rounded-lg hover:bg-white/10 transition-colors font-medium backdrop-blur-sm text-sm"
+                                    className="px-5 py-2 border border-white/30 text-white rounded-lg hover:bg-white/10 transition-colors font-medium backdrop-blur-sm text-sm flex items-center gap-2"
                                 >
+                                    <X className="w-4 h-4" />
                                     Cancel
                                 </button>
 
@@ -881,7 +882,7 @@ const CreateShift = () => {
                         </div>
 
                         {/* Weekly Schedule Header */}
-                        <div className="px-8 py-6 border-t border-slate-200 bg-gradient-to-r from-[var(--color-bg-primary)] to-[var(--color-bg-secondary)]">
+                        <div className="px-8 py-3 border-t border-slate-200 bg-gradient-to-r from-[var(--color-bg-primary)] to-[var(--color-bg-secondary)]">
                             <div className="flex items-center gap-3">
                                 <div className="w-10 h-10 bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-dark)] rounded-xl flex items-center justify-center">
                                     <Calendar className="w-5 h-5 text-[var(--color-text-white)]" />
@@ -893,7 +894,7 @@ const CreateShift = () => {
                         </div>
 
                         {/* Weekly Schedule Content */}
-                        <div className="p-8">
+                        <div className="p-4">
                             <div className="space-y-6">
                                 {dayList.map((day) => {
                                     const isOccasionalType = day.shift_type === "3";

@@ -57,23 +57,22 @@ const useDeductions = () => {
             });
 
             // Check if the API response indicates success or failure
-            if (res.data && res.data.success === false) {
-                // API returned success: false - handle the error
-                const errorMessage = res.data.message || "Failed to add deduction";
+            if (res.data && (res.data.success === false || res.data.status === false || res.data.status === 0 || res.data.status === "0")) {
+                const errorMessage = res.data.message || res.data.error || "Failed to add deduction";
                 setError(errorMessage);
                 return { success: false, message: errorMessage };
             }
 
-            // Check for other possible error indicators in the response
             if (res.data && res.data.error) {
-                const errorMessage = res.data.error;
+                const errorMessage = typeof res.data.error === 'string' ? res.data.error : (res.data.message || "Failed to add deduction");
                 setError(errorMessage);
                 return { success: false, message: errorMessage };
             }
 
             // If we get here, assume success and refresh the deductions list
             await fetchDeductions();
-            return { success: true };
+            const successMessage = res.data?.message || "Deduction added successfully!";
+            return { success: true, message: successMessage };
         } catch (err) {
             console.error("Error adding deduction:", err);
 
@@ -95,7 +94,7 @@ const useDeductions = () => {
 
     const deleteDeduction = async (id) => {
         if (!id) {
-            return { success: false, error: "No ID provided" };
+            return { success: false, message: "No ID provided", error: "No ID provided" };
         }
 
         try {
@@ -108,18 +107,26 @@ const useDeductions = () => {
                 }
             });
 
-            if (res.data && res.data.success === false) {
-                setError(`Delete failed: ${res.data.message}`);
-                return { success: false, error: res.data.message };
+            if (res.data && (res.data.success === false || res.data.status === false || res.data.status === 0 || res.data.status === "0")) {
+                const errorMessage = res.data.message || res.data.error || "Failed to delete deduction";
+                setError(`Delete failed: ${errorMessage}`);
+                return { success: false, message: errorMessage, error: errorMessage };
+            }
+
+            if (res.data && res.data.error) {
+                const errorMessage = typeof res.data.error === 'string' ? res.data.error : (res.data.message || "Failed to delete deduction");
+                setError(`Delete failed: ${errorMessage}`);
+                return { success: false, message: errorMessage, error: errorMessage };
             }
 
             await fetchDeductions();
-            return { success: true };
+            const successMessage = res.data?.message || "Deduction deleted successfully!";
+            return { success: true, message: successMessage };
         } catch (err) {
             console.error("Error deleting deduction:", err);
-            const errorMessage = err.response?.data?.message || err.message || "Unknown error";
+            const errorMessage = err.response?.data?.message || err.response?.data?.error || err.message || "Unknown error";
             setError(`Failed to delete deduction: ${errorMessage}`);
-            return { success: false, error: errorMessage };
+            return { success: false, message: errorMessage, error: errorMessage };
         }
     };
 

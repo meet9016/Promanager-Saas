@@ -901,10 +901,7 @@ const DailyAttendance = () => {
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3">
 
                 {/* Search */}
-                <div className="relative w-full sm:w-64">
-
-                  <Search className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 h-3 w-3 sm:h-4 sm:w-4 text-[var(--color-text-muted)] z-10" />
-
+                <div className="relative w-full sm:w-64 flex items-center">
                   <CustomInput
                     type="text"
                     name="searchQuery"
@@ -912,9 +909,9 @@ const DailyAttendance = () => {
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Search employees..."
                     clearable={true}
-                    className="!h-[37px] sm:!h-[40px] [&_input]:!h-[37px] sm:[&_input]:!h-[40px] [&_input]:!pl-8 sm:[&_input]:!pl-10 [&_input]:!pr-8 sm:[&_input]:!pr-10 [&_input]:!rounded-xl [&_input]:!text-xs sm:[&_input]:!text-sm"
+                    icon={<Search className="w-4 h-4 text-[var(--color-text-secondary)]" />}
+                    className="!h-[40px] [&_input]:!h-[40px] [&_input]:!py-0 [&_input]:!rounded-xl [&_input]:!text-xs sm:[&_input]:!text-sm"
                   />
-
                 </div>
 
                 {/* Date */}
@@ -927,6 +924,7 @@ const DailyAttendance = () => {
                     maxDate={new Date()}
                     clearable={true}
                     align="right"
+                    className="!h-[40px] [&_button]:!h-[40px] [&_button]:!py-0 [&_button]:!rounded-xl [&_button]:!text-xs sm:[&_button]:!text-sm"
                   />
                 </div>
 
@@ -1142,6 +1140,7 @@ const DailyAttendance = () => {
                     totalPages={totalPages}
                     onPageChange={setCurrentPage}
                     loading={loading}
+                    className="!p-5"
                   />
                 </div>
               )}

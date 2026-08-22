@@ -55,23 +55,22 @@ const useAllowances = () => {
             });
 
             // Check if the API response indicates success or failure
-            if (res.data && res.data.success === false) {
-                // API returned success: false - handle the error
-                const errorMessage = res.data.message || "Failed to add allowance";
+            if (res.data && (res.data.success === false || res.data.status === false || res.data.status === 0 || res.data.status === "0")) {
+                const errorMessage = res.data.message || res.data.error || "Failed to add allowance";
                 setError(errorMessage);
                 return { success: false, message: errorMessage };
             }
 
-            // Check for other possible error indicators in the response
             if (res.data && res.data.error) {
-                const errorMessage = res.data.error;
+                const errorMessage = typeof res.data.error === 'string' ? res.data.error : (res.data.message || "Failed to add allowance");
                 setError(errorMessage);
                 return { success: false, message: errorMessage };
             }
 
             // If we get here, assume success and refresh the allowances list
             await fetchAllowances();
-            return { success: true };
+            const successMessage = res.data?.message || "Allowance added successfully!";
+            return { success: true, message: successMessage };
         } catch (err) {
             console.error("Error adding allowance:", err);
 
@@ -93,7 +92,7 @@ const useAllowances = () => {
 
     const deleteAllowance = async (id) => {
         if (!id) {
-            return { success: false, error: "No ID provided" };
+            return { success: false, message: "No ID provided", error: "No ID provided" };
         }
 
         try {
@@ -106,18 +105,26 @@ const useAllowances = () => {
                 }
             });
 
-            if (res.data && res.data.success === false) {
-                setError(`Delete failed: ${res.data.message}`);
-                return { success: false, error: res.data.message };
+            if (res.data && (res.data.success === false || res.data.status === false || res.data.status === 0 || res.data.status === "0")) {
+                const errorMessage = res.data.message || res.data.error || "Failed to delete allowance";
+                setError(`Delete failed: ${errorMessage}`);
+                return { success: false, message: errorMessage, error: errorMessage };
+            }
+
+            if (res.data && res.data.error) {
+                const errorMessage = typeof res.data.error === 'string' ? res.data.error : (res.data.message || "Failed to delete allowance");
+                setError(`Delete failed: ${errorMessage}`);
+                return { success: false, message: errorMessage, error: errorMessage };
             }
 
             await fetchAllowances();
-            return { success: true };
+            const successMessage = res.data?.message || "Allowance deleted successfully!";
+            return { success: true, message: successMessage };
         } catch (err) {
             console.error("Error deleting allowance:", err);
-            const errorMessage = err.response?.data?.message || err.message || "Unknown error";
+            const errorMessage = err.response?.data?.message || err.response?.data?.error || err.message || "Unknown error";
             setError(`Failed to delete allowance: ${errorMessage}`);
-            return { success: false, error: errorMessage };
+            return { success: false, message: errorMessage, error: errorMessage };
         }
     };
 

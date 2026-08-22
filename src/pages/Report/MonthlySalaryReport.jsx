@@ -408,7 +408,7 @@ const MonthlySalaryReport = () => {
                                 </button>
                                 <div className="flex items-center gap-3">
                                     <div>
-                                        <h1 className="text-2xl font-bold text-[var(--color-text-white)]">Monthly Salary Report {filters.month_year && `- ${getMonthYearDisplay(filters.month_year)}`}</h1>
+                                        <h1 className="text-2xl font-bold text-[var(--color-text-white)]">Monthly Salary Report{filters.month_year && `- ${getMonthYearDisplay(filters.month_year)}`}</h1>
                                     </div>
                                 </div>
                             </div>
@@ -419,7 +419,7 @@ const MonthlySalaryReport = () => {
                                     <button
                                         ref={filterBtnRef}
                                         onClick={() => setFilterDropdown((v) => !v)}
-                                        className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-lg font-medium transition-colors"
+                                        className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-lg font-medium transition-colors text-[14px]"
                                     >
                                         <Filter className="h-4 w-4" />
                                         Filters
@@ -575,7 +575,7 @@ const MonthlySalaryReport = () => {
                                         onClick={() => setExportDropdown((v) => !v)}
                                         disabled={!reportData || reportData.length === 0}
                                         // className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                                        className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-lg font-medium transition-colors"
+                                        className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-lg font-medium transition-colors text-[14px]"
 
                                     >
                                         <Download className="h-4 w-4" />
@@ -672,6 +672,12 @@ const MonthlySalaryReport = () => {
                         <Table wrapperClassName="flex-1 min-h-0 max-h-none overflow-auto custom-scrollbar" className="w-full">
                             <TableHeader>
                                 <TableHeaderRow className="bg-[var(--color-primary-dark)] border-b border-[var(--color-border-primary)]">
+                                    <Th className="text-center font-semibold text-white">
+                                        <div className="flex items-center justify-center gap-2">
+
+                                            Employee Code
+                                        </div>
+                                    </Th>
                                     <Th className="text-left font-semibold text-white">
                                         <div className="flex items-center gap-2">
                                             <User className="h-4 w-4" />
@@ -692,13 +698,13 @@ const MonthlySalaryReport = () => {
                                     </Th>
                                     <Th className="text-center font-semibold text-white">
                                         <div className="flex items-center justify-center gap-2">
-                                            <Clock className="h-4 w-4" />
-                                            Overtime Details
+                                            <CalendarX className="h-4 w-4" />
+                                            Week Off Days
                                         </div>
                                     </Th>
                                     <Th className="text-center font-semibold text-white">
                                         <div className="flex items-center justify-center gap-2">
-                                            <CalendarX className="h-4 w-4" />
+                                            <IndianRupee className="h-4 w-4" />
                                             Week Off
                                         </div>
                                     </Th>
@@ -724,22 +730,25 @@ const MonthlySalaryReport = () => {
 
                                     return (
                                         <TableRow key={employee.employee_code || index} className="bg-[var(--color-bg-secondary)] hover:bg-[var(--color-bg-hover)] transition-all duration-200 group border-b border-[var(--color-border-secondary)] last:border-0">
+                                            {/* Employee Code */}
+                                            <Td className="text-center py-4">
+                                                <span className="text-[11px] font-semibold text-gray-800 bg-[var(--color-bg-gray-light)] px-2 py-1 rounded border border-gray-200 shadow-sm">
+                                                    {employee.employee_code || '--'}
+                                                </span>
+                                            </Td>
+
                                             {/* Employee Details */}
                                             <Td className="py-4">
                                                 <div className="flex items-center gap-3 pl-2">
                                                     <div className="flex-shrink-0 h-9 w-9 rounded-full bg-gradient-to-br from-[var(--color-primary-light)] to-[var(--color-primary)] text-white flex items-center justify-center text-xs font-bold shadow-sm">
                                                         {initials}
                                                     </div>
-                                                    <div className="flex flex-col items-start">
-                                                        <span className="text-sm font-bold text-[var(--color-text-primary)] group-hover:text-[var(--color-primary-dark)] transition-colors tracking-tight">
-                                                            {employee.employee_name || '--'}
-                                                        </span>
-                                                        <span className="text-[11px] font-semibold text-[var(--color-text-muted)] mt-0.5 bg-[var(--color-bg-gray-light)] px-1.5 py-0.5 rounded">
-                                                            {employee.employee_code || '--'}
-                                                        </span>
-                                                    </div>
+                                                    <span className="text-sm font-bold text-[var(--color-text-primary)] group-hover:text-[var(--color-primary-dark)] transition-colors tracking-tight">
+                                                        {employee.employee_name || '--'}
+                                                    </span>
                                                 </div>
                                             </Td>
+
 
                                             {/* Base Salary */}
                                             <Td className="text-center py-4">
@@ -768,40 +777,22 @@ const MonthlySalaryReport = () => {
                                                 </div>
                                             </Td>
 
-                                            {/* Overtime Details */}
+                                            {/* Week Off Days */}
                                             <Td className="text-center py-4">
-                                                <div className="flex flex-col items-center justify-center gap-1">
-                                                    {parseFloat(employee.overtime_salary || 0) > 0 ? (
-                                                        <span className="inline-flex items-center justify-center px-2.5 py-1 bg-orange-50 text-orange-700 border border-orange-200 rounded-md font-bold text-[13px] shadow-sm">
-                                                            {formatCurrency(employee.overtime_salary)}
-                                                        </span>
-                                                    ) : (
-                                                        <span className="text-[14px] font-medium text-gray-300">--</span>
-                                                    )}
-                                                    {parseFloat(employee.overtime_days || 0) > 0 && (
-                                                        <span className="text-[10px] text-orange-600 font-bold flex items-center gap-1 uppercase tracking-wide">
-                                                            <Clock className="h-3 w-3" /> {employee.overtime_days} days
-                                                        </span>
-                                                    )}
-                                                </div>
+                                                <span className="inline-flex items-center justify-center px-2.5 py-1 bg-purple-50 text-purple-700 border border-purple-200 rounded-md font-bold text-[12px] shadow-sm gap-1 uppercase tracking-wide">
+                                                    <CalendarX className="h-3 w-3" /> {employee.week_off_days || 0} DAYS
+                                                </span>
                                             </Td>
 
-                                            {/* Week Off */}
+                                            {/* Week Off Salary */}
                                             <Td className="text-center py-4">
-                                                <div className="flex flex-col items-center justify-center gap-1">
-                                                    {parseFloat(employee.week_off_salary || 0) > 0 ? (
-                                                        <span className="inline-flex items-center justify-center px-2.5 py-1 bg-[var(--color-primary-lightest)] text-[var(--color-primary-dark)] border border-[var(--color-primary-light)] rounded-md font-bold text-[13px] shadow-sm">
-                                                            {formatCurrency(employee.week_off_salary)}
-                                                        </span>
-                                                    ) : (
-                                                        <span className="text-[14px] font-medium text-gray-300">--</span>
-                                                    )}
-                                                    {parseFloat(employee.week_off_days || 0) > 0 && (
-                                                        <span className="text-[10px] text-[var(--color-primary)] font-bold flex items-center gap-1 uppercase tracking-wide">
-                                                            <CalendarX className="h-3 w-3" /> {employee.week_off_days} days
-                                                        </span>
-                                                    )}
-                                                </div>
+                                                {parseFloat(employee.week_off_salary || 0) > 0 ? (
+                                                    <span className="inline-flex items-center justify-center px-2.5 py-1 bg-[var(--color-primary-lightest)] text-[var(--color-primary-dark)] border border-[var(--color-primary-light)] rounded-md font-bold text-[13px] shadow-sm">
+                                                        {formatCurrency(employee.week_off_salary)}
+                                                    </span>
+                                                ) : (
+                                                    <span className="text-[14px] font-medium text-gray-500">--</span>
+                                                )}
                                             </Td>
 
                                             {/* Subtotal */}
@@ -832,6 +823,7 @@ const MonthlySalaryReport = () => {
                                 totalPages={totalPages}
                                 onPageChange={handlePageChange}
                                 loading={reportGenerating}
+                                className='!py-4'
                             />
                         </div>
                     </div>

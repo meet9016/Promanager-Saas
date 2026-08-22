@@ -550,11 +550,8 @@ export default function FinalizePayroll() {
 
 
               <div className="flex items-center gap-3">
-                {/* Month Filter */}
-                <div className="relative w-full sm:w-64">
-
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--color-text-muted)] z-10" />
-
+                {/* Search */}
+                <div className="relative w-full sm:w-64 flex items-center">
                   <CustomInput
                     type="text"
                     name="searchQuery"
@@ -562,23 +559,13 @@ export default function FinalizePayroll() {
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Search records..."
                     clearable={true}
-                    className="!h-[37px] [&_input]:!h-[37px] [&_input]:!pl-10 [&_input]:!pr-4 [&_input]:!rounded-md"
+                    icon={<Search className="w-4 h-4 text-[var(--color-text-secondary)] shrink-0" />}
+                    className="!h-[40px] [&_input]:!h-[40px] [&_input]:!leading-[40px] [&_input]:!py-0 [&_input]:!rounded-xl [&_input]:!text-xs sm:[&_input]:!text-sm"
                   />
-
                 </div>
-                <div className="relative">
-                  {/* <select
-                    value={selectedMonth}
-                    onChange={(e) => setSelectedMonth(e.target.value)}
-                    className="appearance-none bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] rounded-md px-4 py-2 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-text-white)] focus:border-[var(--color-border-primary)]"
-                  >
-                    {monthOptions.map(option => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select> */}
 
+                {/* Month Filter */}
+                <div className="relative">
                   <CustomSelect
                     name="selectedMonth"
                     value={selectedMonth}
@@ -588,25 +575,12 @@ export default function FinalizePayroll() {
                       label: option.label,
                     }))}
                     searchable={false}
-                    className="!h-[37px] [&_button]:!h-[37px] [&_button]:!min-h-[34px] text-sm"
+                    className="!h-[40px] [&_button]:!h-[40px] [&_button]:!min-h-[40px] [&_button]:!py-0 [&_button]:!rounded-xl [&_button]:!text-xs sm:[&_button]:!text-sm"
                   />
-                  {/* <ChevronDown className="absolute right-2 top-2.5 h-4 w-4 text-[var(--color-text-muted)] pointer-events-none" /> */}
                 </div>
 
                 {/* Year Filter */}
                 <div className="relative">
-                  {/* <select
-                    value={selectedYear}
-                    onChange={(e) => setSelectedYear(e.target.value)}
-                    className="appearance-none bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] rounded-md px-4 py-2 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-text-white)] focus:border-[var(--color-border-primary)]"
-                  >
-                    {yearOptions.map(option => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
-                  <ChevronDown className="absolute right-2 top-2.5 h-4 w-4 text-[var(--color-text-muted)] pointer-events-none" /> */}
                   <CustomSelect
                     name="selectedYear"
                     value={selectedYear}
@@ -616,29 +590,15 @@ export default function FinalizePayroll() {
                       label: option.label,
                     }))}
                     searchable={false}
-                    className="!h-[37px] [&_button]:!h-[37px] [&_button]:!min-h-[34px] text-sm"
+                    className="!h-[40px] [&_button]:!h-[40px] [&_button]:!min-h-[40px] [&_button]:!py-0 [&_button]:!rounded-xl [&_button]:!text-xs sm:[&_button]:!text-sm"
                   />
                 </div>
-
-                {/* Search */}
-                {/* <div className="relative w-full sm:w-64">
-                  <input
-                    type="text"
-                    placeholder="Search records..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2 border border-[var(--color-border-secondary)] rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-text-white)] focus:border-[var(--color-border-primary)] text-sm"
-                  />
-                  <Search className="absolute left-3 top-2.5 h-4 w-4 text-[var(--color-text-muted)]" />
-
-                </div> */}
-
 
                 {/* Monthly Payroll Button */}
                 {(permissions?.salary_view || permissions?.salary_create) && (
                   <button
                     onClick={() => navigate('/monthly-payroll')}
-                    className="flex items-center gap-2 bg-[var(--color-bg-secondary)] hover:bg-[var(--color-primary-lightest)] text-[var(--color-primary-dark)] border border-[var(--color-border-secondary)] px-4 py-2 rounded-md text-sm font-medium transition-colors shadow-sm whitespace-nowrap"
+                    className="flex items-center justify-center gap-2 bg-[var(--color-bg-secondary)] hover:bg-[var(--color-primary-lightest)] text-[var(--color-primary-dark)] border border-[var(--color-border-secondary)] px-4 h-[40px] py-0 rounded-xl text-xs sm:text-sm font-medium transition-colors shadow-sm whitespace-nowrap shrink-0"
                   >
                     <IndianRupee className="h-4 w-4" />
                     Monthly Salary
@@ -1137,7 +1097,7 @@ export default function FinalizePayroll() {
                 <div className="absolute bottom-10 -left-10 w-32 h-32 bg-white/5 rounded-full blur-2xl pointer-events-none" />
 
                 <div className="relative flex items-start justify-between mb-6">
-                  <span className="text-[10px] uppercase font-bold tracking-[0.2em] text-white/60">
+                  <span className="text-[12.5px]  font-bold  text-white/60">
                     Payslip · {sal.month_year ? formatMonthYear(sal.month_year) : '--'}
                   </span>
                   <button
@@ -1171,17 +1131,17 @@ export default function FinalizePayroll() {
 
                 {/* net pay */}
                 <div className="relative mt-6 p-4 rounded-xl bg-white/10 border border-white/10 backdrop-blur-sm">
-                  <p className="text-[10px] uppercase font-bold tracking-widest text-white/60">Net Take Home</p>
+                  <p className="text-[12.5px]  font-md text-white/60">Net Take Home</p>
                   <p className="text-2xl font-black tracking-tight mt-1">
                     {formatCurrency(sal.total_pay_salary)}
                   </p>
                   <div className="mt-3 grid grid-cols-2 gap-2 text-[11px]">
                     <div>
-                      <p className="text-white/65 uppercase tracking-wider text-[10px] font-semibold">Base</p>
+                      <p className="text-white/65  text-[12.5px] font-semibold">Base</p>
                       <p className="font-semibold">{formatCurrency(sal.total_salary)}</p>
                     </div>
                     <div>
-                      <p className="text-white/65  uppercase tracking-wider text-[10px] font-semibold">Final Gross</p>
+                      <p className="text-white/65  text-[12.5px] font-semibold">Final Gross</p>
                       <p className="font-semibold">{formatCurrency(sal.final_salary)}</p>
                     </div>
                   </div>
@@ -1206,7 +1166,7 @@ export default function FinalizePayroll() {
                 <div className="relative mt-auto pt-6 hidden lg:block">
                   <button
                     onClick={closeModal}
-                    className="w-full px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 border border-white/15 text-xs font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2"
+                    className="w-full px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 border border-white/15 text-md font-md transition-all flex items-center justify-center gap-2"
                   >
                     <X className="w-3.5 h-3.5" /> Close Statement
                   </button>
@@ -1360,7 +1320,7 @@ export default function FinalizePayroll() {
                       </div>
 
                       <footer className="px-5 py-3 bg-emerald-50/60 border-t border-emerald-100 flex items-center justify-between">
-                        <span className="text-[11px] uppercase font-bold tracking-widest text-emerald-700">Total Earnings</span>
+                        <span className="text-[15px]  font-md  text-emerald-700">Total Earnings</span>
                         <span className="text-sm font-black text-emerald-700">{formatCurrency(totalEarnings)}</span>
                       </footer>
                     </section>
@@ -1434,7 +1394,7 @@ export default function FinalizePayroll() {
                       </div>
 
                       <footer className="px-5 py-3 bg-rose-50/60 border-t border-rose-100 flex items-center justify-between">
-                        <span className="text-[11px] uppercase font-bold tracking-widest text-rose-700">Total Deductions</span>
+                        <span className="text-[15px]  font-md  text-rose-700">Total Deductions</span>
                         <span className="text-sm font-black text-rose-700">− {formatCurrency(totalDeducts)}</span>
                       </footer>
                     </section>
@@ -1473,7 +1433,7 @@ export default function FinalizePayroll() {
                               <p className="text-[12px] text-[#45484c]">Daily attendance log with working hours and overtime.</p>
                             </div>
                           </div>
-                          <div className="flex flex-wrap items-center gap-2 text-[10px] font-bold uppercase tracking-wider">
+                          <div className="flex flex-wrap items-center gap-2 text-[12.5px] font-md ">
                             <span className="px-2 py-1 rounded-md bg-[var(--color-bg-primary)] border border-[var(--color-border-divider)] text-[var(--color-text-primary)]">
                               Days: <b>{shift.total_working_days || 0}</b>
                             </span>
@@ -1501,7 +1461,7 @@ export default function FinalizePayroll() {
                               <div className="overflow-x-auto rounded-xl border border-[var(--color-border-divider)] mb-4">
                                 <table className="w-full text-[11px] border-collapse">
                                   <thead>
-                                    <tr className="bg-[var(--color-bg-primary)] text-[#45484c] uppercase tracking-wider text-[11px]">
+                                    <tr className="bg-[var(--color-bg-primary)] text-[#45484c]  text-[12.5px]">
                                       <th className="px-3 py-2.5 text-left font-bold border-b border-[var(--color-border-divider)]">Date</th>
                                       <th className="px-3 py-2.5 text-left font-bold border-b border-[var(--color-border-divider)]">Status</th>
                                       <th className="px-3 py-2.5 text-left font-bold border-b border-[var(--color-border-divider)]">Actual Hours</th>
@@ -1593,11 +1553,11 @@ export default function FinalizePayroll() {
                     </div>
                     <div className="relative grid grid-cols-2 gap-3 text-xs">
                       <div className="px-4 py-2 rounded-xl bg-white/10 border border-white/15">
-                        <p className="text-[9px] uppercase tracking-widest text-white/60 font-bold">Status</p>
+                        <p className="text-[12.5px] text-white/60 font-md">Status</p>
                         <p className="font-bold mt-0.5">{isPaid ? 'Paid' : 'Pending'}</p>
                       </div>
                       <div className="px-4 py-2 rounded-xl bg-white/10 border border-white/15">
-                        <p className="text-[9px] uppercase tracking-widest text-white/60 font-bold">Cycle</p>
+                        <p className="text-[12.5px] text-white/60 font-md">Cycle</p>
                         <p className="font-bold mt-0.5">{sal.month_year ? formatMonthYear(sal.month_year) : '--'}</p>
                       </div>
                     </div>

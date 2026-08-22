@@ -537,7 +537,7 @@ const MonthlyReport = () => {
                                     <button
                                         ref={filterBtnRef}
                                         onClick={() => setFilterDropdown((v) => !v)}
-                                        className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-lg font-medium transition-colors"
+                                        className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-lg font-medium transition-colors text-[14px]"
                                     >
                                         <Filter className="h-4 w-4" />
                                         Filters
@@ -688,7 +688,7 @@ const MonthlyReport = () => {
                                         ref={exportBtnRef}
                                         onClick={() => setExportDropdown((v) => !v)}
                                         disabled={!hasGenerated || reportData.length === 0}
-                                        className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-lg font-medium transition-colors"
+                                        className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-lg font-medium transition-colors text-[14px]"
                                     >
                                         <Download className="h-4 w-4" />
                                         Export

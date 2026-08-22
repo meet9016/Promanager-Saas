@@ -231,12 +231,12 @@ const BranchList = () => {
                                             </div>
 
                                             <div className="flex items-center space-x-2">
-                                                <button
+                                                {/* <button
                                                     className="w-9 h-9 flex items-center justify-center rounded-xl bg-green-50 text-green-600 hover:bg-green-100 hover:scale-110 hover:shadow-md transition-all duration-200"
                                                     title="Info"
                                                 >
                                                     <Info className="w-4 h-4" strokeWidth={2.5} />
-                                                </button>
+                                                </button> */}
                                                 {permissions['branch_edit'] && (
                                                     <button
                                                         onClick={(e) => {
@@ -286,7 +286,7 @@ const BranchList = () => {
 
                                                         {/* Location Code Card */}
                                                         <div className="group relative p-4 bg-[var(--color-bg-secondary)] border border-[var(--color-border-primary)] rounded-xl transition-all duration-200 hover:shadow-md hover:border-[var(--color-border-light)]">
-                                                            <label className="block text-xs font-semibold tracking-wider uppercase text-[var(--color-text-secondary)] mb-2">
+                                                            <label className="block text-md font-semibold  text-[var(--color-text-secondary)] mb-2">
                                                                 Location Code
                                                             </label>
                                                             <div className="text-base font-medium text-[var(--color-text-primary)]">
@@ -298,7 +298,7 @@ const BranchList = () => {
 
                                                         {/* Device Name Card */}
                                                         <div className="group relative p-4 bg-[var(--color-bg-secondary)] border border-[var(--color-border-primary)] rounded-xl transition-all duration-200 hover:shadow-md hover:border-[var(--color-border-light)]">
-                                                            <label className="block text-xs font-semibold tracking-wider uppercase text-[var(--color-text-secondary)] mb-2">
+                                                            <label className="block text-md font-semibold text-[var(--color-text-secondary)] mb-2">
                                                                 Device Name
                                                             </label>
                                                             <div className="text-base font-medium text-[var(--color-text-primary)]">
@@ -310,7 +310,7 @@ const BranchList = () => {
 
                                                         {/* Serial Number Card */}
                                                         <div className="group relative p-4 bg-[var(--color-bg-secondary)] border border-[var(--color-border-primary)] rounded-xl transition-all duration-200 hover:shadow-md hover:border-[var(--color-border-light)]">
-                                                            <label className="block text-xs font-semibold tracking-wider uppercase text-[var(--color-text-secondary)] mb-2">
+                                                            <label className="block text-md font-semibold text-[var(--color-text-secondary)] mb-2">
                                                                 Serial Number
                                                             </label>
                                                             <div className="text-base font-mono font-medium text-[var(--color-text-primary)] tracking-wide">
@@ -322,7 +322,7 @@ const BranchList = () => {
 
                                                         {/* Activation Code Card */}
                                                         <div className="group relative p-4 bg-[var(--color-bg-secondary)] border border-[var(--color-border-primary)] rounded-xl transition-all duration-200 hover:shadow-md hover:border-[var(--color-border-light)]">
-                                                            <label className="block text-xs font-semibold tracking-wider uppercase text-[var(--color-text-secondary)] mb-2">
+                                                            <label className="block text-md font-semibold  text-[var(--color-text-secondary)] mb-2">
                                                                 Activation Code
                                                             </label>
                                                             <div className="text-base font-mono font-medium text-[var(--color-text-primary)] tracking-wide">
@@ -334,7 +334,7 @@ const BranchList = () => {
 
                                                         {/* Product Type Card */}
                                                         <div className="group relative p-4 bg-[var(--color-bg-secondary)] border border-[var(--color-border-primary)] rounded-xl transition-all duration-200 hover:shadow-md hover:border-[var(--color-border-light)]">
-                                                            <label className="block text-xs font-semibold tracking-wider uppercase text-[var(--color-text-secondary)] mb-2">
+                                                            <label className="block text-md font-semibold  text-[var(--color-text-secondary)] mb-2">
                                                                 Product Type
                                                             </label>
                                                             <div className="text-base font-medium text-[var(--color-text-primary)]">

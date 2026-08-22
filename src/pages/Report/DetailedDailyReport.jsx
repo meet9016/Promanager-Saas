@@ -286,12 +286,12 @@ const Filters = ({
             <button
                 ref={filterBtnRef}
                 onClick={() => setFilterDropdown((v) => !v)}
-                className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-lg font-medium transition-colors"
+                className="flex items-center justify-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 h-[40px] py-0 rounded-xl font-medium text-xs sm:text-sm transition-colors whitespace-nowrap shrink-0"
             >
-                <Filter className="h-6 w-6" />
+                <Filter className="h-4 w-4" />
                 <span className="lg:hidden sm:hidden xl:inline">Filters</span>
                 {activeFiltersCount > 0 && (
-                    <span className="bg-[var(--color-primary-dark)] text-white text-xs rounded-full px-2 py-1">
+                    <span className="bg-[var(--color-primary-dark)] text-white text-xs rounded-full px-2 py-0.5 min-w-[20px] text-center">
                         {activeFiltersCount}
                     </span>
                 )}
@@ -992,10 +992,7 @@ const DetailedDailyReport = () => {
                                         </button>
                                     )}
                                 </div> */}
-                                <div className="relative w-full sm:w-64">
-
-                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--color-text-muted)] z-10" />
-
+                                <div className="relative w-full sm:w-64 flex items-center">
                                     <CustomInput
                                         type="text"
                                         name="searchQuery"
@@ -1003,12 +1000,11 @@ const DetailedDailyReport = () => {
                                         onChange={(e) => setSearchQuery(e.target.value)}
                                         placeholder="Search employees..."
                                         clearable={true}
-                                        className="!h-[40px] [&_input]:!h-[42px] [&_input]:!pl-10 [&_input]:!pr-10"
+                                        icon={<Search className="w-4 h-4 text-[var(--color-text-secondary)] shrink-0" />}
+                                        className="!h-[40px] [&_input]:!h-[40px] [&_input]:!leading-[40px] [&_input]:!py-0 [&_input]:!rounded-xl [&_input]:!text-xs sm:[&_input]:!text-sm"
                                     />
-
                                 </div>
-                                <div className="space-y-2 h-[40px]">
-                                    {/* <label className="block text-sm font-semibold text-[var(--color-text-secondary)]">Date of Birth</label>  */}
+                                <div className="relative flex items-center min-w-[140px] sm:min-w-[160px]">
                                     <CustomDatePicker
                                         name="dateOfBirth"
                                         value={selectedDate}
@@ -1016,6 +1012,7 @@ const DetailedDailyReport = () => {
                                         placeholder="DD-MM-YYYY"
                                         maxDate={new Date()}
                                         clearable={true}
+                                        className="!h-[40px] [&_button]:!h-[40px] [&_button]:!py-0 [&_button]:!rounded-xl [&_button]:!text-xs sm:[&_button]:!text-sm"
                                     />
                                 </div>
 
@@ -1042,9 +1039,9 @@ const DetailedDailyReport = () => {
                                     <button
                                         ref={exportBtnRef}
                                         onClick={() => setExportDropdown((v) => !v)}
-                                        className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-lg font-medium transition-colors"
+                                        className="flex items-center justify-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 h-[40px] py-0 rounded-xl font-medium text-xs sm:text-sm transition-colors whitespace-nowrap shrink-0"
                                     >
-                                        <Download className="h-6 w-6" />
+                                        <Download className="h-4 w-4" />
                                         <span className='lg:hidden sm:hidden xl:inline'>Export</span>
                                         <ChevronDown className="h-4 w-4 lg:hidden sm:hidden xl:inline" />
                                     </button>
@@ -1218,17 +1215,17 @@ const DetailedDailyReport = () => {
                                         {/* Filler rows to keep 10 visible */}
                                         {Array.from({ length: emptyRowCount }).map((_, i) => (
                                             <TableRow key={`empty-${i}`} className="transition-colors">
-                                                <Td className="text-transparent">—</Td>
-                                                <Td className="text-transparent">—</Td>
-                                                <Td className="text-transparent">—</Td>
-                                                <Td className="text-transparent">—</Td>
-                                                <Td className="text-transparent">—</Td>
-                                                <Td className="text-transparent">—</Td>
-                                                <Td className="text-transparent">—</Td>
-                                                <Td className="text-transparent">—</Td>
-                                                <Td className="text-transparent">—</Td>
-                                                <Td className="text-transparent">—</Td>
-                                                <Td className="text-transparent">—</Td>
+                                                <Td className="px-6 py-4 text-transparent">—</Td>
+                                                <Td className="px-6 py-4 text-transparent">—</Td>
+                                                <Td className="px-6 py-4 text-transparent">—</Td>
+                                                <Td className="px-6 py-4 text-transparent">—</Td>
+                                                <Td className="px-6 py-4 text-transparent">—</Td>
+                                                <Td className="px-6 py-4 text-transparent">—</Td>
+                                                <Td className="px-6 py-4 text-transparent">—</Td>
+                                                <Td className="px-6 py-4 text-transparent">—</Td>
+                                                <Td className="px-6 py-4 text-transparent">—</Td>
+                                                <Td className="px-6 py-4 text-transparent">—</Td>
+                                                <Td className="px-6 py-4 text-transparent">—</Td>
                                             </TableRow>
                                         ))}
                                     </TableBody>
@@ -1240,6 +1237,7 @@ const DetailedDailyReport = () => {
                                     totalPages={totalPages}
                                     onPageChange={setCurrentPage}
                                     loading={loading}
+                                    className="!py-5 bg-white border-t border-[var(--color-border-secondary)] !my-0"
                                 />
                             </>
                         )}

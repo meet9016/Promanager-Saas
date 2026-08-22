@@ -566,14 +566,14 @@ const MonthlyMusterPreview = () => {
                                     Monthly Attendance Muster {filters.month_year && `- ${formatMonthYear(filters.month_year)}`}
                                 </h1>
                             </div>
-                            
+
                             <div className="flex items-center gap-3 flex-wrap">
                                 {/* Filter button */}
                                 <div className="relative">
                                     <button
                                         ref={filterBtnRef}
                                         onClick={() => setFilterDropdown((v) => !v)}
-                                        className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-lg font-medium transition-colors shadow-sm"
+                                        className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-lg font-medium transition-colors shadow-sm text-[14px]"
                                     >
                                         <Filter className="h-4 w-4" />
                                         Filters
@@ -728,7 +728,7 @@ const MonthlyMusterPreview = () => {
                                     <button
                                         ref={exportBtnRef}
                                         onClick={() => setExportDropdown((v) => !v)}
-                                        className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-lg font-medium transition-colors shadow-sm"
+                                        className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-lg font-medium transition-colors shadow-sm text-[14px]"
                                     >
                                         <Download className="h-4 w-4" />
                                         Export

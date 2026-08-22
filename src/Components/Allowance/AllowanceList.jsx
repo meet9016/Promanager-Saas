@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Trash2, IndianRupee } from "lucide-react";
 import { useSelector } from 'react-redux';
 import { ConfirmDialog } from '../comman/ConfirmDialog';
+import { Toast } from "../ui/Toast";
 import AllowanceForm from "./AllowanceForm";
 import useAllowances from "../../hooks/useAllowances";
 import LoadingSpinner from "../Loader/LoadingSpinner"
@@ -15,7 +16,6 @@ const AllowanceList = () => {
         data: null
     });
 
-    // eslint-disable-next-line no-unused-vars
     const [toast, setToast] = useState(null);
 
     const permissions = useSelector(state => state.permissions) || {};
@@ -32,10 +32,10 @@ const AllowanceList = () => {
 
     const handleDeleteAllowance = async (id) => {
         const result = await deleteAllowance(id);
-        if (result?.success) {
-            showToast("Allowance deleted successfully!", "success");
+        if (result && (result.success === true || result.status === true || result.status === 1)) {
+            showToast(result.message || "Allowance deleted successfully!", "success");
         } else {
-            showToast("Failed to delete allowance. Please try again.", "error");
+            showToast(result?.message || result?.error || "Failed to delete allowance. Please try again.", "error");
         }
     };
 
@@ -176,6 +176,14 @@ const AllowanceList = () => {
                 cancelText="Cancel"
                 type="danger"
             />
+
+            {toast && (
+                <Toast
+                    message={toast.message}
+                    type={toast.type}
+                    onClose={() => setToast(null)}
+                />
+            )}
         </>
     );
 };

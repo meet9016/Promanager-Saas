@@ -621,10 +621,7 @@ const LoanAdvance = () => {
                                 </div> */}
 
 
-                                <div className="relative w-full sm:w-64">
-
-                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--color-text-muted)] z-10" />
-
+                                <div className="relative w-full sm:w-64 flex items-center">
                                     <CustomInput
                                         type="text"
                                         name="searchQuery"
@@ -632,9 +629,9 @@ const LoanAdvance = () => {
                                         onChange={(e) => setSearchQuery(e.target.value)}
                                         placeholder="Search loans..."
                                         clearable={true}
-                                        className="!h-[37px] [&_input]:!h-[37px] [&_input]:!pl-10 [&_input]:!pr-4 [&_input]:!rounded-md"
+                                        icon={<Search className="w-4 h-4 text-[var(--color-text-secondary)] shrink-0" />}
+                                        className="!h-[40px] [&_input]:!h-[40px] [&_input]:!leading-[40px] [&_input]:!py-0 [&_input]:!rounded-xl [&_input]:!text-xs sm:[&_input]:!text-sm"
                                     />
-
                                 </div>
 
                                 <div className="relative w-full sm:w-44">
@@ -648,14 +645,14 @@ const LoanAdvance = () => {
                                         }))}
                                         searchable={false}
                                         disabled={loading || dropdownLoading}
-                                        className="!h-[38px] [&_button]:!h-[38px] [&_button]:!min-h-[34px]"
+                                        className="!h-[40px] [&_button]:!h-[40px] [&_button]:!min-h-[40px] [&_button]:!py-0 [&_button]:!rounded-xl [&_button]:!text-xs sm:[&_button]:!text-sm"
                                     />
                                 </div>
 
                                 {permissions['loan_create'] && (
                                     <button
                                         onClick={handleAddLoanRedirect}
-                                        className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 h-[37px] rounded-md text-sm font-medium transition-colors"
+                                        className="flex items-center justify-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 h-[40px] py-0 rounded-xl text-xs sm:text-sm font-medium transition-colors whitespace-nowrap shrink-0"
                                         disabled={loading}
                                     >
                                         <Plus className="h-4 w-4" />

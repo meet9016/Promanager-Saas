@@ -102,10 +102,11 @@ const EmployeeRow = ({ emp, idx, formatCurrency }) => {
         <>
             {/* Main row */}
             <tr className={`bg-[var(--color-bg-secondary)] hover:bg-[var(--color-bg-primary)] transition-colors ${expanded ? 'border-b-0' : ''}`}>
-                <td className="px-4 py-4 text-sm text-[var(--color-text-secondary)] text-center">{idx}</td>
+                <td className="px-4 py-4 text-center">
+                    <span className="text-xs text-[var(--color-text-secondary)] bg-[var(--color-bg-primary)] px-2 py-0.5 rounded font-medium">{emp.employee_code || '--'}</span>
+                </td>
                 <td className="px-4 py-4">
                     <div className="font-semibold text-sm text-[var(--color-text-primary)]">{emp.employee_name || '--'}</div>
-                    <div className="text-xs text-[var(--color-text-secondary)] bg-[var(--color-bg-primary)] px-2 py-0.5 rounded mt-1 inline-block">{emp.employee_code || '--'}</div>
                 </td>
                 {/* Monthly salary */}
                 <td className="px-4 py-4 text-center">
@@ -475,7 +476,7 @@ const PayMonthlySalaryReport = () => {
                                     <button
                                         ref={filterBtnRef}
                                         onClick={() => setFilterDropdown((v) => !v)}
-                                        className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-lg font-medium transition-colors"
+                                        className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-lg font-medium transition-colors text-[14px]"
                                     >
                                         <Filter className="h-4 w-4" />
                                         Filters
@@ -611,7 +612,7 @@ const PayMonthlySalaryReport = () => {
                                 <div className="relative">
                                     <button ref={exportBtnRef} onClick={() => setExportDropdown(v => !v)} disabled={!reportData || reportData.length === 0}
                                         // className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                                        className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-lg font-medium transition-colors"
+                                        className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-lg font-medium transition-colors text-[14px]"
 
                                     >
                                         <Download className="h-4 w-4" /> Export <ChevronDown className="h-4 w-4" />
@@ -672,7 +673,7 @@ const PayMonthlySalaryReport = () => {
                             <table className="w-full">
                                 <thead className="sticky top-0 z-30">
                                     <tr className="bg-[var(--color-primary-dark)] border-b border-[var(--color-border-primary)]">
-                                        <th className="px-4 py-4 text-center text-sm font-semibold text-white w-10">#</th>
+                                        <th className="px-4 py-4 text-center text-sm font-semibold text-white">Emp Code</th>
                                         <th className="px-4 py-4 text-left text-sm font-semibold text-white">Employee</th>
                                         <th className="px-4 py-4 text-center text-sm font-semibold text-white">Monthly Salary</th>
                                         <th className="px-4 py-4 text-center text-sm font-semibold text-white">Att. Salary</th>
@@ -700,7 +701,7 @@ const PayMonthlySalaryReport = () => {
                         </div>
 
                         <div className="border-t border-[var(--color-border-primary)] bg-[var(--color-bg-primary)]">
-                            <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} loading={loading} />
+                            <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} loading={loading} className='!py-5' />
                         </div>
                     </div>
                 )}
