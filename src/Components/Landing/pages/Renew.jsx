@@ -324,9 +324,11 @@ const Renew = () => {
         formData.append("gst_number", enabled ? gstNumber : "");
         formData.append("total_employee", employees);
         formData.append("billing_cycle", billingCycle);
-        formData.append("is_gst", enabled ? "1" : "2");
+        formData.append("is_gst", "1");
+        // formData.append("is_gst", enabled ? "1" : "2");
         formData.append("plan_price", pricePerUser);
-        formData.append("gst_percentage", enabled ? 18 : 0);
+        formData.append("gst_percentage", 18);
+        // formData.append("gst_percentage", enabled ? 18 : 0);
         formData.append("gst_amount", enabled ? gst : 0);
         formData.append("final_pay_amount", total);
 
@@ -368,7 +370,7 @@ const Renew = () => {
 
         } catch (error) {
 
-            
+
             let errorMessage = 'Something went wrong. Please try again.';
 
             //  1. Backend error (most important)

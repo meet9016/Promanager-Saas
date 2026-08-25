@@ -403,10 +403,13 @@ const RegisterModal = ({ isOpen, onClose }) => {
                                         </div>
 
                                         {/* Mobile Number Field with WhatsApp Verification */}
-                                        <div className={showOtpRow && !isPhoneVerified ? "md:col-span-2" : ""}>
-                                            <label className="text-sm font-medium text-gray-700 mb-2 flex items-center gap-2 flex-wrap">
-                                                <span>Mobile Number <span className="text-red-500">*</span></span>
-                                                <span className="inline-flex items-center gap-1 text-xs text-purple-700 font-medium select-none">
+                                        <div>
+                                            <label className="text-sm font-medium text-gray-700 mb-2 flex items-center gap-2 whitespace-nowrap">
+                                                <span>
+                                                    Mobile Number <span className="text-red-500">*</span>
+                                                </span>
+
+                                                <span className="inline-flex items-center gap-1 text-xs text-purple-700 font-medium select-none whitespace-nowrap">
                                                     <Info size={14} className="text-[#370D95] shrink-0" />
                                                     <span>Verify Your Mobile Number Through WhatsApp</span>
                                                 </span>
@@ -414,7 +417,7 @@ const RegisterModal = ({ isOpen, onClose }) => {
 
                                             <div className="flex flex-col sm:flex-row items-start gap-3">
                                                 {/* 10-Digit Mobile Input Box */}
-                                                <div className={`relative flex items-center h-11 w-full ${showOtpRow && !isPhoneVerified ? "sm:w-[250px]" : "w-full"} rounded-xl border bg-white overflow-hidden transition-all ${errors.mobile ? "border-red-500" : "border-gray-200 focus-within:border-[var(--color-primary)] focus-within:ring-2 focus-within:ring-[var(--color-primary)]/20"}`}>
+                                                <div className={`relative flex items-center h-11 w-full rounded-xl border bg-white overflow-hidden transition-all ${errors.mobile ? "border-red-500" : "border-gray-200 focus-within:border-[var(--color-primary)] focus-within:ring-2 focus-within:ring-[var(--color-primary)]/20"}`}>
                                                     {/* Country Code (+91) */}
                                                     <div className="flex items-center px-3 h-full bg-slate-50 border-r border-gray-200 text-slate-800 font-bold text-xs shrink-0 select-none">
                                                         <span className="font-extrabold text-slate-900">+91</span>
@@ -450,72 +453,74 @@ const RegisterModal = ({ isOpen, onClose }) => {
                                                             onClick={handleSendOtp}
                                                             disabled={form.mobile.length < 10 || isSendingOtp}
                                                             className={`pr-3 pl-2 h-full flex items-center shrink-0 font-bold text-xs select-none transition-all ${form.mobile.length === 10 && !isSendingOtp
-                                                                    ? "cursor-pointer text-[#370D95] hover:text-purple-900 underline"
-                                                                    : "cursor-not-allowed text-slate-400 opacity-60"
+                                                                ? "cursor-pointer text-[#370D95] hover:text-purple-900 underline"
+                                                                : "cursor-not-allowed text-slate-400 opacity-60"
                                                                 }`}
                                                         >
                                                             {isSendingOtp ? "Sending..." : "Verify"}
                                                         </button>
                                                     )}
                                                 </div>
-
-                                                {/* OTP Input Box with Confirm Button INSIDE (One row with Mobile box) */}
-                                                {showOtpRow && !isPhoneVerified && (
-                                                    <div className="flex flex-col gap-1 w-full sm:w-auto animate-fadeIn shrink-0">
-                                                        {/* OTP Input Container with Confirm Button INSIDE */}
-                                                        <div className="relative flex items-center h-11 w-full sm:w-[240px] rounded-xl border border-gray-200 bg-white overflow-hidden transition-all focus-within:border-[#370D95] focus-within:ring-2 focus-within:ring-[#370D95]/20 shadow-2xs">
-                                                            <input
-                                                                type="text"
-                                                                inputMode="numeric"
-                                                                maxLength={6}
-                                                                placeholder="Enter 6-digit OTP"
-                                                                value={otpInput}
-                                                                onChange={(e) => {
-                                                                    const val = e.target.value.replace(/\D/g, "").slice(0, 6);
-                                                                    setOtpInput(val);
-                                                                }}
-                                                                className="w-full px-3 text-xs sm:text-sm font-bold text-slate-800 placeholder:text-slate-400 placeholder:font-normal focus:outline-none bg-transparent tracking-widest min-w-0"
-                                                            />
-
-                                                            {/* Confirm Button INSIDE right side of OTP Box */}
-                                                            <button
-                                                                type="button"
-                                                                disabled={otpInput.length < 6 || isVerifyingOtp}
-                                                                onClick={handleVerifyOtp}
-                                                                className={`px-3.5 h-full flex items-center justify-center shrink-0 font-bold text-xs select-none transition-all ${otpInput.length === 6 && !isVerifyingOtp
-                                                                        ? "cursor-pointer bg-[#370D95] hover:bg-purple-900 text-white"
-                                                                        : "cursor-not-allowed bg-slate-100 text-slate-400 border-l border-slate-200"
-                                                                    }`}
-                                                            >
-                                                                {isVerifyingOtp ? "Verifying..." : "Confirm"}
-                                                            </button>
-                                                        </div>
-
-                                                        {/* Below OTP box: resend otp (30) Countdown Format */}
-                                                        <div className="text-xs text-slate-500 font-medium px-1">
-                                                            {resendTimer > 0 ? (
-                                                                <span>resend otp ({resendTimer})</span>
-                                                            ) : (
-                                                                <button
-                                                                    type="button"
-                                                                    onClick={handleSendOtp}
-                                                                    disabled={isSendingOtp}
-                                                                    className="text-[#370D95] font-bold underline hover:text-purple-900 cursor-pointer disabled:opacity-50"
-                                                                >
-                                                                    {isSendingOtp ? "sending..." : "resend otp"}
-                                                                </button>
-                                                            )}
-                                                        </div>
-                                                    </div>
-                                                )}
                                             </div>
-
                                             {errors.mobile && (
                                                 <p className="text-red-500 text-xs mt-1">
                                                     {errors.mobile}
                                                 </p>
                                             )}
                                         </div>
+
+                                        {/* OTP Input Box (Now its own grid column, falling directly under GST Number) */}
+                                        {showOtpRow && !isPhoneVerified && (
+                                            <div className="flex flex-col gap-1 w-full animate-fadeIn shrink-0">
+                                                <label className="text-sm font-medium text-gray-700 mb-1 flex items-center gap-2 whitespace-nowrap opacity-0 select-none hidden sm:block">
+                                                    OTP
+                                                </label>
+                                                {/* OTP Input Container with Confirm Button INSIDE */}
+                                                <div className="relative flex items-center h-11 w-full rounded-xl border border-gray-200 bg-white overflow-hidden transition-all focus-within:border-[#370D95] focus-within:ring-2 focus-within:ring-[#370D95]/20 shadow-2xs">
+                                                    <input
+                                                        type="text"
+                                                        inputMode="numeric"
+                                                        maxLength={6}
+                                                        placeholder="Enter 6-digit OTP"
+                                                        value={otpInput}
+                                                        onChange={(e) => {
+                                                            const val = e.target.value.replace(/\D/g, "").slice(0, 6);
+                                                            setOtpInput(val);
+                                                        }}
+                                                        className="w-full px-3 text-xs sm:text-sm font-bold text-slate-800 placeholder:text-slate-400 placeholder:font-normal focus:outline-none bg-transparent tracking-widest min-w-0"
+                                                    />
+
+                                                    {/* Confirm Button INSIDE right side of OTP Box */}
+                                                    <button
+                                                        type="button"
+                                                        disabled={otpInput.length < 6 || isVerifyingOtp}
+                                                        onClick={handleVerifyOtp}
+                                                        className={`px-3.5 h-full flex items-center justify-center shrink-0 font-bold text-xs select-none transition-all ${otpInput.length === 6 && !isVerifyingOtp
+                                                            ? "cursor-pointer bg-[#370D95] hover:bg-purple-900 text-white"
+                                                            : "cursor-not-allowed bg-slate-100 text-slate-400 border-l border-slate-200"
+                                                            }`}
+                                                    >
+                                                        {isVerifyingOtp ? "Verifying..." : "Confirm"}
+                                                    </button>
+                                                </div>
+
+                                                {/* Below OTP box: resend otp (30) Countdown Format */}
+                                                <div className="text-xs text-slate-500 font-medium px-1">
+                                                    {resendTimer > 0 ? (
+                                                        <span>resend otp ({resendTimer})</span>
+                                                    ) : (
+                                                        <button
+                                                            type="button"
+                                                            onClick={handleSendOtp}
+                                                            disabled={isSendingOtp}
+                                                            className="text-[#370D95] font-bold underline hover:text-purple-900 cursor-pointer disabled:opacity-50"
+                                                        >
+                                                            {isSendingOtp ? "sending..." : "resend otp"}
+                                                        </button>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        )}
                                     </div>
 
                                     {/* Address */}
@@ -551,8 +556,8 @@ const RegisterModal = ({ isOpen, onClose }) => {
                                             onClick={handleSubmit}
                                             disabled={isLoading || !isPhoneVerified}
                                             className={`px-6 py-3 rounded-xl bg-[var(--color-primary)] text-white font-medium hover:opacity-90 transition-all flex items-center justify-center gap-2 ${isLoading || !isPhoneVerified
-                                                    ? "opacity-50 cursor-not-allowed"
-                                                    : "cursor-pointer"
+                                                ? "opacity-50 cursor-not-allowed"
+                                                : "cursor-pointer"
                                                 }`}
                                         >
                                             {isLoading ? "Signing up..." : "Sign Up"}
