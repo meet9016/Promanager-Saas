@@ -115,7 +115,6 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
         },
         (permissions?.subscription || permissions?.subscription_view || permissions?.subscription_create || permissions?.subscription_edit || permissions?.subscription_delete) && { id: 'subscription', label: 'Subscription', icon: CreditCard, hasSubmenu: false, path: '/subscription' },
         (permissions?.configuration_view || permissions?.configuration_edit || permissions?.software_setting_view) && { id: 'settings', label: 'Settings', icon: SettingsIcon, hasSubmenu: false, path: '/settings' },
-        { id: 'document', label: 'Document', icon: FileText, hasSubmenu: false, path: '/document', external: true },
     ].filter(Boolean);
 
     const getActiveItemId = () => {
@@ -356,27 +355,34 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
                         })}
 
                         {!isCollapsed && (
-                            <div className="flex-shrink-0 border-t border-gray-100 p-2">
-                                <div className="space-y-2">
-                                    <a href='https://www.youtube.com/@promanagerpayrollsoftware'>
-                                        <div className="group flex items-center gap-4 p-2 bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 cursor-pointer">
-                                            <div className="flex items-center gap-3">
-                                                <div className="p-1 bg-gradient-to-br from-red-500 to-red-600 rounded-md shadow-md group-hover:scale-105 transition">
-                                                    <Youtube size={15} className="text-white" />
-                                                </div>
-                                                <p className="text-sm font-semibold text-gray-900">Learn with Videos</p>
-                                            </div>
+                            <div className="flex-shrink-0 border-t border-slate-100/80 p-2 space-y-2">
+                                {/* Tutorials Link */}
+                                <a
+                                    href="/document"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="block"
+                                >
+                                    <div className="group flex items-center gap-3 p-1 px-3 bg-white rounded-md border border-[#2e0b7b52] shadow-xs hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 cursor-pointer">
+                                        <div className="p-2 bg-[#370D95] rounded-2xl shadow-xs group-hover:scale-105 transition flex items-center justify-center shrink-0">
+                                            <FileText size={16} className="text-white" />
                                         </div>
-                                    </a>
-                                    <div className="group flex items-center gap-4 p-2 bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 cursor-pointer">
-                                        <div className="flex items-center gap-3">
-                                            <div className="p-1 bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-dark)] rounded-md shadow-md group-hover:scale-105 transition">
-                                                <Phone size={15} className="text-white" />
-                                            </div>
-                                            <p className="text-sm font-semibold text-gray-900">+91 92748 89008</p>
-                                        </div>
+                                        <p className="text-sm font-bold text-slate-800 tracking-tight">Tutorials</p>
                                     </div>
-                                </div>
+                                </a>
+
+                                {/* Contact Phone */}
+                                <a
+                                    href="tel:8866779008"
+                                    className="block"
+                                >
+                                    <div className="group flex items-center gap-3 p-1 px-3 bg-white rounded-md border border-[#2e0b7b52] shadow-xs hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 cursor-pointer">
+                                        <div className="p-2 bg-[#370D95] rounded-2xl shadow-xs group-hover:scale-105 transition flex items-center justify-center shrink-0">
+                                            <Phone size={16} className="text-white" />
+                                        </div>
+                                        <p className="text-sm font-bold text-slate-800 tracking-tight">+91 88667 79008</p>
+                                    </div>
+                                </a>
                             </div>
                         )}
                     </div>

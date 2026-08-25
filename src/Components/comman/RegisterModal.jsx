@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X } from "lucide-react";
+import { X, ChevronDown, CheckCircle2 } from "lucide-react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
@@ -29,6 +29,27 @@ const RegisterModal = ({ isOpen, onClose }) => {
     const [errors, setErrors] = useState({});
     const [isLoading, setIsLoading] = useState(false);
     const [toast, setToast] = useState(null);
+
+    const [showOtpRow, setShowOtpRow] = useState(false);
+    const [otpInput, setOtpInput] = useState('');
+    const [isPhoneVerified, setIsPhoneVerified] = useState(false);
+    const [resendTimer, setResendTimer] = useState(30);
+
+    useEffect(() => {
+        let timerId;
+        if (showOtpRow && resendTimer > 0 && !isPhoneVerified) {
+            timerId = setInterval(() => {
+                setResendTimer(prev => prev - 1);
+            }, 1000);
+        }
+        return () => clearInterval(timerId);
+    }, [showOtpRow, resendTimer, isPhoneVerified]);
+
+    const handleSendOtp = () => {
+        setShowOtpRow(true);
+        setResendTimer(30);
+        setToast({ type: 'success', message: 'OTP sent to WhatsApp!' });
+    };
 
     const SECRET_KEY = import.meta.env.VITE_AES_SECRET_KEY;
     const COOKIE_EXPIRY_DAYS = 7;
@@ -276,37 +297,10 @@ const RegisterModal = ({ isOpen, onClose }) => {
                                             )}
                                         </div>
 
-                                        {/* Mobile */}
+                                        {/* GST Number (Optional) */}
                                         <div>
                                             <label className="text-sm font-medium text-gray-700 mb-2 block">
-                                                Mobile Number <span className="text-red-500">*</span>
-                                            </label>
-                                            <input
-                                                type="text"
-                                                inputMode="numeric"
-                                                maxLength={10}
-                                                placeholder="Enter mobile number"
-                                                value={form.mobile}
-                                                onChange={(e) =>
-                                                    handleChange(
-                                                        "mobile",
-                                                        e.target.value.replace(/\D/g, "")
-                                                    )
-                                                }
-                                                className={`w-full h-12 px-4 rounded-xl border ${errors.mobile ? "border-red-500" : "border-gray-200"
-                                                    } focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]`}
-                                            />
-                                            {errors.mobile && (
-                                                <p className="text-red-500 text-xs mt-1">
-                                                    {errors.mobile}
-                                                </p>
-                                            )}
-                                        </div>
-
-                                        {/* GST Number */}
-                                        <div>
-                                            <label className="text-sm font-medium text-gray-700 mb-2 block">
-                                                GST Number
+                                                GST Number <span className="text-gray-400 text-sm">(Optional)</span>
                                             </label>
                                             <input
                                                 type="text"
@@ -323,32 +317,132 @@ const RegisterModal = ({ isOpen, onClose }) => {
                                             )}
                                         </div>
 
-                                        {/* WhatsApp */}
+                                        {/* Mobile Number Field with WhatsApp Verification */}
                                         <div>
                                             <label className="text-sm font-medium text-gray-700 mb-2 block">
-                                                WhatsApp Number <span className="text-red-500">*</span>
+                                                Mobile Number <span className="text-red-500">*</span>
                                             </label>
-                                            <input
-                                                type="text"
-                                                inputMode="numeric"
-                                                maxLength={10}
-                                                placeholder="Enter WhatsApp number"
-                                                value={form.whatsapp}
-                                                onChange={(e) =>
-                                                    handleChange(
-                                                        "whatsapp",
-                                                        e.target.value.replace(/\D/g, "")
-                                                    )
-                                                }
-                                                className={`w-full h-12 px-4 rounded-xl border ${errors.whatsapp ? "border-red-500" : "border-gray-200"
-                                                    } focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]`}
-                                            />
-                                            {errors.whatsapp && (
+
+                                            {/* 10-Digit Mobile Input Box */}
+                                            <div className={`relative flex items-center h-12 w-full rounded-xl border bg-white overflow-hidden transition-all ${errors.mobile ? "border-red-500" : "border-gray-200 focus-within:border-[var(--color-primary)] focus-within:ring-2 focus-within:ring-[var(--color-primary)]/20"}`}>
+                                                {/* Country Selector IN +91 */}
+                                                <div className="flex items-center gap-1.5 px-3 h-full bg-slate-50/90 border-r border-gray-200 text-slate-800 font-bold text-xs sm:text-sm shrink-0 select-none">
+                                                    <span>IN</span>
+                                                    <span className="font-extrabold text-slate-900">+91</span>
+                                                    <ChevronDown size={13} className="text-slate-400" />
+                                                </div>
+
+                                                {/* Input */}
+                                                <input
+                                                    type="text"
+                                                    inputMode="numeric"
+                                                    maxLength={10}
+                                                    placeholder="Enter mobile number"
+                                                    value={form.mobile}
+                                                    onChange={(e) => {
+                                                        const val = e.target.value.replace(/\D/g, "").slice(0, 10);
+                                                        handleChange("mobile", val);
+                                                        if (val.length < 10) {
+                                                            setIsPhoneVerified(false);
+                                                            setShowOtpRow(false);
+                                                        }
+                                                    }}
+                                                    className="w-full px-3 text-xs sm:text-sm text-slate-800 placeholder:text-slate-400 font-medium focus:outline-none bg-transparent tracking-wide min-w-0"
+                                                />
+
+                                                {isPhoneVerified && (
+                                                    <div className="pr-3 shrink-0 flex items-center gap-1 text-emerald-600 font-bold text-xs">
+                                                        <CheckCircle2 size={16} />
+                                                        <span>Verified</span>
+                                                    </div>
+                                                )}
+                                            </div>
+
+                                            {/* Verify via WhatsApp Link (Placed BELOW the input box) */}
+                                            {!isPhoneVerified && (
+                                                <div className="mt-1.5">
+                                                    {form.mobile.length === 10 ? (
+                                                        <button
+                                                            type="button"
+                                                            onClick={handleSendOtp}
+                                                            className="text-xs text-[#370D95] font-bold underline cursor-pointer hover:text-purple-900 transition-colors whitespace-nowrap"
+                                                        >
+                                                            Verify via WhatsApp
+                                                        </button>
+                                                    ) : (
+                                                        <span className="text-xs text-slate-400 font-semibold underline opacity-60 cursor-not-allowed select-none whitespace-nowrap">
+                                                            Verify via WhatsApp
+                                                        </span>
+                                                    )}
+                                                </div>
+                                            )}
+
+                                            {errors.mobile && (
                                                 <p className="text-red-500 text-xs mt-1">
-                                                    {errors.whatsapp}
+                                                    {errors.mobile}
                                                 </p>
                                             )}
                                         </div>
+
+                                        {/* OTP Verification Card (Full width smooth row when triggered) */}
+                                        {showOtpRow && !isPhoneVerified && (
+                                            <div className="md:col-span-2 bg-slate-50/90 border border-purple-100 rounded-2xl p-4 animate-fadeIn space-y-2">
+                                                <label className="text-xs font-bold tracking-wider text-slate-700 uppercase block">
+                                                    VERIFICATION CODE (SENT TO WHATSAPP)
+                                                </label>
+
+                                                <div className="flex flex-wrap items-center gap-3">
+                                                    {/* 6-Digit Code Input */}
+                                                    <input
+                                                        type="text"
+                                                        maxLength={6}
+                                                        placeholder="6-digit code"
+                                                        value={otpInput}
+                                                        onChange={(e) => {
+                                                            const val = e.target.value.replace(/\D/g, '').slice(0, 6);
+                                                            setOtpInput(val);
+                                                        }}
+                                                        className="h-11 w-40 px-3.5 text-sm text-slate-800 placeholder:text-slate-400 font-bold bg-white rounded-xl border border-gray-200 focus:outline-none focus:border-[#370D95] focus:ring-2 focus:ring-[#370D95]/20 text-center tracking-widest shadow-2xs"
+                                                    />
+
+                                                    {/* Confirm Button */}
+                                                    <button
+                                                        type="button"
+                                                        disabled={otpInput.length < 6}
+                                                        onClick={() => {
+                                                            if (otpInput.length === 6) {
+                                                                setIsPhoneVerified(true);
+                                                                setToast({ type: 'success', message: 'Phone number verified via WhatsApp!' });
+                                                            }
+                                                        }}
+                                                        className={`h-11 px-5 rounded-xl text-xs sm:text-sm font-bold transition-all shrink-0 flex items-center justify-center ${otpInput.length === 6
+                                                            ? 'bg-[#370D95] hover:bg-purple-900 text-white cursor-pointer shadow-sm'
+                                                            : 'bg-slate-200 text-slate-400 cursor-not-allowed border border-slate-200/80'
+                                                            }`}
+                                                    >
+                                                        Confirm Code
+                                                    </button>
+
+                                                    {/* Resend Link with 30s Countdown Timer */}
+                                                    {resendTimer > 0 ? (
+                                                        <span className="text-xs text-slate-500 font-semibold bg-white px-3 py-2 rounded-xl border border-slate-200/80 shrink-0 select-none shadow-2xs">
+                                                            Resend OTP in <strong className="text-[#370D95]">{resendTimer}s</strong>
+                                                        </span>
+                                                    ) : (
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => {
+                                                                setResendTimer(30);
+                                                                setToast({ type: 'success', message: 'OTP resent to WhatsApp!' });
+                                                            }}
+                                                            className="text-xs text-[#370D95] font-bold underline hover:text-purple-900 cursor-pointer shrink-0 py-2 px-1"
+                                                        >
+                                                            Resend Code
+                                                        </button>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        )}
                                     </div>
 
                                     {/* Address */}

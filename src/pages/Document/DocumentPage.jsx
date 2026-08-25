@@ -4,7 +4,7 @@ import {
   BookOpen, Users, Clock, Calendar, IndianRupee,
   Briefcase, BarChart2, Shield, Settings, LayoutDashboard, Languages,
   ChevronRight, Sparkles, FileText, CheckCircle2, Globe, Phone, ExternalLink,
-  Maximize2, X, ArrowRight, Layers, Eye
+  Maximize2, X, ArrowRight, Layers, Eye, Building2, UserPlus, Info, Target, Lightbulb, Lock, Youtube
 } from 'lucide-react';
 
 // Lightbox Modal for Full-Screen Image Preview
@@ -135,168 +135,294 @@ const DocumentPage = () => {
       title: t('Introduction', 'परिचय'),
       icon: <BookOpen size={18} />,
       content: (
-        <div className="space-y-8">
-          {/* Main Clean Hero Header */}
-          <div className="bg-white rounded-3xl border border-slate-200/90 p-8 sm:p-10 shadow-sm relative overflow-hidden">
-            <div className="h-2 w-full bg-[#340C8E] absolute top-0 left-0 right-0" />
-            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-purple-50 border border-purple-100 text-[#340C8E] text-xs font-bold mb-4">
-              <Sparkles size={14} className="text-[#340C8E]" />
-              {t('Promanager Guide', 'प्रोमैनेजर गाइड')}
-            </div>
-            <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 leading-tight">
-              {t('Welcome to Promanager', 'प्रोमैनेजर में आपका स्वागत है')}
-            </h2>
-            <p className="text-slate-700 text-base sm:text-lg mt-4 max-w-8xl leading-relaxed font-normal">
-              {t(
-                'Promanager is a smart and comprehensive HR & Payroll Management SaaS application. Its main objective is to simplify and automate the daily operations of any organization, such as employee tracking, attendance, leave management, shift scheduling, and payroll processing.',
-                'प्रोमैनेजर एक स्मार्ट और व्यापक HR और पेरोल मैनेजमेंट SaaS एप्लीकेशन है। इसका मुख्य उद्देश्य किसी भी संगठन के दैनिक कार्यों जैसे कर्मचारी ट्रैकिंग, उपस्थिति, अवकाश प्रबंधन, शिफ्ट शेड्यूलिंग और पेरोल प्रोसेसिंग को सरल और स्वचालित बनाना है।'
-              )}
-            </p>
-            <p className="text-slate-600 text-sm sm:text-base mt-3 max-w-8xl leading-relaxed font-normal">
-              {t(
-                'Through this platform, HR teams and managers can save time and maintain transparent, error-free administration. Promanager provides a user-friendly interface that anyone can easily understand and use.',
-                'इस प्लेटफॉर्म के माध्यम से, HR टीमें और मैनेजर अपना समय बचा सकते हैं और पारदर्शी, त्रुटि-मुक्त प्रशासन बनाए रख सकते हैं। प्रोमैनेजर एक उपयोग में आसान इंटरफ़ेस प्रदान करता है जिसे कोई भी आसानी से समझ और उपयोग कर सकता है।'
-              )}
-            </p>
-          </div>
+        <div className="space-y-5">
+          {/* Top Header Block: Title & Illustration */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center pb-0">
+            {/* Left Header Info */}
+            <div className="lg:col-span-7 space-y-2.5">
+              <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight leading-tight">
+                {t('Welcome to ProManager!', 'प्रोमैनेजर में आपका स्वागत है!')}
+              </h2>
 
-          {/* Core Modules Grid */}
-          <div>
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-2xl font-bold text-slate-900 flex items-center gap-2.5">
-                <Layers className="text-[#340C8E]" size={24} />
-                {t('Core Modules:', 'मुख्य मॉड्यूल:')}
-              </h3>
-            </div>
+              <p className="text-slate-700 text-base sm:text-lg font-semibold">
+                {t("Let's get your organization all set up.", 'आइए आपके संगठन को सेट करें।')}
+              </p>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
-              {[
-                {
-                  id: 'dashboard',
-                  icon: LayoutDashboard,
-                  title: t('Dashboard Overview', 'डैशबोर्ड अवलोकन'),
-                  desc: t(
-                    'A quick snapshot of total employees, present staff, leaves, and daily activities of the company.',
-                    'कंपनी के कुल कर्मचारियों, उपस्थित कर्मचारियों, छुट्टियों और दैनिक गतिविधियों की एक त्वरित झलक।'
-                  ),
-                },
-                {
-                  id: 'employees',
-                  icon: Users,
-                  title: t('Employee Management', 'कर्मचारी प्रबंधन'),
-                  desc: t(
-                    'Complete record of employee details, branch, department, and salary increments.',
-                    'कर्मचारी विवरण, शाखा, विभाग और वेतन वृद्धि का पूरा रिकॉर्ड।'
-                  ),
-                },
-                {
-                  id: 'attendance',
-                  icon: Clock,
-                  title: t('Attendance & Shifts', 'उपस्थिति और शिफ्ट'),
-                  desc: t(
-                    'Complete control over real-time attendance tracking and flexible shift scheduling.',
-                    'रीयल-टाइम उपस्थिति ट्रैकिंग और लचीली शिफ्ट शेड्यूलिंग पर पूर्ण नियंत्रण।'
-                  ),
-                },
-                {
-                  id: 'payroll',
-                  icon: IndianRupee,
-                  title: t('Payroll & Salary', 'पेरोल और वेतन'),
-                  desc: t(
-                    'Automatic, error-free salary calculation and payslip generation based on attendance.',
-                    'उपस्थिति के आधार पर स्वचालित, त्रुटि-मुक्त वेतन गणना और पेस्लिप निर्माण।'
-                  ),
-                },
-                {
-                  id: 'leaves',
-                  icon: Calendar,
-                  title: t('Leaves & Holidays', 'छुट्टियां और अवकाश'),
-                  desc: t(
-                    'Manage time off effectively with integrated leave policies and holiday calendars.',
-                    'एकीकृत अवकाश नीतियों और हॉलिडे कैलेंडर के साथ समय प्रबंधन प्रभावी ढंग से करें।'
-                  ),
-                },
-                {
-                  id: 'reports',
-                  icon: BarChart2,
-                  title: t('Reports & Analytics', 'रिपोर्ट्स और एनालिटिक्स'),
-                  desc: t(
-                    'Generate detailed, exportable reports to gain insights into your organization\'s operations.',
-                    'अपने संगठन के संचालन में अंतर्दृष्टि प्राप्त करने के लिए विस्तृत, निर्यात योग्य रिपोर्ट तैयार करें।'
-                  ),
-                },
-                {
-                  id: 'users',
-                  icon: Shield,
-                  title: t('User Management', 'उपयोगकर्ता प्रबंधन'),
-                  desc: t(
-                    'Control who has access to the Promanager system and what they can do.',
-                    'नियंत्रित करें कि प्रोमैनेजर प्रणाली तक किसकी पहुंच है और वे क्या कर सकते हैं।'
-                  ),
-                },
-              ].map((mod) => (
-                <div
-                  key={mod.id}
-                  onClick={() => setActiveSection(mod.id)}
-                  className="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-2xs hover:shadow-md hover:border-[#340C8E]/40 transition-all duration-200 cursor-pointer group flex flex-col justify-between"
-                >
-                  <div>
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="w-10 h-10 rounded-xl bg-purple-50 text-[#340C8E] flex items-center justify-center group-hover:bg-[#340C8E] group-hover:text-white transition-colors duration-200 shadow-2xs">
-                        <mod.icon size={20} />
-                      </div>
-                      <span className="text-slate-400 group-hover:text-[#340C8E] transition-colors">
-                        <ArrowRight size={17} />
-                      </span>
-                    </div>
-                    <strong className=" font-bold text-lg sm:text-xl block group-hover:text-[#340C8E]  ">
-                      {mod.title}
-                    </strong>
-                    <p className="text-slate-700 text-sm leading-relaxed mt-2 font-medium">
-                      {mod.desc}
-                    </p>
-                  </div>
-                  <div className="mt-4 pt-3 border-t border-slate-100 flex items-center text-sm font-bold text-[#340C8E] group-hover:underline">
-                    <span>Explore Module →</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Quick Info & Support Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            <div className="bg-white p-7 rounded-2xl border border-slate-200 shadow-xs">
-              <h3 className="text-[#340C8E] font-bold text-lg mb-2.5 flex items-center gap-2">
-                <BookOpen size={20} className="text-[#340C8E]" /> {t('Getting Started', 'शुरुआत कैसे करें')}
-              </h3>
-              <p className="text-slate-700 text-sm sm:text-base leading-relaxed">
+              <p className="text-slate-500 text-sm sm:text-base leading-relaxed max-w-2xl">
                 {t(
-                  'To understand the various features of Promanager in detail, click on the topics provided in the left sidebar.',
-                  'प्रोमैनेजर की विभिन्न विशेषताओं को विस्तार से समझने के लिए, बाएँ साइडबार में दिए गए विषयों पर क्लिक करें।'
+                  'To help you get the most out of ProManager, please complete the following steps in order. Each step is important to ensure smooth HR & Payroll operations.',
+                  'प्रोमैनेजर का अधिकतम लाभ उठाने में आपकी सहायता के लिए, कृपया निम्नलिखित चरणों को क्रम से पूरा करें। सुचारू एचआर और पेरोल संचालन सुनिश्चित करने के लिए प्रत्येक चरण महत्वपूर्ण है।'
                 )}
               </p>
             </div>
 
-            <div className="bg-white p-7 rounded-2xl border border-slate-200 shadow-xs">
-              <h3 className="text-[#340C8E] font-bold text-lg mb-2.5 flex items-center gap-2">
-                <Briefcase size={20} className="text-[#340C8E]" /> {t('Contact & Support', 'संपर्क और सहायता')}
+            {/* Right Illustration Graphic */}
+            <div className="lg:col-span-5 flex justify-center lg:justify-end">
+              <img
+                src="/onboarding_illustration1.png"
+                alt="Onboarding Setup"
+                className="w-full max-w-[420px] sm:max-w-[460px] h-auto object-contain"
+              />
+            </div>
+          </div>
+
+          {/* Main Grid: Left Cards & Right Setup Timeline */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+            {/* Left Column (5 Cols): Info, Why Steps, Tip (Pushed to bottom) */}
+            <div className="lg:col-span-5 flex flex-col justify-between space-y-5">
+              <div className="space-y-5">
+                {/* Info Box */}
+                <div className="bg-purple-50/70 border border-purple-100 rounded-2xl p-4 flex items-center gap-3.5 text-[#340C8E]">
+                  <div className="w-8 h-8 rounded-full bg-purple-100 text-[#340C8E] flex items-center justify-center flex-shrink-0 font-bold text-xs">
+                    <Info size={18} />
+                  </div>
+                  <p className="text-xs sm:text-sm font-semibold leading-snug">
+                    {t(
+                      'You need to complete all the steps below before accessing the full dashboard.',
+                      'पूर्ण डैशबोर्ड तक पहुंचने से पहले आपको नीचे दिए गए सभी चरणों को पूरा करना होगा।'
+                    )}
+                  </p>
+                </div>
+
+                {/* Why these steps? Card with Target Graphic */}
+                <div className="bg-[#F9F8FF] border border-purple-100 rounded-3xl p-6 relative overflow-hidden flex items-center justify-between shadow-2xs">
+                  <div className="space-y-3.5 max-w-[65%] relative z-10">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-8 h-8 rounded-full bg-purple-100 text-[#340C8E] flex items-center justify-center">
+                        <Target size={18} />
+                      </div>
+                      <h3 className="text-[18px] font-bold text-slate-900">
+                        {t('Why these steps?', 'ये चरण क्यों?')}
+                      </h3>
+                    </div>
+
+                    <ul className="space-y-3 text-xs sm:text-sm text-slate-700 font-medium">
+                      {[
+                        t('Set up your organization structure', 'अपना संगठन ढांचा सेट करें'),
+                        t('Add your employees', 'अपने कर्मचारियों को जोड़ें'),
+                        t('Configure attendance & leave policies', 'उपस्थिति और अवकाश नीतियां कॉन्फ़िगर करें'),
+                        t('Set up payroll settings', 'पेरोल सेटिंग्स सेट करें'),
+                        t("You're ready to go!", 'आप जाने के लिए तैयार हैं!')
+                      ].map((item, idx) => (
+                        <li key={idx} className="flex items-center gap-2">
+                          <span className="text-[#340C8E] font-extrabold">✓</span>
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  {/* Target Graphic Image */}
+                  <div className="relative z-0 w-48 sm:w-52 h-48 sm:h-52 flex items-center justify-center flex-shrink-0 -mr-4">
+                    <img
+                      src="/target_dartboard2.png"
+                      alt="Target Dartboard"
+                      className="w-48 sm:w-52 h-48 sm:h-52 object-contain mix-blend-multiply filter contrast-125 brightness-105"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Contact & Support Box */}
+              <div className="bg-white border border-slate-200/90 rounded-2xl p-4 space-y-2.5 shadow-2xs">
+                <div className="flex items-center gap-2 text-[#340C8E] font-bold text-base">
+                  <Briefcase size={18} className="text-[#340C8E] flex-shrink-0" />
+                  <h4 className="text-slate-900 font-bold text-base">
+                    {t('Contact & Support', 'संपर्क और सहायता')}
+                  </h4>
+                </div>
+
+                <div className="space-y-1.5 text-xs sm:text-sm text-slate-600 font-medium pt-1">
+                  <div className="flex items-center gap-2">
+                    <span className="text-slate-700 font-bold">{t('Website:', 'वेबसाइट:')}</span>
+                    <a
+                      href="http://promanager.in/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[#340C8E] hover:underline font-semibold"
+                    >
+                      http://promanager.in/
+                    </a>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <span className="text-slate-700 font-bold">{t('Support:', 'सहायता:')}</span>
+                    <a
+                      href="tel:8866779008"
+                      className="text-[#340C8E] hover:underline font-semibold bg-purple-50 px-2 py-0.5 rounded-md border border-purple-100"
+                    >
+                      8866779008
+                    </a>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <span className="text-slate-700 font-bold">{t('Inquiries:', 'पूछताछ:')}</span>
+                    <a
+                      href="https://promanager.in/contact"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[#340C8E] hover:underline font-semibold"
+                    >
+                      https://promanager.in/contact
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Column (7 Cols): Setup Progress Timeline */}
+            <div className="lg:col-span-7">
+              <h3 className="text-[25px] font-bold text-slate-900 mb-3">
+                {t('Setup Progress', 'सेटअप प्रगति')}
               </h3>
-              <div className="text-slate-800 text-sm leading-relaxed space-y-2">
-                <p className="flex items-center gap-1.5">
-                  <span className="font-semibold text-slate-700">{t('Website: ', 'वेबसाइट: ')}</span>
-                  <a href="http://promanager.in/" className="text-[#340C8E] underline font-bold" target="_blank" rel="noopener noreferrer">http://promanager.in/</a>
-                </p>
-                <p className="flex items-center gap-1.5">
-                  <span className="font-semibold text-slate-700">{t('Support: ', 'सहायता: ')}</span>
-                  <strong className="text-slate-900 font-bold text-base">8866779008</strong>
-                </p>
-                <p className="flex items-center gap-1.5">
-                  <span className="font-semibold text-slate-700">{t('Inquiries: ', 'पूछताछ: ')}</span>
-                  <a href="https://promanager.in/contact" className="text-[#340C8E] underline font-bold" target="_blank" rel="noopener noreferrer">https://promanager.in/contact</a>
+
+              <div className="relative space-y-2">
+                {/* Continuous Connecting Line passing directly through and touching circles */}
+                <div className="absolute left-[15px] top-4 bottom-4 w-[2px] bg-slate-200 z-0" />
+
+                {/* 7 Core Modules Item Rows */}
+                {[
+                  {
+                    num: 1,
+                    icon: LayoutDashboard,
+                    title: t('Dashboard Overview', 'डैशबोर्ड पूर्वावलोकन'),
+                    desc: t(
+                      'A quick snapshot of total employees, present staff, leaves, and daily activities of the company.',
+                      'कंपनी के कुल कर्मचारियों, वर्तमान कर्मचारियों, पत्तियों और दैनिक गतिविधियों का त्वरित अवलोकन।'
+                    ),
+                    sectionId: 'dashboard'
+                  },
+                  {
+                    num: 2,
+                    icon: Users,
+                    title: t('Employee Management', 'कर्मचारी प्रबंधन'),
+                    desc: t(
+                      'Complete record of employee details, branch, department, and salary increments.',
+                      'कर्मचारी विवरण, शाखा, विभाग और वेतन वृद्धि का पूरा रिकॉर्ड।'
+                    ),
+                    sectionId: 'employees'
+                  },
+                  {
+                    num: 3,
+                    icon: Clock,
+                    title: t('Attendance & Shifts', 'उपस्थिति और पालियाँ'),
+                    desc: t(
+                      'Complete control over real-time attendance tracking and flexible shift scheduling.',
+                      'वास्तविक समय की उपस्थिति ट्रैकिंग और लचीली शिफ्ट शेड्यूलिंग पर पूर्ण नियंत्रण।'
+                    ),
+                    sectionId: 'attendance'
+                  },
+                  {
+                    num: 4,
+                    icon: IndianRupee,
+                    title: t('Payroll & Salary', 'पेरोल और वेतन'),
+                    desc: t(
+                      'Automatic, error-free salary calculation and payslip generation based on attendance.',
+                      'उपस्थिति के आधार पर स्वचालित, त्रुटिहीन वेतन गणना और वेतन पर्ची निर्माण।'
+                    ),
+                    sectionId: 'payroll'
+                  },
+                  {
+                    num: 5,
+                    icon: Calendar,
+                    title: t('Leaves & Holidays', 'पत्तियां और छुट्टियां'),
+                    desc: t(
+                      'Manage time off effectively with integrated leave policies and holiday calendars.',
+                      'एकीकृत अवकाश नीतियों और छुट्टी कैलेंडर के साथ प्रभावी ढंग से समय का प्रबंधन करें।'
+                    ),
+                    sectionId: 'leaves'
+                  },
+                  {
+                    num: 6,
+                    icon: BarChart2,
+                    title: t('Reports & Analytics', 'रिपोर्ट और विश्लेषण'),
+                    desc: t(
+                      "Generate detailed, exportable reports to gain insights into your organization's operations.",
+                      'अपने संगठन के संचालन में अंतर्दृष्टि प्राप्त करने के लिए विस्तृत, निर्यात योग्य रिपोर्ट उत्पन्न करें।'
+                    ),
+                    sectionId: 'reports'
+                  },
+                  {
+                    num: 7,
+                    icon: Shield,
+                    title: t('User Management', 'उपयोगकर्ता प्रबंधन'),
+                    desc: t(
+                      'Control who has access to the Promanager system and what they can do.',
+                      'नियंत्रित करें कि प्रोमैनेजर सिस्टम तक किसकी पहुंच है और वे क्या कर सकते हैं।'
+                    ),
+                    sectionId: 'users'
+                  }
+                ].map((step) => {
+                  const IconComp = step.icon;
+                  return (
+                    <div key={step.num} className="relative z-10 flex items-center gap-3">
+                      {/* Step Number Circle */}
+                      <div className="relative z-10 w-8 h-8 rounded-full bg-white border border-slate-200 text-slate-700 font-extrabold text-xs flex items-center justify-center flex-shrink-0 shadow-2xs">
+                        {step.num}
+                      </div>
+
+                      {/* Interactive Core Module Content Card */}
+                      <div
+                        onClick={() => setActiveSection(step.sectionId)}
+                        className="flex-1 bg-white border border-slate-200/90 hover:border-purple-300 rounded-2xl p-2.5 sm:p-2 flex flex-nowrap items-center justify-between gap-3 shadow-2xs cursor-pointer transition-all group min-w-0"
+                      >
+                        <div className="flex items-center gap-2.5 min-w-0 flex-1 overflow-hidden">
+                          <div className="w-8 h-8 rounded-xl bg-purple-50 text-[#340C8E] group-hover:bg-[#340C8E] group-hover:text-white flex items-center justify-center flex-shrink-0 transition-colors">
+                            <IconComp size={16} />
+                          </div>
+                          <div className="min-w-0 flex-1 overflow-hidden">
+                            <h4 className="text-[15px] sm:text-[16px] font-semibold text-slate-900 truncate group-hover:text-[#340C8E] transition-colors">
+                              {step.title}
+                            </h4>
+                            <p className="text-[12px] sm:text-[13px] text-slate-500 truncate mt-0.5">
+                              {step.desc}
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* Interactive Explore Module Button */}
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setActiveSection(step.sectionId);
+                          }}
+                          className="px-3 py-1.5 rounded-xl bg-purple-50 text-[#340C8E] group-hover:bg-[#340C8E] group-hover:text-white text-xs font-bold transition-all flex items-center gap-1 shrink-0 whitespace-nowrap border border-purple-200/80 cursor-pointer shadow-2xs ml-auto"
+                        >
+                          <span className="whitespace-nowrap">{t('More', 'अधिक')}</span>
+                          <ArrowRight size={12} className="group-hover:translate-x-0.5 transition-transform shrink-0" />
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom Footer Banner */}
+          <div className="p-4 sm:p-5 bg-purple-50/70 border border-purple-100 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-3.5">
+              <div className="w-10 h-10 rounded-xl bg-purple-100 text-[#340C8E] flex items-center justify-center flex-shrink-0">
+                <Lock size={20} />
+              </div>
+              <div>
+                <h4 className="font-bold text-slate-900 text-sm sm:text-base">
+                  {t('Complete all 7 modules to access your dashboard', 'अपने डैशबोर्ड तक पहुंचने के लिए सभी 7 मॉड्यूल पूरा करें')}
+                </h4>
+                <p className="text-[14px] text-slate-500">
+                  {t('It will only take a few minutes.', 'इसमें केवल कुछ मिनट लगेंगे।')}
                 </p>
               </div>
             </div>
+
+            <button
+              onClick={() => setActiveSection('dashboard')}
+              className="bg-[#340C8E] hover:bg-[#25086B] text-white font-bold px-6 py-3 rounded-xl shadow-md flex items-center gap-2 text-md w-full sm:w-auto justify-center cursor-pointer"
+            >
+              <span>{t("Let's Get Started", 'आइए शुरू करें')}</span>
+              <ArrowRight size={16} />
+            </button>
           </div>
         </div>
       )
@@ -954,36 +1080,81 @@ const DocumentPage = () => {
         </div>
 
 
+        {/* Bottom Left Sidebar Video Promo Card */}
+        <div className="p-3.5 m-3 mt-auto bg-gradient-to-br from-purple-950 via-[#340C8E] to-indigo-950 rounded-2xl text-white shadow-md relative overflow-hidden group border border-purple-800/40">
+          <div className="absolute -right-3 -bottom-3 w-16 h-16 bg-red-500/20 rounded-full blur-xl group-hover:scale-150 transition-transform" />
+          <div className="relative z-10 space-y-2">
+            <div className="flex items-center gap-2">
+              <div className="w-7 h-7 rounded-lg bg-red-600 text-white flex items-center justify-center shrink-0 shadow-xs">
+                <Youtube size={16} />
+              </div>
+              <span className="font-semibold text-md text-white truncate">
+                {t('Video Tutorials', 'वीडियो ट्यूटोरियल')}
+              </span>
+            </div>
+            <p className="text-[13px] text-purple-200 leading-snug">
+              {t('Watch step-by-step video guides on Youtube.', 'यूट्यूब पर चरण-दर-चरण वीडियो गाइड देखें।')}
+            </p>
+            <a
+              href="https://www.youtube.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full mt-1 bg-white hover:bg-slate-100 text-[#340C8E] font-bold py-1.5 px-3 rounded-xl text-sm flex items-center justify-center gap-1.5 transition-colors shadow-xs cursor-pointer"
+            >
+              <span>{t('Watch Now', 'अभी देखें')}</span>
+              <ExternalLink size={12} />
+            </a>
+          </div>
+        </div>
       </div>
 
       {/* Main Content Viewport */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden relative">
-        {/* Floating Top Right Language Switcher */}
-        <div className="absolute top-6 right-8 z-30 flex items-center gap-1 bg-white p-1 rounded-2xl border border-slate-200/90 shadow-md">
-          <Languages size={16} className="text-slate-500 ml-2 mr-1" />
-          <button
-            onClick={() => setLanguage('en')}
-            className={`px-4 py-1.5 rounded-xl text-xs font-bold transition-all duration-200 ${language === 'en'
-              ? 'bg-[#340C8E] text-white shadow-sm'
-              : 'text-slate-600 hover:text-slate-900'
-              }`}
+        {/* Unified Top Right Executive Toolbar */}
+        <div className="absolute top-6 right-8 z-30 flex items-center gap-2 bg-white/95 backdrop-blur-md p-1.5 rounded-2xl border border-slate-200/90 shadow-md">
+          {/* Learn with Videos Action Button */}
+          <a
+            href="https://www.youtube.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 bg-red-50 hover:bg-red-100/90 text-red-600 px-3 py-1.5 rounded-xl text-xs font-bold transition-all border border-red-200/80 hover:border-red-300 cursor-pointer group"
           >
-            English
-          </button>
-          <button
-            onClick={() => setLanguage('hi')}
-            className={`px-4 py-1.5 rounded-xl text-xs font-bold transition-all duration-200 ${language === 'hi'
-              ? 'bg-[#340C8E] text-white shadow-md'
-              : 'text-slate-600 hover:text-slate-900'
-              }`}
-          >
-            हिंदी
-          </button>
+            <div className="w-5 h-5 rounded-md bg-red-600 text-white flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+              <Youtube size={12} />
+            </div>
+            <span>{t('Learn with Videos', 'वीडियो ट्यूटोरियल')}</span>
+            <ExternalLink size={11} className="text-red-400 group-hover:translate-x-0.5 transition-transform" />
+          </a>
+
+          <div className="h-4 w-[1px] bg-slate-200 my-auto" />
+
+          {/* Language Switcher */}
+          <div className="flex items-center gap-1">
+            <Languages size={15} className="text-slate-400 ml-1 mr-0.5" />
+            <button
+              onClick={() => setLanguage('en')}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all duration-200 ${language === 'en'
+                ? 'bg-[#340C8E] text-white shadow-xs'
+                : 'text-slate-600 hover:text-slate-900'
+                }`}
+            >
+              English
+            </button>
+            <button
+              onClick={() => setLanguage('hi')}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all duration-200 ${language === 'hi'
+                ? 'bg-[#340C8E] text-white shadow-xs'
+                : 'text-slate-600 hover:text-slate-900'
+                }`}
+            >
+              हिंदी
+            </button>
+          </div>
         </div>
 
         {/* Scrollable Document Content Area */}
-        <main ref={contentRef} className="flex-1 overflow-y-auto p-6 sm:p-8 md:p-10 custom-scrollbar">
-          <div className="max-w-7xl mx-auto bg-white rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-200/90 p-6 sm:p-8 md:p-10 mb-12 mt-4">
+        <main ref={contentRef} className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8 custom-scrollbar">
+          <div className="max-w-7xl mx-auto bg-white rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-200/90 p-5 sm:p-7 md:p-8 mb-12 mt-16">
             {activeSectionData?.content}
           </div>
         </main>

@@ -54,8 +54,8 @@ const BranchForm = ({ onSubmit, loading = false, showToast, initialData = null, 
 
     return (
         <div className="bg-[var(--color-bg-secondary)] rounded-xl shadow-sm border border-[var(--color-primary-dark)] overflow-hidden">
-            <div className="p-5 bg-[var(--color-bg-secondary)]">
-                <div className="flex w-full flex-row items-center justify-between mb-4">
+            <div className="p-6 bg-[var(--color-bg-secondary)]">
+                <div className="flex w-full flex-row items-center justify-between ">
                     <div className="space-y-2" >
                         <label htmlFor="branchName" className=" text-sm font-medium text-[var(--color-text-secondary)] mb-2 ">
                             Add New Branch <span className="text-[var(--color-error)]">*</span>
@@ -78,7 +78,7 @@ const BranchForm = ({ onSubmit, loading = false, showToast, initialData = null, 
                     <button
                         onClick={handleSubmit}
                         disabled={isSubmitting || loading || !name.trim()}
-                        className="w-full sm:w-[200px] inline-flex items-center justify-center px-6 py-3 bg-[var(--color-primary-dark)] text-[var(--color-text-white)] font-medium rounded-lg hover:bg-[var(--color-primary-darker)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--color-primary)] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-sm hover:shadow-md"
+                        className="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3 bg-[var(--color-primary-dark)] text-[var(--color-text-white)] font-medium rounded-lg hover:bg-[var(--color-primary-darker)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--color-primary)] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-sm hover:shadow-md"
                     >
                         {isSubmitting ? (
                             <>

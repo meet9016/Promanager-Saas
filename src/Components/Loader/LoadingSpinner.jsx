@@ -1,27 +1,27 @@
 import React from 'react';
 
 const LoadingSpinner = () => (
-  <div className="flex items-center justify-center min-h-screen bg-[var(--color-bg-gradient-start)] bg-gradient-to-br from-[var(--color-bg-gradient-start)] to-[var(--color-bg-gradient-end)]">
+  <div className="flex items-center justify-center min-h-screen">
     <div className="text-center">
       {/* Custom 3D Spinner */}
       <div className="relative mb-6">
         <span className="loader"></span>
       </div>
-      
+
       {/* Loading text with animation */}
       <p className="text-[var(--color-text-primary)] font-medium animate-pulse text-lg mb-3">
         Loading...
       </p>
-      
+
       {/* Animated dots */}
       <div className="flex space-x-1 justify-center">
         <div className="h-2 w-2 bg-[var(--color-primary)] rounded-full animate-bounce"></div>
-        <div 
-          className="h-2 w-2 bg-[var(--color-primary)] rounded-full animate-bounce" 
+        <div
+          className="h-2 w-2 bg-[var(--color-primary)] rounded-full animate-bounce"
           style={{ animationDelay: '0.1s' }}
         ></div>
-        <div 
-          className="h-2 w-2 bg-[var(--color-primary)] rounded-full animate-bounce" 
+        <div
+          className="h-2 w-2 bg-[var(--color-primary)] rounded-full animate-bounce"
           style={{ animationDelay: '0.2s' }}
         ></div>
       </div>

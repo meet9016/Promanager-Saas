@@ -324,7 +324,7 @@ const LandingNavbar = () => {
                             ))}
 
                             {/* Pages Dropdown */}
-                            <div
+                            {/* <div
                                 className="relative"
                                 onMouseEnter={() => setIsPagesOpen(true)}
                                 onMouseLeave={() => setIsPagesOpen(false)}
@@ -335,7 +335,7 @@ const LandingNavbar = () => {
                                         className={`h-4 w-4 transition-transform duration-200 ${isPagesOpen ? "rotate-180" : ""
                                             }`}
                                     />
-                                    {/* Hover Border */}
+                                  
                                     <motion.div
                                         className="absolute bottom-0 left-0 right-0 h-0.5 bg-[var(--color-primary)]"
                                         initial={{ scaleX: 0 }}
@@ -374,7 +374,7 @@ const LandingNavbar = () => {
                                         </motion.div>
                                     )}
                                 </AnimatePresence>
-                            </div>
+                            </div> */}
                             {/* <NavLink
                                 to="/contact"
                                 onClick={scrollToTop}

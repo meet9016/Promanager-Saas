@@ -812,20 +812,21 @@ const DailyAttendance = () => {
   }, [attendanceData, searchQuery, activeFilter]);
 
   const [currentPage, setCurrentPage] = useState(1);
-  const rowsPerPage = 10;
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const rowsPerPage = itemsPerPage;
 
-  const totalPages = useMemo(() => Math.max(1, Math.ceil((filteredData?.length || 0) / rowsPerPage)), [filteredData?.length]);
+  const totalPages = useMemo(() => Math.max(1, Math.ceil((filteredData?.length || 0) / itemsPerPage)), [filteredData?.length, itemsPerPage]);
 
   const paginatedData = useMemo(() => {
-    const start = (currentPage - 1) * rowsPerPage;
-    const end = start + rowsPerPage;
+    const start = (currentPage - 1) * itemsPerPage;
+    const end = start + itemsPerPage;
     return (filteredData || []).slice(start, end);
-  }, [filteredData, currentPage]);
+  }, [filteredData, currentPage, itemsPerPage]);
 
   const emptyRowCount = useMemo(() => {
-    const count = rowsPerPage - (paginatedData?.length || 0);
+    const count = itemsPerPage - (paginatedData?.length || 0);
     return count > 0 ? count : 0;
-  }, [paginatedData]);
+  }, [paginatedData, itemsPerPage]);
 
   useEffect(() => {
     setCurrentPage(1);
@@ -950,12 +951,37 @@ const DailyAttendance = () => {
                       getRowStyling={getRowStyling}
                     />
                   ))}
-                  <Pagination
-                    currentPage={currentPage}
-                    totalPages={totalPages}
-                    onPageChange={setCurrentPage}
-                    loading={loading}
-                  />
+                  <div className="mt-4 flex flex-col sm:flex-row items-center justify-between px-4 py-3 border-t border-[var(--color-border-primary)] bg-[var(--color-bg-gray)] rounded-lg gap-3">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs sm:text-sm font-medium text-[var(--color-text-secondary)]">
+                        Rows per page:
+                      </span>
+                      <select
+                        value={itemsPerPage}
+                        onChange={(e) => {
+                          const val = parseInt(e.target.value);
+                          setItemsPerPage(val);
+                          setCurrentPage(1);
+                        }}
+                        className="h-[32px] border border-[var(--color-border-secondary)] rounded-md text-xs sm:text-sm text-[var(--color-text-secondary)] bg-white px-2 focus:outline-none cursor-pointer"
+                      >
+                        <option value={10}>10</option>
+                        <option value={20}>20</option>
+                        <option value={50}>50</option>
+                        <option value={100}>100</option>
+                      </select>
+                    </div>
+                    <div className="flex-1 flex justify-end w-full sm:w-auto">
+                      <Pagination
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        onPageChange={setCurrentPage}
+                        loading={loading}
+                        alwaysShow={true}
+                        className="!border-t-0 !bg-transparent !p-0"
+                      />
+                    </div>
+                  </div>
                 </div>
               )}
             </div>
@@ -1134,14 +1160,38 @@ const DailyAttendance = () => {
                     </TableBody>
                   </Table>
 
-                  {/* Pagination */}
-                  <Pagination
-                    currentPage={currentPage}
-                    totalPages={totalPages}
-                    onPageChange={setCurrentPage}
-                    loading={loading}
-                    className="!p-5"
-                  />
+                  {/* Pagination and Rows per page */}
+                  <div className="mt-auto flex flex-col sm:flex-row items-center justify-between px-6 py-4 border-t border-[var(--color-border-primary)] bg-[var(--color-bg-gray)] gap-4">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-medium text-[var(--color-text-secondary)]">
+                        Rows per page:
+                      </span>
+                      <select
+                        value={itemsPerPage}
+                        onChange={(e) => {
+                          const val = parseInt(e.target.value);
+                          setItemsPerPage(val);
+                          setCurrentPage(1);
+                        }}
+                        className="h-[35px] border border-[var(--color-border-secondary)] rounded-md text-sm text-[var(--color-text-secondary)] bg-white px-2 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] cursor-pointer"
+                      >
+                        <option value={10}>10</option>
+                        <option value={20}>20</option>
+                        <option value={50}>50</option>
+                        <option value={100}>100</option>
+                      </select>
+                    </div>
+                    <div className="flex-1 flex justify-end">
+                      <Pagination
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        onPageChange={setCurrentPage}
+                        loading={loading}
+                        alwaysShow={true}
+                        className="!border-t-0 !bg-transparent !p-0"
+                      />
+                    </div>
+                  </div>
                 </div>
               )}
             </div>

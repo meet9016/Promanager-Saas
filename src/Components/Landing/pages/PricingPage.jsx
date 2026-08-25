@@ -1,5 +1,3 @@
-
-
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Helmet } from "@dr.pogodin/react-helmet";
@@ -185,14 +183,14 @@ const PricingPage = () => {
           </motion.svg>
         </div>
 
-        <h2 className="text-4xl lg:text-5xl font-bold text-[var(--color-text-primary)] mb-4">
+        {/* <h2 className="text-4xl lg:text-5xl font-bold text-[var(--color-text-primary)] mb-4">
           Choose The Best Plan,{" "}
           <span className="bg-[var(--color-primary-dark)] bg-clip-text text-transparent">
             For Your Business
           </span>
-        </h2>
+        </h2> */}
         <p className="text-lg text-[var(--color-text-secondary)] max-w-2xl mx-auto">
-          Plans are customized as per your company size
+          Start your <span className="font-bold text-[var(--color-primary-dark)] bg-[#EDE8FF] px-2.5 py-1 rounded-lg border border-[#6C4CF1]/20">30-day free trial</span> and experience all the features risk-free.
         </p>
       </motion.div>
 
@@ -204,12 +202,12 @@ const PricingPage = () => {
         ) : (
           <>
             {/* ── ESTIMATOR ── */}
-            <div className="container mx-auto mb-16 relative px-4 py-4">
+            <div className="container mx-auto mb-16 relative px-4 py-4 max-w-[1200px]">
               <div className="absolute -inset-4 bg-gradient-to-br from-[#6C4CF1]/20 via-[#a78bfa]/10 to-transparent rounded-[2.5rem] blur-2xl pointer-events-none" />
               <div className="relative bg-white/70 backdrop-blur-xl border border-white rounded-[1.75rem] p-5 shadow-[0_8px_40px_rgba(108,76,241,0.12)]">
-                <div className="text-center mb-4">
+                {/* <div className="text-center mb-4">
                   <h3 className="font-bold text-md text-gray-800">Estimate Your Monthly Cost</h3>
-                </div>
+                </div> */}
 
                 <div className="mb-1 px-1">
                   <style>{`
@@ -259,54 +257,54 @@ const PricingPage = () => {
                   ))}
                 </div>
 
-                {/* 3 Estimator Cards matching Image 1 Red Box design */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                {/* 3 Estimator Cards - Clean White SaaS Design with Brand Purple Accents */}
+                <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 mt-5">
                   {/* Card 1: USERS */}
-                  <div className="bg-white rounded-2xl border border-[#6c4cf19e] p-4 sm:p-5 shadow-[0_4px_20px_rgba(108,76,241,0.04)] flex items-center gap-4">
-                    <div className="w-16 h-16 rounded-full bg-[#EDE8FF] text-[#2F0B7F] flex items-center justify-center flex-shrink-0">
-                      <svg className="w-8" fill="none" stroke="currentColor" strokeWidth={2.2} viewBox="0 0 24 24">
+                  <div className="bg-white rounded-2xl border border-gray-400 p-3.5 sm:p-4 shadow-[0_4px_20px_rgba(108,76,241,0.05)] hover:shadow-[0_8px_25px_rgba(108,76,241,0.1)] hover:border-[#6C4CF1]/30 transition-all duration-300 flex items-center gap-3.5">
+                    <div className="w-11 h-11 rounded-xl bg-[#6C4CF1]/10 text-[#6C4CF1] flex items-center justify-center flex-shrink-0">
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2.2} viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                       </svg>
                     </div>
-                    <div className="flex flex-col text-left">
-                      <span className="text-[14px] font-bold text-gray-500 ">
+                    <div className="flex flex-col text-left min-w-0">
+                      <span className="text-[12px] font-semibold text-gray-400 uppercase tracking-wider">
                         Users
                       </span>
-                      <span className="text-2xl font-bold text-gray-900 tracking-tight mt-0.5">
+                      <span className="text-xl font-bold text-gray-900 leading-tight">
                         {users}
                       </span>
                     </div>
                   </div>
 
                   {/* Card 2: SELECTED PLAN */}
-                  <div className="bg-white rounded-2xl border border-[#6c4cf19e] p-4 sm:p-5 shadow-[0_4px_20px_rgba(108,76,241,0.04)] flex items-center gap-4">
-                    <div className="w-16 h-16 rounded-full bg-[#EDE8FF] text-[#2F0B7F] flex items-center justify-center flex-shrink-0">
-                      <svg className="w-8" fill="none" stroke="currentColor" strokeWidth={2.2} viewBox="0 0 24 24">
+                  <div className="bg-white rounded-2xl border border-gray-400 p-3.5 sm:p-4 shadow-[0_4px_20px_rgba(108,76,241,0.05)] hover:shadow-[0_8px_25px_rgba(108,76,241,0.1)] hover:border-[#6C4CF1]/30 transition-all duration-300 flex items-center gap-3.5">
+                    <div className="w-11 h-11 rounded-xl bg-[#6C4CF1]/10 text-[#6C4CF1] flex items-center justify-center flex-shrink-0">
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2.2} viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
                       </svg>
                     </div>
-                    <div className="flex flex-col text-left">
-                      <span className="text-[14px] font-bold text-gray-500 ">
+                    <div className="flex flex-col text-left min-w-0">
+                      <span className="text-[12px] font-semibold text-gray-400 uppercase tracking-wider">
                         Selected Plan
                       </span>
-                      <span className="text-2xl font-bold text-gray-900 tracking-tight mt-0.5">
+                      <span className="text-xl font-bold text-gray-900 leading-tight truncate">
                         {plans[safeActivePlan]?.name || "Free"}
                       </span>
                     </div>
                   </div>
 
                   {/* Card 3: EST. MONTHLY */}
-                  <div className="bg-white rounded-2xl border border-[#6c4cf19e] p-4 sm:p-5 shadow-[0_4px_20px_rgba(108,76,241,0.04)] flex items-center gap-4">
-                    <div className="w-16 h-16 rounded-full bg-[#EDE8FF] text-[#2F0B7F] flex items-center justify-center flex-shrink-0">
-                      <svg className="w-8" fill="none" stroke="currentColor" strokeWidth={2.2} viewBox="0 0 24 24">
+                  <div className="bg-white rounded-2xl border border-gray-400 p-3.5 sm:p-4 shadow-[0_4px_20px_rgba(108,76,241,0.05)] hover:shadow-[0_8px_25px_rgba(108,76,241,0.1)] hover:border-[#6C4CF1]/30 transition-all duration-300 flex items-center gap-3.5">
+                    <div className="w-11 h-11 rounded-xl bg-[#6C4CF1]/10 text-[#6C4CF1] flex items-center justify-center flex-shrink-0">
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2.2} viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                       </svg>
                     </div>
-                    <div className="flex flex-col text-left">
-                      <span className="text-[14px] font-bold text-gray-500 ">
+                    <div className="flex flex-col text-left min-w-0">
+                      <span className="text-[12px] font-semibold text-gray-400 uppercase tracking-wider">
                         Est. Monthly
                       </span>
-                      <span className="text-2xl font-bold text-gray-900 tracking-tight mt-0.5">
+                      <span className="text-xl font-bold text-[#6C4CF1] leading-tight truncate">
                         ₹{estimated}
                       </span>
                     </div>
@@ -324,7 +322,27 @@ const PricingPage = () => {
                     key={i}
                     whileHover={{ y: -5 }}
                     transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                    className={`relative rounded-[1.75rem] p-7 transition-all duration-300 ${isActive
+                    onClick={() => {
+                      const isFree =
+                        plan.name?.toLowerCase() === "free" ||
+                        Number(plan.price_per_user) === 0 ||
+                        plan.user_range === "0-3";
+
+                      if (isFree) {
+                        setIsRegisterOpen(true);
+                      } else {
+                        navigate("/payment", {
+                          state: {
+                            plan: {
+                              ...plan,
+                              ...getPlanColors(plan.name),
+                            },
+                            users,
+                          },
+                        });
+                      }
+                    }}
+                    className={`relative rounded-[1.75rem] p-7 transition-all duration-300 cursor-pointer ${isActive
                       ? "bg-[var(--color-primary-dark)] text-white shadow-[0_20px_60px_rgba(108,76,241,0.35)] scale-[1.03] border border-white/10"
                       : "bg-white border border-gray-100 shadow-[0_4px_20px_rgba(0,0,0,0.06)] hover:shadow-[0_8px_32px_rgba(108,76,241,0.12)] hover:border-[#6C4CF1]/20"
                       }`}
@@ -333,7 +351,8 @@ const PricingPage = () => {
                       <>
                         {/* inner glow */}
                         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-px bg-gradient-to-r from-transparent via-white/40 to-transparent" />
-                        <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-white text-[var(--color-primary-darker)] text-[13px] font-bold px-4 py-1 rounded-full shadow-md ">
+                        <span className="absolute -top-4 left-1/2 -translate-x-1/2 bg-white text-[#340C8E] text-[11px] font-extrabold px-4 py-1 rounded-full shadow-[0_6px_20px_rgba(0,0,0,0.22)] border border-purple-200 flex items-center gap-1.5 whitespace-nowrap tracking-wider uppercase">
+                          <span className="w-2 h-2 rounded-full bg-[#6C4CF1] animate-pulse" />
                           Best Match
                         </span>
                       </>
