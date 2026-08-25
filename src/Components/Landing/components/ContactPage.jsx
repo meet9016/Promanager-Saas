@@ -286,7 +286,7 @@ const ContactPage = () => {
                   label: "Phone",
                   value: config?.mobile_number || config?.mobileNumber || "-",
                   gradient: "from-emerald-500 to-teal-600",
-                  href: (config?.mobile_number || config?.mobileNumber) ? `tel:${config?.mobile_number || config?.mobileNumber}` : "tel:+919274889008",
+                  href: (config?.mobile_number || config?.mobileNumber) ? `tel:${config?.mobile_number || config?.mobileNumber}` : "tel:+918866779008",
                   isExternal: false,
                 },
                 {

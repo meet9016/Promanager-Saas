@@ -181,7 +181,7 @@ const MonthlySalaryReport = () => {
 
     // Pagination
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(10);
+    const [itemsPerPage, setItemsPerPage] = useState(10);
 
     // Auto-close export dropdown if anchor goes off-screen
     useEffect(() => {
@@ -408,7 +408,7 @@ const MonthlySalaryReport = () => {
                                 </button>
                                 <div className="flex items-center gap-3">
                                     <div>
-                                        <h1 className="text-2xl font-bold text-[var(--color-text-white)]">Monthly Salary Report{filters.month_year && `- ${getMonthYearDisplay(filters.month_year)}`}</h1>
+                                        <h1 className="text-2xl font-bold text-[var(--color-text-white)]">Monthly Salary Report {filters.month_year && `- ${getMonthYearDisplay(filters.month_year)}`}</h1>
                                     </div>
                                 </div>
                             </div>
@@ -816,15 +816,37 @@ const MonthlySalaryReport = () => {
                             </TableBody>
                         </Table>
 
-                        {/* Pagination */}
-                        <div className="border-t border-[var(--color-border-primary)] bg-[var(--color-bg-primary)]">
-                            <Pagination
-                                currentPage={currentPage}
-                                totalPages={totalPages}
-                                onPageChange={handlePageChange}
-                                loading={reportGenerating}
-                                className='!py-4'
-                            />
+                        {/* Pagination and Rows per page */}
+                        <div className="mt-auto flex flex-col sm:flex-row items-center justify-between px-6 py-4 border-t border-[var(--color-border-primary)] bg-[var(--color-bg-gray)] gap-4">
+                            <div className="flex items-center gap-2">
+                                <span className="text-sm font-medium text-[var(--color-text-secondary)]">
+                                    Rows per page:
+                                </span>
+                                <select
+                                    value={itemsPerPage}
+                                    onChange={(e) => {
+                                        const val = parseInt(e.target.value);
+                                        setItemsPerPage(val);
+                                        setCurrentPage(1);
+                                    }}
+                                    className="h-[35px] border border-[var(--color-border-secondary)] rounded-md text-sm text-[var(--color-text-secondary)] bg-white px-2 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] cursor-pointer"
+                                >
+                                    <option value={10}>10</option>
+                                    <option value={20}>20</option>
+                                    <option value={50}>50</option>
+                                    <option value={100}>100</option>
+                                </select>
+                            </div>
+                            <div className="flex-1 flex justify-end">
+                                <Pagination
+                                    currentPage={currentPage}
+                                    totalPages={totalPages}
+                                    onPageChange={handlePageChange}
+                                    loading={reportGenerating}
+                                    alwaysShow={true}
+                                    className="!border-t-0 !bg-transparent !p-0"
+                                />
+                            </div>
                         </div>
                     </div>
                 )}

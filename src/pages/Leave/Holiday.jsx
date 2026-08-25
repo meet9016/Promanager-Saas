@@ -405,6 +405,21 @@ export default function HolidayManagement() {
                                 {/* RIGHT — Agenda timeline */}
                                 <aside className="lg:col-span-4 lg:border-l lg:border-[var(--color-border-secondary)] lg:pl-10">
                                     <div className="sticky top-6">
+                                        {/* Legend */}
+                                        <div className="flex flex-wrap items-center gap-4 mb-6 pb-4 border-b border-[var(--color-border-secondary)]">
+                                            {[
+                                                { label: "Public", c: "bg-[#8b5cf6]" },
+                                                { label: "National", c: "bg-[#10b981]" },
+                                                { label: "Festival", c: "bg-[#ec4899]" },
+                                                { label: "Other", c: "bg-[#f59e0b]" },
+                                            ].map((t) => (
+                                                <span key={t.label} className="inline-flex items-center gap-2 text-[11px] font-medium text-[var(--color-text-secondary)]">
+                                                    <span className={`w-2 h-2 rounded-full ${t.c}`} />
+                                                    {t.label}
+                                                </span>
+                                            ))}
+                                        </div>
+
                                         {/* Upcoming agenda */}
                                         <h3 className="text-lg font-bold text-[var(--color-text-primary)] mb-6">
                                             Upcoming Holidays
@@ -481,18 +496,18 @@ export default function HolidayManagement() {
                                             {holidays.map((h) => {
                                                 const dates = Array.isArray(h.holiday_dates) ? h.holiday_dates : (h.holiday_dates ? h.holiday_dates.split(',') : []);
                                                 return (
-                                                    <TableRow key={h.holiday_id} className="hover:bg-[var(--color-bg-hover)] transition-colors align-top">
-                                                        <Td className="px-6 py-4 align-top">
+                                                    <TableRow key={h.holiday_id} className="hover:bg-[var(--color-bg-hover)] transition-colors align-middle">
+                                                        <Td className="px-6 py-4 align-middle">
                                                             <div className="font-semibold text-[var(--color-text-primary)] text-justify">{h.holiday_name}</div>
                                                         </Td>
-                                                        <Td className="px-6 py-4 align-top text-justify">
+                                                        <Td className="px-6 py-4 align-middle text-justify">
                                                             <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border  ${getTypeColor(h.holiday_type_name)}`}>
                                                                 {getTypeIcon(h.holiday_type_name)}
                                                                 {h.holiday_type_name}
                                                             </span>
                                                         </Td>
 
-                                                        <Td className="px-6 py-4 align-top text-justify">
+                                                        <Td className="px-6 py-4 align-middle text-justify">
                                                             {h.holiday_paid === "1" ? (
                                                                 <span className="px-3 py-1 text-xs bg-green-100 text-green-700 rounded-full">Paid</span>
                                                             ) : (
@@ -500,7 +515,7 @@ export default function HolidayManagement() {
                                                             )}
                                                         </Td>
 
-                                                        <Td className="px-6 py-4 align-top max-w-[280px]">
+                                                        <Td className="px-6 py-4 align-middle max-w-[280px]">
                                                             <div className="flex flex-wrap gap-1 text-xs max-h-20 overflow-y-auto pr-2">
                                                                 {dates.map((d, idx) => (
                                                                     <span key={idx} className="px-2 py-0.5 bg-primary-50 text-primary-700 rounded border border-primary-200">
@@ -510,10 +525,10 @@ export default function HolidayManagement() {
                                                             </div>
                                                         </Td>
 
-                                                        {/* <Td className="px-6 py-4 text-sm text-[var(--color-text-secondary)] max-w-xs align-top">
+                                                        {/* <Td className="px-6 py-4 text-sm text-[var(--color-text-secondary)] max-w-xs align-middle">
                                                             <div className="truncate">{h.description || "-"}</div>
                                                         </Td> */}
-                                                        <Td className="px-6 py-4 align-top">
+                                                        <Td className="px-6 py-4 align-middle">
                                                             <div className="flex items-center gap-3">
                                                                 {permissions['holiday_view'] && (
                                                                     <button
@@ -883,21 +898,6 @@ function CalendarComponent({ currentMonth, setCurrentMonth, getHolidayForDate })
                 >
                     <ChevronRight size={16} />
                 </button>
-            </div>
-
-            {/* Legend */}
-            <div className="px-6 py-3 bg-white flex flex-wrap items-center gap-5 border-b border-[var(--color-border-secondary)]">
-                {[
-                    { label: "Public", c: "bg-[#8b5cf6]" },
-                    { label: "National", c: "bg-[#10b981]" },
-                    { label: "Festival", c: "bg-[#ec4899]" },
-                    { label: "Other", c: "bg-[#f59e0b]" },
-                ].map((t) => (
-                    <span key={t.label} className="inline-flex items-center gap-2 text-[11px] font-medium text-[var(--color-text-secondary)]">
-                        <span className={`w-2 h-2 rounded-full ${t.c}`} />
-                        {t.label}
-                    </span>
-                ))}
             </div>
 
             {/* Calendar Grid Header */}
