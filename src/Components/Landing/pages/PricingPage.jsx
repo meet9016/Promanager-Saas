@@ -9,6 +9,7 @@ const PricingPage = () => {
   const [users, setUsers] = useState(3);
   const [loading, setLoading] = useState(false);
   const [plans, setPlans] = useState([]);
+  const [expandedPlans, setExpandedPlans] = useState({});
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
 
   const [toast, setToast] = useState(null);
@@ -183,12 +184,12 @@ const PricingPage = () => {
           </motion.svg>
         </div>
 
-        {/* <h2 className="text-4xl lg:text-5xl font-bold text-[var(--color-text-primary)] mb-4">
+        <h2 className="text-4xl lg:text-5xl font-bold text-[var(--color-text-primary)] mb-4">
           Choose The Best Plan,{" "}
           <span className="bg-[var(--color-primary-dark)] bg-clip-text text-transparent">
             For Your Business
           </span>
-        </h2> */}
+        </h2>
         <p className="text-lg text-[var(--color-text-secondary)] max-w-2xl mx-auto">
           Start your <span className="font-bold text-[var(--color-primary-dark)] bg-[#EDE8FF] px-2.5 py-1 rounded-lg border border-[#6C4CF1]/20">30-day free trial</span> and experience all the features risk-free.
         </p>
@@ -202,13 +203,10 @@ const PricingPage = () => {
         ) : (
           <>
             {/* ── ESTIMATOR ── */}
-            <div className="container mx-auto mb-16 relative px-4 py-4 max-w-[1200px]">
+            {/* <div className="container mx-auto mb-16 relative px-4 py-4 max-w-[1200px]">
               <div className="absolute -inset-4 bg-gradient-to-br from-[#6C4CF1]/20 via-[#a78bfa]/10 to-transparent rounded-[2.5rem] blur-2xl pointer-events-none" />
               <div className="relative bg-white/70 backdrop-blur-xl border border-white rounded-[1.75rem] p-5 shadow-[0_8px_40px_rgba(108,76,241,0.12)]">
-                {/* <div className="text-center mb-4">
-                  <h3 className="font-bold text-md text-gray-800">Estimate Your Monthly Cost</h3>
-                </div> */}
-
+             
                 <div className="mb-1 px-1">
                   <style>{`
         .pricing-slider { -webkit-appearance: none; appearance: none; width: 100%; height: 6px; border-radius: 999px;
@@ -231,7 +229,6 @@ const PricingPage = () => {
                   />
                 </div>
 
-                {/* Clickable Tick Mark Labels with Proportional Visual Spacing */}
                 <div className="relative w-full h-6 text-xs font-bold text-gray-500 mt-1 mb-4 select-none">
                   {[
                     { label: "0", val: 0, pos: "0%" },
@@ -257,66 +254,63 @@ const PricingPage = () => {
                   ))}
                 </div>
 
-                {/* 3 Estimator Cards - Clean White SaaS Design with Brand Purple Accents */}
-                <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 mt-5">
-                  {/* Card 1: USERS */}
-                  <div className="bg-white rounded-2xl border border-gray-400 p-3.5 sm:p-4 shadow-[0_4px_20px_rgba(108,76,241,0.05)] hover:shadow-[0_8px_25px_rgba(108,76,241,0.1)] hover:border-[#6C4CF1]/30 transition-all duration-300 flex items-center gap-3.5">
-                    <div className="w-11 h-11 rounded-xl bg-[#6C4CF1]/10 text-[#6C4CF1] flex items-center justify-center flex-shrink-0">
+                <div className="max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mt-5">
+                  <div className="bg-white rounded-xl border border-gray-200 p-3 sm:p-4 shadow-[0_2px_15px_rgba(108,76,241,0.04)] hover:shadow-[0_6px_25px_rgba(108,76,241,0.08)] hover:border-[#6C4CF1]/30 transition-all duration-300 flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-lg bg-[#6C4CF1]/10 text-[#6C4CF1] flex items-center justify-center flex-shrink-0">
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2.2} viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                       </svg>
                     </div>
                     <div className="flex flex-col text-left min-w-0">
-                      <span className="text-[12px] font-semibold text-gray-400 uppercase tracking-wider">
+                      <span className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide">
                         Users
                       </span>
-                      <span className="text-xl font-bold text-gray-900 leading-tight">
+                      <span className="text-lg font-bold text-gray-900 leading-none mt-0.5">
                         {users}
                       </span>
                     </div>
                   </div>
 
-                  {/* Card 2: SELECTED PLAN */}
-                  <div className="bg-white rounded-2xl border border-gray-400 p-3.5 sm:p-4 shadow-[0_4px_20px_rgba(108,76,241,0.05)] hover:shadow-[0_8px_25px_rgba(108,76,241,0.1)] hover:border-[#6C4CF1]/30 transition-all duration-300 flex items-center gap-3.5">
-                    <div className="w-11 h-11 rounded-xl bg-[#6C4CF1]/10 text-[#6C4CF1] flex items-center justify-center flex-shrink-0">
+                  <div className="bg-white rounded-xl border border-gray-200 p-3 sm:p-4 shadow-[0_2px_15px_rgba(108,76,241,0.04)] hover:shadow-[0_6px_25px_rgba(108,76,241,0.08)] hover:border-[#6C4CF1]/30 transition-all duration-300 flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-lg bg-[#6C4CF1]/10 text-[#6C4CF1] flex items-center justify-center flex-shrink-0">
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2.2} viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
                       </svg>
                     </div>
                     <div className="flex flex-col text-left min-w-0">
-                      <span className="text-[12px] font-semibold text-gray-400 uppercase tracking-wider">
+                      <span className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide">
                         Selected Plan
                       </span>
-                      <span className="text-xl font-bold text-gray-900 leading-tight truncate">
+                      <span className="text-lg font-bold text-gray-900 leading-none truncate mt-0.5">
                         {plans[safeActivePlan]?.name || "Free"}
                       </span>
                     </div>
                   </div>
 
-                  {/* Card 3: EST. MONTHLY */}
-                  <div className="bg-white rounded-2xl border border-gray-400 p-3.5 sm:p-4 shadow-[0_4px_20px_rgba(108,76,241,0.05)] hover:shadow-[0_8px_25px_rgba(108,76,241,0.1)] hover:border-[#6C4CF1]/30 transition-all duration-300 flex items-center gap-3.5">
-                    <div className="w-11 h-11 rounded-xl bg-[#6C4CF1]/10 text-[#6C4CF1] flex items-center justify-center flex-shrink-0">
+                  <div className="bg-white rounded-xl border border-gray-200 p-3 sm:p-4 shadow-[0_2px_15px_rgba(108,76,241,0.04)] hover:shadow-[0_6px_25px_rgba(108,76,241,0.08)] hover:border-[#6C4CF1]/30 transition-all duration-300 flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-lg bg-[#6C4CF1]/10 text-[#6C4CF1] flex items-center justify-center flex-shrink-0">
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2.2} viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                       </svg>
                     </div>
                     <div className="flex flex-col text-left min-w-0">
-                      <span className="text-[12px] font-semibold text-gray-400 uppercase tracking-wider">
+                      <span className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide">
                         Est. Monthly
                       </span>
-                      <span className="text-xl font-bold text-[#6C4CF1] leading-tight truncate">
+                      <span className="text-lg font-bold text-[#6C4CF1] leading-none truncate mt-0.5">
                         ₹{estimated}
                       </span>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
+            </div> */}
 
             {/* ── PLANS GRID ── */}
             <div className="container mx-auto mb-16 relative px-4 py-4 grid md:grid-cols-4 gap-5 items-start">
               {plans.map((plan, i) => {
-                const isActive = i === safeActivePlan;
+                // Always highlight the Gold plan statically as the premium choice
+                const isActive = plan.name?.toLowerCase() === "gold";
                 return (
                   <motion.div
                     key={i}
@@ -380,13 +374,24 @@ const PricingPage = () => {
 
                     {/* Features */}
                     <div className="space-y-2.5 mb-7">
-                      {plan.features.map((f, j) => (
+                      {(expandedPlans[i] ? plan.features : plan.features.slice(0, 7)).map((f, j) => (
                         <div key={j} className={`text-md flex gap-2.5 items-center ${isActive ? "text-white/85" : "text-gray-500"}`}>
                           <span className={`w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center text-[12px] font-black ${isActive ? "bg-white/20 text-white" : "bg-[#6C4CF1]/10 text-[var(--color-primary-darker)]"
                             }`}>✓</span>
                           {f}
                         </div>
                       ))}
+                      {plan.features.length > 7 && (
+                        <div
+                          className={`text-[13.5px] font-bold cursor-pointer text-right mt-3 select-none ${isActive ? "text-white/90 hover:text-white" : "text-[#6C4CF1] hover:text-[#5b3ce0]"}`}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setExpandedPlans((prev) => ({ ...prev, [i]: !prev[i] }));
+                          }}
+                        >
+                          {expandedPlans[i] ? "Show Less" : `+ ${plan.features.length - 7} More`}
+                        </div>
+                      )}
                     </div>
 
                     <button
