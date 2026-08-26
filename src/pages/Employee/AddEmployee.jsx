@@ -232,7 +232,7 @@ const AddEmployee = () => {
                     ifscCode: employee.bank_ifsc_code || '',
                     emergencyContactNo: employee.emergency_contact_number || '',
                     contactPersonName: employee.emergency_contact_name || '',
-                    relation: employee.emergency_relation || '',
+                    relation: employee.emergency_relation_id || employee.emergency_relation || employee.relation_id || employee.emergency_contact_relation || '',
                     emergencyAddress: employee.emergency_address || '',
                     dateOfBirth: employee.dob || '',
                     dateOfJoining: employee.date_of_joining || '',

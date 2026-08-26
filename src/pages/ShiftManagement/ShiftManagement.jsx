@@ -509,7 +509,7 @@ const ShiftManagement = () => {
                             </div>
 
                             {/* Content section */}
-                            {!loading ? (
+                            {loading ? (
                                 <div className="px-0 py-0 text-center">
                                     <div className="inline-flex items-center space-x-2 text-[var(--color-text-secondary)]">
                                         <LoadingSpinner />

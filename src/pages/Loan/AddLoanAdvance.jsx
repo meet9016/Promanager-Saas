@@ -253,6 +253,22 @@ const AddLoanAdvance = ({
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
+        if (name === 'guarantorContact') {
+            const sanitizedValue = value.replace(/\D/g, '').slice(0, 10);
+            setFormData(prev => ({
+                ...prev,
+                [name]: sanitizedValue
+            }));
+
+            if (errors[name]) {
+                setErrors(prev => ({
+                    ...prev,
+                    [name]: ''
+                }));
+            }
+            return;
+        }
+
         setFormData(prev => ({
             ...prev,
             [name]: value
@@ -869,7 +885,8 @@ const AddLoanAdvance = ({
                                         name="guarantorContact"
                                         value={formData.guarantorContact}
                                         onChange={handleInputChange}
-                                        placeholder="Enter contact number/email"
+                                        placeholder="Enter contact number"
+                                        maxLength={10}
                                     />
                                 </div>
                             </div>
