@@ -320,6 +320,13 @@ const MonthlyReport = () => {
         fetchEmployees();
     }, [fetchEmployees]);
 
+    useEffect(() => {
+        if (user?.user_id) {
+            handleGenerateReport(true);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [user?.user_id]);
+
     const fetchReportData = async () => {
         if (!user?.user_id) throw new Error('User ID is required');
         if (!filters.month_year) throw new Error('Please select a month and year');
@@ -341,8 +348,6 @@ const MonthlyReport = () => {
     };
 
     const handleFilterChange = (key, value) => {
-        setReportData([]);
-        setHasGenerated(false);
         setError('');
 
         setFilters((prev) => {
@@ -374,7 +379,7 @@ const MonthlyReport = () => {
         }
     };
 
-    const handleGenerateReport = async () => {
+    const handleGenerateReport = async (isAuto = false) => {
         try {
             setLoading(true);
             setError('');
@@ -403,11 +408,15 @@ const MonthlyReport = () => {
 
             setReportData(Object.values(groupedData));
             setHasGenerated(true);
-            showToast('Report generated successfully!', 'success');
+            if (!isAuto) {
+                showToast('Report generated successfully!', 'success');
+            }
         } catch (e) {
             console.error(e);
             setError(e.message || 'Failed to load data');
-            showToast(e.message || 'Failed to load data', 'error');
+            if (!isAuto) {
+                showToast(e.message || 'Failed to load data', 'error');
+            }
             setReportData([]);
         } finally {
             setLoading(false);

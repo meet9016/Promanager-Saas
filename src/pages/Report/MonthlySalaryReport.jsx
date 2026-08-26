@@ -271,8 +271,14 @@ const MonthlySalaryReport = () => {
     useEffect(() => { fetchDropdownData(); }, [fetchDropdownData]);
     useEffect(() => { fetchEmployees(); }, [fetchEmployees]);
 
+    useEffect(() => {
+        if (user?.user_id) {
+            handleGenerateReport(true);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [user?.user_id]);
 
-    const handleGenerateReport = async () => {
+    const handleGenerateReport = async (isAuto = false) => {
         try {
             setLoading(true);
             setError('');
@@ -282,7 +288,7 @@ const MonthlySalaryReport = () => {
             }
 
             if (!filters.month_year) {
-                showToast('Please select a month and year', 'error');
+                if (!isAuto) showToast('Please select a month and year', 'error');
                 return;
             }
 
@@ -298,21 +304,20 @@ const MonthlySalaryReport = () => {
             if (response.data?.success && response.data.data) {
                 setReportData(response.data.data);
                 setCurrentPage(1);
-                showToast('Report generated successfully', 'success');
+                if (!isAuto) showToast('Report generated successfully', 'success');
             } else {
                 throw new Error(response.data?.message || 'Failed to generate report');
             }
         } catch (err) {
             const errorMessage = err.message || 'Failed to generate report';
             setError(errorMessage);
-            showToast(errorMessage, 'error');
+            if (!isAuto) showToast(errorMessage, 'error');
         } finally {
             setLoading(false);
         }
     };
 
     const handleFilterChange = (key, value) => {
-        setReportData(null);
         setError('');
         setFilters(prev => {
             const next = { ...prev, [key]: value };

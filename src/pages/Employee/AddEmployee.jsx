@@ -508,7 +508,12 @@ const AddEmployee = () => {
 
     const handleReferenceChange = (index, field, value) => {
         const updatedReferences = [...formData.references];
-        updatedReferences[index][field] = value;
+        if (field === 'contactNumber') {
+            const sanitizedValue = value.replace(/\D/g, '').slice(0, 10);
+            updatedReferences[index][field] = sanitizedValue;
+        } else {
+            updatedReferences[index][field] = value;
+        }
         setFormData(prev => ({ ...prev, references: updatedReferences }));
     };
 
@@ -1785,6 +1790,7 @@ const AddEmployee = () => {
                                                                         onChange={(e) => handleReferenceChange(index, 'contactNumber', e.target.value)}
                                                                         placeholder="Enter contact number"
                                                                         clearable={true}
+                                                                        maxLength={10}
                                                                     />
                                                                 </div>
                                                             </div>

@@ -396,8 +396,18 @@ const PayMonthlySalaryReport = () => {
     useEffect(() => { fetchDropdownData(); }, [fetchDropdownData]);
     useEffect(() => { fetchEmployees(); }, [fetchEmployees]);
 
-    const handleGenerateReport = async () => {
-        if (!filters.month_year) { showToast('Please select a month and year', 'error'); return; }
+    useEffect(() => {
+        if (user?.user_id) {
+            handleGenerateReport(true);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [user?.user_id]);
+
+    const handleGenerateReport = async (isAuto = false) => {
+        if (!filters.month_year) {
+            if (!isAuto) showToast('Please select a month and year', 'error');
+            return;
+        }
         try {
             setLoading(true); setError('');
             const formData = new FormData();
@@ -411,11 +421,12 @@ const PayMonthlySalaryReport = () => {
                 setReportData(response.data.data);
                 setApiSummary(response.data.summary || null);
                 setCurrentPage(1);
-                showToast('Report generated successfully', 'success');
+                if (!isAuto) showToast('Report generated successfully', 'success');
             } else throw new Error(response.data?.message || 'Failed to generate report');
         } catch (err) {
             const msg = err.message || 'Failed to generate report';
-            setError(msg); showToast(msg, 'error');
+            setError(msg);
+            if (!isAuto) showToast(msg, 'error');
         } finally { setLoading(false); }
     };
 

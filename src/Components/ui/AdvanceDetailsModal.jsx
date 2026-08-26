@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { X, FileText, Plus, DollarSign, TrendingUp, CheckCircle, Clock, Calendar } from 'lucide-react';
+import { X, FileText, Plus, DollarSign, TrendingUp, CheckCircle, Clock, Calendar, AlertCircle, Wallet, Receipt, ShieldCheck } from 'lucide-react';
+import { Table, TableHeader, TableBody, TableRow, TableHeaderRow, Th, Td } from './Table';
 
 export const AdvanceDetailsModal = ({ isOpen, onClose, advanceDetails, loading, onAddPayment }) => {
     const [isAddPaymentOpen, setIsAddPaymentOpen] = useState(false);
@@ -56,11 +57,11 @@ export const AdvanceDetailsModal = ({ isOpen, onClose, advanceDetails, loading, 
     const getPaymentTypeBadge = (paymentType) => {
         const isManual = paymentType === 'Manually';
         return (
-            <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-full border ${isManual
-                ? 'bg-[var(--color-primary-lighter)] text-[var(--color-primary-dark)] border-[var(--color-primary-light)]'
-                : 'bg-green-100 text-green-800 border-green-200'
+            <span className={`inline-flex items-center gap-1.5 px-3 py-1 text-xs font-semibold rounded-full border shadow-2xs transition-all ${isManual
+                    ? 'bg-purple-50 text-purple-700 border-purple-200/80'
+                    : 'bg-emerald-50 text-emerald-700 border-emerald-200/80'
                 }`}>
-                {isManual ? <Clock className="w-3.5 h-3.5" /> : <CheckCircle className="w-3.5 h-3.5" />}
+                {isManual ? <Clock className="w-3 h-3 text-purple-600" /> : <CheckCircle className="w-3 h-3 text-emerald-600" />}
                 {paymentType}
             </span>
         );
@@ -72,122 +73,157 @@ export const AdvanceDetailsModal = ({ isOpen, onClose, advanceDetails, loading, 
     const progressPercentage = totalAmount > 0 ? (paidAmount / totalAmount) * 100 : 0;
 
     return (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-2xl max-w-4xl  w-full max-h-[90vh] overflow-hidden border border-[var(--color-primary-dark)]">
-                {/* Modal Header */}
-                <div className="relative bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] px-8 py-6">
-                    <button
-                        onClick={onClose}
-                        className="absolute top-6 right-6 text-[var(--color-text-white)] hover:text-[var(--color-text-white)] transition-colors p-1 hover:bg-white/10 rounded-lg"
-                    >
-                        <X className="w-5 h-5" />
-                    </button>
-                    <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
-                            <TrendingUp className="w-6 h-6 text-[var(--color-text-white)]" />
+        <div className="fixed inset-0 bg-slate-950/65 backdrop-blur-md flex items-center justify-center z-50 p-3 sm:p-5 animate-fadeIn">
+            <div className="bg-white rounded-3xl shadow-2xl max-w-4xl w-full max-h-[88vh] overflow-hidden border border-slate-200/80 flex flex-col transition-all">
+                
+                {/* Modern Brand Header */}
+                <div className="relative bg-gradient-to-r from-[var(--color-primary-dark)] via-[#4c1d95] to-[var(--color-primary-darker)] px-6 py-5 shadow-lg overflow-hidden shrink-0">
+                    {/* Background Soft Glow Circles */}
+                    <div className="absolute -top-12 -right-12 w-48 h-48 bg-white/10 rounded-full blur-3xl pointer-events-none"></div>
+                    <div className="absolute -bottom-12 -left-12 w-48 h-48 bg-purple-400/20 rounded-full blur-2xl pointer-events-none"></div>
+
+                    <div className="relative flex items-center justify-between z-10">
+                        <div className="flex items-center gap-3.5">
+                            <div className="w-11 h-11 bg-white/15 backdrop-blur-md rounded-2xl flex items-center justify-center border border-white/20 text-white shadow-inner shrink-0">
+                                <Wallet className="w-5.5 h-5.5" />
+                            </div>
+                            <div>
+                                <div className="flex items-center gap-2">
+                                    <h2 className="text-xl font-bold text-white tracking-tight">
+                                        Advance Payment Overview
+                                    </h2>
+                                    <span className="bg-white/20 text-white text-[11px] font-semibold px-2.5 py-0.5 rounded-full backdrop-blur-md border border-white/20">
+                                        Live Track
+                                    </span>
+                                </div>
+                                <p className="text-purple-100/90 text-xs mt-0.5 font-medium flex items-center gap-1.5">
+                                    <ShieldCheck className="w-3.5 h-3.5 text-purple-200" />
+                                    Real-time repayment tracking & ledger
+                                </p>
+                            </div>
                         </div>
-                        <div>
-                            <h2 className="text-2xl font-bold text-[var(--color-text-white)]">
-                                Advance Payment Details
-                            </h2>
-                            <p className="text-[var(--color-text-white)] text-sm mt-1">
-                                Manage and track advance payments
-                            </p>
-                        </div>
+
+                        <button
+                            onClick={onClose}
+                            className="text-white/80 hover:text-white bg-white/10 hover:bg-white/20 transition-all p-2 rounded-full cursor-pointer backdrop-blur-sm active:scale-95"
+                            title="Close"
+                        >
+                            <X className="w-5 h-5" />
+                        </button>
                     </div>
                 </div>
 
-                {/* Modal Content */}
-                <div className="p-8 overflow-y-auto max-h-[calc(90vh-140px)] bg-[var(--color-bg-primary)]">
+                {/* Main Scrollable Body */}
+                <div className="p-5 sm:p-6 overflow-y-auto max-h-[calc(88vh-80px)] bg-slate-50/50 custom-scrollbar flex-1 space-y-5">
                     {loading ? (
-                        <div className="flex flex-col items-center justify-center py-16">
-                            <div className="w-12 h-12 border-4 border-[var(--color-primary-dark)] border-t-transparent rounded-full animate-spin mb-4"></div>
-                            <p className="text-[var(--color-text-secondary)] font-medium">Loading advance details...</p>
+                        <div className="flex flex-col items-center justify-center py-20 gap-3">
+                            <div className="w-12 h-12 border-4 border-[var(--color-primary-dark)] border-t-transparent rounded-full animate-spin"></div>
+                            <p className="text-slate-600 font-semibold text-sm">Loading financial data...</p>
                         </div>
                     ) : advanceDetails ? (
                         <>
-                            {/* Summary Cards */}
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                                <div className="bg-[var(--color-bg-secondary)] rounded-xl p-8 shadow-sm border border-[var(--color-border-primary)] hover:shadow-md transition-shadow">
-                                    <div className="flex items-center justify-between mb-1">
-                                        <h3 className="text-sm font-medium text-[var(--color-text-secondary)]">Total Amount</h3>
-                                        <div className="w-10 h-10 bg-[var(--color-primary-lighter)] rounded-lg flex items-center justify-center">
-                                            <DollarSign className="w-5 h-5 text-[var(--color-primary-dark)]" />
+                            {/* Unified Financial Metrics Hub Banner */}
+                            <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/90">
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:divide-x md:divide-slate-100">
+                                    
+                                    {/* Metric 1: Total Advance */}
+                                    <div className="flex items-center gap-3.5 md:pr-4">
+                                        <div className="w-11 h-11 bg-purple-50 text-purple-700 rounded-2xl flex items-center justify-center border border-purple-100 shrink-0">
+                                            <DollarSign className="w-5.5 h-5.5" />
+                                        </div>
+                                        <div>
+                                            <span className="text-sm font-semibold text-slate-600">Total Advance</span>
+                                            <p className="text-xl font-black text-slate-900 tracking-tight mt-0.5">
+                                                {formatCurrency(totalAmount)}
+                                            </p>
                                         </div>
                                     </div>
-                                    <p className="text-3xl font-bold text-[var(--color-text-primary)]">
-                                        {formatCurrency(totalAmount)}
-                                    </p>
+
+                                    {/* Metric 2: Paid Amount */}
+                                    <div className="flex items-center gap-3.5 md:px-4">
+                                        <div className="w-11 h-11 bg-emerald-50 text-emerald-700 rounded-2xl flex items-center justify-center border border-emerald-100 shrink-0">
+                                            <CheckCircle className="w-5.5 h-5.5" />
+                                        </div>
+                                        <div>
+                                            <span className="text-sm font-semibold text-emerald-600">Paid Amount</span>
+                                            <p className="text-xl font-black text-emerald-600 tracking-tight mt-0.5">
+                                                {formatCurrency(paidAmount)}
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    {/* Metric 3: Remaining Balance */}
+                                    <div className="flex items-center gap-3.5 md:pl-4">
+                                        <div className="w-11 h-11 bg-amber-50 text-amber-700 rounded-2xl flex items-center justify-center border border-amber-100 shrink-0">
+                                            <Clock className="w-5.5 h-5.5" />
+                                        </div>
+                                        <div>
+                                            <span className="text-sm font-semibold text-amber-600">Remaining Balance</span>
+                                            <p className="text-xl font-black text-amber-600 tracking-tight mt-0.5">
+                                                {formatCurrency(remainingAmount)}
+                                            </p>
+                                        </div>
+                                    </div>
                                 </div>
 
-                                <div className="bg-[var(--color-bg-secondary)] rounded-xl p-8 shadow-sm border border-[var(--color-border-primary)] hover:shadow-md transition-shadow">
-                                    <div className="flex items-center justify-between mb-1">
-                                        <h3 className="text-sm font-medium text-[var(--color-text-secondary)]">Paid Amount</h3>
-                                        <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                                            <CheckCircle className="w-5 h-5 text-green-700" />
-                                        </div>
+                                {/* Integrated Progress Bar Below Banner */}
+                                <div className="mt-4 pt-4 border-t border-slate-100">
+                                    <div className="flex items-center justify-between text-sm font-bold mb-1.5">
+                                        <span className="text-slate-600 flex items-center gap-1.5">
+                                            <TrendingUp className="w-5 h-5 text-[var(--color-primary-dark)]" />
+                                            Repayment Progress
+                                        </span>
+                                        <span className="text-[var(--color-primary-dark)] bg-purple-50 border border-purple-100 px-2.5 py-0.5 rounded-full">
+                                            {progressPercentage.toFixed(1)}% Completed
+                                        </span>
                                     </div>
-                                    <p className="text-3xl font-bold text-green-700">
-                                        {formatCurrency(paidAmount)}
-                                    </p>
-                                </div>
-
-                                <div className="bg-[var(--color-bg-secondary)] rounded-xl p-8 shadow-sm border border-[var(--color-border-primary)] hover:shadow-md transition-shadow">
-                                    <div className="flex items-center justify-between mb-1">
-                                        <h3 className="text-sm font-medium text-[var(--color-text-secondary)]">Remaining Amount</h3>
-                                        <div className="w-10 h-10 bg-yellow-50 rounded-lg flex items-center justify-center">
-                                            <Clock className="w-5 h-5 text-yellow-600" />
-                                        </div>
+                                    <div className="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden p-0.5 border border-slate-200/60">
+                                        <div
+                                            className="bg-gradient-to-r from-[var(--color-primary-dark)] via-purple-600 to-emerald-500 h-1.5 rounded-full transition-all duration-700 ease-out shadow-xs"
+                                            style={{ width: `${Math.min(100, Math.max(0, progressPercentage))}%` }}
+                                        ></div>
                                     </div>
-                                    <p className="text-3xl font-bold text-yellow-600">
-                                        {formatCurrency(remainingAmount)}
-                                    </p>
                                 </div>
                             </div>
 
-                            {/* Progress Bar */}
-                            <div className="bg-[var(--color-bg-secondary)] rounded-xl p-8 shadow-sm border border-[var(--color-border-primary)] mb-6">
-                                <div className="flex items-center justify-between mb-3">
-                                    <h3 className="text-sm font-semibold text-[var(--color-text-primary)]">Payment Progress</h3>
-                                    <span className="text-sm font-medium text-[var(--color-text-secondary)]">{progressPercentage.toFixed(1)}%</span>
+                            {/* Section Header & Add Payment Trigger Button */}
+                            <div className="flex items-center justify-between pt-1">
+                                <div className="flex items-center gap-2">
+                                    <Receipt className="w-4.5 h-4.5 text-[var(--color-primary-dark)]" />
+                                    <h3 className="text-base font-bold text-slate-800 tracking-tight">Payment Ledger</h3>
                                 </div>
-                                <div className="w-full bg-[var(--color-bg-gray-light)] rounded-full h-3 overflow-hidden">
-                                    <div
-                                        className="bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] h-3 rounded-full transition-all duration-500 ease-out"
-                                        style={{ width: `${progressPercentage}%` }}
-                                    ></div>
-                                </div>
-                            </div>
 
-                            {/* Add Payment Button */}
-                            {remainingAmount > 0 && (
-                                <div className="mb-6 flex justify-end">
+                                {remainingAmount > 0 && !isAddPaymentOpen && (
                                     <button
                                         onClick={handleAddPaymentClick}
-                                        className="inline-flex items-center gap-2 bg-[var(--color-primary-dark)] text-[var(--color-text-white)] px-5 py-2.5 rounded-lg hover:bg-[var(--color-primary-darker)] hover:shadow-md transition-all font-medium active:scale-95"
+                                        className="inline-flex items-center gap-2 bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] text-white px-4 py-2 rounded-xl hover:shadow-lg hover:shadow-purple-900/20 hover:-translate-y-0.5 transition-all duration-200 font-semibold text-xs sm:text-sm cursor-pointer active:translate-y-0"
                                     >
-                                        <Plus className="w-4 h-4" />
-                                        Add Advance Payment
+                                        <Plus className="w-4 h-4 stroke-[2.5]" />
+                                        Add Payment
                                     </button>
-                                </div>
-                            )}
+                                )}
+                            </div>
 
-                            {/* Add Payment Form */}
+                            {/* Add Payment Form Container */}
                             {isAddPaymentOpen && (
-                                <div className="mb-6 bg-[var(--color-bg-secondary)] border border-[var(--color-primary-light)] rounded-xl p-8 shadow-sm">
-                                    <div className="flex items-center gap-3 mb-5">
-                                        <div className="w-10 h-10 bg-[var(--color-primary-lighter)] rounded-lg flex items-center justify-center">
-                                            <Plus className="w-5 h-5 text-[var(--color-primary-dark)]" />
+                                <div className="bg-gradient-to-br from-purple-50/60 via-white to-slate-50 border border-purple-200/90 rounded-2xl p-5 shadow-md animate-fadeIn">
+                                    <div className="flex items-center gap-2.5 mb-3.5 pb-2.5 border-b border-purple-100">
+                                        <div className="w-8 h-8 bg-[var(--color-primary-dark)] text-white rounded-xl flex items-center justify-center shadow-xs">
+                                            <Plus className="w-4 h-4 stroke-[2.5]" />
                                         </div>
-                                        <h3 className="text-lg font-semibold text-[var(--color-text-primary)]">Add New Payment</h3>
-                                    </div>
-                                    <div className="space-y-4">
                                         <div>
-                                            <label className="block flex text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                            <h4 className="text-md font-semibold text-slate-900">Record New Advance Payment</h4>
+                                            <p className="text-[13px] text-slate-500 font-medium">Enter payment amount to deduct from remaining balance</p>
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-3">
+                                        <div>
+                                            <label className="block text-sm font-semibold text-slate-700 mb-1.5">
                                                 Payment Amount
                                             </label>
-                                            <div className="relative">
-                                                <span className="absolute left-4 top-3 text-[var(--color-text-muted)] font-medium">₹</span>
+                                            <div className="relative flex items-center">
+                                                <span className="absolute left-3.5 text-slate-400 font-bold text-base pointer-events-none">₹</span>
                                                 <input
                                                     type="number"
                                                     value={paymentAmount}
@@ -196,40 +232,40 @@ export const AdvanceDetailsModal = ({ isOpen, onClose, advanceDetails, loading, 
                                                         setPaymentError('');
                                                     }}
                                                     placeholder={`Enter amount (Maximum: ${formatCurrency(remainingAmount)})`}
-                                                    className="w-full pl-10 pr-4 py-2.5 border border-[var(--color-border-secondary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent text-[var(--color-text-primary)] bg-[var(--color-bg-secondary)]"
+                                                    className="w-full pl-8 pr-4 py-2.5 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] focus:border-transparent text-slate-900 font-bold bg-white text-sm shadow-2xs transition-all placeholder:font-normal placeholder:text-slate-400"
                                                     min="0"
                                                     step="0.01"
                                                 />
                                             </div>
                                             {paymentError && (
-                                                <div className="mt-2 flex items-center gap-2 text-sm text-[var(--color-text-error)] bg-[var(--color-error-light)] px-3 py-2 rounded-lg">
-                                                    <X className="w-4 h-4" />
-                                                    {paymentError}
+                                                <div className="mt-2.5 flex items-center gap-1.5 text-xs font-semibold text-red-700 bg-red-50 border border-red-200 px-3.5 py-2 rounded-xl">
+                                                    <AlertCircle className="w-4 h-4 text-red-600 shrink-0" />
+                                                    <span>{paymentError}</span>
                                                 </div>
                                             )}
-
                                         </div>
-                                        <div className="flex gap-3 justify-end pt-2">
+
+                                        <div className="flex gap-2.5 justify-end pt-1">
                                             <button
                                                 onClick={handleCancelPayment}
                                                 disabled={isSubmitting}
-                                                className="px-5 py-2.5 border border-[var(--color-border-secondary)] rounded-lg hover:bg-[var(--color-bg-primary)] transition-colors font-medium text-[var(--color-text-primary)] disabled:opacity-50 disabled:cursor-not-allowed"
+                                                className="px-4 py-2 border border-slate-300 rounded-xl hover:bg-slate-100 transition-colors font-semibold text-slate-700 text-xs sm:text-sm disabled:opacity-50 cursor-pointer"
                                             >
                                                 Cancel
                                             </button>
                                             <button
                                                 onClick={handleSubmitPayment}
                                                 disabled={isSubmitting}
-                                                className="inline-flex items-center gap-2 px-5 py-2.5 bg-[var(--color-primary-dark)] text-[var(--color-text-white)] rounded-lg hover:bg-[var(--color-primary-darker)] disabled:bg-[var(--color-bg-gray-light)] disabled:cursor-not-allowed transition-all font-medium active:scale-95"
+                                                className="inline-flex items-center gap-1.5 px-5 py-2 bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] text-white rounded-xl hover:shadow-md transition-all font-semibold text-xs sm:text-sm disabled:opacity-50 active:scale-95 cursor-pointer"
                                             >
                                                 {isSubmitting ? (
                                                     <>
-                                                        <div className="w-4 h-4 border-2 border-[var(--color-text-white)] border-t-transparent rounded-full animate-spin"></div>
-                                                        Adding...
+                                                        <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                                                        Processing...
                                                     </>
                                                 ) : (
                                                     <>
-                                                        <CheckCircle className="w-4 h-4" />
+                                                        <CheckCircle className="w-3.5 h-3.5" />
                                                         Add Payment
                                                     </>
                                                 )}
@@ -239,75 +275,64 @@ export const AdvanceDetailsModal = ({ isOpen, onClose, advanceDetails, loading, 
                                 </div>
                             )}
 
-                            {/* Payment History Table */}
-                            <div className="bg-[var(--color-bg-secondary)] rounded-xl shadow-sm border border-[var(--color-border-primary)] overflow-hidden">
-                                <div className="px-6 py-4 bg-[var(--color-primary-lighter)] border-b border-[var(--color-border-primary)]">
-                                    <h3 className="text-lg font-semibold text-[var(--color-primary-darker)]">Payment History</h3>
-                                </div>
+                            {/* Payment History Table Card */}
+                            <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-sm border border-[var(--color-border-primary)] overflow-hidden">
                                 {advanceDetails.advance_list && advanceDetails.advance_list.length > 0 ? (
                                     <div className="overflow-x-auto">
-                                        <table className="w-full">
-                                            <thead className="bg-[var(--color-primary-dark)] border-b border-[var(--color-border-primary)]">
-                                                <tr>
-                                                    <th className="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
-                                                        No.
-                                                    </th>
-                                                    <th className="px-6 py-4 text-left text-xs font-semibold text-white  uppercase tracking-wider">
+                                        <Table className="min-w-full divide-y divide-[var(--color-border-divider)]">
+                                            <TableHeader>
+                                                <TableHeaderRow>
+                                                    <Th className="px-6 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-white">
                                                         Payment Date
-                                                    </th>
-                                                    <th className="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
+                                                    </Th>
+                                                    <Th className="px-6 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-white">
                                                         Amount
-                                                    </th>
-                                                    <th className="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
+                                                    </Th>
+                                                    <Th className="px-6 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-white">
                                                         Payment Type
-                                                    </th>
-                                                </tr>
-                                            </thead>
-                                            <tbody className="divide-y divide-[var(--color-border-divider)]">
+                                                    </Th>
+                                                </TableHeaderRow>
+                                            </TableHeader>
+                                            <TableBody className="bg-[var(--color-bg-secondary)] divide-y divide-[var(--color-border-divider)]">
                                                 {advanceDetails.advance_list.map((payment, index) => (
-                                                    <tr key={payment.employee_salary_id || index} className="hover:bg-[var(--color-bg-primary)] transition-colors">
-                                                        <td className="px-6 py-4 whitespace-nowrap">
-                                                            <div className="flex items-center justify-center w-8 h-8 rounded-full bg-[var(--color-bg-gray-light)] text-sm font-semibold text-[var(--color-text-primary)]">
-                                                                {index + 1}
-                                                            </div>
-                                                        </td>
-                                                        <td className="px-6 py-4 whitespace-nowrap">
-                                                            <div className="flex items-center gap-2 text-sm text-[var(--color-text-primary)]">
+                                                    <TableRow key={payment.employee_salary_id || index} className="border-b border-[var(--color-border-divider)] hover:bg-[var(--color-bg-primary)] transition-colors">
+                                                        <Td className="px-6 py-4 text-left whitespace-nowrap border-b border-[var(--color-border-divider)]">
+                                                            <div className="flex items-center gap-2 text-sm font-medium text-[var(--color-text-primary)]">
                                                                 <Calendar className="w-4 h-4 text-[var(--color-text-muted)]" />
                                                                 {payment.advance_payment_date}
                                                             </div>
-                                                        </td>
-                                                        <td className="px-6 py-4 whitespace-nowrap">
-                                                            <span className="text-sm font-semibold text-[var(--color-text-primary)]">
+                                                        </Td>
+                                                        <Td className="px-6 py-4 text-left whitespace-nowrap border-b border-[var(--color-border-divider)]">
+                                                            <span className="text-sm font-bold text-[var(--color-text-primary)]">
                                                                 {formatCurrency(payment.amount)}
                                                             </span>
-                                                        </td>
-                                                        <td className="px-6 py-4 whitespace-nowrap">
+                                                        </Td>
+                                                        <Td className="px-6 py-4 text-left whitespace-nowrap border-b border-[var(--color-border-divider)]">
                                                             {getPaymentTypeBadge(payment.payment_type_text)}
-                                                        </td>
-                                                    </tr>
+                                                        </Td>
+                                                    </TableRow>
                                                 ))}
-                                            </tbody>
-                                        </table>
+                                            </TableBody>
+                                        </Table>
                                     </div>
                                 ) : (
-                                    <div className="text-center py-16">
-                                        <div className="w-20 h-20 bg-[var(--color-bg-gray-light)] rounded-full flex items-center justify-center mx-auto mb-4">
-                                            <FileText className="w-10 h-10 text-[var(--color-text-muted)]" />
+                                    <div className="text-center py-12 px-4">
+                                        <div className="w-14 h-14 bg-[var(--color-bg-gray-light)] rounded-full flex items-center justify-center mx-auto mb-3 text-[var(--color-text-muted)]">
+                                            <FileText className="w-7 h-7" />
                                         </div>
-                                        <h3 className="text-xl font-semibold text-[var(--color-text-primary)] mb-2">No payment history found</h3>
-                                        <p className="text-[var(--color-text-secondary)]">No payments have been made for this advance yet.</p>
+                                        <h4 className="text-sm font-bold text-[var(--color-text-primary)] mb-1">No payment history found</h4>
+                                        <p className="text-xs text-[var(--color-text-secondary)]">No payments have been recorded for this advance yet.</p>
                                     </div>
                                 )}
                             </div>
                         </>
                     ) : (
-                        <div className="text-center py-16">
-                            <div className="w-20 h-20 bg-[var(--color-bg-gray-light)] rounded-full flex items-center justify-center mx-auto mb-4">
-                                <FileText className="w-10 h-10 text-[var(--color-text-muted)]" />
+                        <div className="text-center py-12 px-4">
+                            <div className="w-14 h-14 bg-[var(--color-bg-gray-light)] rounded-full flex items-center justify-center mx-auto mb-3 text-[var(--color-text-muted)]">
+                                <FileText className="w-7 h-7" />
                             </div>
-                            <h3 className="text-xl font-semibold text-[var(--color-text-primary)] mb-2">No advance details found</h3>
-                            <p className="text-[var(--color-text-secondary)]">Unable to load advance details.</p>
+                            <h4 className="text-sm font-bold text-[var(--color-text-primary)] mb-1">No advance details found</h4>
+                            <p className="text-xs text-[var(--color-text-secondary)]">Unable to load advance details.</p>
                         </div>
                     )}
                 </div>

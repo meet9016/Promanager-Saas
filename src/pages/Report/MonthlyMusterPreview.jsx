@@ -361,6 +361,13 @@ const MonthlyMusterPreview = () => {
     useEffect(() => { fetchDropdownData(); }, [fetchDropdownData]);
     useEffect(() => { fetchEmployees(); }, [fetchEmployees]);
 
+    useEffect(() => {
+        if (user?.user_id) {
+            handleGenerateReport(true);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [user?.user_id]);
+
     /* API */
     const fetchReportData = useCallback(async () => {
         if (!user?.user_id) throw new Error('User ID is required');
@@ -379,19 +386,24 @@ const MonthlyMusterPreview = () => {
     }, [user?.user_id, filters]);
 
     // Generate button handler - replaces automatic loading
-    const handleGenerateReport = async () => {
+    const handleGenerateReport = async (isAuto = false) => {
         try {
             setLoading(true);
             setError('');
             const data = await fetchReportData();
             setRows(data || []);
             setHasGenerated(true);
-            showToast('Report generated successfully!', 'success');
+            if (!isAuto) {
+                showToast('Report generated successfully!', 'success');
+            }
             // Always start from day 1
             if (containerRef.current) containerRef.current.scrollLeft = 0;
         } catch (e) {
             console.error(e);
             setError(e.message || 'Failed to load data');
+            if (!isAuto) {
+                showToast(e.message || 'Failed to load data', 'error');
+            }
             setRows([]);
         } finally {
             setLoading(false);
@@ -438,9 +450,7 @@ const MonthlyMusterPreview = () => {
 
     /* Filter change */
     const handleFilterChange = (key, value) => {
-        setRows([]); // clear data when filters change
         setError('');
-        setHasGenerated(false); // Reset generated state
         setFilters(prev => {
             const next = { ...prev, [key]: value };
             if (key === 'branch_id') { next.department_id = ''; next.designation_id = ''; next.employee_id = ''; }
@@ -563,7 +573,7 @@ const MonthlyMusterPreview = () => {
                                     <ArrowLeft size={18} />
                                 </button>
                                 <h1 className="text-2xl font-bold text-[var(--color-text-white)]">
-                                    Monthly Attendance Muster {filters.month_year && `- ${formatMonthYear(filters.month_year)}`}
+                                    Monthly Attendance Muster  {filters.month_year && `- ${formatMonthYear(filters.month_year)}`}
                                 </h1>
                             </div>
 

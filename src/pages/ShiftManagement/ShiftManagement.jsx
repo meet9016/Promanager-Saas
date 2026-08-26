@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { useState, useEffect, useRef } from 'react';
-import { Calendar, Users, Edit, Trash2, Plus, X, Search, RefreshCw, XCircle } from 'lucide-react';
+import { Calendar, Users, Edit, Trash2, Plus, X, Search, RefreshCw, XCircle, Eye } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import api from '../../api/axiosInstance';
 import { useNavigate } from 'react-router-dom';
@@ -593,7 +593,7 @@ const ShiftManagement = () => {
                                                                         {shouldShowDayText(day.shift_type) ? day.sort_name : (day.sort_name)}
                                                                     </span>
                                                                     {/* Tooltip */}
-                                                                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-[var(--color-text-white)] text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-10">
+                                                                    <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-2 py-1 bg-gray-800 text-[var(--color-text-white)] text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-20">
                                                                         {getDayStatusText(day.shift_type)}
                                                                     </div>
                                                                 </div>
@@ -616,6 +616,13 @@ const ShiftManagement = () => {
                                                     {(permissions?.shift_edit || permissions?.shift_delete) && (
                                                         <Td className="px-6 py-4 text-left whitespace-nowrap font-medium border-b border-[var(--color-border-divider)]">
                                                             <div className="flex space-x-3">
+                                                                <button
+                                                                    onClick={() => fetchAssignedEmployees(shift.shift_id, shift.shift_name)}
+                                                                    className="w-9 h-9 flex items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 hover:bg-emerald-100 hover:scale-110 hover:shadow-md transition-all duration-200"
+                                                                    title="View Shift"
+                                                                >
+                                                                    <Eye className="w-4 h-4" strokeWidth={2.5} />
+                                                                </button>
                                                                 {permissions['shift_edit'] && (
                                                                     <button
                                                                         onClick={() => handleEditShift(shift.shift_id, shift.shift_name)}
