@@ -41,7 +41,11 @@ API.interceptors.response.use(
         });
 
         // 🔐 401 Unauthorized - auto logout and redirect to HeroSection (/)
-        if (status === 401 && !isLoggingOut) {
+        if (
+            status === 401 &&
+            !isLoggingOut &&
+            !error.config?.url?.includes('software_config')
+        ) {
             isLoggingOut = true;
 
             // Clear all auth-related cookies
