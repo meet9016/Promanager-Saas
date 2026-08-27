@@ -99,10 +99,12 @@ const DateRangeReport = () => {
             if (exportType === 'pdf') {
                 showToast('Generating compact PDF...', 'info');
 
+                const companyName = user?.company_name || user?.company || user?.full_name || 'Your Company Name';
                 const result = await exportToPDF(
                     attendanceData,
                     formatDateForAPI(startDate),
-                    formatDateForAPI(endDate)
+                    formatDateForAPI(endDate),
+                    companyName
                 );
 
                 showToast(

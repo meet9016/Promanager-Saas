@@ -518,7 +518,7 @@ const DailyReport = () => {
             }
             showToast('Generating PDF...', 'info');
             const fileName = `daily_attendance_report_${formatDate(selectedDate)}`;
-            const companyName = 'Your Company Name';
+            const companyName = user?.company_name || user?.company || user?.full_name || 'Your Company Name';
             const filterLabels = getFilterLabels();
             const dataWithSno = filteredData.map((emp, index) => ({ ...emp, sno: index + 1 }));
 
@@ -532,7 +532,7 @@ const DailyReport = () => {
         }
     }, [filteredData, selectedDate, appliedFilters]);
 
-    const handleExportToExcel = useCallback(() => {
+    const handleExportToExcel = useCallback(async () => {
         try {
             if (!filteredData || filteredData.length === 0) {
                 showToast('No data available to export', 'error');
@@ -553,7 +553,7 @@ const DailyReport = () => {
             }));
 
             const fileName = `daily_attendance_report_${formatDate(selectedDate)}`;
-            exportToExcel(exportData, selectedDate, fileName);
+            await exportToExcel(exportData, selectedDate, fileName);
             showToast('Excel exported successfully!', 'success');
             setExportDropdown(false);
         } catch (error) {

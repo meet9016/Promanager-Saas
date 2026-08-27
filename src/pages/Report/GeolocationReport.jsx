@@ -848,10 +848,11 @@ const GeolocationReport = () => {
             setExportDropdown(false);
             showToast('Generating PDF...', 'info');
 
+            const companyName = user?.company_name || user?.company || user?.full_name || 'Your Company Name';
             await exportToPDF(
                 filteredData,
                 selectedDate,
-                'Your Company Name', // Replace with actual company name if available
+                companyName,
                 'geolocation_attendance_report',
                 appliedFilters,
                 getFilterLabels()
@@ -864,7 +865,7 @@ const GeolocationReport = () => {
         }
     }, [filteredData, selectedDate, appliedFilters, getFilterLabels]);
 
-    const handleExportToExcel = useCallback(() => {
+    const handleExportToExcel = useCallback(async () => {
         try {
             if (!filteredData || filteredData.length === 0) {
                 showToast('No data available to export', 'error');
@@ -874,11 +875,10 @@ const GeolocationReport = () => {
             setExportDropdown(false);
             showToast('Generating Excel file...', 'info');
 
-            // Use the correct function name and parameters
-            exportGeolocationToExcel(
+            await exportGeolocationToExcel(
                 filteredData,
                 selectedDate,
-                'geolocation_attendance_report'  // Only 3 parameters needed
+                'geolocation_attendance_report'
             );
 
             showToast('Excel file exported successfully!', 'success');

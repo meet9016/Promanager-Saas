@@ -32,6 +32,8 @@ import { useAuth } from '../../context/AuthContext';
 import api from '../../api/axiosInstance';
 import { createPortal } from 'react-dom';
 import { Toast } from '../../Components/ui/Toast';
+import { exportExceptionToPDF } from '../../utils/exportUtils/ExceptionReport/pdfExport';
+import { exportMonthlyExceptionToExcel } from '../../utils/exportUtils/ExceptionReport/excelExport';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Pagination from '../../Components/Pagination';
@@ -487,6 +489,62 @@ const MonthlyExceptionReport = () => {
     };
 
     const handleClearSearch = useCallback(() => setSearchQuery(''), []);
+
+    const handleExportPDF = async () => {
+        try {
+            if (!activeData || activeData.length === 0) {
+                showToast('No data available to export', 'error');
+                return;
+            }
+            showToast('Generating PDF...', 'info');
+            const allTabs = [{ key: 'all_employees', label: 'All Employees' }, ...TABS];
+            const tabLabel = allTabs.find((t) => t.key === activeTab)?.label || activeTab;
+            const exportKey = activeTab === 'all_employees' ? 'all_employees' : activeTab;
+            const companyName = user?.company_name || user?.company || user?.full_name || 'Your Company Name';
+
+            await exportExceptionToPDF(
+                activeData,
+                monthYear,
+                exportKey,
+                tabLabel,
+                `monthly_exception_report_${exportKey}_${monthYear}`,
+                companyName
+            );
+            showToast('PDF exported successfully!', 'success');
+            setExportDropdown(false);
+        } catch (err) {
+            showToast('Failed to export PDF: ' + err.message, 'error');
+            setExportDropdown(false);
+        }
+    };
+
+    const handleExportExcel = async () => {
+        try {
+            if (!activeData || activeData.length === 0) {
+                showToast('No data available to export', 'error');
+                return;
+            }
+            showToast('Generating Excel file...', 'info');
+            const allTabs = [{ key: 'all_employees', label: 'All Employees' }, ...TABS];
+            const tabLabel = allTabs.find((t) => t.key === activeTab)?.label || activeTab;
+            const exportKey = activeTab === 'all_employees' ? 'all_employees' : activeTab;
+            const companyName = user?.company_name || user?.company || user?.full_name || 'Your Company Name';
+
+            await exportMonthlyExceptionToExcel(
+                activeData,
+                monthYear,
+                exportKey,
+                tabLabel,
+                `monthly_exception_report_${exportKey}_${monthYear}`,
+                { companyName }
+            );
+            showToast('Excel exported successfully!', 'success');
+            setExportDropdown(false);
+        } catch (err) {
+            showToast('Failed to export Excel: ' + err.message, 'error');
+            setExportDropdown(false);
+        }
+    };
 
     // ── Table column config per tab ───────────────────────────────────────────
     const renderTableHead = () => {
@@ -953,13 +1011,13 @@ const MonthlyExceptionReport = () => {
                                             <div className="absolute z-50 bg-[var(--color-bg-secondary)] rounded-lg shadow-2xl border border-[var(--color-border-secondary)] py-2"
                                                 style={{ position: 'absolute', top: exportPos.top, left: exportPos.left, width: Math.max(192, exportPos.width), minWidth: 192 }}>
                                                 <button
-                                                    onClick={() => { showToast('Excel export coming soon', 'info'); setExportDropdown(false); }}
+                                                    onClick={handleExportExcel}
                                                     className="flex items-center gap-2 w-full px-4 py-2 text-left hover:bg-[var(--color-bg-hover)] transition-colors text-[var(--color-text-primary)]">
                                                     <FileSpreadsheet className="h-4 w-4 text-primary-600" />
                                                     Export to Excel
                                                 </button>
                                                 <button
-                                                    onClick={() => { showToast('PDF export coming soon', 'info'); setExportDropdown(false); }}
+                                                    onClick={handleExportPDF}
                                                     className="flex items-center gap-2 w-full px-4 py-2 text-left hover:bg-[var(--color-bg-hover)] transition-colors text-[var(--color-text-primary)]">
                                                     <FileDown className="h-4 w-4 text-red-600" />
                                                     Export to PDF

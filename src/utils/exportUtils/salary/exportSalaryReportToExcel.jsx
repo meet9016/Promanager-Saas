@@ -1,4 +1,5 @@
-// utils/payrollExcelExport.js
+// utils/exportUtils/salary/exportSalaryReportToExcel.jsx — Brand Purple Theme
+import { exportToStyledExcel } from '../commonExcelExport';
 
 // Group data by employee (if needed for payroll)
 export const groupPayrollDataByEmployee = (data) => {
@@ -70,174 +71,88 @@ export const formatDate = (dateInput) => {
     return `${day}-${month}-${year}`;
 };
 
-// Export payroll to Excel function
-export const exportPayrollToExcel = (
+// Export payroll to Excel function using commonExcelExport
+export const exportPayrollToExcel = async (
     payrollData,
     monthYear = null,
     filename = 'payroll_report',
     title = 'Monthly Salary Report',
-    getMonthYearDisplay = null
+    getMonthYearDisplay = null,
+    companyName = 'Your Company Name'
 ) => {
     if (!payrollData || payrollData.length === 0) {
-        console.error('No data to export');
-        return;
+        throw new Error('No data available to export');
     }
 
     const payrollSummary = calculatePayrollSummary(payrollData);
     const monthDisplay = getMonthYearDisplay ? getMonthYearDisplay(monthYear) : (monthYear || 'Current Period');
 
-    // Prepare data for Excel export
-    const excelData = [];
+    const summaryCards = [
+        { label: 'Total Employees', value: payrollSummary.totalEmployees },
+        { label: 'Total Base Salary', value: `₹${payrollSummary.totalBaseSalary}` },
+        { label: 'Total Present Days', value: payrollSummary.totalPresentDays },
+        { label: 'Total Absent Days', value: payrollSummary.totalAbsentDays },
+        { label: 'Total Net Salary', value: `₹${payrollSummary.totalNetSalary}` },
+    ];
 
-    // Add report header
-    excelData.push(['', '',
-        title, '', '', '',
-    ]);
-    excelData.push([
-        '',
-        `Period: ${monthDisplay}`,
-        `Generated: ${new Date().toLocaleDateString('en-GB')} ${new Date().toLocaleTimeString()}`,
-        '',
-        `Total Employees: ${payrollSummary.totalEmployees}`,
-        `Total Net Salary: ₹${payrollSummary.totalNetSalary}`
-    ]);
+    const headers = [
+        { key: 'sr_no', label: 'NO.' },
+        { key: 'employee_code', label: 'Employee Code' },
+        { key: 'employee_name', label: 'Employee Name' },
+        { key: 'employee_salary', label: 'Base Salary' },
+        { key: 'working_days', label: 'Working Days' },
+        { key: 'week_off_days', label: 'Week Off Days' },
+        { key: 'present_days', label: 'Present Days' },
+        { key: 'absent_days', label: 'Absent Days' },
+        { key: 'overtime_days', label: 'Overtime Days' },
+        { key: 'subtotal_salary', label: 'Subtotal Salary' },
+        { key: 'overtime_salary', label: 'Overtime Salary' },
+        { key: 'week_off_salary', label: 'Week Off Salary' },
+        { key: 'total_salary', label: 'Total Salary' },
+    ];
 
-    // Add empty row
-    excelData.push(['']);
+    const formattedRows = payrollData.map((record, index) => ({
+        sr_no: index + 1,
+        employee_code: record.employee_code || '--',
+        employee_name: record.employee_name || '--',
+        employee_salary: `₹${formatCurrency(record.employee_salary)}`,
+        working_days: record.working_days || 0,
+        week_off_days: record.week_off_days || 0,
+        present_days: record.present_days || 0,
+        absent_days: record.absent_days || 0,
+        overtime_days: record.overtime_days || 0,
+        subtotal_salary: `₹${formatCurrency(record.subtotal_salary)}`,
+        overtime_salary: `₹${formatCurrency(record.overtime_salary)}`,
+        week_off_salary: `₹${formatCurrency(record.week_off_salary)}`,
+        total_salary: `₹${formatCurrency(record.total_salary)}`,
+    }));
 
-    // Add summary statistics
-    excelData.push(['Payroll Summary', '', '', '', '', '']);
-    excelData.push(['Payroll Month', monthDisplay, '', 'Total Employees', payrollSummary.totalEmployees, '']);
-    excelData.push(['Total Base Salary', `₹${payrollSummary.totalBaseSalary}`, '', 'Total Working Days', payrollSummary.totalWorkingDays, '']);
-    excelData.push(['Total Present Days', payrollSummary.totalPresentDays, '', 'Total Absent Days', payrollSummary.totalAbsentDays, '']);
-    excelData.push(['Total Week Off Days', payrollSummary.totalWeekOffDays, '', 'Total Overtime Days', payrollSummary.totalOvertimeDays, '']);
-    excelData.push(['Total Subtotal Salary', `₹${payrollSummary.totalSubtotalSalary}`, '', 'Total Overtime Salary', `₹${payrollSummary.totalOvertimeSalary}`, '']);
-    excelData.push(['Total Week Off Salary', `₹${payrollSummary.totalWeekOffSalary}`, '', 'NET PAYROLL AMOUNT', `₹${payrollSummary.totalNetSalary}`, '']);
-
-    // Add empty row
-    excelData.push(['']);
-    excelData.push(['']);
-
-    // Add detailed payroll data headers
-    excelData.push([
-        'NO.',
-        'Employee Code',
-        'Employee Name',
-        'Base Salary',
-        'Working Days',
-        'Week Off Days',
-        'Present Days',
-        'Absent Days',
-        'Overtime Days',
-        'Subtotal Salary',
-        'Overtime Salary',
-        'Week Off Salary',
-        'Total Salary'
-    ]);
-
-    // Add payroll data rows
-    payrollData.forEach((record, index) => {
-        excelData.push([
-            index + 1,
-            record.employee_code || '',
-            record.employee_name || '',
-            `₹${formatCurrency(record.employee_salary)}`,
-            record.working_days || 0,
-            record.week_off_days || 0,
-            record.present_days || 0,
-            record.absent_days || 0,
-            record.overtime_days || 0,
-            `₹${formatCurrency(record.subtotal_salary)}`,
-            `₹${formatCurrency(record.overtime_salary)}`,
-            `₹${formatCurrency(record.week_off_salary)}`,
-            `₹${formatCurrency(record.total_salary)}`
-        ]);
+    formattedRows.push({
+        sr_no: '',
+        employee_code: '',
+        employee_name: 'TOTAL',
+        employee_salary: `₹${payrollSummary.totalBaseSalary}`,
+        working_days: payrollSummary.totalWorkingDays,
+        week_off_days: payrollSummary.totalWeekOffDays,
+        present_days: payrollSummary.totalPresentDays,
+        absent_days: payrollSummary.totalAbsentDays,
+        overtime_days: payrollSummary.totalOvertimeDays,
+        subtotal_salary: `₹${payrollSummary.totalSubtotalSalary}`,
+        overtime_salary: `₹${payrollSummary.totalOvertimeSalary}`,
+        week_off_salary: `₹${payrollSummary.totalWeekOffSalary}`,
+        total_salary: `₹${payrollSummary.totalNetSalary}`,
     });
 
-    // Add totals row
-    excelData.push([
-        '',
-        '',
-        'TOTAL',
-        `₹${payrollSummary.totalBaseSalary}`,
-        payrollSummary.totalWorkingDays,
-        payrollSummary.totalWeekOffDays,
-        payrollSummary.totalPresentDays,
-        payrollSummary.totalAbsentDays,
-        payrollSummary.totalOvertimeDays,
-        `₹${payrollSummary.totalSubtotalSalary}`,
-        `₹${payrollSummary.totalOvertimeSalary}`,
-        `₹${payrollSummary.totalWeekOffSalary}`,
-        `₹${payrollSummary.totalNetSalary}`
-    ]);
-
-    // Convert to HTML table format
-    const tableHTML = `
-        <table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse; width: 100%; font-family: Arial, sans-serif;text-align: center;">
-            <tbody>
-                ${excelData.map((row, rowIndex) => `
-                    <tr>
-                        ${row.map((cell, cellIndex) => {
-        // Style for headers and important rows
-        let cellStyle = "border: 1px solid #ccc; padding: 8px; text-align: center;";
-
-        // Report title row
-        if (rowIndex === 0 && cellIndex === 2) {
-            cellStyle += " background-color: #340B90; color: white; font-weight: bold; font-size: 25px; text-align: center;";
-        }
-        // Payroll summary header
-        else if (cell === 'Payroll Summary') {
-            cellStyle += " background-color: #f8fafc; font-weight: bold; color: #340B90; text-align: center;font-size: 20px;";
-        }
-        // Table headers
-        else if (cell === 'NO.' || cell === 'Employee Code' || cell === 'Employee Name' || cell === 'Base Salary' ||
-            cell === 'Working Days' || cell === 'Week Off Days' || cell === 'Present Days' || cell === 'Absent Days' ||
-            cell === 'Overtime Days' || cell === 'Subtotal Salary' || cell === 'Overtime Salary' ||
-            cell === 'Week Off Salary' || cell === 'Total Salary') {
-            cellStyle += " background-color: #340B90; color: white; font-weight: bold; text-align: center;";
-        }
-        // Totals row
-        else if (cell === 'TOTAL') {
-            cellStyle += " background-color: #f8fafc; font-weight: bold; color: #340B90; text-align: center;";
-        }
-        // NET PAYROLL AMOUNT highlight
-        else if (cell === 'NET PAYROLL AMOUNT') {
-            cellStyle += " background-color: #f8fafc; font-weight: bold; color: #340B90; text-align: center;";
-        }
-        // Payroll Month highlight
-        else if (cell === 'Payroll Month') {
-            cellStyle += " background-color: #f8fafc; font-weight: bold; color: #340B90; text-align: center;";
-        }
-        // Currency cells alignment
-        else if (typeof cell === 'string' && cell.includes('₹')) {
-            cellStyle += " text-align: right;";
-        }
-        // Number cells alignment
-        else if (typeof cell === 'number' || (!isNaN(cell) && cell !== '')) {
-            cellStyle += " text-align: right;";
-        }
-
-        return `<td style="${cellStyle}">${cell}</td>`;
-    }).join('')}
-                    </tr>
-                `).join('')}
-            </tbody>
-        </table>
-    `;
-
-    // Create and download file
-    const blob = new Blob([tableHTML], {
-        type: 'application/vnd.ms-excel;charset=utf-8;'
+    await exportToStyledExcel({
+        title: title ? title.toUpperCase() : 'MONTHLY SALARY REPORT',
+        companyName: companyName || 'Your Company Name',
+        dateRangeText: `Period: ${monthDisplay}`,
+        summaryCards,
+        headers,
+        data: formattedRows,
+        filename: filename || `monthly_salary_report_${monthYear || 'current'}`,
+        sheetName: 'Monthly Salary',
     });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.setAttribute('href', url);
-    link.setAttribute('download', `${filename}.xls`);
-    link.style.visibility = 'hidden';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
 };
 
 export const handlePayrollExportExcel = async (
@@ -246,7 +161,8 @@ export const handlePayrollExportExcel = async (
     summaryStats,
     showToast,
     setExportDropdown,
-    getMonthYearDisplay
+    getMonthYearDisplay,
+    companyName = 'Your Company Name'
 ) => {
     try {
         if (!reportData || reportData.length === 0) {
@@ -257,12 +173,13 @@ export const handlePayrollExportExcel = async (
         const fileName = `monthly_salary_report_${filters.month_year || 'current'}`;
         const title = `Monthly Salary Report`;
 
-        exportPayrollToExcel(
+        await exportPayrollToExcel(
             reportData,
             filters.month_year,
             fileName,
             title,
-            getMonthYearDisplay
+            getMonthYearDisplay,
+            companyName
         );
 
         showToast('Excel file exported successfully!', 'success');
@@ -273,4 +190,4 @@ export const handlePayrollExportExcel = async (
         showToast('Failed to export Excel: ' + error.message, 'error');
         setExportDropdown(false);
     }
-};
+};

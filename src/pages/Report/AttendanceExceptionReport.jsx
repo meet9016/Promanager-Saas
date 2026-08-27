@@ -473,7 +473,7 @@ const AttendanceExceptionReport = () => {
     };
 
     // ── Exports ───────────────────────────────────────────────────────────────
-    const handleExportToExcel = useCallback(() => {
+    const handleExportToExcel = useCallback(async () => {
         try {
             if (!activeData || activeData.length === 0) {
                 showToast('No data available to export', 'error');
@@ -482,7 +482,7 @@ const AttendanceExceptionReport = () => {
             const allTabs = [{ key: 'all_employees', label: 'All Employees' }, ...TABS];
             const tabLabel = allTabs.find((t) => t.key === activeTab)?.label || activeTab;
             const exportKey = activeTab === 'all_employees' ? 'all_employees' : activeTab;
-            exportExceptionToExcel(activeData, selectedDate, exportKey, tabLabel, `exception_report_${exportKey}_${formatDate(selectedDate)}`);
+            await exportExceptionToExcel(activeData, selectedDate, exportKey, tabLabel, `exception_report_${exportKey}_${formatDate(selectedDate)}`);
             showToast('Excel exported successfully!', 'success');
             setExportDropdown(false);
         } catch (err) {
@@ -501,7 +501,8 @@ const AttendanceExceptionReport = () => {
             const allTabs = [{ key: 'all_employees', label: 'All Employees' }, ...TABS];
             const tabLabel = allTabs.find((t) => t.key === activeTab)?.label || activeTab;
             const exportKey = activeTab === 'all_employees' ? 'all_employees' : activeTab;
-            await exportExceptionToPDF(activeData, selectedDate, exportKey, tabLabel, `exception_report_${exportKey}_${formatDate(selectedDate)}`);
+            const companyName = user?.company_name || user?.company || user?.full_name || 'Your Company Name';
+            await exportExceptionToPDF(activeData, selectedDate, exportKey, tabLabel, `exception_report_${exportKey}_${formatDate(selectedDate)}`, companyName);
             showToast('PDF exported successfully!', 'success');
             setExportDropdown(false);
         } catch (err) {

@@ -1,78 +1,40 @@
 // utils/exportUtils/ExceptionReport/pdfExport.js
-import { Document, Page, Text, View, StyleSheet, pdf } from '@react-pdf/renderer';
+import React from 'react';
+import { Document, Page, Text, View } from '@react-pdf/renderer';
+import {
+    commonPdfStyles as styles,
+    formatAsHeaderDate,
+    PDFHeaderBanner,
+    PDFFooter,
+    downloadPdfDocument
+} from '../commonPdfExport';
 
 // ─── Helper ───────────────────────────────────────────────────────────────────
 const parseHoursToMinutes = (str) => {
     if (!str || str === '--' || str === '0h 0m') return 0;
-    const match = str.match(/(\d+)h\s*(\d+)m/);
+    const match = String(str).match(/(\d+)h\s*(\d+)m/);
     if (!match) return 0;
     return parseInt(match[1], 10) * 60 + parseInt(match[2], 10);
 };
 
-// ─── Tab metadata ─────────────────────────────────────────────────────────────
-const TAB_META = {
-    all_employees: { label: 'All Employees', accent: '#1d4ed8' },
-    late_coming: { label: 'Late Coming', accent: '#b45309' },
-    early_going: { label: 'Early Going', accent: '#c2410c' },
-    short_hours: { label: 'Short Hours', accent: '#b91c1c' },
-    missed_punch: { label: 'Missed Punch', accent: '#7e22ce' },
-};
-
-// ─── Styles ───────────────────────────────────────────────────────────────────
-const makeStyles = (accent) =>
-    StyleSheet.create({
-        page: { flexDirection: 'column', backgroundColor: '#FFFFFF', padding: 20, fontSize: 8 },
-        header: { marginBottom: 12, borderBottomWidth: 1, borderBottomColor: '#000', paddingBottom: 8 },
-        headerRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 },
-        title: { fontSize: 14, fontWeight: 'bold', color: '#000', textAlign: 'center', marginBottom: 4 },
-        subTitle: { fontSize: 10, color: '#444', textAlign: 'center' },
-        metaRow: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 4 },
-        metaText: { fontSize: 8, color: '#555' },
-        // Summary box
-        summaryBox: { flexDirection: 'row', gap: 8, marginBottom: 10, flexWrap: 'wrap' },
-        summaryCard: { flex: 1, borderWidth: 1, borderColor: accent, padding: 6, borderRadius: 4, minWidth: 80 },
-        summaryLabel: { fontSize: 7, color: '#555', marginBottom: 2 },
-        summaryValue: { fontSize: 12, fontWeight: 'bold', color: accent },
-        // Table
-        table: { width: '100%', borderStyle: 'solid', borderWidth: 1, borderColor: '#000', fontSize: 7 },
-        tableRow: { flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: '#ccc' },
-        tableHeaderRow: { flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: '#000', backgroundColor: accent },
-        cell: { borderRightWidth: 1, borderRightColor: '#ccc', padding: 4, justifyContent: 'center', alignItems: 'center' },
-        headerCell: { borderRightWidth: 1, borderRightColor: '#fff', padding: 4, justifyContent: 'center', alignItems: 'center' },
-        cellText: { fontSize: 7, textAlign: 'center', color: '#222' },
-        headerCellText: { fontSize: 7, textAlign: 'center', color: '#fff', fontWeight: 'bold' },
-        accentCellText: { fontSize: 7, textAlign: 'center', color: accent, fontWeight: 'bold' },
-        // Footer
-        pageNumber: { position: 'absolute', fontSize: 7, bottom: 15, left: 0, right: 0, textAlign: 'center', color: '#888' },
-        footer: { position: 'absolute', fontSize: 7, bottom: 28, left: 0, right: 0, textAlign: 'center', color: '#888' },
-    });
-
 // ─── Column schemas ───────────────────────────────────────────────────────────
 const getColumns = (tabKey) => {
-    if (tabKey === 'all_employees') {
+    if (tabKey === 'all_employees' || !tabKey) {
         return [
             { label: '#', key: 'sno', width: '4%', get: (e, i) => String(i + 1) },
-            { label: 'Employee', key: 'name', width: '14%', get: (e) => e.employee_name || '--' },
+            { label: 'Employee', key: 'name', width: '16%', get: (e) => e.employee_name || '--' },
             { label: 'Code', key: 'code', width: '8%', get: (e) => e.employee_code || '--' },
-            { label: 'Shift', key: 'shift', width: '9%', get: (e) => e.shift_name || '--' },
-            { label: 'Clock In', key: 'ci', width: '8%', get: (e) => e.attandance_first_clock_in || '--' },
-            { label: 'Clock Out', key: 'co', width: '8%', get: (e) => e.attandance_last_clock_out || '--' },
-            { label: 'Work Hrs', key: 'wh', width: '7%', get: (e) => e.shift_working_hours || '--' },
-            { label: 'Att Hrs', key: 'ah', width: '7%', get: (e) => e.attandance_hours || '--' },
-            { label: 'Status', key: 'status', width: '8%', get: (e) => e.status || '--' },
-            { label: 'Late By', key: 'late', width: '7%', get: (e) => (e.exception_types || []).includes('late_coming') ? (e.late_coming_time || '--') : '--', accent: true },
-            { label: 'Early By', key: 'early', width: '7%', get: (e) => (e.exception_types || []).includes('early_going') ? (e.early_going_time || '--') : '--', accent: true },
+            { label: 'Work Days', key: 'shift', width: '9%', get: (e) => e.totalDays ? `${e.totalDays} Days` : (e.shift_name || '--') },
+            { label: 'Clock In', key: 'ci', width: '8%', get: (e) => e.attandance_first_clock_in || (e.lateDays !== undefined ? `Late: ${e.lateDays}d` : '--') },
+            { label: 'Clock Out', key: 'co', width: '8%', get: (e) => e.attandance_last_clock_out || (e.earlyDays !== undefined ? `Early: ${e.earlyDays}d` : '--') },
+            { label: 'Work Hrs', key: 'wh', width: '7%', get: (e) => e.shift_working_hours || (e.shortHoursDays !== undefined ? `Short: ${e.shortHoursDays}d` : '--') },
+            { label: 'Att Hrs', key: 'ah', width: '7%', get: (e) => e.attandance_hours || (e.missedPunchDays !== undefined ? `Missed: ${e.missedPunchDays}d` : '--') },
+            { label: 'Late By', key: 'late', width: '8%', get: (e) => (e.exception_types || []).includes('late_coming') ? (e.late_coming_time || (e.totalLateTime ? `${e.lateDays}d (${e.totalLateTime})` : '--')) : '--', accent: true },
+            { label: 'Early By', key: 'early', width: '8%', get: (e) => (e.exception_types || []).includes('early_going') ? (e.early_going_time || (e.totalEarlyTime ? `${e.earlyDays}d (${e.totalEarlyTime})` : '--')) : '--', accent: true },
             {
-                label: 'Short By', key: 'short', width: '7%', get: (e) => {
-                    if (!(e.exception_types || []).includes('short_hours')) return '--';
-                    const a = parseHoursToMinutes(e.attandance_hours), s = parseHoursToMinutes(e.shift_working_hours), d = s - a;
-                    return d > 0 ? `${Math.floor(d / 60)}h ${d % 60}m` : '--';
-                }, accent: true
-            },
-            {
-                label: 'Exceptions', key: 'ex', width: '16%', get: (e) => {
+                label: 'Exceptions', key: 'ex', width: '17%', get: (e) => {
                     const t = e.exception_types || [];
-                    if (t.length === 0) return e.attandance_first_clock_in ? 'On Time' : 'No Punch';
+                    if (t.length === 0) return 'On Time';
                     return t.map(x => ({ late_coming: 'Late', early_going: 'Early Going', short_hours: 'Short Hrs', missed_punch: 'Missed Punch' }[x] || x)).join(' | ');
                 }
             },
@@ -81,108 +43,41 @@ const getColumns = (tabKey) => {
 
     const base = [
         { label: '#', key: 'sno', width: '4%', get: (e, i) => String(i + 1) },
-        { label: 'Employee', key: 'name', width: '18%', get: (e) => e.employee_name || '--' },
-        { label: 'Code', key: 'code', width: '9%', get: (e) => e.employee_code || '--' },
-        { label: 'Shift', key: 'shift', width: '11%', get: (e) => e.shift_name || '--' },
-        { label: 'Clock In', key: 'clock_in', width: '9%', get: (e) => e.attandance_first_clock_in || '--' },
-        { label: 'Clock Out', key: 'clock_out', width: '9%', get: (e) => e.attandance_last_clock_out || '--' },
+        { label: 'Employee', key: 'name', width: '20%', get: (e) => e.employee_name || '--' },
+        { label: 'Code', key: 'code', width: '10%', get: (e) => e.employee_code || '--' },
+        { label: 'Total Days', key: 'total_days', width: '12%', get: (e) => e.totalDays ? `${e.totalDays} Days` : (e.shift_name || '--') },
     ];
 
     const extras = {
         late_coming: [
-            { label: 'Shift Start', key: 'shift_start', width: '9%', get: (e) => e.shift_from_time || '--' },
-            { label: 'Late By', key: 'late_by', width: '9%', get: (e) => e.late_coming_time || '--', accent: true },
-            { label: 'Status', key: 'status', width: '10%', get: (e) => e.status || '--' },
+            { label: 'Late Days', key: 'late_days', width: '14%', get: (e) => e.lateDays !== undefined ? `${e.lateDays} Days` : (e.shift_from_time || '--') },
+            { label: 'Total Late Time', key: 'total_late', width: '20%', get: (e) => e.totalLateTime || e.late_coming_time || '--', accent: true },
         ],
         early_going: [
-            { label: 'Shift End', key: 'shift_end', width: '9%', get: (e) => e.shift_to_time || '--' },
-            { label: 'Left Early By', key: 'early_by', width: '9%', get: (e) => e.early_going_time || '--', accent: true },
-            { label: 'Status', key: 'status', width: '10%', get: (e) => e.status || '--' },
+            { label: 'Early Days', key: 'early_days', width: '14%', get: (e) => e.earlyDays !== undefined ? `${e.earlyDays} Days` : (e.shift_to_time || '--') },
+            { label: 'Total Early Time', key: 'total_early', width: '20%', get: (e) => e.totalEarlyTime || e.early_going_time || '--', accent: true },
         ],
         short_hours: [
-            { label: 'Required', key: 'req', width: '8%', get: (e) => e.shift_working_hours || '--' },
-            { label: 'Worked', key: 'worked', width: '8%', get: (e) => e.attandance_hours || '--' },
-            {
-                label: 'Short By', key: 'short', width: '8%', get: (e) => {
-                    const a = parseHoursToMinutes(e.attandance_hours);
-                    const s = parseHoursToMinutes(e.shift_working_hours);
-                    const d = s - a;
-                    return d > 0 ? `${Math.floor(d / 60)}h ${d % 60}m` : '--';
-                }, accent: true
-            },
-            { label: 'Status', key: 'status', width: '9%', get: (e) => e.status || '--' },
+            { label: 'Short Days', key: 'short_days', width: '14%', get: (e) => e.shortHoursDays !== undefined ? `${e.shortHoursDays} Days` : (e.shift_working_hours || '--') },
+            { label: 'Total Short Time', key: 'total_short', width: '20%', get: (e) => e.totalShortTime || '--', accent: true },
         ],
         missed_punch: [
-            { label: 'Shift Time', key: 'shift_time', width: '12%', get: (e) => `${e.shift_from_time || '--'} – ${e.shift_to_time || '--'}` },
-            { label: 'Punches', key: 'punches', width: '7%', get: (e) => String((e.attendance_history || []).length), accent: true },
-            { label: 'Status', key: 'status', width: '9%', get: (e) => e.status || '--' },
+            { label: 'Missed Punch Days', key: 'missed_days', width: '24%', get: (e) => e.missedPunchDays !== undefined ? `${e.missedPunchDays} Days` : String((e.attendance_history || []).length), accent: true },
         ],
     };
 
     return [...base, ...(extras[tabKey] || [])];
 };
 
-// ─── Summary stats per tab ────────────────────────────────────────────────────
-const getSummaryCards = (data, tabKey) => {
-    switch (tabKey) {
-        case 'all_employees': {
-            const exCount = data.filter((e) => (e.exception_types || []).length > 0).length;
-            return [
-                { label: 'Total Employees', value: data.length },
-                { label: 'With Exceptions', value: exCount },
-                { label: 'Clean', value: data.length - exCount },
-            ];
-        }
-        case 'late_coming': {
-            const avg = data.length
-                ? Math.round(data.reduce((a, e) => a + parseInt(e.late_coming_minutes || 0, 10), 0) / data.length)
-                : 0;
-            return [
-                { label: 'Total Late', value: data.length },
-                { label: 'Avg Late (min)', value: avg },
-            ];
-        }
-        case 'early_going': {
-            const avg = data.length
-                ? Math.round(data.reduce((a, e) => a + parseInt(e.early_going_minutes || 0, 10), 0) / data.length)
-                : 0;
-            return [
-                { label: 'Total Early Going', value: data.length },
-                { label: 'Avg Early (min)', value: avg },
-            ];
-        }
-        case 'short_hours': {
-            return [
-                { label: 'Total Short Hours', value: data.length },
-            ];
-        }
-        case 'missed_punch': {
-            const noIn = data.filter((e) => !e.attandance_first_clock_in).length;
-            const noOut = data.filter((e) => !e.attandance_last_clock_out && e.attandance_first_clock_in).length;
-            return [
-                { label: 'Total Missed Punch', value: data.length },
-                { label: 'Missing Clock-In', value: noIn },
-                { label: 'Missing Clock-Out', value: noOut },
-            ];
-        }
-        default:
-            return [{ label: 'Total', value: data.length }];
-    }
-};
-
 // ─── PDF Document ─────────────────────────────────────────────────────────────
-const ExceptionPDFDocument = ({ data, selectedDate, tabKey, tabLabel }) => {
-    const meta = TAB_META[tabKey] || TAB_META.late_coming;
-    const styles = makeStyles(meta.accent);
+const ExceptionPDFDocument = ({ data, selectedDate, tabKey, tabLabel = 'All Employees', companyName = 'Your Company Name' }) => {
     const columns = getColumns(tabKey);
-    const summaryCards = getSummaryCards(data, tabKey);
-
-    const formatDate = (d) =>
-        new Date(d).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    const formatDate = (d) => formatAsHeaderDate(d);
+    const safeTitleLabel = String(tabLabel || 'All Employees').toUpperCase();
 
     const chunkSize = 30;
     const chunks = [];
-    for (let i = 0; i < data.length; i += chunkSize) chunks.push(data.slice(i, i + chunkSize));
+    for (let i = 0; i < (data || []).length; i += chunkSize) chunks.push(data.slice(i, i + chunkSize));
     if (chunks.length === 0) chunks.push([]);
 
     return (
@@ -190,55 +85,41 @@ const ExceptionPDFDocument = ({ data, selectedDate, tabKey, tabLabel }) => {
             {chunks.map((chunk, pageIdx) => (
                 <Page key={pageIdx} size="A4" orientation="landscape" style={styles.page}>
                     {/* Header */}
-                    <View style={styles.header}>
-                        <Text style={styles.title}>Attendance Exception Report – {tabLabel}</Text>
-                        <View style={styles.metaRow}>
-                            <Text style={styles.metaText}>Date: {formatDate(selectedDate)}</Text>
-                            <Text style={styles.metaText}>Generated: {new Date().toLocaleString()}</Text>
-                            <Text style={styles.metaText}>Total Records: {data.length}</Text>
-                        </View>
-                    </View>
-
-                    {/* Summary cards — only on first page */}
-                    {pageIdx === 0 && (
-                        <View style={styles.summaryBox}>
-                            {summaryCards.map((card, i) => (
-                                <View key={i} style={styles.summaryCard}>
-                                    <Text style={styles.summaryLabel}>{card.label}</Text>
-                                    <Text style={styles.summaryValue}>{card.value}</Text>
-                                </View>
-                            ))}
-                        </View>
-                    )}
+                    <PDFHeaderBanner
+                        title={`ATTENDANCE EXCEPTION REPORT – ${safeTitleLabel}`}
+                        companyName={companyName}
+                        dateRangeText={`Date / Period: ${formatDate(selectedDate)}`}
+                    />
 
                     {/* Table */}
-                    <View style={styles.table}>
-                        {/* Header row */}
-                        <View style={styles.tableHeaderRow}>
-                            {columns.map((col) => (
-                                <View key={col.key} style={[styles.headerCell, { width: col.width }]}>
-                                    <Text style={styles.headerCellText}>{col.label}</Text>
-                                </View>
-                            ))}
-                        </View>
-
-                        {/* Data rows */}
-                        {chunk.map((emp, idx) => (
-                            <View key={idx} style={[styles.tableRow, { backgroundColor: idx % 2 === 0 ? '#fff' : '#fafafa' }]}>
-                                {columns.map((col) => (
-                                    <View key={col.key} style={[styles.cell, { width: col.width }]}>
-                                        <Text style={col.accent ? styles.accentCellText : styles.cellText}>
-                                            {col.get(emp, pageIdx * chunkSize + idx)}
-                                        </Text>
+                    <View style={styles.content}>
+                        <View style={styles.table}>
+                            {/* Header row */}
+                            <View style={[styles.tableRow, styles.tableHeaderRow]}>
+                                {columns.map((col, cIdx) => (
+                                    <View key={col.key} style={[styles.tableCol, { width: col.width }, cIdx === columns.length - 1 && { borderRightWidth: 0 }]}>
+                                        <Text style={styles.th}>{col.label}</Text>
                                     </View>
                                 ))}
                             </View>
-                        ))}
+
+                            {/* Data rows */}
+                            {chunk.map((emp, idx) => (
+                                <View key={idx} style={[styles.tableRow, idx % 2 === 1 && styles.zebra]}>
+                                    {columns.map((col, cIdx) => (
+                                        <View key={col.key} style={[styles.tableCol, { width: col.width }, cIdx === columns.length - 1 && { borderRightWidth: 0 }]}>
+                                            <Text style={col.accent ? styles.inactiveStatus : styles.tdCenter}>
+                                                {col.get(emp, pageIdx * chunkSize + idx)}
+                                            </Text>
+                                        </View>
+                                    ))}
+                                </View>
+                            ))}
+                        </View>
                     </View>
 
                     {/* Footer */}
-                    <Text style={styles.footer}>Attendance Exception Report – {tabLabel} | {formatDate(selectedDate)}</Text>
-                    <Text style={styles.pageNumber} render={({ pageNumber, totalPages }) => `Page ${pageNumber} of ${totalPages}`} fixed />
+                    <PDFFooter totalCount={(data || []).length} itemLabel="Records" />
                 </Page>
             ))}
         </Document>
@@ -246,28 +127,11 @@ const ExceptionPDFDocument = ({ data, selectedDate, tabKey, tabLabel }) => {
 };
 
 // ─── Export function ──────────────────────────────────────────────────────────
-export const exportExceptionToPDF = async (data, selectedDate, tabKey, tabLabel, filename = 'exception_report') => {
+export const exportExceptionToPDF = async (data, selectedDate, tabKey, tabLabel, filename = 'exception_report', companyName = 'Your Company Name') => {
     if (!data || data.length === 0) throw new Error('No data available to export');
 
-    const doc = (
-        <ExceptionPDFDocument
-            data={data}
-            selectedDate={selectedDate}
-            tabKey={tabKey}
-            tabLabel={tabLabel}
-        />
-    );
-
-    const asPdf = pdf(doc);
-    const blob = await asPdf.toBlob();
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `${filename}_${new Date(selectedDate).toISOString().split('T')[0]}.pdf`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-
-    return { success: true };
+    const doc = <ExceptionPDFDocument data={data} selectedDate={selectedDate} tabKey={tabKey} tabLabel={tabLabel} companyName={companyName} />;
+    const dateStr = selectedDate ? (selectedDate instanceof Date ? selectedDate.toISOString().split('T')[0] : String(selectedDate).split('T')[0]) : 'report';
+    await downloadPdfDocument(doc, `${filename}_${dateStr}.pdf`);
+    return { success: true, message: 'PDF exported successfully!' };
 };

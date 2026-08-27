@@ -833,7 +833,7 @@ const DetailedDailyReport = () => {
             }
             showToast('Generating PDF...', 'info');
             const fileName = `detailed_daily_attendance_${formatDate(selectedDate)}`;
-            const companyName = 'Your Company Name';
+            const companyName = user?.company_name || user?.company || user?.full_name || 'Your Company Name';
             const filterLabels = getFilterLabels();
 
             // Pass complete data with attendance_history intact
@@ -859,7 +859,7 @@ const DetailedDailyReport = () => {
         }
     }, [filteredData, selectedDate, appliedFilters]);
 
-    const handleExportToExcel = useCallback(() => {
+    const handleExportToExcel = useCallback(async () => {
         try {
             if (!filteredData || filteredData.length === 0) {
                 showToast('No data available to export', 'error');
@@ -873,7 +873,7 @@ const DetailedDailyReport = () => {
             }));
 
             const fileName = `detailed_daily_attendance_${formatDate(selectedDate)}`;
-            exportDetailRangeToExcel(dataWithSno, formatDate(selectedDate), formatDate(selectedDate), fileName);
+            await exportDetailRangeToExcel(dataWithSno, formatDate(selectedDate), formatDate(selectedDate), fileName);
 
             showToast('Excel exported successfully!', 'success');
             setExportDropdown(false);
