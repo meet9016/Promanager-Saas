@@ -4,7 +4,8 @@ import {
   BookOpen, Users, Clock, Calendar, IndianRupee,
   Briefcase, BarChart2, Shield, Settings, LayoutDashboard, Languages,
   ChevronRight, Sparkles, FileText, CheckCircle2, Globe, Phone, ExternalLink,
-  Maximize2, X, ArrowRight, Layers, Eye, Building2, UserPlus, Info, Target, Lightbulb, Lock, Youtube
+  Maximize2, X, ArrowRight, Layers, Eye, Building2, UserPlus, Info, Target, Lightbulb, Lock, Youtube,
+  Play, Search, ArrowLeft, Tv, Film, Flame, SlidersHorizontal, Share2
 } from 'lucide-react';
 
 // Lightbox Modal for Full-Screen Image Preview
@@ -115,8 +116,225 @@ const SubSectionCard = ({ number, title, description, imageSrc, imageAlt, onPrev
   </div>
 );
 
+// Video Tutorials Dataset
+const VIDEO_TUTORIALS = [
+  {
+    id: 'v1',
+    title: {
+      en: 'ProManager Quick Start & Dashboard Overview',
+      hi: 'प्रोमैनेजर क्विक स्टार्ट और डैशबोर्ड अवलोकन'
+    },
+    description: {
+      en: 'Get a complete tour of ProManager HR & Payroll platform. Learn how to navigate dashboard analytics, quick stats, and organization setup.',
+      hi: 'प्रोमैनेजर एचआर और पेरोल प्लेटफॉर्म का पूरा दौरा प्राप्त करें। डैशबोर्ड एनालिटिक्स और संगठन सेटअप सीखें।'
+    },
+    category: 'Getting Started',
+    duration: '4:45 min',
+    youtubeId: 'dQw4w9WgXcQ',
+    embedUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1',
+    views: '2.4k views',
+    badge: 'Popular'
+  },
+  {
+    id: 'v2',
+    title: {
+      en: 'Employee Onboarding & Master Directory Setup',
+      hi: 'कर्मचारी प्रबंधन और शाखा सेटअप गाइड'
+    },
+    description: {
+      en: 'Learn how to add employees, configure departments, designations, branches, and assign role-based access control.',
+      hi: 'सीखें कि कर्मचारियों को कैसे जोड़ें, विभाग, पद, शाखाएं कॉन्फ़िगर करें और रोल-आधारित एक्सेस असाइन करें।'
+    },
+    category: 'Employee Setup',
+    duration: '6:12 min',
+    youtubeId: 'gQyX8KxZ_k4',
+    embedUrl: 'https://www.youtube.com/embed/gQyX8KxZ_k4?autoplay=1',
+    views: '1.8k views',
+    badge: 'Essential'
+  },
+  {
+    id: 'v3',
+    title: {
+      en: 'Attendance Tracking & Shift Management Masterclass',
+      hi: 'उपस्थिति ट्रैकिंग और शिफ्ट प्रबंधन मास्टरक्लास'
+    },
+    description: {
+      en: 'Step-by-step tutorial on shift creation, assigning shifts to staff, geolocation punch verification, and daily attendance logs.',
+      hi: 'शिफ्ट निर्माण, कर्मचारियों को शिफ्ट असाइन करने, जियोलोकेशन पंच सत्यापन और दैनिक उपस्थिति लॉग पर चरण-दर-चरण ट्यूटोरियल।'
+    },
+    category: 'Attendance & Shifts',
+    duration: '8:30 min',
+    youtubeId: '1v0Jg1Bskj4',
+    embedUrl: 'https://www.youtube.com/embed/1v0Jg1Bskj4?autoplay=1',
+    views: '3.1k views',
+    badge: 'Featured'
+  },
+  {
+    id: 'v4',
+    title: {
+      en: 'Payroll Processing & Salary Generation Walkthrough',
+      hi: 'पेरोल प्रोसेसिंग और वेतन निर्माण वॉकथ्रू'
+    },
+    description: {
+      en: 'Master automated salary calculations based on attendance, allowances, deductions, loans/advances, and payslip exports.',
+      hi: 'उपस्थिति, भत्तों, कटौती, ऋण/अग्रिम और पेस्लिप निर्यात के आधार पर स्वचालित वेतन गणना में महारत हासिल करें।'
+    },
+    category: 'Payroll & Salary',
+    duration: '9:15 min',
+    youtubeId: 'V-_O7nl0IiU',
+    embedUrl: 'https://www.youtube.com/embed/V-_O7nl0IiU?autoplay=1',
+    views: '4.2k views',
+    badge: 'Top Rated'
+  },
+  {
+    id: 'v5',
+    title: {
+      en: 'Leave Policies, Approvals & Holiday Calendar',
+      hi: 'अवकाश नीतियां, अनुमोदन और अवकाश कैलेंडर'
+    },
+    description: {
+      en: 'Configure leave types (Paid, Unpaid, Medical), set approval workflows, and customize annual company holiday calendars.',
+      hi: 'अवकाश प्रकार (सवेतन, अवैतनिक, चिकित्सा) कॉन्फ़िगर करें, अनुमोदन कार्यप्रवाह सेट करें, और वार्षिक छुट्टियों के कैलेंडर को अनुकूलित करें।'
+    },
+    category: 'Attendance & Shifts',
+    duration: '5:20 min'
+  },
+  {
+    id: 'v6',
+    title: {
+      en: 'Exporting Excel & PDF Reports Guide',
+      hi: 'एक्सेल और पीडीएफ रिपोर्ट निर्यात गाइड'
+    },
+    description: {
+      en: 'Learn how to generate and export attendance details, monthly muster matrix, salary status reports into styled Excel and PDF formats.',
+      hi: 'उपस्थिति विवरण, मासिक मस्टर मैट्रिक्स, वेतन स्थिति रिपोर्ट को स्टाइल किए गए एक्सेल और पीडीएफ प्रारूपों में जनरेट और निर्यात करना सीखें।'
+    },
+    category: 'Reports & Analytics',
+    duration: '7:05 min'
+  }
+];
+
+// Interactive Video Tutorials Hub Component (Demo Video Coming Soon - ProManager Purple Theme)
+const VideoTutorialsSection = ({ language, t, onBackToDocs }) => {
+  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [activeComingSoonVideo, setActiveComingSoonVideo] = useState(null);
+
+  const categories = [
+    'All',
+    'Getting Started',
+    'Employee Setup',
+    'Attendance & Shifts',
+    'Payroll & Salary',
+    'Reports & Analytics'
+  ];
+
+  const filteredVideos = VIDEO_TUTORIALS.filter((video) => {
+    return selectedCategory === 'All' || video.category === selectedCategory;
+  });
+
+  return (
+    <div className="max-w-7xl mx-auto space-y-6 mb-12 mt-12 animate-fadeIn">
+      {/* Academy Header & Category Navigation */}
+      <div className="bg-white rounded-3xl shadow-lg border border-slate-200/90 p-5 sm:p-6 relative overflow-hidden">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <span className="bg-red-100 text-red-600 px-3 py-0.5 rounded-full text-sm font-semibold flex items-center gap-1.5 border border-red-200">
+                <Youtube size={14} /> ProManager Academy
+              </span>
+              <span className="bg-purple-100 text-[#340C8E] px-3 py-0.5 rounded-full text-sm font-semibold border border-purple-200">
+                Video Tutorials
+              </span>
+            </div>
+            <h1 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
+              {t('Video Tutorials & Feature Guides', 'वीडियो ट्यूटोरियल और फीचर गाइड')}
+            </h1>
+          </div>
+
+          <button
+            onClick={onBackToDocs}
+            className="flex items-center gap-2 bg-slate-100 hover:bg-[#340C8E] text-slate-700 hover:text-white px-4 py-2 rounded-xl font-bold text-[15px] transition-all shadow-xs border border-slate-200 hover:border-[#340C8E] cursor-pointer group"
+          >
+            <FileText size={14} className="group-hover:scale-110 transition-transform" />
+            <span>{t('Back to Documentation', 'दस्तावेज़ों पर वापस जाएं')}</span>
+          </button>
+        </div>
+
+        {/* Category Pills Navigation (Clean full width without search box) */}
+        <div className="pt-4 flex items-center gap-2 overflow-x-auto pb-1 custom-scrollbar">
+          {categories.map((cat) => {
+            const isActive = selectedCategory === cat;
+            return (
+              <button
+                key={cat}
+                onClick={() => setSelectedCategory(cat)}
+                className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all whitespace-nowrap cursor-pointer ${isActive
+                  ? 'bg-[#340C8E] text-white shadow-md shadow-[#340C8E]/25'
+                  : 'bg-slate-100 text-slate-600 hover:bg-purple-50 hover:text-[#340C8E]'
+                  }`}
+              >
+                {cat}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Video Cards Grid (YouTube Tutorial Style Cards for Future Embeds) */}
+      <div className="space-y-4 pt-2">
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+            <Film size={18} className="text-[#340C8E]" />
+            <span>{t('All Video Guides', 'सभी वीडियो गाइड')}</span>
+            <span className="text-xs font-bold text-[#340C8E] bg-purple-50 px-2.5 py-0.5 rounded-full border border-purple-100">
+              {filteredVideos.length} {t('videos', 'वीडियो')}
+            </span>
+          </h2>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredVideos.map((video) => (
+            <div
+              key={video.id}
+              className="bg-white rounded-3xl border border-purple-100 shadow-sm hover:shadow-xl hover:border-[#340C8E]/40 hover:-translate-y-1.5 transition-all duration-300 overflow-hidden group flex flex-col justify-between"
+            >
+              <div className="p-3.5">
+                {/* Professional Video Thumbnail Box with #F3E8FF */}
+                <div className="relative aspect-video rounded-2xl bg-[#F3E8FF] overflow-hidden border border-purple-200/80 shadow-inner flex flex-col items-center justify-center p-4 group">
+                  {/* Decorative Subtle Glowing Orbs */}
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-purple-300/30 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-500 pointer-events-none" />
+                  <div className="absolute -left-8 -bottom-8 w-28 h-28 bg-[#340C8E]/10 rounded-full blur-xl pointer-events-none" />
+
+                  {/* Center Prominent Glowing Play Button */}
+                  <div className="relative z-10 w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[#340C8E] text-white shadow-xl flex items-center justify-center group-hover:scale-110 group-hover:bg-[#250968] transition-all duration-300 mb-3 ring-4 ring-white/60">
+                    <Play size={24} className="fill-current ml-1" />
+                  </div>
+
+                  {/* Prominent Coming Soon Badge (Title Case - No Uppercase) */}
+                  <div className="relative z-10 flex items-center gap-1.5 bg-white/90 backdrop-blur-md text-[#340C8E] text-xs sm:text-sm font-bold px-4 py-1.5 rounded-full border border-purple-200 shadow-xs">
+                    <span className="w-2 h-2 rounded-full bg-[#340C8E] animate-pulse" />
+                    <span>{t('Coming Soon', 'जल्द आ रहा है')}</span>
+                  </div>
+                </div>
+
+                {/* Details Section (Feature Title) */}
+                <div className="p-3.5 pt-4 pb-1 space-y-1">
+                  <h3 className="font-bold text-slate-800 text-base sm:text-lg group-hover:text-[#340C8E] transition-colors leading-snug line-clamp-2">
+                    {video.title[language] || video.title.en}
+                  </h3>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const DocumentPage = () => {
   const [activeSection, setActiveSection] = useState('intro');
+  const [viewMode, setViewMode] = useState('doc'); // 'doc' | 'videos'
   const [language, setLanguage] = useState('en'); // Default language
   const [previewImage, setPreviewImage] = useState(null);
   const contentRef = useRef(null);
@@ -1059,12 +1277,15 @@ const DocumentPage = () => {
         {/* Nav Items */}
         <div className="flex-1 overflow-y-auto py-4 px-3 space-y-1.5 custom-scrollbar">
           {sections.map((section) => {
-            const isActive = activeSection === section.id;
+            const isActive = viewMode === 'doc' && activeSection === section.id;
             return (
               <button
                 key={section.id}
-                onClick={() => setActiveSection(section.id)}
-                className={`w-full flex items-center gap-3.5 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-200 group ${isActive
+                onClick={() => {
+                  setActiveSection(section.id);
+                  setViewMode('doc');
+                }}
+                className={`w-full flex items-center gap-3.5 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-200 group cursor-pointer ${isActive
                   ? 'bg-[#340C8E] text-white shadow-lg shadow-[#340C8E]/25 font-bold'
                   : 'text-slate-600 hover:bg-purple-50/70 hover:text-[#340C8E]'
                   }`}
@@ -1081,7 +1302,14 @@ const DocumentPage = () => {
 
 
         {/* Bottom Left Sidebar Video Promo Card */}
-        <div className="p-3.5 m-3 mt-auto bg-gradient-to-br from-purple-950 via-[#340C8E] to-indigo-950 rounded-2xl text-white shadow-md relative overflow-hidden group border border-purple-800/40">
+        <div
+          onClick={() => {
+            setViewMode('videos');
+            if (contentRef.current) contentRef.current.scrollTop = 0;
+          }}
+          className={`p-3.5 m-3 mt-auto bg-gradient-to-br from-purple-950 via-[#340C8E] to-indigo-950 rounded-2xl text-white shadow-md relative overflow-hidden group border border-purple-800/40 cursor-pointer transition-all duration-300 ${viewMode === 'videos' ? 'ring-2 ring-purple-400 scale-[1.02] shadow-xl' : 'hover:scale-[1.01]'
+            }`}
+        >
           <div className="absolute -right-3 -bottom-3 w-16 h-16 bg-red-500/20 rounded-full blur-xl group-hover:scale-150 transition-transform" />
           <div className="relative z-10 space-y-2">
             <div className="flex items-center gap-2">
@@ -1093,17 +1321,19 @@ const DocumentPage = () => {
               </span>
             </div>
             <p className="text-[13px] text-purple-200 leading-snug">
-              {t('Watch step-by-step video guides on Youtube.', 'यूट्यूब पर चरण-दर-चरण वीडियो गाइड देखें।')}
+              {t('Watch step-by-step video guides directly here.', 'चरण-दर-चरण वीडियो गाइड सीधे यहीं देखें।')}
             </p>
-            <a
-              href="https://www.youtube.com/"
-              target="_blank"
-              rel="noopener noreferrer"
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setViewMode('videos');
+                if (contentRef.current) contentRef.current.scrollTop = 0;
+              }}
               className="w-full mt-1 bg-white hover:bg-slate-100 text-[#340C8E] font-bold py-1.5 px-3 rounded-xl text-sm flex items-center justify-center gap-1.5 transition-colors shadow-xs cursor-pointer"
             >
               <span>{t('Watch Now', 'अभी देखें')}</span>
-              <ExternalLink size={12} />
-            </a>
+              <Tv size={14} />
+            </button>
           </div>
         </div>
       </div>
@@ -1112,19 +1342,23 @@ const DocumentPage = () => {
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden relative">
         {/* Unified Top Right Executive Toolbar */}
         <div className="absolute top-6 right-8 z-30 flex items-center gap-2 bg-white/95 backdrop-blur-md p-1.5 rounded-2xl border border-slate-200/90 shadow-md">
-          {/* Learn with Videos Action Button */}
-          <a
-            href="https://www.youtube.com/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-2 bg-red-50 hover:bg-red-100/90 text-red-600 px-3 py-1.5 rounded-xl text-xs font-bold transition-all border border-red-200/80 hover:border-red-300 cursor-pointer group"
+          {/* Learn with Videos Action Button (In-Tab Toggle) */}
+          <button
+            onClick={() => {
+              setViewMode('videos');
+              if (contentRef.current) contentRef.current.scrollTop = 0;
+            }}
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold transition-all border cursor-pointer group ${viewMode === 'videos'
+              ? 'bg-[#340C8E] text-white border-[#340C8E]'
+              : 'bg-red-50 hover:bg-red-100/90 text-red-600 border-red-200/80 hover:border-red-300'
+              }`}
           >
             <div className="w-5 h-5 rounded-md bg-red-600 text-white flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
               <Youtube size={12} />
             </div>
             <span>{t('Learn with Videos', 'वीडियो ट्यूटोरियल')}</span>
-            <ExternalLink size={11} className="text-red-400 group-hover:translate-x-0.5 transition-transform" />
-          </a>
+            <Tv size={12} className={`${viewMode === 'videos' ? 'text-white' : 'text-red-400'} transition-transform`} />
+          </button>
 
           <div className="h-4 w-[1px] bg-slate-200 my-auto" />
 
@@ -1133,7 +1367,7 @@ const DocumentPage = () => {
             <Languages size={15} className="text-slate-400 ml-1 mr-0.5" />
             <button
               onClick={() => setLanguage('en')}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all duration-200 ${language === 'en'
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all duration-200 cursor-pointer ${language === 'en'
                 ? 'bg-[#340C8E] text-white shadow-xs'
                 : 'text-slate-600 hover:text-slate-900'
                 }`}
@@ -1142,7 +1376,7 @@ const DocumentPage = () => {
             </button>
             <button
               onClick={() => setLanguage('hi')}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all duration-200 ${language === 'hi'
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all duration-200 cursor-pointer ${language === 'hi'
                 ? 'bg-[#340C8E] text-white shadow-xs'
                 : 'text-slate-600 hover:text-slate-900'
                 }`}
@@ -1152,11 +1386,19 @@ const DocumentPage = () => {
           </div>
         </div>
 
-        {/* Scrollable Document Content Area */}
+        {/* Scrollable Document or Video Content Area */}
         <main ref={contentRef} className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8 custom-scrollbar">
-          <div className="max-w-7xl mx-auto bg-white rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-200/90 p-5 sm:p-7 md:p-8 mb-12 mt-16">
-            {activeSectionData?.content}
-          </div>
+          {viewMode === 'videos' ? (
+            <VideoTutorialsSection
+              language={language}
+              t={t}
+              onBackToDocs={() => setViewMode('doc')}
+            />
+          ) : (
+            <div className="max-w-7xl mx-auto bg-white rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-200/90 p-5 sm:p-7 md:p-8 mb-12 mt-16">
+              {activeSectionData?.content}
+            </div>
+          )}
         </main>
       </div>
 

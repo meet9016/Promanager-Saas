@@ -45,36 +45,44 @@
 
 
 /* Custom Scrollbar Styles */
-.custom-scrollbar::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+.custom-scrollbar::-webkit-scrollbar,
+.custom-scrollbar-slim::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
 }
 
-.custom-scrollbar::-webkit-scrollbar-button {
+.custom-scrollbar::-webkit-scrollbar-button,
+.custom-scrollbar-slim::-webkit-scrollbar-button,
+.custom-scrollbar-slim::-webkit-scrollbar-button:start,
+.custom-scrollbar-slim::-webkit-scrollbar-button:end {
     width: 0 !important;
     height: 0 !important;
     display: none !important;
 }
 
-.custom-scrollbar::-webkit-scrollbar-track {
+.custom-scrollbar::-webkit-scrollbar-track,
+.custom-scrollbar-slim::-webkit-scrollbar-track {
     background: transparent;
-    margin: 4px 0;
+    margin: 2px 0;
 }
 
-.custom-scrollbar::-webkit-scrollbar-thumb {
-    background: var(--color-scrollbar-thumb);
+.custom-scrollbar::-webkit-scrollbar-thumb,
+.custom-scrollbar-slim::-webkit-scrollbar-thumb {
+    background: var(--color-primary-dark, #340C8E);
     border-radius: 10px;
     transition: all 0.3s ease;
 }
 
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: var(--color-scrollbar-thumb-hover);
+.custom-scrollbar::-webkit-scrollbar-thumb:hover,
+.custom-scrollbar-slim::-webkit-scrollbar-thumb:hover {
+    background: var(--color-primary-darker, #250968);
 }
 
 /* Firefox */
-.custom-scrollbar {
+.custom-scrollbar,
+.custom-scrollbar-slim {
     scrollbar-width: thin;
-    scrollbar-color: #2F0B7F transparent;
+    scrollbar-color: var(--color-primary-dark, #340C8E) transparent;
 }
 
 .scrollbar-fade-top {
@@ -300,6 +308,7 @@ body.dark-theme *:not([class*="bg-"]):not([style*="background"]) {
         opacity: 0;
         transform: scale(0.96) translateY(8px);
     }
+
     to {
         opacity: 1;
         transform: scale(1) translateY(0);
