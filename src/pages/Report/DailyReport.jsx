@@ -538,29 +538,32 @@ const DailyReport = () => {
                 showToast('No data available to export', 'error');
                 return;
             }
-            const exportData = filteredData.map((emp) => ({
-                'Employee Name': emp.employee_name,
-                'Employee Code': emp.employee_code || '',
-                'Shift': emp.shift_name,
-                'Shift Time': `${emp.shift_from_time} - ${emp.shift_to_time}`,
+            const exportData = filteredData.map((emp, index) => ({
+                'S.No': index + 1,
+                'Employee Name': emp.employee_name || '--',
+                'Employee Code': emp.employee_code || '--',
+                'Shift': emp.shift_name || '--',
+                'Shift Time': emp.shift_from_time && emp.shift_to_time ? `${emp.shift_from_time} - ${emp.shift_to_time}` : '--',
                 'Clock In': emp.attandance_first_clock_in || '--',
                 'Clock Out': emp.attandance_last_clock_out || '--',
                 'Working Hours': emp.shift_working_hours ? `${emp.shift_working_hours}` : '--',
                 'Attendance Hours': emp.attandance_hours ? `${emp.attandance_hours}` : '--',
                 'Remaining Hours': emp.late_hours && parseFloat(emp.late_hours) > 0 ? `${emp.late_hours}` : '--',
                 'Overtime Hours': emp.overtime_hours && parseFloat(emp.overtime_hours) > 0 ? `${emp.overtime_hours}` : '--',
-                Status: emp.status || '--'
+                'Status': emp.status || '--'
             }));
 
             const fileName = `daily_attendance_report_${formatDate(selectedDate)}`;
-            await exportToExcel(exportData, selectedDate, fileName);
+            const companyName = user?.company_name || user?.company || user?.full_name || 'Your Company Name';
+            const filterLabels = getFilterLabels();
+            await exportToExcel(exportData, selectedDate, fileName, { companyName, filters: filterLabels });
             showToast('Excel exported successfully!', 'success');
             setExportDropdown(false);
         } catch (error) {
             showToast('Failed to export Excel: ' + error.message, 'error');
             setExportDropdown(false);
         }
-    }, [filteredData, selectedDate]);
+    }, [filteredData, selectedDate, user, appliedFilters]);
 
     const handleClearSearch = useCallback(() => setSearchQuery(''), []);
 

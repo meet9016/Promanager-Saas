@@ -40,16 +40,18 @@ const EmployeeDirectoryPDF = ({ data, filters = {}, companyName = 'Your Company'
                         <View style={styles.table}>
                             {/* Table Header (repeats on every page) */}
                             <View style={[styles.tableRow, styles.tableHeaderRow]}>
-                                <View style={[styles.tableCol, { width: '14%' }]}><Text style={styles.th}>Employee Name</Text></View>
-                                <View style={[styles.tableCol, { width: '8%' }]}><Text style={styles.th}>Code</Text></View>
-                                <View style={[styles.tableCol, { width: '11%' }]}><Text style={styles.th}>Department</Text></View>
-                                <View style={[styles.tableCol, { width: '11%' }]}><Text style={styles.th}>Designation</Text></View>
-                                <View style={[styles.tableCol, { width: '9%' }]}><Text style={styles.th}>Branch</Text></View>
-                                <View style={[styles.tableCol, { width: '14%' }]}><Text style={styles.th}>Contact</Text></View>
+                                <View style={[styles.tableCol, { width: '12%' }]}><Text style={styles.th}>Employee Name</Text></View>
+                                <View style={[styles.tableCol, { width: '6%' }]}><Text style={styles.th}>Code</Text></View>
+                                <View style={[styles.tableCol, { width: '9%' }]}><Text style={styles.th}>Department</Text></View>
+                                <View style={[styles.tableCol, { width: '9%' }]}><Text style={styles.th}>Designation</Text></View>
+                                <View style={[styles.tableCol, { width: '7%' }]}><Text style={styles.th}>Branch</Text></View>
+                                <View style={[styles.tableCol, { width: '12%' }]}><Text style={styles.th}>Contact</Text></View>
                                 <View style={[styles.tableCol, { width: '7%' }]}><Text style={styles.th}>Join Date</Text></View>
-                                <View style={[styles.tableCol, { width: '7%' }]}><Text style={styles.th}>Status</Text></View>
+                                <View style={[styles.tableCol, { width: '7%' }]}><Text style={styles.th}>Emp Type</Text></View>
+                                <View style={[styles.tableCol, { width: '7%' }]}><Text style={styles.th}>Salary Type</Text></View>
+                                <View style={[styles.tableCol, { width: '6%' }]}><Text style={styles.th}>Status</Text></View>
                                 <View style={[styles.tableCol, { width: '7%' }]}><Text style={styles.th}>Exit Date</Text></View>
-                                <View style={[styles.tableCol, { width: '12%', borderRightWidth: 0 }]}><Text style={styles.th}>Exit Reason</Text></View>
+                                <View style={[styles.tableCol, { width: '11%', borderRightWidth: 0 }]}><Text style={styles.th}>Exit Reason</Text></View>
                             </View>
 
                             {/* Rows */}
@@ -61,30 +63,30 @@ const EmployeeDirectoryPDF = ({ data, filters = {}, companyName = 'Your Company'
                                         key={employee.employee_id || `${pageIndex}-${i}`}
                                         style={[styles.tableRow, i % 2 === 1 && styles.zebra]}
                                     >
-                                        <View style={[styles.tableCol, { width: '14%' }]}>
+                                        <View style={[styles.tableCol, { width: '12%' }]}>
                                             <Text style={styles.empNameText}>{employee.full_name || '--'}</Text>
                                             {!!employee.gender && (
                                                 <Text style={styles.genderText}>{employee.gender}</Text>
                                             )}
                                         </View>
 
-                                        <View style={[styles.tableCol, { width: '8%' }]}>
+                                        <View style={[styles.tableCol, { width: '6%' }]}>
                                             <Text style={styles.tdCenter}>{employee.employee_code || '--'}</Text>
                                         </View>
 
-                                        <View style={[styles.tableCol, { width: '11%' }]}>
+                                        <View style={[styles.tableCol, { width: '9%' }]}>
                                             <Text style={styles.tdCenter}>{employee.department_name || '--'}</Text>
                                         </View>
 
-                                        <View style={[styles.tableCol, { width: '11%' }]}>
+                                        <View style={[styles.tableCol, { width: '9%' }]}>
                                             <Text style={styles.tdCenter}>{employee.designation_name || '--'}</Text>
                                         </View>
 
-                                        <View style={[styles.tableCol, { width: '9%' }]}>
+                                        <View style={[styles.tableCol, { width: '7%' }]}>
                                             <Text style={styles.tdCenter}>{employee.branch_name || '--'}</Text>
                                         </View>
 
-                                        <View style={[styles.tableCol, { width: '14%' }]}>
+                                        <View style={[styles.tableCol, { width: '12%' }]}>
                                             {employee.email ? <Text style={styles.contactInfo}>{employee.email}</Text> : null}
                                             {employee.mobile_number ? <Text style={styles.contactInfo}>{employee.mobile_number}</Text> : null}
                                             {!employee.email && !employee.mobile_number ? (
@@ -97,6 +99,14 @@ const EmployeeDirectoryPDF = ({ data, filters = {}, companyName = 'Your Company'
                                         </View>
 
                                         <View style={[styles.tableCol, { width: '7%' }]}>
+                                            <Text style={styles.tdCenter}>{employee.employee_type || '--'}</Text>
+                                        </View>
+
+                                        <View style={[styles.tableCol, { width: '7%' }]}>
+                                            <Text style={styles.tdCenter}>{employee.salary_type || '--'}</Text>
+                                        </View>
+
+                                        <View style={[styles.tableCol, { width: '6%' }]}>
                                             <Text style={[styles.tdCenter, isInactive ? styles.inactiveStatus : styles.activeStatus]}>
                                                 {employee.status === '1' || employee.status === 1
                                                     ? 'Active'
@@ -114,7 +124,7 @@ const EmployeeDirectoryPDF = ({ data, filters = {}, companyName = 'Your Company'
                                             </Text>
                                         </View>
 
-                                        <View style={[styles.tableCol, { width: '12%', borderRightWidth: 0 }]}>
+                                        <View style={[styles.tableCol, { width: '11%', borderRightWidth: 0 }]}>
                                             <Text style={styles.exitInfo}>
                                                 {isInactive && employee.deactivate_reason
                                                     ? employee.deactivate_reason

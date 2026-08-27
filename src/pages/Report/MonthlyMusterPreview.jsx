@@ -525,28 +525,22 @@ const MonthlyMusterPreview = () => {
             }
             const niceMonth = formatMonthYear(filters.month_year);
             const filterLabels = getFilterLabels(filters, branches, departments, designations, employees);
+            const companyName = user?.company_name || user?.company || user?.full_name || 'Your Company Name';
 
-            const daysCount = dayMeta.length;
-            const rowsForExcel = gridData.map(emp => {
-                const base = {
-                    'Employee Code': emp.employee_code,
-                    'Employee Name': emp.employee_name
-                };
-                for (let i = 0; i < daysCount; i++) {
-                    base[`Day ${i + 1}`] = emp.dayCodes[i] || '';
-                }
-                TOTALS_ORDER.forEach(code => {
-                    const v = emp.totals[code] || 0;
-                    base[CODE_LABELS[code]] = Number.isInteger(v) ? v : Number(v).toFixed(1);
-                });
-                return base;
-            });
+            const payload = gridData.map((emp, idx) => ({
+                sno: idx + 1,
+                employee_code: emp.employee_code,
+                employee_name: emp.employee_name,
+                dayCodes: emp.dayCodes,
+                totals: emp.totals
+            }));
 
             await exportMusterToExcel({
-                rows: rowsForExcel,
+                rows: payload,
                 monthYear: filters.month_year,
                 monthLabel: niceMonth,
-                companyName: user?.company_name || user?.company || user?.full_name || 'Your Company Name',
+                companyName,
+                dayMeta,
                 filterLabels,
                 fileName: `monthly_attendance_muster_${niceMonth.replace(/\s+/g, '_')}`
             });

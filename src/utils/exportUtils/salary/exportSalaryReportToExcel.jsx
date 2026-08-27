@@ -96,19 +96,19 @@ export const exportPayrollToExcel = async (
     ];
 
     const headers = [
-        { key: 'sr_no', label: 'NO.' },
+        { key: 'sr_no', label: 'Sr.#' },
         { key: 'employee_code', label: 'Employee Code' },
         { key: 'employee_name', label: 'Employee Name' },
         { key: 'employee_salary', label: 'Base Salary' },
-        { key: 'working_days', label: 'Working Days' },
-        { key: 'week_off_days', label: 'Week Off Days' },
-        { key: 'present_days', label: 'Present Days' },
-        { key: 'absent_days', label: 'Absent Days' },
-        { key: 'overtime_days', label: 'Overtime Days' },
-        { key: 'subtotal_salary', label: 'Subtotal Salary' },
-        { key: 'overtime_salary', label: 'Overtime Salary' },
-        { key: 'week_off_salary', label: 'Week Off Salary' },
-        { key: 'total_salary', label: 'Total Salary' },
+        { key: 'working_days', label: 'Work Days' },
+        { key: 'present_days', label: 'Present' },
+        { key: 'absent_days', label: 'Absent' },
+        { key: 'overtime_days', label: 'OT Days' },
+        { key: 'overtime_salary', label: 'OT Pay' },
+        { key: 'week_off_days', label: 'WO Days' },
+        { key: 'week_off_salary', label: 'WO Pay' },
+        { key: 'subtotal_salary', label: 'Subtotal' },
+        { key: 'total_salary', label: 'Final Salary' },
     ];
 
     const formattedRows = payrollData.map((record, index) => ({
@@ -117,13 +117,13 @@ export const exportPayrollToExcel = async (
         employee_name: record.employee_name || '--',
         employee_salary: `₹${formatCurrency(record.employee_salary)}`,
         working_days: record.working_days || 0,
-        week_off_days: record.week_off_days || 0,
         present_days: record.present_days || 0,
         absent_days: record.absent_days || 0,
         overtime_days: record.overtime_days || 0,
-        subtotal_salary: `₹${formatCurrency(record.subtotal_salary)}`,
         overtime_salary: `₹${formatCurrency(record.overtime_salary)}`,
+        week_off_days: record.week_off_days || 0,
         week_off_salary: `₹${formatCurrency(record.week_off_salary)}`,
+        subtotal_salary: `₹${formatCurrency(record.subtotal_salary)}`,
         total_salary: `₹${formatCurrency(record.total_salary)}`,
     }));
 
@@ -133,13 +133,13 @@ export const exportPayrollToExcel = async (
         employee_name: 'TOTAL',
         employee_salary: `₹${payrollSummary.totalBaseSalary}`,
         working_days: payrollSummary.totalWorkingDays,
-        week_off_days: payrollSummary.totalWeekOffDays,
         present_days: payrollSummary.totalPresentDays,
         absent_days: payrollSummary.totalAbsentDays,
         overtime_days: payrollSummary.totalOvertimeDays,
-        subtotal_salary: `₹${payrollSummary.totalSubtotalSalary}`,
         overtime_salary: `₹${payrollSummary.totalOvertimeSalary}`,
+        week_off_days: payrollSummary.totalWeekOffDays,
         week_off_salary: `₹${payrollSummary.totalWeekOffSalary}`,
+        subtotal_salary: `₹${payrollSummary.totalSubtotalSalary}`,
         total_salary: `₹${payrollSummary.totalNetSalary}`,
     });
 

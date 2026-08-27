@@ -482,14 +482,15 @@ const AttendanceExceptionReport = () => {
             const allTabs = [{ key: 'all_employees', label: 'All Employees' }, ...TABS];
             const tabLabel = allTabs.find((t) => t.key === activeTab)?.label || activeTab;
             const exportKey = activeTab === 'all_employees' ? 'all_employees' : activeTab;
-            await exportExceptionToExcel(activeData, selectedDate, exportKey, tabLabel, `exception_report_${exportKey}_${formatDate(selectedDate)}`);
+            const companyName = user?.company_name || user?.company || user?.full_name || 'Your Company Name';
+            await exportExceptionToExcel(activeData, selectedDate, exportKey, tabLabel, `exception_report_${exportKey}_${formatDate(selectedDate)}`, { companyName });
             showToast('Excel exported successfully!', 'success');
             setExportDropdown(false);
         } catch (err) {
             showToast('Failed to export Excel: ' + err.message, 'error');
             setExportDropdown(false);
         }
-    }, [activeData, selectedDate, activeTab]);
+    }, [activeData, selectedDate, activeTab, user]);
 
     const handleExportToPDF = useCallback(async () => {
         try {
