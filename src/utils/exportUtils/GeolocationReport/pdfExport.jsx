@@ -1,182 +1,36 @@
-// utils/exportUtils/GeolocationReport/pdfExport.js
-import { Document, Page, Text, View, StyleSheet, pdf, Link } from '@react-pdf/renderer';
+import React from 'react';
+import { Document, Page, Text, View, StyleSheet, Link } from '@react-pdf/renderer';
+import {
+    commonPdfStyles as styles,
+    PDF_COLORS,
+    formatAsHeaderDate,
+    PDFHeaderBanner,
+    PDFFiltersSection,
+    PDFFooter,
+    downloadPdfDocument
+} from '../commonPdfExport';
 
-// Create styles for PDF
-const styles = StyleSheet.create({
-    page: {
-        flexDirection: 'column',
-        backgroundColor: '#FFFFFF',
-        padding: 20,
-        fontSize: 8,
-    },
-    header: {
-        marginBottom: 15,
-        borderBottomWidth: 1,
-        borderBottomColor: '#000000',
-        paddingBottom: 10,
-    },
-    headerRow: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: 10,
-    },
-    companyName: {
-        fontSize: 12,
-        fontWeight: 'bold',
-        color: '#000000',
-    },
-    dateText: {
-        fontSize: 10,
-        color: '#000000',
-    },
-    title: {
-        fontSize: 16,
-        fontWeight: 'bold',
-        color: '#000000',
-        textAlign: 'center',
-        marginBottom: 5,
-    },
-    filtersSection: {
-        marginTop: 10,
-        marginBottom: 10,
-        padding: 8,
-        backgroundColor: '#f8f9fa',
-        borderWidth: 1,
-        borderColor: '#e9ecef',
-    },
-    filtersTitle: {
-        fontSize: 10,
-        fontWeight: 'bold',
-        color: '#000000',
-        marginBottom: 5,
-    },
-    filtersText: {
-        fontSize: 9,
-        color: '#000000',
-        lineHeight: 1.4,
-    },
-    table: {
-        width: '100%',
-        borderStyle: 'solid',
-        borderWidth: 1,
-        borderColor: '#000000',
-        fontSize: 7,
-    },
-    tableRow: {
-        flexDirection: 'row',
-        borderBottomWidth: 1,
-        borderBottomColor: '#000000',
-    },
-    tableHeader: {
-        backgroundColor: '#f0f0f0',
-        fontWeight: 'bold',
-    },
-    tableCell: {
-        borderRightWidth: 1,
-        borderRightColor: '#000000',
-        padding: 4,
-        textAlign: 'center',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    tableColSno: {
-        width: '4%',
-    },
-    tableColCode: {
-        width: '8%',
-    },
-    tableColName: {
-        width: '10%',
-    },
-    tableColShift: {
-        width: '10%',
-    },
-    tableColPunchNo: {
-        width: '6%',
-    },
-    tableColDevice: {
-        width: '9%',
-    },
-    tableColTime: {
-        width: '9%',
-    },
-    tableColLocation: {
-        width: '8%',
-    },
-    tableColStatus: {
-        width: '8%',
-    },
-    tableColHours: {
-        width: '7%',
-    },
-    tableColTotalHours: {
-        width: '8%',
-    },
+const geoStyles = StyleSheet.create({
     locationText: {
         fontSize: 6,
-        color: '#0066cc',
+        color: '#4c1d95',
         textDecoration: 'underline',
+        textAlign: 'center',
     },
     deviceText: {
-        fontSize: 7,
-        color: '#000000',
+        fontSize: 6.5,
+        color: PDF_COLORS.textDark,
+        textAlign: 'center',
     },
     employeeGroupRow: {
-        backgroundColor: '#f8f9fa',
+        backgroundColor: PDF_COLORS.purpleLight,
         fontWeight: 'bold',
-    },
-    punchEntryRow: {
-        backgroundColor: '#ffffff',
-    },
-    centeredText: {
-        textAlign: 'center',
-    },
-    statusText: {
-        fontSize: 7,
-        fontWeight: 'bold',
-    },
-    presentText: {
-        color: '#008000',
-    },
-    absentText: {
-        color: '#ff0000',
-    },
-    incompleteText: {
-        color: '#ff8c00',
-    },
-    weekoffText: {
-        color: '#800080',
-    },
-    footer: {
-        position: 'absolute',
-        fontSize: 8,
-        bottom: 30,
-        left: 0,
-        right: 0,
-        textAlign: 'center',
-        color: '#000000',
-    },
-    pageNumber: {
-        position: 'absolute',
-        fontSize: 8,
-        bottom: 15,
-        left: 0,
-        right: 0,
-        textAlign: 'center',
-        color: '#000000',
     }
 });
 
 // PDF Document Component
 const GeolocationPDFDocument = ({ data, selectedDate, companyName = 'Your Company Name', appliedFilters = {}, filterLabels = {} }) => {
-    const formatDate = (date) => {
-        return new Date(date).toLocaleDateString('en-GB', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric'
-        });
-    };
+    const formatDate = (date) => formatAsHeaderDate(date);
 
     const formatTime = (time) => {
         if (!time || time === '--') return '--';
@@ -201,67 +55,28 @@ const GeolocationPDFDocument = ({ data, selectedDate, companyName = 'Your Compan
         if (!mapLink || mapLink === "https://www.google.com/maps?q=,") {
             return { text: "--", link: null };
         }
-        const coordMatch = mapLink.match(/q=(-?\d+\.?\d*),(-?\d+\.?\d*)/);
-        if (coordMatch) {
-            return {
-                text: "View",
-                link: mapLink
-            };
-        }
         return { text: "View", link: mapLink };
     };
 
-    const getStatusStyle = (status) => {
-        const statusLower = (status || '').toLowerCase();
-        switch (statusLower) {
-            case 'present':
-                return [styles.statusText, styles.presentText];
-            case 'absent':
-                return [styles.statusText, styles.absentText];
-            case 'incomplete':
-                return [styles.statusText, styles.incompleteText];
-            case 'week off':
-            case 'weekoff':
-                return [styles.statusText, styles.weekoffText];
-            default:
-                return [styles.statusText];
-        }
+    const getActiveFiltersList = () => {
+        const hasAppliedFilters = appliedFilters && Object.values(appliedFilters).some(v => v !== '' && v !== null && v !== undefined);
+        if (!hasAppliedFilters) return [];
+        const active = [];
+        if (appliedFilters.attendance_status_id && filterLabels.attendance_status) active.push(`Status: ${filterLabels.attendance_status}`);
+        if (appliedFilters.branch_id && filterLabels.branch) active.push(`Branch: ${filterLabels.branch}`);
+        if (appliedFilters.department_id && filterLabels.department) active.push(`Department: ${filterLabels.department}`);
+        if (appliedFilters.designation_id && filterLabels.designation) active.push(`Designation: ${filterLabels.designation}`);
+        if (appliedFilters.shift_id && filterLabels.shift) active.push(`Shift: ${filterLabels.shift}`);
+        return active;
     };
 
-    // Check if any filters are applied
-    const hasAppliedFilters = appliedFilters && Object.values(appliedFilters).some(value => value !== '' && value !== null && value !== undefined);
-
-    // Format applied filters for display
-    const formatAppliedFilters = () => {
-        if (!hasAppliedFilters) return '';
-
-        const activeFilters = [];
-
-        if (appliedFilters.attendance_status_id && filterLabels.attendance_status) {
-            activeFilters.push(`Status: ${filterLabels.attendance_status}`);
-        }
-        if (appliedFilters.branch_id && filterLabels.branch) {
-            activeFilters.push(`Branch: ${filterLabels.branch}`);
-        }
-        if (appliedFilters.department_id && filterLabels.department) {
-            activeFilters.push(`Department: ${filterLabels.department}`);
-        }
-        if (appliedFilters.designation_id && filterLabels.designation) {
-            activeFilters.push(`Designation: ${filterLabels.designation}`);
-        }
-        if (appliedFilters.shift_id && filterLabels.shift) {
-            activeFilters.push(`Shift: ${filterLabels.shift}`);
-        }
-
-        return activeFilters.join(' | ');
-    };
+    const activeFiltersList = getActiveFiltersList();
 
     // Process data to show each punch in/out as separate rows with employee grouping
     const processedData = [];
     let serialNumber = 1;
 
-    data.forEach((employee, empIndex) => {
-        // Process attendance_history into pairs
+    (data || []).forEach((employee) => {
         const pairs = [];
         if (Array.isArray(employee.attendance_history) && employee.attendance_history.length > 0) {
             for (let i = 0; i < employee.attendance_history.length; i += 2) {
@@ -283,7 +98,6 @@ const GeolocationPDFDocument = ({ data, selectedDate, companyName = 'Your Compan
             }
         }
 
-        // Add employee header row with basic info
         processedData.push({
             type: 'employee_header',
             serialNumber: serialNumber++,
@@ -298,15 +112,14 @@ const GeolocationPDFDocument = ({ data, selectedDate, companyName = 'Your Compan
             total_punches: pairs.length
         });
 
-        // Add each punch pair as separate rows
         if (pairs.length > 0) {
             pairs.forEach((entry, entryIndex) => {
                 processedData.push({
                     type: 'punch_entry',
-                    serialNumber: '', // Empty for punch entries
-                    employee_code: '', // Empty for punch entries
-                    employee_name: '', // Empty for punch entries
-                    shift_name: '', // Empty for punch entries
+                    serialNumber: '',
+                    employee_code: '',
+                    employee_name: '',
+                    shift_name: '',
                     punch_number: entryIndex + 1,
                     clock_in: entry.clock_in,
                     clock_out: entry.clock_out,
@@ -321,7 +134,6 @@ const GeolocationPDFDocument = ({ data, selectedDate, companyName = 'Your Compan
                 });
             });
         } else {
-            // If no punch records, add a single empty punch entry
             processedData.push({
                 type: 'punch_entry',
                 serialNumber: '',
@@ -343,202 +155,159 @@ const GeolocationPDFDocument = ({ data, selectedDate, companyName = 'Your Compan
         }
     });
 
-    // Split data into chunks for pagination (15 rows per page to accommodate more details)
-    const chunkSize = hasAppliedFilters ? 13 : 15;
+    const chunkSize = activeFiltersList.length > 0 ? 13 : 15;
     const dataChunks = [];
     for (let i = 0; i < processedData.length; i += chunkSize) {
         dataChunks.push(processedData.slice(i, i + chunkSize));
     }
+    if (!dataChunks.length) dataChunks.push([]);
 
     return (
         <Document>
             {dataChunks.map((chunk, pageIndex) => (
                 <Page key={pageIndex} size="A4" orientation="landscape" style={styles.page}>
                     {/* Header */}
-                    <View style={styles.header}>
-                        <View style={styles.headerRow}>
-                            <Text style={styles.companyName}>{companyName}</Text>
-                            <Text style={styles.dateText}>Date: {formatDate(selectedDate)}</Text>
-                        </View>
-                        <Text style={styles.title}>Geolocation Attendance Report - Multiple Punch Records</Text>
+                    <PDFHeaderBanner
+                        title="GEOLOCATION ATTENDANCE REPORT"
+                        companyName={companyName}
+                        dateRangeText={`Date: ${formatDate(selectedDate)}`}
+                    />
 
-                        {/* Applied Filters Section - Only show if filters are applied */}
-                        {hasAppliedFilters && (
-                            <View style={styles.filtersSection}>
-                                <Text style={styles.filtersTitle}>Applied Filters:</Text>
-                                <Text style={styles.filtersText}>{formatAppliedFilters()}</Text>
-                            </View>
+                    <View style={styles.content}>
+                        {pageIndex === 0 && activeFiltersList.length > 0 && (
+                            <PDFFiltersSection appliedFilters={activeFiltersList} />
                         )}
-                    </View>
 
-                    {/* Table */}
-                    <View style={styles.table}>
-                        {/* Table Header */}
-                        <View style={[styles.tableRow, styles.tableHeader]}>
-                            <View style={[styles.tableCell, styles.tableColSno]}>
-                                <Text>S.No</Text>
+                        {/* Table */}
+                        <View style={styles.table}>
+                            {/* Table Header */}
+                            <View style={[styles.tableRow, styles.tableHeaderRow]}>
+                                <View style={[styles.tableCol, { width: '4%' }]}><Text style={styles.th}>S.No</Text></View>
+                                <View style={[styles.tableCol, { width: '8%' }]}><Text style={styles.th}>Emp Code</Text></View>
+                                <View style={[styles.tableCol, { width: '10%' }]}><Text style={styles.th}>Name</Text></View>
+                                <View style={[styles.tableCol, { width: '10%' }]}><Text style={styles.th}>Shift</Text></View>
+                                <View style={[styles.tableCol, { width: '6%' }]}><Text style={styles.th}>Punch#</Text></View>
+                                <View style={[styles.tableCol, { width: '9%' }]}><Text style={styles.th}>Check-in</Text></View>
+                                <View style={[styles.tableCol, { width: '9%' }]}><Text style={styles.th}>In Device</Text></View>
+                                <View style={[styles.tableCol, { width: '8%' }]}><Text style={styles.th}>In Location</Text></View>
+                                <View style={[styles.tableCol, { width: '9%' }]}><Text style={styles.th}>Check-out</Text></View>
+                                <View style={[styles.tableCol, { width: '9%' }]}><Text style={styles.th}>Out Device</Text></View>
+                                <View style={[styles.tableCol, { width: '8%' }]}><Text style={styles.th}>Out Location</Text></View>
+                                <View style={[styles.tableCol, { width: '5%' }]}><Text style={styles.th}>Status</Text></View>
+                                <View style={[styles.tableCol, { width: '5%', borderRightWidth: 0 }]}><Text style={styles.th}>Total Hrs</Text></View>
                             </View>
-                            <View style={[styles.tableCell, styles.tableColCode]}>
-                                <Text>Emp Code</Text>
-                            </View>
-                            <View style={[styles.tableCell, styles.tableColName]}>
-                                <Text>Name</Text>
-                            </View>
-                            <View style={[styles.tableCell, styles.tableColShift]}>
-                                <Text>Shift</Text>
-                            </View>
-                            <View style={[styles.tableCell, styles.tableColPunchNo]}>
-                                <Text>Punch#</Text>
-                            </View>
-                            <View style={[styles.tableCell, styles.tableColTime]}>
-                                <Text>Check-in</Text>
-                            </View>
-                            <View style={[styles.tableCell, styles.tableColDevice]}>
-                                <Text>In Device</Text>
-                            </View>
-                            <View style={[styles.tableCell, styles.tableColLocation]}>
-                                <Text>In Location</Text>
-                            </View>
-                            <View style={[styles.tableCell, styles.tableColTime]}>
-                                <Text>Check-out</Text>
-                            </View>
-                            <View style={[styles.tableCell, styles.tableColDevice]}>
-                                <Text>Out Device</Text>
-                            </View>
-                            <View style={[styles.tableCell, styles.tableColLocation]}>
-                                <Text>Out Location</Text>
-                            </View>
-                            <View style={[styles.tableCell, styles.tableColStatus]}>
-                                <Text>Status</Text>
-                            </View>
-                            <View style={[styles.tableCell, styles.tableColTotalHours, { borderRightWidth: 0 }]}>
-                                <Text>Total Hours</Text>
-                            </View>
+
+                            {/* Table Rows */}
+                            {chunk.map((row, index) => {
+                                const isHeaderRow = row.type === 'employee_header';
+                                const isAbsent = (row.status || '').toLowerCase().includes('absent');
+
+                                return (
+                                    <View
+                                        style={[
+                                            styles.tableRow,
+                                            isHeaderRow ? geoStyles.employeeGroupRow : (index % 2 === 1 && styles.zebra)
+                                        ]}
+                                        key={`${row.type}-${index}`}
+                                    >
+                                        <View style={[styles.tableCol, { width: '4%' }]}>
+                                            <Text style={styles.tdCenter}>{row.serialNumber}</Text>
+                                        </View>
+                                        <View style={[styles.tableCol, { width: '8%' }]}>
+                                            <Text style={styles.tdCenter}>{row.employee_code || ''}</Text>
+                                        </View>
+                                        <View style={[styles.tableCol, { width: '10%' }]}>
+                                            <Text style={styles.empNameText}>{row.employee_name || ''}</Text>
+                                        </View>
+                                        <View style={[styles.tableCol, { width: '10%' }]}>
+                                            <Text style={styles.tdCenter}>
+                                                {row.shift_name || ''}
+                                                {row.shift_from_time && row.shift_to_time && `\n${row.shift_from_time}-${row.shift_to_time}`}
+                                            </Text>
+                                        </View>
+                                        <View style={[styles.tableCol, { width: '6%' }]}>
+                                            <Text style={styles.tdCenter}>
+                                                {isHeaderRow
+                                                    ? (row.total_punches > 0 ? `${row.total_punches} punches` : 'No punches')
+                                                    : row.punch_number
+                                                }
+                                            </Text>
+                                        </View>
+
+                                        {isHeaderRow ? (
+                                            <>
+                                                <View style={[styles.tableCol, { width: '9%' }]}><Text style={styles.tdCenter}></Text></View>
+                                                <View style={[styles.tableCol, { width: '9%' }]}><Text style={styles.tdCenter}></Text></View>
+                                                <View style={[styles.tableCol, { width: '8%' }]}><Text style={styles.tdCenter}></Text></View>
+                                                <View style={[styles.tableCol, { width: '9%' }]}><Text style={styles.tdCenter}></Text></View>
+                                                <View style={[styles.tableCol, { width: '9%' }]}><Text style={styles.tdCenter}></Text></View>
+                                                <View style={[styles.tableCol, { width: '8%' }]}><Text style={styles.tdCenter}></Text></View>
+                                                <View style={[styles.tableCol, { width: '5%' }]}>
+                                                    <Text style={[styles.tdCenter, isAbsent ? styles.inactiveStatus : styles.activeStatus]}>
+                                                        {row.status || '--'}
+                                                    </Text>
+                                                </View>
+                                                <View style={[styles.tableCol, { width: '5%', borderRightWidth: 0 }]}>
+                                                    <Text style={styles.tdCenter}>{row.attandance_hours || '--'}</Text>
+                                                </View>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <View style={[styles.tableCol, { width: '9%' }]}>
+                                                    <Text style={styles.tdCenter}>{formatTime(row.clock_in)}</Text>
+                                                </View>
+                                                <View style={[styles.tableCol, { width: '9%' }]}>
+                                                    <Text style={geoStyles.deviceText}>
+                                                        {getDeviceTypeName(row.clock_in_type, row.clock_in_type_name)}
+                                                    </Text>
+                                                </View>
+                                                <View style={[styles.tableCol, { width: '8%' }]}>
+                                                    {(() => {
+                                                        const locationInfo = formatLocationForPrint(row.clock_in_map_link);
+                                                        return locationInfo.link ? (
+                                                            <Link src={locationInfo.link} style={geoStyles.locationText}>
+                                                                {locationInfo.text}
+                                                            </Link>
+                                                        ) : (
+                                                            <Text style={styles.tdCenter}>{locationInfo.text}</Text>
+                                                        );
+                                                    })()}
+                                                </View>
+                                                <View style={[styles.tableCol, { width: '9%' }]}>
+                                                    <Text style={styles.tdCenter}>{formatTime(row.clock_out)}</Text>
+                                                </View>
+                                                <View style={[styles.tableCol, { width: '9%' }]}>
+                                                    <Text style={geoStyles.deviceText}>
+                                                        {getDeviceTypeName(row.clock_out_type, row.clock_out_type_name)}
+                                                    </Text>
+                                                </View>
+                                                <View style={[styles.tableCol, { width: '8%' }]}>
+                                                    {(() => {
+                                                        const locationInfo = formatLocationForPrint(row.clock_out_map_link);
+                                                        return locationInfo.link ? (
+                                                            <Link src={locationInfo.link} style={geoStyles.locationText}>
+                                                                {locationInfo.text}
+                                                            </Link>
+                                                        ) : (
+                                                            <Text style={styles.tdCenter}>{locationInfo.text}</Text>
+                                                        );
+                                                    })()}
+                                                </View>
+                                                <View style={[styles.tableCol, { width: '5%' }]}>
+                                                    <Text style={styles.tdCenter}></Text>
+                                                </View>
+                                                <View style={[styles.tableCol, { width: '5%', borderRightWidth: 0 }]}>
+                                                    <Text style={styles.tdCenter}></Text>
+                                                </View>
+                                            </>
+                                        )}
+                                    </View>
+                                );
+                            })}
                         </View>
-
-                        {/* Table Rows */}
-                        {chunk.map((row, index) => (
-                            <View
-                                style={[
-                                    styles.tableRow,
-                                    row.type === 'employee_header' ? styles.employeeGroupRow : styles.punchEntryRow
-                                ]}
-                                key={`${row.type}-${index}`}
-                            >
-                                <View style={[styles.tableCell, styles.tableColSno]}>
-                                    <Text>{row.serialNumber}</Text>
-                                </View>
-                                <View style={[styles.tableCell, styles.tableColCode]}>
-                                    <Text>{row.employee_code || ''}</Text>
-                                </View>
-                                <View style={[styles.tableCell, styles.tableColName]}>
-                                    <Text>{row.employee_name || ''}</Text>
-                                </View>
-                                <View style={[styles.tableCell, styles.tableColShift]}>
-                                    <Text>
-                                        {row.shift_name || ''}
-                                        {row.shift_from_time && row.shift_to_time &&
-                                            `\n${row.shift_from_time}-${row.shift_to_time}`}
-                                    </Text>
-                                </View>
-                                <View style={[styles.tableCell, styles.tableColPunchNo]}>
-                                    <Text>
-                                        {row.type === 'employee_header'
-                                            ? (row.total_punches > 0 ? `${row.total_punches} punches` : 'No punches')
-                                            : row.punch_number
-                                        }
-                                    </Text>
-                                </View>
-
-                                {row.type === 'employee_header' ? (
-                                    // Employee header row - show summary info (no dashes for multiple punches)
-                                    <>
-                                        <View style={[styles.tableCell, styles.tableColTime]}>
-                                            <Text></Text>
-                                        </View>
-                                        <View style={[styles.tableCell, styles.tableColDevice]}>
-                                            <Text></Text>
-                                        </View>
-                                        <View style={[styles.tableCell, styles.tableColLocation]}>
-                                            <Text></Text>
-                                        </View>
-                                        <View style={[styles.tableCell, styles.tableColTime]}>
-                                            <Text></Text>
-                                        </View>
-                                        <View style={[styles.tableCell, styles.tableColDevice]}>
-                                            <Text></Text>
-                                        </View>
-                                        <View style={[styles.tableCell, styles.tableColLocation]}>
-                                            <Text></Text>
-                                        </View>
-                                        <View style={[styles.tableCell, styles.tableColStatus]}>
-                                            <Text style={getStatusStyle(row.status)}>
-                                                {row.status || '--'}
-                                            </Text>
-                                        </View>
-                                        <View style={[styles.tableCell, styles.tableColTotalHours, { borderRightWidth: 0 }]}>
-                                            <Text>{row.attandance_hours || '--'}</Text>
-                                        </View>
-                                    </>
-                                ) : (
-                                    // Punch entry row - show punch details (no status/total hours for individual punches)
-                                    <>
-                                        <View style={[styles.tableCell, styles.tableColTime]}>
-                                            <Text>{formatTime(row.clock_in)}</Text>
-                                        </View>
-                                        <View style={[styles.tableCell, styles.tableColDevice]}>
-                                            <Text style={styles.deviceText}>
-                                                {getDeviceTypeName(row.clock_in_type, row.clock_in_type_name)}
-                                            </Text>
-                                        </View>
-                                        <View style={[styles.tableCell, styles.tableColLocation]}>
-                                            {(() => {
-                                                const locationInfo = formatLocationForPrint(row.clock_in_map_link);
-                                                return locationInfo.link ? (
-                                                    <Link src={locationInfo.link} style={styles.locationText}>
-                                                        {locationInfo.text}
-                                                    </Link>
-                                                ) : (
-                                                    <Text>{locationInfo.text}</Text>
-                                                );
-                                            })()}
-                                        </View>
-                                        <View style={[styles.tableCell, styles.tableColTime]}>
-                                            <Text>{formatTime(row.clock_out)}</Text>
-                                        </View>
-                                        <View style={[styles.tableCell, styles.tableColDevice]}>
-                                            <Text style={styles.deviceText}>
-                                                {getDeviceTypeName(row.clock_out_type, row.clock_out_type_name)}
-                                            </Text>
-                                        </View>
-                                        <View style={[styles.tableCell, styles.tableColLocation]}>
-                                            {(() => {
-                                                const locationInfo = formatLocationForPrint(row.clock_out_map_link);
-                                                return locationInfo.link ? (
-                                                    <Link src={locationInfo.link} style={styles.locationText}>
-                                                        {locationInfo.text}
-                                                    </Link>
-                                                ) : (
-                                                    <Text>{locationInfo.text}</Text>
-                                                );
-                                            })()}
-                                        </View>
-                                        <View style={[styles.tableCell, styles.tableColStatus]}>
-                                            <Text></Text>
-                                        </View>
-                                        <View style={[styles.tableCell, styles.tableColTotalHours, { borderRightWidth: 0 }]}>
-                                            <Text></Text>
-                                        </View>
-                                    </>
-                                )}
-                            </View>
-                        ))}
                     </View>
 
-                    {/* Page Number */}
-                    <Text style={styles.pageNumber} render={({ pageNumber, totalPages }) =>
-                        `Page ${pageNumber} of ${totalPages}`
-                    } fixed />
+                    <PDFFooter totalCount={data.length} itemLabel="Employees" />
                 </Page>
             ))}
         </Document>
@@ -560,18 +329,8 @@ export const exportToPDF = async (data, selectedDate, companyName = 'Your Compan
             filterLabels={filterLabels}
         />;
 
-        const asPdf = pdf(doc);
-        const blob = await asPdf.toBlob();
-
-        // Create download link
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = `${filename}_multiple_punches_${new Date(selectedDate).toISOString().split('T')[0]}.pdf`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
+        const dateStr = selectedDate ? new Date(selectedDate).toISOString().split('T')[0] : 'report';
+        await downloadPdfDocument(doc, `${filename}_multiple_punches_${dateStr}.pdf`);
 
         return { success: true, message: 'PDF exported successfully!' };
     } catch (error) {

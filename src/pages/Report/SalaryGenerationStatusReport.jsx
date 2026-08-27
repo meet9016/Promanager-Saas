@@ -242,15 +242,17 @@ const SalaryGenerationStatusReport = () => {
 
     const handleExportPDF = async () => {
         try {
-            await exportSalaryStatusToPDF(reportData, filters, apiSummary);
+            const companyName = user?.company_name || user?.company || user?.full_name || 'Your Company Name';
+            await exportSalaryStatusToPDF(reportData, filters, companyName);
             showToast('PDF exported successfully', 'success');
         } catch (e) { showToast(e.message || 'Export failed', 'error'); }
         setExportDropdown(false);
     };
 
-    const handleExportExcel = () => {
+    const handleExportExcel = async () => {
         try {
-            exportSalaryStatusToExcel(reportData, filters, apiSummary);
+            const companyName = user?.company_name || user?.company || user?.full_name || 'Your Company Name';
+            await exportSalaryStatusToExcel(reportData, filters, apiSummary, 'Salary_Generation_Status', companyName);
             showToast('Excel exported successfully', 'success');
         } catch (e) { showToast(e.message || 'Export failed', 'error'); }
         setExportDropdown(false);

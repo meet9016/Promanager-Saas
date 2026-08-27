@@ -1,22 +1,27 @@
+import { exportToStyledExcel } from '../commonExcelExport';
+
+const parseHoursToMinutes = (str) => {
+    if (!str || str === '--' || str === '0h 0m') return 0;
+    const match = str.match(/(\d+)h\s*(\d+)m/);
+    if (!match) return 0;
+    return parseInt(match[1], 10) * 60 + parseInt(match[2], 10);
+};
+
 /**
- * Excel export for Attendance Exception Report
+ * Excel export for Attendance Exception Report - Styled Purple Theme
  * @param {Array}  data      - Filtered exception records for the active tab
  * @param {Date}   reportDate
  * @param {string} tabKey    - 'late_coming' | 'early_going' | 'short_hours' | 'missed_punch'
  * @param {string} tabLabel  - Human-readable tab name
  * @param {string} filename
+ * @param {Object} options
  */
-export const exportExceptionToExcel = (data, reportDate, tabKey, tabLabel, filename) => {
+export const exportExceptionToExcel = async (data, reportDate, tabKey, tabLabel, filename, options = {}) => {
     if (!data || data.length === 0) throw new Error('No data available to export');
 
-    const formattedDate = new Date(reportDate).toLocaleDateString('en-US', {
-        weekday: 'short', year: 'numeric', month: 'short', day: 'numeric'
-    });
-
-    // ── Build column schema per tab ──────────────────────────────────────────
     const columnSchemas = {
         all_employees: [
-            { header: 'S.No', get: (e, i) => i + 1 },
+            { header: 'S.No.', get: (e, i) => i + 1 },
             { header: 'Employee Name', get: (e) => e.employee_name || '--' },
             { header: 'Employee Code', get: (e) => e.employee_code || '--' },
             { header: 'Shift', get: (e) => e.shift_name || '--' },
@@ -46,7 +51,7 @@ export const exportExceptionToExcel = (data, reportDate, tabKey, tabLabel, filen
             },
         ],
         late_coming: [
-            { header: 'S.No', get: (e, i) => i + 1 },
+            { header: 'S.No.', get: (e, i) => i + 1 },
             { header: 'Employee Name', get: (e) => e.employee_name || '--' },
             { header: 'Employee Code', get: (e) => e.employee_code || '--' },
             { header: 'Shift', get: (e) => e.shift_name || '--' },
@@ -57,7 +62,7 @@ export const exportExceptionToExcel = (data, reportDate, tabKey, tabLabel, filen
             { header: 'Status', get: (e) => e.status || '--' },
         ],
         early_going: [
-            { header: 'S.No', get: (e, i) => i + 1 },
+            { header: 'S.No.', get: (e, i) => i + 1 },
             { header: 'Employee Name', get: (e) => e.employee_name || '--' },
             { header: 'Employee Code', get: (e) => e.employee_code || '--' },
             { header: 'Shift', get: (e) => e.shift_name || '--' },
@@ -68,7 +73,7 @@ export const exportExceptionToExcel = (data, reportDate, tabKey, tabLabel, filen
             { header: 'Status', get: (e) => e.status || '--' },
         ],
         short_hours: [
-            { header: 'S.No', get: (e, i) => i + 1 },
+            { header: 'S.No.', get: (e, i) => i + 1 },
             { header: 'Employee Name', get: (e) => e.employee_name || '--' },
             { header: 'Employee Code', get: (e) => e.employee_code || '--' },
             { header: 'Shift', get: (e) => e.shift_name || '--' },
@@ -88,7 +93,7 @@ export const exportExceptionToExcel = (data, reportDate, tabKey, tabLabel, filen
             { header: 'Status', get: (e) => e.status || '--' },
         ],
         missed_punch: [
-            { header: 'S.No', get: (e, i) => i + 1 },
+            { header: 'S.No.', get: (e, i) => i + 1 },
             { header: 'Employee Name', get: (e) => e.employee_name || '--' },
             { header: 'Employee Code', get: (e) => e.employee_code || '--' },
             { header: 'Shift', get: (e) => e.shift_name || '--' },
@@ -102,128 +107,191 @@ export const exportExceptionToExcel = (data, reportDate, tabKey, tabLabel, filen
     };
 
     const schema = columnSchemas[tabKey] || columnSchemas.late_coming;
-    const headers = schema.map((s) => s.header);
+    const headers = schema.map(s => s.header);
 
-    // ── Tab-specific summary ─────────────────────────────────────────────────
-    const summaryRows = {
-        all_employees: () => {
-            const exCount = data.filter((e) => (e.exception_types || []).length > 0).length;
-            const cleanCount = data.length - exCount;
-            return [
-                ['Total Employees', data.length, '', 'With Exceptions', exCount, '', 'Clean', cleanCount, ''],
-            ];
-        },
-        late_coming: () => {
-            const avgMins = data.reduce((a, e) => a + parseInt(e.late_coming_minutes || 0, 10), 0) / data.length;
-            return [
-                ['Total Late Employees', data.length, '', 'Avg Late Minutes', Math.round(avgMins) + ' min', ''],
-            ];
-        },
-        early_going: () => {
-            const avgMins = data.reduce((a, e) => a + parseInt(e.early_going_minutes || 0, 10), 0) / data.length;
-            return [
-                ['Total Early Going', data.length, '', 'Avg Early Minutes', Math.round(avgMins) + ' min', ''],
-            ];
-        },
-        short_hours: () => [
-            ['Total Short Hours', data.length, '', '', '', ''],
-        ],
-        missed_punch: () => {
-            const noClockIn = data.filter((e) => !e.attandance_first_clock_in).length;
-            const noClockOut = data.filter((e) => !e.attandance_last_clock_out && e.attandance_first_clock_in).length;
-            return [
-                ['Total Missed Punch', data.length, '', 'Missing Clock-In', noClockIn, ''],
-                ['Missing Clock-Out', noClockOut, '', '', '', ''],
-            ];
-        },
-    };
-
-    // ── Assemble rows ────────────────────────────────────────────────────────
-    const excelData = [];
-
-    // Title
-    excelData.push(['', '', `Attendance Exception Report – ${tabLabel}`, '', `Date: ${formattedDate}`, '', '']);
-    excelData.push(['', '', `Generated: ${new Date().toLocaleString()}`, '', `Total Records: ${data.length}`, '', '']);
-    excelData.push(['']);
-
-    // Summary
-    excelData.push(['Summary', '', '', '', '', '']);
-    (summaryRows[tabKey] || (() => []))().forEach((r) => excelData.push(r));
-    excelData.push(['']);
-
-    // Table headers + data
-    excelData.push(headers);
-    data.forEach((emp, i) => {
-        excelData.push(schema.map((s) => s.get(emp, i) ?? ''));
+    const formattedData = data.map((emp, i) => {
+        const rowObj = {};
+        schema.forEach((col) => {
+            rowObj[col.header] = col.get(emp, i) ?? '';
+        });
+        return rowObj;
     });
 
-    // ── Tab-specific colour accents ──────────────────────────────────────────
-    const accentColors = {
-        late_coming: { headerBg: '#b45309', summaryBg: '#fef9c3' },
-        early_going: { headerBg: '#c2410c', summaryBg: '#ffedd5' },
-        short_hours: { headerBg: '#b91c1c', summaryBg: '#fee2e2' },
-        missed_punch: { headerBg: '#7e22ce', summaryBg: '#f3e8ff' },
-    };
-    const accent = accentColors[tabKey] || accentColors.late_coming;
-    const headerRowIndex = excelData.findIndex((r) => r[0] === headers[0]);
+    const summaryCards = [
+        { label: 'Total Records', value: data.length },
+    ];
 
-    // ── HTML table ───────────────────────────────────────────────────────────
-    const tableHTML = `
-<table border="1" cellpadding="5" cellspacing="0" style="border-collapse:collapse;width:100%;font-family:Arial,sans-serif;border:2px solid #000;">
-  <tbody>
-    ${excelData.map((row, rowIndex) => `
-      <tr>
-        ${row.map((cell, cellIndex) => {
-        let style = 'border:1px solid #888;padding:7px;text-align:center;';
-        if (rowIndex === 0 && cellIndex === 2) {
-            style += `font-weight:bold;font-size:18px;color:#000;`;
-        } else if (rowIndex === 1 && (cellIndex === 2 || cellIndex === 4)) {
-            style += 'font-size:13px;font-weight:bold;';
-        } else if (rowIndex === 3) {
-            // "Summary" row
-            style += `background:${accent.summaryBg};font-weight:bold;font-size:14px;border:2px solid #000;`;
-        } else if (rowIndex > 3 && rowIndex < headerRowIndex) {
-            // summary data rows
-            style += `background:${accent.summaryBg};font-size:12px;`;
-            if (typeof cell === 'number') style += 'font-weight:bold;';
-        } else if (rowIndex === headerRowIndex) {
-            // column headers
-            style += `background:${accent.headerBg};color:#fff;font-weight:bold;font-size:12px;border:2px solid #000;`;
-        } else if (rowIndex > headerRowIndex) {
-            // data cells
-            const isStatusCol = cellIndex === headers.indexOf('Status');
-            const isHighlight = isStatusCol
-                ? ''
-                : (cellIndex === headers.indexOf('Late By') || cellIndex === headers.indexOf('Left Early By') || cellIndex === headers.indexOf('Short By'))
-                    ? `background:${accent.summaryBg};font-weight:bold;`
-                    : '';
-            style += isHighlight || 'text-align:left;';
-            if (cellIndex < 2) style += 'font-weight:bold;text-align:left;';
+    if (tabKey === 'all_employees') {
+        const exCount = data.filter((e) => (e.exception_types || []).length > 0).length;
+        summaryCards.push({ label: 'With Exceptions', value: exCount });
+        summaryCards.push({ label: 'Clean Records', value: data.length - exCount });
+    } else if (tabKey === 'late_coming') {
+        const avgMins = data.reduce((a, e) => a + parseInt(e.late_coming_minutes || 0, 10), 0) / data.length;
+        summaryCards.push({ label: 'Avg Late Mins', value: `${Math.round(avgMins)} min` });
+    } else if (tabKey === 'early_going') {
+        const avgMins = data.reduce((a, e) => a + parseInt(e.early_going_minutes || 0, 10), 0) / data.length;
+        summaryCards.push({ label: 'Avg Early Mins', value: `${Math.round(avgMins)} min` });
+    } else if (tabKey === 'missed_punch') {
+        const noClockIn = data.filter((e) => !e.attandance_first_clock_in).length;
+        const noClockOut = data.filter((e) => !e.attandance_last_clock_out && e.attandance_first_clock_in).length;
+        summaryCards.push({ label: 'Missing Clock-In', value: noClockIn });
+        summaryCards.push({ label: 'Missing Clock-Out', value: noClockOut });
+    }
+
+    let formattedDate = '';
+    if (reportDate) {
+        try {
+            formattedDate = new Date(reportDate).toLocaleDateString('en-GB', {
+                weekday: 'short',
+                day: '2-digit',
+                month: 'short',
+                year: 'numeric',
+            });
+        } catch (e) {
+            formattedDate = String(reportDate);
         }
-        return `<td style="${style}">${cell ?? ''}</td>`;
-    }).join('')}
-      </tr>
-    `).join('')}
-  </tbody>
-</table>`;
+    }
 
-    const suffix = formattedDate.replace(/,/g, '').replace(/\s/g, '_');
-    const blob = new Blob([tableHTML], { type: 'application/vnd.ms-excel;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.setAttribute('href', url);
-    link.setAttribute('download', `Exception_Report_${tabLabel.replace(/\s+/g, '_')}_${suffix}.xls`);
-    link.style.visibility = 'hidden';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
+    await exportToStyledExcel({
+        title: `ATTENDANCE EXCEPTION REPORT – ${tabLabel.toUpperCase()}`,
+        companyName: options.companyName || 'Your Company Name',
+        dateRangeText: formattedDate ? `Date: ${formattedDate}` : '',
+        summaryCards,
+        headers,
+        data: formattedData,
+        filename: filename || `exception_report_${tabKey}_${formattedDate.replace(/,/g, '').replace(/\s+/g, '_')}`,
+        sheetName: tabLabel.slice(0, 30),
+    });
 };
 
-// ─── Helper ───────────────────────────────────────────────────────────────────
-const parseHoursToMinutes = (str) => {
-    if (!str || str === '--' || str === '0h 0m') return 0;
-    const match = str.match(/(\d+)h\s*(\d+)m/);
-    if (!match) return 0;
-    return parseInt(match[1], 10) * 60 + parseInt(match[2], 10);
-};
+/**
+ * Excel export function for Monthly Exception Report - Styled Purple Theme
+ * @param {Array} data - Array of employee monthly exception objects
+ * @param {string} monthYear - Month & Year string e.g. "2026-08"
+ * @param {string} tabKey - Active tab key ('all_employees', 'late_coming', etc.)
+ * @param {string} tabLabel - Human-readable tab label
+ * @param {string} filename - Filename string
+ * @param {Object} options - Additional options including companyName
+ */
+export const exportMonthlyExceptionToExcel = async (
+    data,
+    monthYear,
+    tabKey,
+    tabLabel,
+    filename,
+    options = {}
+) => {
+    if (!data || data.length === 0) {
+        throw new Error('No data available to export');
+    }
+
+    const columnSchemas = {
+        all_employees: [
+            { header: 'S.No.', get: (e, i) => i + 1 },
+            { header: 'Employee Name', get: (e) => e.employee_name || '--' },
+            { header: 'Employee Code', get: (e) => e.employee_code || '--' },
+            { header: 'Working Days', get: (e) => e.totalDays ?? e.total_days ?? '--' },
+            { header: 'Late Days', get: (e) => e.lateDays ?? e.late_days ?? 0 },
+            { header: 'Early Days', get: (e) => e.earlyDays ?? e.early_days ?? 0 },
+            { header: 'Short Hours Days', get: (e) => e.shortHoursDays ?? e.short_days ?? 0 },
+            { header: 'Missed Punch Days', get: (e) => e.missedPunchDays ?? e.missed_days ?? 0 },
+            {
+                header: 'Exception Details', get: (e) => {
+                    const exTypes = e.exception_types || [];
+                    const details = [];
+                    if (exTypes.includes('late_coming')) details.push(`Late: ${e.lateDays || 0}d (${e.totalLateTime || '0m'})`);
+                    if (exTypes.includes('early_going')) details.push(`Early: ${e.earlyDays || 0}d (${e.totalEarlyTime || '0m'})`);
+                    if (exTypes.includes('short_hours')) details.push(`Short: ${e.shortHoursDays || 0}d (${e.totalShortTime || '0m'})`);
+                    if (exTypes.includes('missed_punch')) details.push(`Missed: ${e.missedPunchDays || 0}d`);
+                    return details.length > 0 ? details.join(', ') : 'Clean Record';
+                }
+            },
+        ],
+        late_coming: [
+            { header: 'S.No.', get: (e, i) => i + 1 },
+            { header: 'Employee Name', get: (e) => e.employee_name || '--' },
+            { header: 'Employee Code', get: (e) => e.employee_code || '--' },
+            { header: 'Working Days', get: (e) => e.totalDays ?? e.total_days ?? '--' },
+            { header: 'Late Days', get: (e) => e.lateDays ?? e.late_days ?? 0 },
+            { header: 'Total Late Time', get: (e) => e.totalLateTime || e.total_late || '--' },
+        ],
+        early_going: [
+            { header: 'S.No.', get: (e, i) => i + 1 },
+            { header: 'Employee Name', get: (e) => e.employee_name || '--' },
+            { header: 'Employee Code', get: (e) => e.employee_code || '--' },
+            { header: 'Working Days', get: (e) => e.totalDays ?? e.total_days ?? '--' },
+            { header: 'Early Days', get: (e) => e.earlyDays ?? e.early_days ?? 0 },
+            { header: 'Total Early Time', get: (e) => e.totalEarlyTime || e.total_early || '--' },
+        ],
+        short_hours: [
+            { header: 'S.No.', get: (e, i) => i + 1 },
+            { header: 'Employee Name', get: (e) => e.employee_name || '--' },
+            { header: 'Employee Code', get: (e) => e.employee_code || '--' },
+            { header: 'Working Days', get: (e) => e.totalDays ?? e.total_days ?? '--' },
+            { header: 'Short Hours Days', get: (e) => e.shortHoursDays ?? e.short_days ?? 0 },
+            { header: 'Total Short Time', get: (e) => e.totalShortTime || e.total_short || '--' },
+        ],
+        missed_punch: [
+            { header: 'S.No.', get: (e, i) => i + 1 },
+            { header: 'Employee Name', get: (e) => e.employee_name || '--' },
+            { header: 'Employee Code', get: (e) => e.employee_code || '--' },
+            { header: 'Working Days', get: (e) => e.totalDays ?? e.total_days ?? '--' },
+            { header: 'Missed Punch Days', get: (e) => e.missedPunchDays ?? e.missed_days ?? 0 },
+        ],
+    };
+
+    const schema = columnSchemas[tabKey] || columnSchemas.all_employees;
+    const headers = schema.map(s => s.header);
+
+    const formattedData = data.map((emp, i) => {
+        const rowObj = {};
+        schema.forEach((col) => {
+            rowObj[col.header] = col.get(emp, i) ?? '';
+        });
+        return rowObj;
+    });
+
+    const summaryCards = [
+        { label: 'Total Employees', value: data.length },
+    ];
+
+    if (tabKey === 'all_employees') {
+        const exCount = data.filter((e) => (e.exception_types || []).length > 0).length;
+        summaryCards.push({ label: 'With Exceptions', value: exCount });
+        summaryCards.push({ label: 'Clean Records', value: data.length - exCount });
+    } else if (tabKey === 'late_coming') {
+        const totalLateDays = data.reduce((sum, e) => sum + Number(e.lateDays || 0), 0);
+        summaryCards.push({ label: 'Total Late Days', value: totalLateDays });
+    } else if (tabKey === 'early_going') {
+        const totalEarlyDays = data.reduce((sum, e) => sum + Number(e.earlyDays || 0), 0);
+        summaryCards.push({ label: 'Total Early Days', value: totalEarlyDays });
+    } else if (tabKey === 'short_hours') {
+        const totalShortDays = data.reduce((sum, e) => sum + Number(e.shortHoursDays || 0), 0);
+        summaryCards.push({ label: 'Total Short Days', value: totalShortDays });
+    } else if (tabKey === 'missed_punch') {
+        const totalMissedDays = data.reduce((sum, e) => sum + Number(e.missedPunchDays || 0), 0);
+        summaryCards.push({ label: 'Total Missed Days', value: totalMissedDays });
+    }
+
+    let dateRangeText = '';
+    if (monthYear) {
+        try {
+            const [y, m] = monthYear.split('-');
+            const d = new Date(Number(y), Number(m) - 1, 1);
+            dateRangeText = `Month: ${d.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}`;
+        } catch (e) {
+            dateRangeText = `Month: ${monthYear}`;
+        }
+    }
+
+    await exportToStyledExcel({
+        title: `MONTHLY EXCEPTION REPORT – ${tabLabel.toUpperCase()}`,
+        companyName: options.companyName || 'Your Company Name',
+        dateRangeText,
+        summaryCards,
+        headers,
+        data: formattedData,
+        filename: filename || `monthly_exception_report_${tabKey}_${monthYear}`,
+        sheetName: tabLabel.slice(0, 30),
+    });
+};

@@ -339,22 +339,25 @@ const MonthlySalaryReport = () => {
 
     // Exports
     const handleExportExcelClick = () => {
+        const companyName = user?.company_name || user?.company || user?.full_name || 'Your Company Name';
         handlePayrollExportExcel(
             reportData,
             filters,
             summaryStats,
             showToast,
             setExportDropdown,
-            getMonthYearDisplay
+            getMonthYearDisplay,
+            companyName
         );
     };
 
     const handleExportPDF = () => {
+        const companyName = user?.company_name || user?.company || user?.full_name || 'Your Company Name';
         handleSalaryReportPDFExport(
             reportData,
             filters,
             showToast,
-            'Your Company Name' // Replace with actual company name or fetch from context
+            companyName
         );
         setExportDropdown(false);
     };

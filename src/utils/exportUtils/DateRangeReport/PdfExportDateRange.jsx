@@ -1,6 +1,6 @@
 import React from 'react';
 import { Document, Page, Text, View, StyleSheet, pdf, Font } from '@react-pdf/renderer';
-import { saveAs } from 'file-saver';
+import { downloadPdfDocument, formatAsHeaderDate, formatPrintedOn } from '../commonPdfExport';
 
 // ---------- CONSTANTS: FIT EXACTLY INSIDE A4 LANDSCAPE INNER WIDTH ----------
 const GRID_COLS = 31;
@@ -509,7 +509,7 @@ const EmployeeGridBlock = ({ employee, dates, isLastBlock, totals, showDivider }
 // ────────────────────────────────────────────────────────────
 // PDF Document
 // ────────────────────────────────────────────────────────────
-const AttendanceReportDocument = ({ data, startDate, endDate }) => {
+const AttendanceReportDocument = ({ data, startDate, endDate, companyName = 'Your Company Name' }) => {
     const grouped = groupDataByEmployee(data);
     const employeeKeys = Object.keys(grouped).sort();
     const dateBlocks = buildDateBlocks(startDate, endDate);
@@ -536,7 +536,7 @@ const AttendanceReportDocument = ({ data, startDate, endDate }) => {
                                 {new Date(endDate).toLocaleString('en-US', { month: 'short' })} {pad2(new Date(endDate).getDate())} {new Date(endDate).getFullYear()}
                             </Text>
                             <View style={styles.headerInfoRow}>
-                                <Text style={styles.companyInfo}>Company: Your Company Name</Text>
+                                <Text style={styles.companyInfo}>Company: {companyName}</Text>
                                 <Text style={styles.printedOnInfo}>Printed On: {formatPrintedOnHeader(new Date())}</Text>
                             </View>
                             <View style={styles.hrLine} />
@@ -585,15 +585,13 @@ const AttendanceReportDocument = ({ data, startDate, endDate }) => {
 // ────────────────────────────────────────────────────────────
 // Export
 // ────────────────────────────────────────────────────────────
-export const exportToPDF = async (data, startDate, endDate) => {
+export const exportToPDF = async (data, startDate, endDate, companyName = 'Your Company Name') => {
     try {
         if (!data || data.length === 0) throw new Error('No attendance data available for export');
 
-        const doc = <AttendanceReportDocument data={data} startDate={startDate} endDate={endDate} />;
-        const asPdf = pdf(doc);
-        const blob = await asPdf.toBlob();
+        const doc = <AttendanceReportDocument data={data} startDate={startDate} endDate={endDate} companyName={companyName} />;
         const fileName = `Attendance_Report_${formatDate(startDate)}_to_${formatDate(endDate)}.pdf`;
-        saveAs(blob, fileName);
+        await downloadPdfDocument(doc, fileName);
 
         return {
             success: true,

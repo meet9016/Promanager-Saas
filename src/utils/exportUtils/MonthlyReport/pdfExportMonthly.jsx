@@ -1,126 +1,115 @@
 // utils/exportUtils/MonthlyReport/pdfExportMonthly.js
 import React from "react";
-import { Document, Page, Text, View, StyleSheet, pdf } from "@react-pdf/renderer";
+import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
+import {
+    commonPdfStyles as styles,
+    PDF_COLORS,
+    PDFHeaderBanner,
+    PDFFiltersSection,
+    PDFFooter,
+    downloadPdfDocument
+} from "../commonPdfExport";
 
-/** ----------------- Styles (unchanged layout) ----------------- **/
-const styles = StyleSheet.create({
-    page: {
-        backgroundColor: "#FFFFFF",
-        paddingTop: 15,
-        paddingBottom: 15,
-        paddingLeft: 15,
-        paddingRight: 15,
-        fontSize: 7,
-        fontFamily: "Helvetica",
+const monthlyStyles = StyleSheet.create({
+    empCardHeader: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        backgroundColor: PDF_COLORS.purpleLight,
+        borderColor: PDF_COLORS.purpleBorder,
+        borderWidth: 1,
+        paddingVertical: 3,
+        paddingHorizontal: 6,
+        borderTopLeftRadius: 3,
+        borderTopRightRadius: 3,
+        marginTop: 6,
     },
-    headerContainer: { marginBottom: 6 },
-    reportTitle: { fontSize: 12, fontWeight: "bold", textAlign: "center", marginBottom: 4 },
-    dateRange: { fontSize: 10, textAlign: "center", marginBottom: 6 },
-    headerInfoRow: {
-        flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 4,
+    empTitleText: {
+        fontSize: 7.5,
+        fontWeight: 'bold',
+        color: PDF_COLORS.primaryDark,
     },
-    companyInfo: { fontSize: 8, fontWeight: "normal" },
-    printedOnInfo: { fontSize: 8, fontWeight: "normal" },
-    hr: { borderBottomColor: "#000", borderBottomWidth: 1, marginBottom: 4 },
-
-    filtersRow: { marginTop: 2, marginBottom: 2 },
-    filtersText: { fontSize: 7 },
-
-    daysContainer: { flexDirection: "column", marginBottom: 3 },
-    daysRow: { flexDirection: "row", marginBottom: 1 },
-    dayCellHeader: {
-        width: 24, height: 14, textAlign: "center", borderWidth: 0.5, borderColor: "#000",
-        paddingVertical: 1, backgroundColor: "#E8E8E8", fontWeight: "bold", fontSize: 6,
-        justifyContent: "center", alignItems: "center",
+    empSummaryText: {
+        fontSize: 6.5,
+        fontWeight: 'bold',
+        color: PDF_COLORS.purpleText,
     },
-    totalCellHeader: {
-        width: 60, height: 14, textAlign: "center", borderWidth: 0.5, borderColor: "#000",
-        paddingVertical: 1, backgroundColor: "#E8E8E8", fontWeight: "bold", fontSize: 6,
-        justifyContent: "center", alignItems: "center",
-    },
-    dayCell: {
-        width: 24, height: 14, textAlign: "center", borderWidth: 0.5, borderColor: "#000",
-        paddingVertical: 1, fontSize: 5, justifyContent: "center", alignItems: "center",
-    },
-    totaldayCell: {
-        width: 60, height: 14, textAlign: "center", borderWidth: 0.5, borderColor: "#000",
-        paddingVertical: 1, fontSize: 5, justifyContent: "center", alignItems: "center",
-    },
-    totalCell: {
-        width: 60,
-        height: 14,
-        paddingVertical: 1,
-        paddingHorizontal: 2,
-        borderWidth: 0.5,
-        borderColor: "#000",
-        backgroundColor: "#F0F0F0",
-        fontSize: 5,
-        fontWeight: "bold",
-        justifyContent: "center",
-        alignItems: "center",
-        textAlign: "center",
-    },
-
-    employeeBlock: { marginTop: 4, marginBottom: 6 },
-    empHeader: { fontSize: 7, marginBottom: 3, fontWeight: "bold" },
-    rowLabelAndCells: { flexDirection: "row", alignItems: "stretch", marginBottom: 0.5 },
     labelCell: {
-        minWidth: 45, maxWidth: 50, height: 14, paddingVertical: 2, paddingHorizontal: 2,
-        borderWidth: 0.5, borderColor: "#000", backgroundColor: "#F5F5F5", fontSize: 6,
-        fontWeight: "bold", justifyContent: "center", alignItems: "center",
+        width: 52,
+        fontSize: 6.5,
+        fontWeight: 'bold',
+        color: PDF_COLORS.textDark,
+        backgroundColor: '#f1f5f9',
+        borderRightWidth: 1,
+        borderRightColor: PDF_COLORS.purpleBorder,
+        borderBottomWidth: 1,
+        borderBottomColor: PDF_COLORS.purpleBorder,
+        padding: 2,
+        justifyContent: 'center',
+        alignItems: 'center',
+        textAlign: 'center',
     },
-    valueCell: {
-        width: 24, height: 14, textAlign: "center", borderWidth: 0.5, borderColor: "#000",
-        paddingVertical: 1, fontSize: 5, justifyContent: "center", alignItems: "center",
+    dayValCell: {
+        width: 22,
+        fontSize: 5.5,
+        color: PDF_COLORS.textDark,
+        borderRightWidth: 1,
+        borderRightColor: '#e2e8f0',
+        borderBottomWidth: 1,
+        borderBottomColor: '#e2e8f0',
+        padding: 2,
+        justifyContent: 'center',
+        alignItems: 'center',
+        textAlign: 'center',
     },
-
-    footerLine: { marginTop: 4, fontSize: 7 },
-    footer: {
-        position: "absolute", left: 15, right: 15, bottom: 8, fontSize: 5,
-        textAlign: "center", color: "#333",
+    summaryValCell: {
+        width: 68,
+        fontSize: 5.5,
+        color: PDF_COLORS.textDark,
+        borderBottomWidth: 1,
+        borderBottomColor: '#e2e8f0',
+        padding: 2,
+        justifyContent: 'center',
+        alignItems: 'center',
+        textAlign: 'center',
     },
+    statusCellP: {
+        color: '#15803d',
+        fontWeight: 'bold',
+    },
+    statusCellA: {
+        color: '#b91c1c',
+        fontWeight: 'bold',
+    },
+    statusCellWO: {
+        color: '#7e22ce',
+        fontWeight: 'bold',
+    },
+    statusCellHalf: {
+        color: '#c2410c',
+        fontWeight: 'bold',
+    }
 });
 
-/** ----------------- Helpers ----------------- **/
 const pad2 = (n) => (n < 10 ? `0${n}` : String(n));
 
-const formatPrintedOn = (dt) => {
-    try {
-        const d = typeof dt === "string" ? new Date(dt) : dt;
-        const y = d.getFullYear();
-        const m = d.toLocaleString("en-US", { month: "short" });
-        const day = pad2(d.getDate());
-        const hh = pad2(d.getHours());
-        const mm = pad2(d.getMinutes());
-        return `${m} ${day} ${y} ${hh}:${mm}`;
-    } catch {
-        return String(dt || "");
-    }
-};
-
-// Build "Aug 01 2025  To  Aug 31 2025" from "YYYY-MM"
 const buildDateRangeText = (monthYear) => {
     if (!monthYear) return "";
     const [yStr, mStr] = monthYear.split("-");
     const y = parseInt(yStr, 10);
-    const m = parseInt(mStr, 10); // 1..12
-
+    const m = parseInt(mStr, 10);
     const first = new Date(y, m - 1, 1);
     const last = new Date(y, m, 0);
-
     const fmt = (d) =>
         `${d.toLocaleString("en-US", { month: "short" })} ${pad2(d.getDate())} ${d.getFullYear()}`;
-
     return `${fmt(first)}  To  ${fmt(last)}`;
 };
 
-// Optional one-line filters summary
 const buildFilterLines = (filters = {}, options = {}) => {
     const parts = [];
     if (filters.branch_name) parts.push(`Branch: ${filters.branch_name}`);
     if (filters.department_name) parts.push(`Department: ${filters.department_name}`);
     if (filters.designation_name) parts.push(`Designation: ${filters.designation_name}`);
-    // Employee label (when single employee export)
     if (filters.employee_name) {
         parts.push(`Employee: ${filters.employee_name}`);
     } else if (options.employeeLabel) {
@@ -152,7 +141,6 @@ const buildDaysMeta = (year, month) => {
     return arr;
 };
 
-/** Truncate a cell value for display */
 const v = (s) => {
     if (s === undefined || s === null || s === "") return "";
     const str = String(s);
@@ -167,10 +155,6 @@ const v = (s) => {
     return str.length > 8 ? str.substring(0, 6) + ".." : str;
 };
 
-/**
- * Normalises any short_status variant into a consistent key.
- * Must match the logic in MonthlyReport.jsx.
- */
 const normalizeStatus = (status) => {
     if (!status) return null;
     const s = String(status).trim();
@@ -184,9 +168,6 @@ const normalizeStatus = (status) => {
     }
 };
 
-/**
- * Parses "8h 44m", "8h", "44m", "0h 0m" → decimal hours.
- */
 const parseDurationToHours = (str) => {
     if (!str || str === "--") return 0;
     const s = String(str);
@@ -197,20 +178,12 @@ const parseDurationToHours = (str) => {
     return h + m / 60;
 };
 
-/** Formats decimal hours → "Xh Ym" */
 const formatHours = (decimalHours) => {
     const h = Math.floor(decimalHours);
     const m = Math.round((decimalHours - h) * 60);
     return `${h}h ${m}m`;
 };
 
-/**
- * Computes status counts and total hours for one employee's day map.
- * Works for both the grouped format (from React) and the flat format.
- *
- * @param {Object} days  – { [dayNumber]: { in, out, total, status } }
- * @returns {{ P, 'P/INC', A, L, WO, '½P', H, totalHours, summaryText }}
- */
 const computeTotals = (days) => {
     const totals = { P: 0, "P/INC": 0, A: 0, L: 0, WO: 0, "½P": 0, H: 0, totalHours: 0 };
 
@@ -226,7 +199,6 @@ const computeTotals = (days) => {
         totals.totalHours += parseDurationToHours(record.total);
     });
 
-    // Build compact summary string for the PDF total cell
     const parts = [];
     if (totals.P > 0) parts.push(`P:${totals.P}`);
     if (totals["P/INC"] > 0) parts.push(`P/INC:${totals["P/INC"]}`);
@@ -236,141 +208,142 @@ const computeTotals = (days) => {
     if (totals["½P"] > 0) parts.push(`½P:${totals["½P"]}`);
     if (totals.H > 0) parts.push(`H:${totals.H}`);
 
-    totals.summaryText = `${parts.join(", ")}  ||  Total: ${formatHours(totals.totalHours)}`;
-
+    totals.summaryText = `${parts.join(", ")} | Total: ${formatHours(totals.totalHours)}`;
     return totals;
 };
 
-/** ----------------- Employee Block ----------------- **/
+const getStatusStyle = (st) => {
+    const norm = normalizeStatus(st);
+    if (norm === 'P' || norm === 'P/INC') return monthlyStyles.statusCellP;
+    if (norm === 'A') return monthlyStyles.statusCellA;
+    if (norm === 'WO' || norm === 'WOP') return monthlyStyles.statusCellWO;
+    if (norm === '½P' || norm === 'L') return monthlyStyles.statusCellHalf;
+    return {};
+};
+
 const EmployeeBlock = ({ empCode, empName, daysMeta, days }) => {
     const totals = computeTotals(days);
 
     return (
-        <View style={styles.employeeBlock} wrap={false}>
-            <Text style={styles.empHeader}>
-                Emp. Code: {empCode || "-"}   Emp. Name: {empName || "-"}
-            </Text>
-
-            {/* InTime row */}
-            <View style={styles.rowLabelAndCells}>
-                <Text style={styles.labelCell}>InTime</Text>
-                {daysMeta.map(({ day }) => (
-                    <Text key={`in-${day}`} style={styles.valueCell}>{v(days[day]?.in)}</Text>
-                ))}
-                <Text style={styles.totalCell}>Total</Text>
+        <View style={{ marginBottom: 6 }} wrap={false}>
+            {/* Employee Header Banner */}
+            <View style={monthlyStyles.empCardHeader}>
+                <Text style={monthlyStyles.empTitleText}>
+                    Code: {empCode || "-"}   |   Name: {empName || "-"}
+                </Text>
+                <Text style={monthlyStyles.empSummaryText}>
+                    {totals.summaryText}
+                </Text>
             </View>
 
-            {/* OutTime row — summary in Total cell */}
-            <View style={styles.rowLabelAndCells}>
-                <Text style={styles.labelCell}>OutTime</Text>
-                {daysMeta.map(({ day }) => (
-                    <Text key={`out-${day}`} style={styles.valueCell}>{v(days[day]?.out)}</Text>
-                ))}
-                <Text style={styles.totalCell}>{totals.summaryText}</Text>
-            </View>
+            {/* Table */}
+            <View style={[styles.table, { borderTopWidth: 0 }]}>
+                {/* InTime row */}
+                <View style={[styles.tableRow, { backgroundColor: '#faf5ff' }]}>
+                    <Text style={monthlyStyles.labelCell}>InTime</Text>
+                    {daysMeta.map(({ day }) => (
+                        <Text key={`in-${day}`} style={monthlyStyles.dayValCell}>{v(days[day]?.in)}</Text>
+                    ))}
+                    <Text style={monthlyStyles.summaryValCell}>Total</Text>
+                </View>
 
-            {/* Total hours row */}
-            <View style={styles.rowLabelAndCells}>
-                <Text style={styles.labelCell}>Total</Text>
-                {daysMeta.map(({ day }) => (
-                    <Text key={`tot-${day}`} style={styles.valueCell}>{v(days[day]?.total)}</Text>
-                ))}
-                <Text style={styles.totalCell}></Text>
-            </View>
+                {/* OutTime row */}
+                <View style={styles.tableRow}>
+                    <Text style={monthlyStyles.labelCell}>OutTime</Text>
+                    {daysMeta.map(({ day }) => (
+                        <Text key={`out-${day}`} style={monthlyStyles.dayValCell}>{v(days[day]?.out)}</Text>
+                    ))}
+                    <Text style={monthlyStyles.summaryValCell}>{totals.summaryText}</Text>
+                </View>
 
-            {/* Status row */}
-            <View style={styles.rowLabelAndCells}>
-                <Text style={styles.labelCell}>Status</Text>
-                {daysMeta.map(({ day }) => (
-                    <Text key={`st-${day}`} style={styles.valueCell}>{v(days[day]?.status)}</Text>
-                ))}
-                <Text style={styles.totalCell}></Text>
+                {/* Total hours row */}
+                <View style={[styles.tableRow, { backgroundColor: '#faf5ff' }]}>
+                    <Text style={monthlyStyles.labelCell}>Total Hrs</Text>
+                    {daysMeta.map(({ day }) => (
+                        <Text key={`tot-${day}`} style={monthlyStyles.dayValCell}>{v(days[day]?.total)}</Text>
+                    ))}
+                    <Text style={monthlyStyles.summaryValCell}></Text>
+                </View>
+
+                {/* Status row */}
+                <View style={styles.tableRow}>
+                    <Text style={monthlyStyles.labelCell}>Status</Text>
+                    {daysMeta.map(({ day }) => {
+                        const st = v(days[day]?.status);
+                        return (
+                            <Text key={`st-${day}`} style={[monthlyStyles.dayValCell, getStatusStyle(st)]}>{st}</Text>
+                        );
+                    })}
+                    <Text style={monthlyStyles.summaryValCell}></Text>
+                </View>
             </View>
         </View>
     );
 };
 
-/** ----------------- PDF Document ----------------- **/
 const MonthlyBasicWorkDurationPDF = ({
     month,
     year,
     dateRangeText,
     companyName,
-    department,
-    printedOn,
     employees,
     filterLines = [],
 }) => {
     const daysMeta = buildDaysMeta(year, month);
-    const printedOnText = formatPrintedOn(printedOn);
+    const EMP_PER_PAGE = 3;
+    const empChunks = [];
+    for (let i = 0; i < employees.length; i += EMP_PER_PAGE) {
+        empChunks.push(employees.slice(i, i + EMP_PER_PAGE));
+    }
+    if (!empChunks.length) empChunks.push([]);
 
     return (
         <Document>
-            <Page size="A4" orientation="landscape" style={styles.page}>
-                {/* Header */}
-                <View style={styles.headerContainer}>
-                    <Text style={styles.reportTitle}>Monthly Status Report (Basic Work Duration)</Text>
-                    <Text style={styles.dateRange}>{dateRangeText}</Text>
-                    <View style={styles.headerInfoRow}>
-                        <Text style={styles.companyInfo}>Company: {companyName}</Text>
-                        <Text style={styles.printedOnInfo}>Printed On : {printedOnText}</Text>
-                    </View>
-                    {filterLines.length > 0 && (
-                        <View style={styles.filtersRow}>
-                            <Text style={styles.filtersText}>{filterLines.join("   •   ")}</Text>
-                        </View>
-                    )}
-                </View>
-                <View style={styles.hr} />
-
-                {/* Days header */}
-                <View style={styles.daysContainer}>
-                    <View style={styles.daysRow}>
-                        <Text style={styles.labelCell}>Date</Text>
-                        {daysMeta.map(({ day }) => (
-                            <Text key={`dnum-${day}`} style={styles.dayCellHeader}>{day}</Text>
-                        ))}
-                        <Text style={styles.totalCellHeader}>Total</Text>
-                    </View>
-
-                    <View style={styles.daysRow}>
-                        <Text style={styles.labelCell}>Day</Text>
-                        {daysMeta.map(({ day, wd }) => (
-                            <Text key={`dwd-${day}`} style={styles.dayCell}>{wd}</Text>
-                        ))}
-                        <Text style={styles.totaldayCell}>Summary</Text>
-                    </View>
-                </View>
-
-                {/* Employees */}
-                {employees.map((e, idx) => (
-                    <EmployeeBlock
-                        key={`${e.empCode}-${idx}`}
-                        empCode={e.empCode}
-                        empName={e.empName}
-                        daysMeta={daysMeta}
-                        days={e.days}
+            {empChunks.map((chunk, pIdx) => (
+                <Page key={pIdx} size="A4" orientation="landscape" style={styles.page}>
+                    <PDFHeaderBanner
+                        title="MONTHLY ATTENDANCE REPORT (BASIC WORK DURATION)"
+                        companyName={companyName}
+                        dateRangeText={dateRangeText}
                     />
-                ))}
 
-                {!!department && <Text style={styles.footerLine}>Department: {department}</Text>}
-                <Text style={styles.footer}>Monthly Status Report • {companyName}</Text>
-            </Page>
+                    <View style={styles.content}>
+                        {pIdx === 0 && filterLines.length > 0 && <PDFFiltersSection appliedFilters={filterLines} />}
+
+                        {/* Top Days Header Bar */}
+                        <View style={[styles.tableRow, styles.tableHeaderRow, { marginTop: 4 }]}>
+                            <Text style={[styles.th, { width: 52 }]}>Date / Day</Text>
+                            {daysMeta.map(({ day, wd }) => (
+                                <Text key={`dnum-${day}`} style={[styles.th, { width: 22, fontSize: 5 }]}>{day}{'\n'}{wd}</Text>
+                            ))}
+                            <Text style={[styles.th, { width: 68 }]}>Summary</Text>
+                        </View>
+
+                        {/* Employee Blocks */}
+                        {chunk.map((e, idx) => (
+                            <EmployeeBlock
+                                key={`${e.empCode}-${idx}`}
+                                empCode={e.empCode}
+                                empName={e.empName}
+                                daysMeta={daysMeta}
+                                days={e.days}
+                            />
+                        ))}
+                    </View>
+
+                    <PDFFooter totalCount={employees.length} itemLabel="Employees" />
+                </Page>
+            ))}
         </Document>
     );
 };
 
-/** ----------------- Data adapters ----------------- **/
 const empKey = (row) => {
     const code = (row?.employee_code ?? row?.employee_id ?? "").toString().trim();
     const name = (row?.employee_name ?? "").toString().trim();
     return `${code}||${name}`;
 };
 
-/**
- * Adapts flat API rows → { [day]: { in, out, total, status } }
- * "status" is stored as the short_status value so computeTotals() can normalise it.
- */
 const adaptEmployeeDays = (rowsForEmp) => {
     const days = {};
     (rowsForEmp || []).forEach((row) => {
@@ -382,17 +355,12 @@ const adaptEmployeeDays = (rowsForEmp) => {
             in: row.attandance_first_clock_in || "",
             out: row.attandance_last_clock_out || "",
             total: row.attandance_hours ? String(row.attandance_hours) : "",
-            // Prefer the short code; fall back to the full status string
             status: row.short_status || row.status || "",
         };
     });
     return days;
 };
 
-/**
- * Adapts grouped format (from React component) → { [day]: { in, out, total, status } }
- * The grouped data stores inTime/outTime/totalHours/status.
- */
 const adaptEmployeeDaysFromGrouped = (dailyAttendance) => {
     const days = {};
     Object.entries(dailyAttendance || {}).forEach(([day, record]) => {
@@ -400,7 +368,6 @@ const adaptEmployeeDaysFromGrouped = (dailyAttendance) => {
             in: record.inTime || "",
             out: record.outTime || "",
             total: record.totalHours || "",
-            // The React grouping stores short_status as record.status
             status: record.status || record.fullStatus || "",
         };
     });
@@ -408,7 +375,6 @@ const adaptEmployeeDaysFromGrouped = (dailyAttendance) => {
 };
 
 const buildEmployeesFromAllData = (reportData) => {
-    // Grouped format (from React component — has dailyAttendance key)
     if (reportData.length > 0 && reportData[0].dailyAttendance) {
         return reportData.map((employee) => ({
             empCode: employee.employee_code,
@@ -417,7 +383,6 @@ const buildEmployeesFromAllData = (reportData) => {
         }));
     }
 
-    // Flat format (original API response)
     const byEmp = new Map();
     for (const row of reportData || []) {
         if (!row) continue;
@@ -445,7 +410,6 @@ const buildEmployeesFromAllData = (reportData) => {
     return employees;
 };
 
-/** ----------------- Public export function ----------------- **/
 export const exportMonthlyReportToPDF = async (reportData, filters = {}, options = {}) => {
     if (!Array.isArray(reportData) || reportData.length === 0) {
         return { success: false, message: "No data available to export" };
@@ -465,7 +429,7 @@ export const exportMonthlyReportToPDF = async (reportData, filters = {}, options
             month={mm}
             year={yy}
             dateRangeText={dateRangeText}
-            companyName={options.companyName || "Company"}
+            companyName={options.companyName || "Your Company Name"}
             department={filters.department_name || ""}
             printedOn={options.printedOn || new Date()}
             employees={employees}
@@ -474,15 +438,8 @@ export const exportMonthlyReportToPDF = async (reportData, filters = {}, options
     );
 
     try {
-        const blob = await pdf(doc).toBlob();
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = options.fileName || `Monthly_BasicWork_DurationReport_${monthYear}.pdf`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
+        const fileName = options.fileName || `Monthly_Attendance_Report_${monthYear}.pdf`;
+        await downloadPdfDocument(doc, fileName.endsWith('.pdf') ? fileName : `${fileName}.pdf`);
         return { success: true, message: "PDF exported successfully!" };
     } catch (error) {
         console.error("PDF generation error:", error);

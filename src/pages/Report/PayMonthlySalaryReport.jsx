@@ -452,15 +452,17 @@ const PayMonthlySalaryReport = () => {
 
     const handleExportPDF = async () => {
         try {
-            await exportPaySalaryToPDF(reportData, filters, apiSummary);
+            const companyName = user?.company_name || user?.company || user?.full_name || 'Your Company Name';
+            await exportPaySalaryToPDF(reportData, filters, companyName);
             showToast('PDF exported successfully', 'success');
         } catch (e) { showToast(e.message || 'Export failed', 'error'); }
         setExportDropdown(false);
     };
 
-    const handleExportExcel = () => {
+    const handleExportExcel = async () => {
         try {
-            exportPaySalaryToExcel(reportData, filters, apiSummary);
+            const companyName = user?.company_name || user?.company || user?.full_name || 'Your Company Name';
+            await exportPaySalaryToExcel(reportData, filters, apiSummary, 'Paid_Salary_Report', companyName);
             showToast('Excel exported successfully', 'success');
         } catch (e) { showToast(e.message || 'Export failed', 'error'); }
         setExportDropdown(false);

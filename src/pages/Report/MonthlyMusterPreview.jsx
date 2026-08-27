@@ -488,7 +488,7 @@ const MonthlyMusterPreview = () => {
                 return;
             }
             const niceMonth = formatMonthYear(filters.month_year);
-            const companyName = 'Your Company Name';
+            const companyName = user?.company_name || user?.company || user?.full_name || 'Your Company Name';
             const filterLabels = getFilterLabels(filters, branches, departments, designations, employees);
 
             const payload = gridData.map((emp, idx) => ({
@@ -546,6 +546,7 @@ const MonthlyMusterPreview = () => {
                 rows: rowsForExcel,
                 monthYear: filters.month_year,
                 monthLabel: niceMonth,
+                companyName: user?.company_name || user?.company || user?.full_name || 'Your Company Name',
                 filterLabels,
                 fileName: `monthly_attendance_muster_${niceMonth.replace(/\s+/g, '_')}`
             });

@@ -293,16 +293,17 @@ const EmployeeDirectoryReport = () => {
                 status_name: status.find((s) => s.id == filters.status_id)?.name || ''
             };
 
-            await exportEmployeeDirectoryToPDF(reportData, filterNames, 'Your Company Name');
+            const companyName = user?.company_name || user?.company || user?.full_name || 'Your Company Name';
+            await exportEmployeeDirectoryToPDF(reportData, filterNames, companyName);
             showToast('PDF export completed successfully!', 'success');
             setExportDropdown(false);
         } catch (error) {
             showToast('Failed to export PDF: ' + error.message, 'error');
             setExportDropdown(false);
         }
-    }, [reportData, filters, branches, departments, designations, employeeTypes, salaryTypes, genders, status]);
+    }, [reportData, filters, branches, departments, designations, employeeTypes, salaryTypes, genders, status, user]);
 
-    const handleExportExcel = useCallback(() => {
+    const handleExportExcel = useCallback(async () => {
         try {
             if (!reportData || reportData.length === 0) {
                 showToast('No data available to export', 'error');
@@ -332,9 +333,10 @@ const EmployeeDirectoryReport = () => {
                             : 'Unknown'
             }));
 
+            const companyName = user?.company_name || user?.company || user?.full_name || 'Your Company Name';
             const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
             const fileName = `Employee_Directory_Report_${timestamp}`;
-            exportToExcel(exportData, fileName);
+            await exportToExcel(exportData, fileName, { companyName });
 
             showToast('Excel export completed successfully!', 'success');
             setExportDropdown(false);
@@ -342,7 +344,7 @@ const EmployeeDirectoryReport = () => {
             showToast('Failed to export Excel: ' + error.message, 'error');
             setExportDropdown(false);
         }
-    }, [reportData]);
+    }, [reportData, user]);
 
     const resetFilters = () => {
         setFilters({
