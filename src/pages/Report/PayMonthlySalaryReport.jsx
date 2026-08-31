@@ -320,6 +320,10 @@ const PayMonthlySalaryReport = () => {
     const navigate = useNavigate();
     const { user } = useAuth();
     const currentDate = new Date();
+    const prevDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
+    const defaultMonthYear = `${prevDate.getFullYear()}-${String(
+        prevDate.getMonth() + 1
+    ).padStart(2, '0')}`;
 
     const getMonthYearDisplay = (monthYear) => {
         if (!monthYear) return '';
@@ -328,9 +332,7 @@ const PayMonthlySalaryReport = () => {
     };
 
     const [filters, setFilters] = useState({
-        branch_id: '', department_id: '', designation_id: '', employee_id: '', month_year: `${currentDate.getFullYear()}-${String(
-            currentDate.getMonth() + 1
-        ).padStart(2, '0')}`
+        branch_id: '', department_id: '', designation_id: '', employee_id: '', month_year: defaultMonthYear
     });
     const [branches, setBranches] = useState([]);
     const [departments, setDepartments] = useState([]);
@@ -403,19 +405,20 @@ const PayMonthlySalaryReport = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [user?.user_id]);
 
-    const handleGenerateReport = async (isAuto = false) => {
-        if (!filters.month_year) {
+    const handleGenerateReport = async (isAuto = false, customFilters = null) => {
+        const activeFilters = customFilters || filters;
+        if (!activeFilters.month_year) {
             if (!isAuto) showToast('Please select a month and year', 'error');
             return;
         }
         try {
             setLoading(true); setError('');
             const formData = new FormData();
-            formData.append('month_year', filters.month_year);
-            if (filters.branch_id) formData.append('branch_id', filters.branch_id);
-            if (filters.department_id) formData.append('department_id', filters.department_id);
-            if (filters.designation_id) formData.append('designation_id', filters.designation_id);
-            if (filters.employee_id) formData.append('employee_id', filters.employee_id);
+            formData.append('month_year', activeFilters.month_year);
+            if (activeFilters.branch_id) formData.append('branch_id', activeFilters.branch_id);
+            if (activeFilters.department_id) formData.append('department_id', activeFilters.department_id);
+            if (activeFilters.designation_id) formData.append('designation_id', activeFilters.designation_id);
+            if (activeFilters.employee_id) formData.append('employee_id', activeFilters.employee_id);
             const response = await api.post('pay_monthly_salary_report_list', formData);
             if (response.data?.success && response.data.data) {
                 setReportData(response.data.data);
@@ -441,9 +444,11 @@ const PayMonthlySalaryReport = () => {
     };
 
     const resetFilters = () => {
-        setFilters({ branch_id: '', department_id: '', designation_id: '', employee_id: '', month_year: '' });
-        setReportData(null); setApiSummary(null); setError(''); setCurrentPage(1);
+        const defaultFilters = { branch_id: '', department_id: '', designation_id: '', employee_id: '', month_year: defaultMonthYear };
+        setFilters(defaultFilters);
+        setError(''); setCurrentPage(1);
         showToast('Filters reset successfully', 'success');
+        handleGenerateReport(true, defaultFilters);
     };
 
     const totalPages = Math.ceil((reportData?.length || 0) / itemsPerPage);

@@ -238,6 +238,10 @@ const getFilterLabels = (filters, branches, departments, designations, employees
 const MonthlyMusterPreview = () => {
     const navigate = useNavigate();
     const { user } = useAuth();
+    const currentDate = new Date();
+    const defaultMonthYear = `${currentDate.getFullYear()}-${String(
+        currentDate.getMonth() + 1
+    ).padStart(2, '0')}`;
 
     /* Filters */
     const [filters, setFilters] = useState({
@@ -245,7 +249,7 @@ const MonthlyMusterPreview = () => {
         department_id: '',
         designation_id: '',
         employee_id: '',
-        month_year: new Date().toISOString().slice(0, 7),
+        month_year: defaultMonthYear,
     });
 
     const [filterDropdown, setFilterDropdown] = useState(false);
@@ -369,16 +373,17 @@ const MonthlyMusterPreview = () => {
     }, [user?.user_id]);
 
     /* API */
-    const fetchReportData = useCallback(async () => {
+    const fetchReportData = useCallback(async (customFilters = null) => {
         if (!user?.user_id) throw new Error('User ID is required');
-        if (!filters.month_year) throw new Error('Please select Month & Year');
+        const activeFilters = customFilters || filters;
+        if (!activeFilters.month_year) throw new Error('Please select Month & Year');
 
         const form = new FormData();
-        form.append('month_year', filters.month_year);
-        if (filters.branch_id) form.append('branch_id', filters.branch_id);
-        if (filters.department_id) form.append('department_id', filters.department_id);
-        if (filters.designation_id) form.append('designation_id', filters.designation_id);
-        if (filters.employee_id) form.append('employee_id', filters.employee_id);
+        form.append('month_year', activeFilters.month_year);
+        if (activeFilters.branch_id) form.append('branch_id', activeFilters.branch_id);
+        if (activeFilters.department_id) form.append('department_id', activeFilters.department_id);
+        if (activeFilters.designation_id) form.append('designation_id', activeFilters.designation_id);
+        if (activeFilters.employee_id) form.append('employee_id', activeFilters.employee_id);
 
         const res = await api.post('monthly_attendance_report_list', form);
         if (res.data?.success && Array.isArray(res.data.data)) return res.data.data;
@@ -386,11 +391,11 @@ const MonthlyMusterPreview = () => {
     }, [user?.user_id, filters]);
 
     // Generate button handler - replaces automatic loading
-    const handleGenerateReport = async (isAuto = false) => {
+    const handleGenerateReport = async (isAuto = false, customFilters = null) => {
         try {
             setLoading(true);
             setError('');
-            const data = await fetchReportData();
+            const data = await fetchReportData(customFilters);
             setRows(data || []);
             setHasGenerated(true);
             if (!isAuto) {
@@ -461,16 +466,17 @@ const MonthlyMusterPreview = () => {
     };
 
     const resetFilters = () => {
-        setFilters({
+        const defaultFilters = {
             branch_id: '',
             department_id: '',
             designation_id: '',
             employee_id: '',
-            month_year: new Date().toISOString().slice(0, 7),
-        });
-        setRows([]);
+            month_year: defaultMonthYear,
+        };
+        setFilters(defaultFilters);
         setError('');
-        setHasGenerated(false);
+        showToast('Filters reset successfully', 'success');
+        handleGenerateReport(true, defaultFilters);
     };
 
     const formatMonthYear = (monthYear) => {

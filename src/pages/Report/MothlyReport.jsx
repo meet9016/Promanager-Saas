@@ -210,12 +210,17 @@ const MonthlyReport = () => {
     const navigate = useNavigate();
     const { user } = useAuth();
 
+    const currentDate = new Date();
+    const defaultMonthYear = `${currentDate.getFullYear()}-${String(
+        currentDate.getMonth() + 1
+    ).padStart(2, '0')}`;
+
     const [filters, setFilters] = useState({
         branch_id: '',
         department_id: '',
         designation_id: '',
         employee_id: '',
-        month_year: new Date().toISOString().slice(0, 7)
+        month_year: defaultMonthYear
     });
 
     const [filterNames, setFilterNames] = useState({
@@ -327,17 +332,18 @@ const MonthlyReport = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [user?.user_id]);
 
-    const fetchReportData = async () => {
+    const fetchReportData = async (customFilters = null) => {
         if (!user?.user_id) throw new Error('User ID is required');
-        if (!filters.month_year) throw new Error('Please select a month and year');
+        const activeFilters = customFilters || filters;
+        if (!activeFilters.month_year) throw new Error('Please select a month and year');
 
         const formData = new FormData();
-        formData.append('month_year', filters.month_year);
+        formData.append('month_year', activeFilters.month_year);
 
-        if (filters.branch_id) formData.append('branch_id', filters.branch_id);
-        if (filters.department_id) formData.append('department_id', filters.department_id);
-        if (filters.designation_id) formData.append('designation_id', filters.designation_id);
-        if (filters.employee_id) formData.append('employee_id', filters.employee_id);
+        if (activeFilters.branch_id) formData.append('branch_id', activeFilters.branch_id);
+        if (activeFilters.department_id) formData.append('department_id', activeFilters.department_id);
+        if (activeFilters.designation_id) formData.append('designation_id', activeFilters.designation_id);
+        if (activeFilters.employee_id) formData.append('employee_id', activeFilters.employee_id);
 
         const response = await api.post('monthly_attendance_report_list', formData);
 
@@ -379,11 +385,11 @@ const MonthlyReport = () => {
         }
     };
 
-    const handleGenerateReport = async (isAuto = false) => {
+    const handleGenerateReport = async (isAuto = false, customFilters = null) => {
         try {
             setLoading(true);
             setError('');
-            const data = await fetchReportData();
+            const data = await fetchReportData(customFilters);
 
             const groupedData = data.reduce((acc, current) => {
                 const employeeCode = current.employee_code;
@@ -424,19 +430,19 @@ const MonthlyReport = () => {
     };
 
     const resetFilters = () => {
-        setFilters({
+        const defaultFilters = {
             branch_id: '',
             department_id: '',
             designation_id: '',
             employee_id: '',
-            month_year: new Date().toISOString().slice(0, 7)
-        });
+            month_year: defaultMonthYear
+        };
+        setFilters(defaultFilters);
         setFilterNames({ branch_name: '', department_name: '', designation_name: '' });
         setExportDropdown(false);
-        setReportData([]);
-        setHasGenerated(false);
         setError('');
         showToast('Filters reset successfully', 'success');
+        handleGenerateReport(true, defaultFilters);
     };
 
     // Status → Tailwind colour classes
