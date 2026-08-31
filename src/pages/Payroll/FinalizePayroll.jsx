@@ -92,13 +92,14 @@ export default function FinalizePayroll() {
   const location = useLocation();
   const [toast, setToast] = useState(null);
 
-  // Set default to current month and year
+  // Set default to previous month and year relative to current date
   const currentDate = new Date();
-  const currentMonth = (currentDate.getMonth() + 1).toString().padStart(2, '0');
-  const currentYear = currentDate.getFullYear().toString();
+  const previousDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
+  const previousMonth = (previousDate.getMonth() + 1).toString().padStart(2, '0');
+  const previousYear = previousDate.getFullYear().toString();
 
-  const [selectedMonth, setSelectedMonth] = useState(currentMonth);
-  const [selectedYear, setSelectedYear] = useState(currentYear);
+  const [selectedMonth, setSelectedMonth] = useState(previousMonth);
+  const [selectedYear, setSelectedYear] = useState(previousYear);
   const [sortConfig, setSortConfig] = useState({
     key: null,
     direction: SORT_DIRECTIONS.ASCENDING
@@ -225,8 +226,8 @@ export default function FinalizePayroll() {
         formData.append('year_month', yearMonth);
       } else if (selectedYear) {
         // If only year is selected, we might need to handle this differently
-        // For now, we'll pass the year with current month
-        const yearMonth = `${selectedYear}-${currentMonth}`;
+        // For now, we'll pass the year with previous month
+        const yearMonth = `${selectedYear}-${previousMonth}`;
         formData.append('year_month', yearMonth);
       }
 

@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { useState, useEffect, useRef } from 'react';
-import { Calendar, Users, Edit, Trash2, Plus, X, Search, RefreshCw, XCircle, Eye } from 'lucide-react';
+import { Calendar, Users, Edit, Trash2, Plus, X, Search, RefreshCw, XCircle, Eye, ChevronLeft, ChevronRight, ChevronDown } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import api from '../../api/axiosInstance';
 import { useNavigate } from 'react-router-dom';
@@ -60,11 +60,69 @@ const ShiftManagement = () => {
     const [employeeCounts, setEmployeeCounts] = useState({});
     const permissions = useSelector(state => state.permissions) || {};
 
+    // Helper to get current YYYY-MM month string
+    const getCurrentMonth = () => {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        return `${year}-${month}`;
+    };
+
+    // Shift Date Modal State
+    const [shiftDateModal, setShiftDateModal] = useState({
+        isOpen: false,
+        shiftId: null,
+        shiftName: '',
+        selectedMonth: getCurrentMonth(),
+        datesList: [],
+        loading: false,
+        totalRecords: 0
+    });
+
     // Pagination states
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [totalShifts, setTotalShifts] = useState(0);
     const ITEMS_PER_PAGE = 10;
+
+    // Fetch shift day date list from API (shift_day_date_list)
+    const fetchShiftDateList = async (shiftId, shiftName, monthToFetch) => {
+        try {
+            const monthVal = monthToFetch || shiftDateModal.selectedMonth || getCurrentMonth();
+            setShiftDateModal(prev => ({
+                ...prev,
+                isOpen: true,
+                shiftId,
+                shiftName,
+                selectedMonth: monthVal,
+                loading: true
+            }));
+
+            const formData = new FormData();
+            formData.append('shift_id', shiftId);
+            formData.append('month', monthVal);
+
+            const response = await api.post('shift_day_date_list', formData);
+
+            if (response.data?.success) {
+                const list = response.data.data || response.data.shift_days || response.data.dates || [];
+                const total = response.data.total || response.data.total_records || list.length;
+                setShiftDateModal(prev => ({
+                    ...prev,
+                    datesList: list,
+                    totalRecords: total,
+                    loading: false
+                }));
+            } else {
+                showToast(response.data?.message || 'Failed to fetch shift day date list', 'error');
+                setShiftDateModal(prev => ({ ...prev, datesList: [], totalRecords: 0, loading: false }));
+            }
+        } catch (error) {
+            console.error('Error fetching shift day date list:', error);
+            showToast('Failed to load shift dates. Please try again.', 'error');
+            setShiftDateModal(prev => ({ ...prev, datesList: [], totalRecords: 0, loading: false }));
+        }
+    };
 
     useEffect(() => {
         if (!user?.user_id) return;
@@ -214,6 +272,270 @@ const ShiftManagement = () => {
                         <button
                             onClick={onClose}
                             className="px-4 py-2 bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] text-[var(--color-text-primary)] hover:bg-[var(--color-bg-hover)] text-xs sm:text-sm font-medium rounded-xl transition-colors"
+                        >
+                            Close
+                        </button>
+                    </div>
+                </div>
+            </div>
+        );
+    };
+
+    // Custom Styled Month Picker Component
+    const CustomMonthPicker = ({ value, onChange }) => {
+        const [isOpen, setIsOpen] = useState(false);
+        const containerRef = useRef(null);
+
+        // Parse YYYY-MM
+        const [year, monthNum] = (value || '').split('-').map(Number);
+        const currentYear = year || new Date().getFullYear();
+        const currentMonthIdx = (monthNum ? monthNum - 1 : new Date().getMonth());
+
+        const [viewYear, setViewYear] = useState(currentYear);
+
+        useEffect(() => {
+            if (year) setViewYear(year);
+        }, [year]);
+
+        // Close on click outside
+        useEffect(() => {
+            const handleClickOutside = (e) => {
+                if (containerRef.current && !containerRef.current.contains(e.target)) {
+                    setIsOpen(false);
+                }
+            };
+            document.addEventListener('mousedown', handleClickOutside);
+            return () => document.removeEventListener('mousedown', handleClickOutside);
+        }, []);
+
+        const MONTH_NAMES = [
+            'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+            'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+        ];
+
+        const FULL_MONTH_NAMES = [
+            'January', 'February', 'March', 'April', 'May', 'June',
+            'July', 'August', 'September', 'October', 'November', 'December'
+        ];
+
+        const handleSelectMonth = (mIdx) => {
+            const formattedMonth = String(mIdx + 1).padStart(2, '0');
+            const newValue = `${viewYear}-${formattedMonth}`;
+            onChange(newValue);
+            setIsOpen(false);
+        };
+
+        const handleThisMonth = () => {
+            const now = new Date();
+            const y = now.getFullYear();
+            const m = String(now.getMonth() + 1).padStart(2, '0');
+            setViewYear(y);
+            onChange(`${y}-${m}`);
+            setIsOpen(false);
+        };
+
+        const displayString = `${FULL_MONTH_NAMES[currentMonthIdx] || 'Select Month'}, ${currentYear}`;
+
+        return (
+            <div className="relative" ref={containerRef}>
+                <button
+                    type="button"
+                    onClick={() => setIsOpen(!isOpen)}
+                    className="flex items-center gap-2 bg-white/15 hover:bg-white/25 text-white text-xs font-semibold px-3 py-1.5 rounded-xl backdrop-blur-md border border-white/25 transition-all cursor-pointer shadow-xs"
+                >
+                    <Calendar className="w-3.5 h-3.5 text-white/90" />
+                    <span>{displayString}</span>
+                    <ChevronDown className={`w-3.5 h-3.5 text-white/80 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
+                </button>
+
+                {isOpen && (
+                    <div className="absolute right-0 top-full mt-2 z-50 w-64 bg-white rounded-2xl shadow-2xl border border-slate-200 p-4 animate-fadeIn text-slate-800">
+                        {/* Year Navigation Header */}
+                        <div className="flex items-center justify-between pb-2.5 border-b border-slate-100 mb-3">
+                            <button
+                                type="button"
+                                onClick={() => setViewYear(prev => prev - 1)}
+                                className="p-1 rounded-lg hover:bg-slate-100 text-slate-600 transition-colors cursor-pointer"
+                                title="Previous Year"
+                            >
+                                <ChevronLeft className="w-4 h-4" />
+                            </button>
+                            <span className="font-bold text-sm text-[#340C8E] font-mono">
+                                {viewYear}
+                            </span>
+                            <button
+                                type="button"
+                                onClick={() => setViewYear(prev => prev + 1)}
+                                className="p-1 rounded-lg hover:bg-slate-100 text-slate-600 transition-colors cursor-pointer"
+                                title="Next Year"
+                            >
+                                <ChevronRight className="w-4 h-4" />
+                            </button>
+                        </div>
+
+                        {/* 12 Months Grid */}
+                        <div className="grid grid-cols-4 gap-1.5 mb-3">
+                            {MONTH_NAMES.map((mName, idx) => {
+                                const isSelected = viewYear === currentYear && idx === currentMonthIdx;
+                                return (
+                                    <button
+                                        key={mName}
+                                        type="button"
+                                        onClick={() => handleSelectMonth(idx)}
+                                        className={`py-2 text-xs font-bold rounded-xl transition-all cursor-pointer ${isSelected
+                                                ? 'bg-[#340C8E] text-white shadow-md scale-105'
+                                                : 'text-slate-700 hover:bg-purple-50 hover:text-[#340C8E]'
+                                            }`}
+                                    >
+                                        {mName}
+                                    </button>
+                                );
+                            })}
+                        </div>
+
+                        {/* Footer Quick Actions */}
+                        <div className="pt-2 border-t border-slate-100 flex justify-end">
+                            <button
+                                type="button"
+                                onClick={handleThisMonth}
+                                className="text-[11px] font-bold text-[#340C8E] hover:underline cursor-pointer"
+                            >
+                                This month
+                            </button>
+                        </div>
+                    </div>
+                )}
+            </div>
+        );
+    };
+
+    // Helper to format time directly as returned from API response
+    const formatShiftTime = (fromTime, toTime) => {
+        if (!fromTime && !toTime) return '-';
+        if (fromTime && toTime) return `${fromTime} - ${toTime}`;
+        return fromTime || toTime || '-';
+    };
+
+    // Shift Day Date Modal Component
+    const ShiftDayDateModal = ({ isOpen, onClose, shiftName, shiftId, selectedMonth, datesList, totalRecords, loading, onMonthChange }) => {
+        if (!isOpen) return null;
+
+        return (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fadeIn">
+                <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-2xl border border-[var(--color-border-secondary)] max-w-3xl w-full overflow-hidden flex flex-col max-h-[85vh] transition-all">
+                    {/* Header */}
+                    <div className="px-6 py-4 bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] text-white flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                            <div className="p-2 bg-white/10 rounded-xl backdrop-blur-md">
+                                <Calendar className="w-5 h-5 text-white" />
+                            </div>
+                            <div>
+                                <h3 className="text-base sm:text-lg font-bold text-white leading-tight">
+                                    Shift Days & Dates List
+                                </h3>
+                                <p className="text-xs text-white/80 font-medium truncate max-w-xs">
+                                    Shift: {shiftName}
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="flex items-center gap-3">
+                            {/* Styled Custom Month Picker */}
+                            <CustomMonthPicker
+                                value={selectedMonth}
+                                onChange={(newMonth) => onMonthChange(shiftId, shiftName, newMonth)}
+                            />
+
+                            {/* Total Count Badge */}
+                            <span className="bg-white/20 text-white text-xs font-bold px-3 py-1.5 rounded-xl backdrop-blur-md border border-white/20 whitespace-nowrap">
+                                {loading ? '...' : `Total: ${totalRecords}`}
+                            </span>
+
+                            <button
+                                onClick={onClose}
+                                className="p-1.5 rounded-lg text-white/80 hover:text-white hover:bg-white/20 transition-colors cursor-pointer"
+                                aria-label="Close"
+                            >
+                                <X className="w-5 h-5" />
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* Content Table / List */}
+                    <div className="p-6 flex-1 overflow-y-auto custom-scrollbar-slim">
+                        {loading ? (
+                            <div className="flex flex-col items-center justify-center py-12 gap-3">
+                                <div className="animate-spin rounded-full h-8 w-8 border-2 border-[var(--color-primary-dark)] border-t-transparent"></div>
+                                <span className="text-xs sm:text-sm text-[var(--color-text-secondary)] font-medium">
+                                    Loading shift dates for {selectedMonth}...
+                                </span>
+                            </div>
+                        ) : datesList && datesList.length > 0 ? (
+                            <div className="border border-[var(--color-border-secondary)] rounded-xl overflow-hidden">
+                                <Table wrapperClassName="custom-scrollbar-slim max-h-[55vh]" className="min-w-full divide-y divide-[var(--color-border-divider)]">
+                                    <TableHeader className="bg-[var(--color-primary-dark)]">
+                                        <TableHeaderRow>
+                                            <Th className="px-4 py-3 text-left text-xs font-semibold text-white">Date</Th>
+                                            <Th className="px-4 py-3 text-left text-xs font-semibold text-white">Day Name</Th>
+                                            <Th className="px-4 py-3 text-left text-xs font-semibold text-white">Shift Timing (From - To)</Th>
+                                            <Th className="px-4 py-3 text-left text-xs font-semibold text-white">Shift Type / Status</Th>
+                                        </TableHeaderRow>
+                                    </TableHeader>
+                                    <TableBody className="bg-[var(--color-bg-secondary)] divide-y divide-[var(--color-border-divider)]">
+                                        {datesList.map((item, index) => {
+                                            const dateVal = item.date || item.shift_date || item.cdate || item.day_date || '-';
+                                            const dayName = item.day_name || item.day || item.sort_name || '-';
+                                            const shiftType = String(item.shift_type || item.type || item.status_id || '');
+                                            const statusLabel = item.status_label || item.status || item.shift_type_name || item.day_status || getDayStatusText(shiftType);
+                                            const timeDisplay = formatShiftTime(item.from_time, item.to_time);
+
+                                            return (
+                                                <TableRow key={item.id || index} className="hover:bg-[var(--color-bg-primary)] transition-colors">
+                                                    <Td className="px-4 py-3 text-xs sm:text-sm font-mono font-semibold text-[var(--color-text-primary)]">
+                                                        {dateVal}
+                                                    </Td>
+                                                    <Td className="px-4 py-3 text-xs sm:text-sm text-[var(--color-text-secondary)]">
+                                                        {dayName}
+                                                    </Td>
+                                                    <Td className="px-4 py-3 text-xs sm:text-sm font-mono text-[var(--color-text-secondary)] whitespace-nowrap">
+                                                        {timeDisplay}
+                                                    </Td>
+                                                    <Td className="px-4 py-3 text-xs sm:text-sm">
+                                                        <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold ${shiftType === '1' || statusLabel.toLowerCase().includes('working')
+                                                            ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                                                            : shiftType === '2' || statusLabel.toLowerCase().includes('off')
+                                                                ? 'bg-slate-100 text-slate-700 border border-slate-200'
+                                                                : 'bg-purple-50 text-purple-700 border border-purple-200'
+                                                            }`}>
+                                                            {statusLabel}
+                                                        </span>
+                                                    </Td>
+                                                </TableRow>
+                                            );
+                                        })}
+                                    </TableBody>
+                                </Table>
+                            </div>
+                        ) : (
+                            <div className="text-center py-12 px-4">
+                                <div className="w-16 h-16 bg-purple-50 rounded-2xl flex items-center justify-center mx-auto mb-3">
+                                    <Calendar className="w-8 h-8 text-[var(--color-primary-dark)]" />
+                                </div>
+                                <h4 className="text-base font-semibold text-[var(--color-text-primary)] mb-1">
+                                    No Date Records Found
+                                </h4>
+                                <p className="text-xs sm:text-sm text-[var(--color-text-secondary)] max-w-xs mx-auto">
+                                    No shift date records found for month {selectedMonth}.
+                                </p>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Footer */}
+                    <div className="px-6 py-3 bg-[var(--color-bg-primary)] border-t border-[var(--color-border-secondary)] flex justify-end">
+                        <button
+                            onClick={onClose}
+                            className="px-4 py-2 bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] text-[var(--color-text-primary)] hover:bg-[var(--color-bg-hover)] text-xs sm:text-sm font-medium rounded-xl transition-colors cursor-pointer"
                         >
                             Close
                         </button>
@@ -617,9 +939,9 @@ const ShiftManagement = () => {
                                                         <Td className="px-6 py-4 text-left whitespace-nowrap font-medium border-b border-[var(--color-border-divider)]">
                                                             <div className="flex space-x-3">
                                                                 <button
-                                                                    onClick={() => fetchAssignedEmployees(shift.shift_id, shift.shift_name)}
-                                                                    className="w-9 h-9 flex items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 hover:bg-emerald-100 hover:scale-110 hover:shadow-md transition-all duration-200"
-                                                                    title="View Shift"
+                                                                    onClick={() => fetchShiftDateList(shift.shift_id, shift.shift_name, shiftDateModal.selectedMonth)}
+                                                                    className="w-9 h-9 flex items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 hover:bg-emerald-100 hover:scale-110 hover:shadow-md transition-all duration-200 cursor-pointer"
+                                                                    title="View Shift Day Dates"
                                                                 >
                                                                     <Eye className="w-4 h-4" strokeWidth={2.5} />
                                                                 </button>
@@ -684,6 +1006,19 @@ const ShiftManagement = () => {
                 employees={employeeModal.employees}
                 loading={employeeModal.loading}
                 shiftName={employeeModal.shiftName}
+            />
+
+            {/* Shift Day Date List Modal */}
+            <ShiftDayDateModal
+                isOpen={shiftDateModal.isOpen}
+                onClose={() => setShiftDateModal(prev => ({ ...prev, isOpen: false }))}
+                shiftName={shiftDateModal.shiftName}
+                shiftId={shiftDateModal.shiftId}
+                selectedMonth={shiftDateModal.selectedMonth}
+                datesList={shiftDateModal.datesList}
+                totalRecords={shiftDateModal.totalRecords}
+                loading={shiftDateModal.loading}
+                onMonthChange={(id, name, newMonth) => fetchShiftDateList(id, name, newMonth)}
             />
 
             {/* Toast Notification */}

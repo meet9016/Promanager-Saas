@@ -260,24 +260,26 @@ const AssignShift = () => {
         }
         try {
             setSubmitting(true);
-            // Loop and call SAME API per employee
-            let successCount = 0;
-            let failCount = 0;
-            for (const empId of selectedEmployees) {
-                const fd = new FormData();
-                fd.append('employee_id', empId);
-                fd.append('shift_id', selectedShift);
-                try {
-                    const res = await api.post('assign_shift_employee', fd);
-                    if (res.data?.success) successCount++;
-                    else failCount++;
-                } catch {
-                    failCount++;
-                }
+            const fd = new FormData();
+            fd.append('shift_id', selectedShift);
+
+            // Pass multiple employees as employee_id[0], employee_id[1], etc.
+            selectedEmployees.forEach((empId, index) => {
+                fd.append(`employee_id[${index}]`, empId);
+            });
+
+            const res = await api.post('assign_shift_employee_new', fd);
+
+            if (res.data?.success) {
+                showToast(res.data?.message || `Assigned shift to ${selectedEmployees.length} employee(s) successfully`, 'success');
+                navigate(-1);
+            } else {
+                showToast(res.data?.message || 'Failed to assign shift', 'error');
             }
-            if (successCount) showToast(`Assigned shift to ${successCount} employee(s)`, 'success');
-            if (failCount) showToast(`Failed for ${failCount} employee(s)`, 'error');
-            if (successCount) navigate(-1);
+        } catch (error) {
+            console.error('Error assigning shift:', error);
+            const errorMsg = error.response?.data?.message || 'An error occurred while assigning shift';
+            showToast(errorMsg, 'error');
         } finally {
             setSubmitting(false);
         }
