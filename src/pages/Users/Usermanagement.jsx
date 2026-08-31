@@ -244,7 +244,7 @@ const UserManagement = () => {
                     </div> */}
 
                     <div className="bg-[var(--color-bg-secondary)] flex-1 rounded-lg border border-[var(--color-primary-dark)] overflow-hidden shadow-sm flex flex-col">
-                        <div className="h-20 px-6 border-b border-[var(--color-primary-light)] bg-[var(--color-primary-lighter)] flex items-center justify-between shrink-0">
+                        <div className="px-6 py-4 border-b border-[var(--color-primary-light)] bg-[var(--color-primary-lighter)] flex items-center justify-between shrink-0">
                             <h3 className="text-lg font-medium text-[var(--color-primary-darker)]">
                                 All Users
                             </h3>

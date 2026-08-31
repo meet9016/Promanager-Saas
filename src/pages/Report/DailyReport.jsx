@@ -1154,14 +1154,14 @@ const DailyReport = () => {
                                                         onClick={handleExportToExcel}
                                                         className="flex items-center gap-2 w-full px-4 py-2 text-left hover:bg-[var(--color-bg-hover)] transition-colors text-[var(--color-text-primary)]"
                                                     >
-                                                        <FileSpreadsheet className="h-4 w-4 text-primary-600" />
+                                                        <FileSpreadsheet className="lucide lucide-file-spreadsheet h-4 w-4 text-[var(--color-success)]" />
                                                         Export to Excel
                                                     </button>
                                                     <button
                                                         onClick={handleExportToPDF}
                                                         className="flex items-center gap-2 w-full px-4 py-2 text-left hover:bg-[var(--color-bg-hover)] transition-colors text-[var(--color-text-primary)]"
                                                     >
-                                                        <FileDown className="h-4 w-4 text-red-600" />
+                                                        <FileDown className="lucide lucide-file-down h-4 w-4 text-[var(--color-error)]" />
                                                         Export to PDF
                                                     </button>
                                                 </div>
