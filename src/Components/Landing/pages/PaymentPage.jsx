@@ -30,11 +30,76 @@ const CYCLE_MONTHS = {
 const fmt = (n) => Number(n || 0).toLocaleString('en-IN');
 
 // ─── Component ────────────────────────────────────────────────────────────────
-const PaymentPage = () => {
-    const { login } = useAuth();
+const PaymentPage = ({ isRenew: isRenewProp }) => {
+    const { login, user } = useAuth();
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const location = useLocation();
+
+    const isRenew = isRenewProp || location.pathname === '/renew';
+
+    const [toast, setToast] = useState(null);
+    const [plans, setPlans] = useState([]);
+    const [apiCoupons, setApiCoupons] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [selectedPlan, setSelectedPlan] = useState(null);
+    const [employees, setEmployees] = useState(21);
+    const [employeesLimit, setEmployeesLimit] = useState(null);
+    const [renewGstNumber, setRenewGstNumber] = useState('');
+    const [billingCycle, setBillingCycle] = useState('yearly');
+    const [form, setForm] = useState({ name: '', email: '', company: '', gst: '', phone: '', address: '' });
+    const [formErrors, setFormErrors] = useState({});
+    const [showOtpRow, setShowOtpRow] = useState(false);
+    const [otpInput, setOtpInput] = useState('');
+    const [isPhoneVerified, setIsPhoneVerified] = useState(false);
+    const [resendTimer, setResendTimer] = useState(30);
+
+    useEffect(() => {
+        if (!isRenew || !user) return;
+
+        const fetchRenewDetails = async () => {
+            const formData = new FormData();
+            formData.append('user_id', user.user_id);
+
+            try {
+                setLoading(true);
+                const response = await api.post('user_renew_details_featch', formData, {
+                    apiType: 'web'
+                });
+                if (response?.data?.success) {
+                    const data = response.data.data;
+                    setEmployees(data.total_employee);
+                    setEmployeesLimit(data.total_employee);
+                    if (data.is_gst === 1) {
+                        setRenewGstNumber(data.gst_number || '');
+                    }
+                } else {
+                    setToast({
+                        type: 'error',
+                        message: response?.data?.message || "Please login first !"
+                    });
+                    setTimeout(() => {
+                        navigate('/login');
+                    }, 2000);
+                }
+            } catch (err) {
+                console.error('Error fetching renew details:', err);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchRenewDetails();
+    }, [isRenew, user]);
+
+    useEffect(() => {
+        if (isRenew && employeesLimit !== null && employees < employeesLimit) {
+            setToast({
+                type: 'error',
+                message: "You can't add less employees than existing employees."
+            });
+            setEmployees(employeesLimit);
+        }
+    }, [isRenew, employeesLimit, employees]);
 
     const [isRegisterOpen, setIsRegisterOpen] = useState(false);
     const [registerForm, setRegisterForm] = useState({
@@ -106,20 +171,6 @@ const PaymentPage = () => {
             setToast({ message: "Failed to create account. Please try again.", type: "error" });
         }
     };
-
-    const [toast, setToast] = useState(null);
-    const [plans, setPlans] = useState([]);
-    const [apiCoupons, setApiCoupons] = useState([]);
-    const [loading, setLoading] = useState(false);
-    const [selectedPlan, setSelectedPlan] = useState(null);
-    const [employees, setEmployees] = useState(21);
-    const [billingCycle, setBillingCycle] = useState('yearly');
-    const [form, setForm] = useState({ name: '', email: '', company: '', gst: '', phone: '', address: '' });
-    const [formErrors, setFormErrors] = useState({});
-    const [showOtpRow, setShowOtpRow] = useState(false);
-    const [otpInput, setOtpInput] = useState('');
-    const [isPhoneVerified, setIsPhoneVerified] = useState(false);
-    const [resendTimer, setResendTimer] = useState(30);
 
     useEffect(() => {
         let timerId;
@@ -458,6 +509,75 @@ const PaymentPage = () => {
     const handleSubmit = async (e) => {
         if (e && e.preventDefault) e.preventDefault();
 
+        if (isRenew) {
+            if (!user) {
+                setToast({ type: 'error', message: 'Please login first.' });
+                navigate('/login');
+                return;
+            }
+            if (!selectedPlan) {
+                return setToast({ type: 'error', message: 'Please select a plan' });
+            }
+            if (!employees || employees < 1) {
+                return setToast({ type: 'error', message: 'Invalid employee count' });
+            }
+
+            const formData = new FormData();
+            formData.append("user_id", user.user_id);
+            formData.append("gst_number", renewGstNumber || form.gst.trim());
+            formData.append("total_employee", employees);
+            formData.append("billing_cycle", billingCycle);
+            formData.append("is_gst", "1");
+            formData.append("plan_price", pricePerUser);
+            formData.append("gst_percentage", 18);
+            formData.append("gst_amount", gst);
+            formData.append("final_pay_amount", total);
+
+            try {
+                setLoading(true);
+                const response = await api.post(
+                    'pro-manager-renew-pay-payment-check/',
+                    formData,
+                    { apiType: 'payment' }
+                );
+
+                if (response?.data?.success) {
+                    const redirectUrl = response?.data?.redirect_url;
+                    localStorage.clear();
+                    sessionStorage.clear();
+                    setToast({
+                        type: 'success',
+                        message: response?.data?.message || 'Payment initialized successfully'
+                    });
+                    const opened = safeRedirect(redirectUrl);
+                    if (!opened) {
+                        setToast({
+                            type: 'error',
+                            message: 'Invalid redirect URL. Please try again.'
+                        });
+                    }
+                } else {
+                    setToast({
+                        type: 'error',
+                        message: response?.data?.message || 'Payment failed'
+                    });
+                }
+            } catch (error) {
+                let errorMessage = 'Something went wrong. Please try again.';
+                if (error.response) {
+                    errorMessage = error.response?.data?.message || error.response?.data?.error || `Error ${error.response.status}`;
+                } else if (error.request) {
+                    errorMessage = 'Network error. Please check your internet connection.';
+                } else if (error.code === 'ECONNABORTED') {
+                    errorMessage = 'Request timeout. Please try again.';
+                }
+                setToast({ type: 'error', message: errorMessage });
+            } finally {
+                setLoading(false);
+            }
+            return;
+        }
+
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         const phoneRegex = /^[6-9]\d{9}$/;
         const gstRegex = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
@@ -571,12 +691,11 @@ const PaymentPage = () => {
                 <div className="relative inline-block mb-2">
                     <motion.h3
                         initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
+                        animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.6 }}
                         className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight"
                     >
-                        Payment
+                        {isRenew ? "Renew" : "Payment"}
                     </motion.h3>
                     <motion.svg
                         initial={{ pathLength: 0, opacity: 0 }}
@@ -603,13 +722,6 @@ const PaymentPage = () => {
                     </motion.svg>
                 </div>
 
-                {/* <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-slate-900 mt-2 mb-3 tracking-tight">
-                    Pay Securely &{" "}
-                    <span className="text-[#370D95] font-bold">
-                        Enjoy Your Plan
-                    </span>
-                </h2> */}
-
                 <p className="text-base sm:text-lg text-slate-500 font-medium max-w-xl mx-auto">
                     Fill in the required details and pay securely with ProManager.
                 </p>
@@ -628,9 +740,11 @@ const PaymentPage = () => {
                         <div className="bg-white rounded-2xl border border-slate-200/90 shadow-2xs p-6 space-y-6">
                             {/* Step Header */}
                             <div className="flex items-center gap-3">
-                                <div className="w-7 h-7 rounded-md bg-[#370D95] text-white font-bold text-sm flex items-center justify-center shadow-xs">
-                                    1
-                                </div>
+                                {!isRenew && (
+                                    <div className="w-7 h-7 rounded-md bg-[#370D95] text-white font-bold text-sm flex items-center justify-center shadow-xs">
+                                        1
+                                    </div>
+                                )}
                                 <h2 className="text-lg sm:text-xl font-bold text-slate-900">
                                     Select Your Plan
                                 </h2>
@@ -770,237 +884,238 @@ const PaymentPage = () => {
                         </div>
 
                         {/* Card 2: 2. Billing Details */}
-                        <div className="bg-white rounded-2xl border border-slate-200/90 shadow-2xs p-6 space-y-5">
-                            {/* Step Header */}
-                            <div className="flex items-center gap-3 mb-2">
-                                <div className="w-7 h-7 rounded-md bg-[#370D95] text-white font-bold text-sm flex items-center justify-center shadow-xs">
-                                    2
-                                </div>
-                                <h2 className="text-lg sm:text-xl font-bold text-slate-900">
-                                    Billing Details
-                                </h2>
-                            </div>
-
-                            <form onSubmit={handleSubmit} className="space-y-4">
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                    {/* Full Name */}
-                                    <div>
-                                        <label className="text-sm font-medium text-gray-700 mb-2 block">
-                                            Full Name <span className="text-red-500">*</span>
-                                        </label>
-                                        <div className="relative flex items-center">
-                                            <div className="absolute left-3.5 text-slate-400">
-                                                <User size={16} />
-                                            </div>
-                                            <input
-                                                type="text"
-                                                placeholder="Enter Full Name"
-                                                value={form.name}
-                                                onChange={e => handleFormChange('name', e.target.value)}
-                                                className={`w-full pl-10 pr-4 py-2.5 rounded-xl border bg-white text-xs sm:text-sm text-slate-800 placeholder:text-slate-300 focus:outline-none transition-all ${formErrors.name ? 'border-red-500' : 'border-slate-200 focus:border-[#370D95]'}`}
-                                            />
-                                        </div>
-                                        {formErrors.name && <span className="text-[11px] text-red-500 mt-1 block">{formErrors.name}</span>}
+                        {!isRenew && (
+                            <div className="bg-white rounded-2xl border border-slate-200/90 shadow-2xs p-6 space-y-5">
+                                {/* Step Header */}
+                                <div className="flex items-center gap-3 mb-2">
+                                    <div className="w-7 h-7 rounded-md bg-[#370D95] text-white font-bold text-sm flex items-center justify-center shadow-xs">
+                                        2
                                     </div>
-
-                                    {/* Email */}
-                                    <div>
-                                        <label className="text-sm font-medium text-gray-700 mb-2 block">
-                                            Email <span className="text-red-500">*</span>
-                                        </label>
-                                        <div className="relative flex items-center">
-                                            <div className="absolute left-3.5 text-slate-400">
-                                                <Mail size={16} />
-                                            </div>
-                                            <input
-                                                type="email"
-                                                placeholder="Enter Email"
-                                                value={form.email}
-                                                onChange={e => handleFormChange('email', e.target.value)}
-                                                className={`w-full pl-10 pr-4 py-2.5 rounded-xl border bg-white text-xs sm:text-sm text-slate-800 placeholder:text-slate-300 focus:outline-none transition-all ${formErrors.email ? 'border-red-500' : 'border-slate-200 focus:border-[#370D95]'}`}
-                                            />
-                                        </div>
-                                        {formErrors.email && <span className="text-[11px] text-red-500 mt-1 block">{formErrors.email}</span>}
-                                    </div>
-                                </div>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                    {/* Company Name */}
-                                    <div>
-                                        <label className="text-sm font-medium text-gray-700 mb-2 block">
-                                            Company Name <span className="text-red-500">*</span>
-                                        </label>
-                                        <div className="relative flex items-center">
-                                            <div className="absolute left-3.5 text-slate-400">
-                                                <Building2 size={16} />
-                                            </div>
-                                            <input
-                                                type="text"
-                                                placeholder="Enter Company Name"
-                                                value={form.company}
-                                                onChange={e => handleFormChange('company', e.target.value)}
-                                                className={`w-full pl-10 pr-4 py-2.5 rounded-xl border bg-white text-xs sm:text-sm text-slate-800 placeholder:text-slate-300 focus:outline-none transition-all ${formErrors.company ? 'border-red-500' : 'border-slate-200 focus:border-[#370D95]'}`}
-                                            />
-                                        </div>
-                                        {formErrors.company && <span className="text-[11px] text-red-500 mt-1 block">{formErrors.company}</span>}
-                                    </div>
-
-                                    {/* GST Number (Optional) */}
-                                    <div>
-                                        <label className="text-sm font-medium text-gray-700 mb-2 block">
-                                            GST Number (Optional)
-                                        </label>
-                                        <div className="relative flex items-center">
-                                            <div className="absolute left-3.5 text-slate-400">
-                                                <Tag size={16} />
-                                            </div>
-                                            <input
-                                                type="text"
-                                                placeholder="e.g. 29AAACK7411M1Z3"
-                                                value={form.gst}
-                                                onChange={e => handleFormChange('gst', e.target.value)}
-                                                className={`w-full pl-10 pr-4 py-2.5 rounded-xl border bg-white text-xs sm:text-sm text-slate-800 placeholder:text-slate-300 focus:outline-none transition-all ${formErrors.gst ? 'border-red-500' : 'border-slate-200 focus:border-[#370D95]'}`}
-                                            />
-                                        </div>
-                                        {formErrors.gst && <span className="text-[11px] text-red-500 mt-1 block">{formErrors.gst}</span>}
-                                    </div>
+                                    <h2 className="text-lg sm:text-xl font-bold text-slate-900">
+                                        Billing Details
+                                    </h2>
                                 </div>
 
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                    {/* Phone Number Field with WhatsApp Verification */}
-                                    <div>
-                                        <label className="text-sm font-medium text-gray-700 mb-2 flex items-center gap-2 flex-wrap">
-                                            <span>Phone Number <span className="text-red-500">*</span></span>
-                                            <span className="inline-flex items-center gap-1 text-xs text-purple-700 font-medium select-none">
-                                                {/* <Info size={14} className="text-[#370D95] shrink-0" /> */}
-                                                <span>Verify Your Mobile Number Through WhatsApp</span>
-                                            </span>
-                                        </label>
-
-                                        <div className="flex flex-col sm:flex-row items-start gap-3">
-                                            {/* 10-Digit Mobile Input Box */}
-                                            <div className={`relative flex items-center h-11 w-full rounded-xl border bg-white overflow-hidden transition-all ${formErrors.phone ? 'border-red-500' : 'border-slate-200 focus-within:border-[#370D95] focus-within:ring-1 focus-within:ring-[#370D95]/20'}`}>
-                                                {/* Country Code (+91) */}
-                                                <div className="flex items-center px-3 h-full bg-slate-50 border-r border-slate-200 text-slate-800 font-bold text-xs shrink-0 select-none">
-                                                    <span className="font-extrabold text-slate-900">+91</span>
-                                                </div>
-
-                                                {/* Input */}
-                                                <input
-                                                    type="tel"
-                                                    maxLength={10}
-                                                    placeholder="9876543210"
-                                                    value={form.phone}
-                                                    onChange={(e) => {
-                                                        const val = e.target.value.replace(/\D/g, '').slice(0, 10);
-                                                        handleFormChange('phone', val);
-                                                        if (val.length < 10) {
-                                                            setIsPhoneVerified(false);
-                                                            setShowOtpRow(false);
-                                                        }
-                                                    }}
-                                                    className="w-full px-3 text-xs sm:text-sm text-slate-800 placeholder:text-slate-400 font-medium focus:outline-none bg-transparent tracking-wide min-w-0"
-                                                />
-
-                                                {/* Verify Link (INSIDE input box on right side) */}
-                                                {isPhoneVerified ? (
-                                                    <div className="pr-3 shrink-0 flex items-center gap-1 text-emerald-600 font-bold text-xs">
-                                                        <CheckCircle2 size={15} />
-                                                        <span>Verified</span>
-                                                    </div>
-                                                ) : (
-                                                    <button
-                                                        type="button"
-                                                        onClick={handleSendOtp}
-                                                        disabled={form.phone.length < 10 || isSendingOtp}
-                                                        className={`pr-3 pl-2 h-full flex items-center shrink-0 font-bold text-xs select-none transition-all ${form.phone.length === 10 && !isSendingOtp
-                                                                ? "cursor-pointer text-[#370D95] hover:text-purple-900 underline"
-                                                                : "cursor-not-allowed text-slate-400 opacity-60"
-                                                            }`}
-                                                    >
-                                                        {isSendingOtp ? "Sending..." : "Verify"}
-                                                    </button>
-                                                )}
-                                            </div>
-                                        </div>
-
-                                        {formErrors.phone && <span className="text-[11px] text-red-500 mt-1 block">{formErrors.phone}</span>}
-                                    </div>
-
-                                    {/* OTP Input Box (Now its own grid column) */}
-                                    {showOtpRow && !isPhoneVerified && (
-                                        <div className="flex flex-col gap-1 w-full animate-fadeIn shrink-0">
-                                            <label className="text-sm font-medium text-gray-700 mb-1 flex items-center gap-2 whitespace-nowrap opacity-0 select-none hidden sm:block">
-                                                OTP
+                                <form onSubmit={handleSubmit} className="space-y-4">
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        {/* Full Name */}
+                                        <div>
+                                            <label className="text-sm font-medium text-gray-700 mb-2 block">
+                                                Full Name <span className="text-red-500">*</span>
                                             </label>
-                                            {/* OTP Input Container with Confirm Button INSIDE */}
-                                            <div className="relative flex items-center h-11 w-full rounded-xl border border-gray-200 bg-white overflow-hidden transition-all focus-within:border-[#370D95] focus-within:ring-2 focus-within:ring-[#370D95]/20 shadow-2xs">
+                                            <div className="relative flex items-center">
+                                                <div className="absolute left-3.5 text-slate-400">
+                                                    <User size={16} />
+                                                </div>
                                                 <input
                                                     type="text"
-                                                    inputMode="numeric"
-                                                    maxLength={6}
-                                                    placeholder="Enter 6-digit OTP"
-                                                    value={otpInput}
-                                                    onChange={(e) => {
-                                                        const val = e.target.value.replace(/\D/g, "").slice(0, 6);
-                                                        setOtpInput(val);
-                                                    }}
-                                                    className="w-full px-3 text-xs sm:text-sm font-bold text-slate-800 placeholder:text-slate-400 placeholder:font-normal focus:outline-none bg-transparent tracking-widest min-w-0"
+                                                    placeholder="Enter Full Name"
+                                                    value={form.name}
+                                                    onChange={e => handleFormChange('name', e.target.value)}
+                                                    className={`w-full pl-10 pr-4 py-2.5 rounded-xl border bg-white text-xs sm:text-sm text-slate-800 placeholder:text-slate-300 focus:outline-none transition-all ${formErrors.name ? 'border-red-500' : 'border-slate-200 focus:border-[#370D95]'}`}
                                                 />
+                                            </div>
+                                            {formErrors.name && <span className="text-[11px] text-red-500 mt-1 block">{formErrors.name}</span>}
+                                        </div>
 
-                                                {/* Confirm Button INSIDE right side of OTP Box */}
-                                                <button
-                                                    type="button"
-                                                    disabled={otpInput.length < 6 || isVerifyingOtp}
-                                                    onClick={handleVerifyOtp}
-                                                    className={`px-3.5 h-full flex items-center justify-center shrink-0 font-bold text-xs select-none transition-all ${otpInput.length === 6 && !isVerifyingOtp
-                                                            ? "cursor-pointer bg-[#370D95] hover:bg-purple-900 text-white"
-                                                            : "cursor-not-allowed bg-slate-100 text-slate-400 border-l border-slate-200"
-                                                        }`}
-                                                >
-                                                    {isVerifyingOtp ? "Verifying..." : "Confirm"}
-                                                </button>
+                                        {/* Email */}
+                                        <div>
+                                            <label className="text-sm font-medium text-gray-700 mb-2 block">
+                                                Email <span className="text-red-500">*</span>
+                                            </label>
+                                            <div className="relative flex items-center">
+                                                <div className="absolute left-3.5 text-slate-400">
+                                                    <Mail size={16} />
+                                                </div>
+                                                <input
+                                                    type="email"
+                                                    placeholder="Enter Email"
+                                                    value={form.email}
+                                                    onChange={e => handleFormChange('email', e.target.value)}
+                                                    className={`w-full pl-10 pr-4 py-2.5 rounded-xl border bg-white text-xs sm:text-sm text-slate-800 placeholder:text-slate-300 focus:outline-none transition-all ${formErrors.email ? 'border-red-500' : 'border-slate-200 focus:border-[#370D95]'}`}
+                                                />
+                                            </div>
+                                            {formErrors.email && <span className="text-[11px] text-red-500 mt-1 block">{formErrors.email}</span>}
+                                        </div>
+                                    </div>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        {/* Company Name */}
+                                        <div>
+                                            <label className="text-sm font-medium text-gray-700 mb-2 block">
+                                                Company Name <span className="text-red-500">*</span>
+                                            </label>
+                                            <div className="relative flex items-center">
+                                                <div className="absolute left-3.5 text-slate-400">
+                                                    <Building2 size={16} />
+                                                </div>
+                                                <input
+                                                    type="text"
+                                                    placeholder="Enter Company Name"
+                                                    value={form.company}
+                                                    onChange={e => handleFormChange('company', e.target.value)}
+                                                    className={`w-full pl-10 pr-4 py-2.5 rounded-xl border bg-white text-xs sm:text-sm text-slate-800 placeholder:text-slate-300 focus:outline-none transition-all ${formErrors.company ? 'border-red-500' : 'border-slate-200 focus:border-[#370D95]'}`}
+                                                />
+                                            </div>
+                                            {formErrors.company && <span className="text-[11px] text-red-500 mt-1 block">{formErrors.company}</span>}
+                                        </div>
+
+                                        {/* GST Number (Optional) */}
+                                        <div>
+                                            <label className="text-sm font-medium text-gray-700 mb-2 block">
+                                                GST Number (Optional)
+                                            </label>
+                                            <div className="relative flex items-center">
+                                                <div className="absolute left-3.5 text-slate-400">
+                                                    <Tag size={16} />
+                                                </div>
+                                                <input
+                                                    type="text"
+                                                    placeholder="e.g. 29AAACK7411M1Z3"
+                                                    value={form.gst}
+                                                    onChange={e => handleFormChange('gst', e.target.value)}
+                                                    className={`w-full pl-10 pr-4 py-2.5 rounded-xl border bg-white text-xs sm:text-sm text-slate-800 placeholder:text-slate-300 focus:outline-none transition-all ${formErrors.gst ? 'border-red-500' : 'border-slate-200 focus:border-[#370D95]'}`}
+                                                />
+                                            </div>
+                                            {formErrors.gst && <span className="text-[11px] text-red-500 mt-1 block">{formErrors.gst}</span>}
+                                        </div>
+                                    </div>
+
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        {/* Phone Number Field with WhatsApp Verification */}
+                                        <div>
+                                            <label className="text-sm font-medium text-gray-700 mb-2 flex items-center gap-2 flex-wrap">
+                                                <span>Phone Number <span className="text-red-500">*</span></span>
+                                                <span className="inline-flex items-center gap-1 text-xs text-purple-700 font-medium select-none">
+                                                    <span>Verify Your Mobile Number Through SMS</span>
+                                                </span>
+                                            </label>
+
+                                            <div className="flex flex-col sm:flex-row items-start gap-3">
+                                                {/* 10-Digit Mobile Input Box */}
+                                                <div className={`relative flex items-center h-11 w-full rounded-xl border bg-white overflow-hidden transition-all ${formErrors.phone ? 'border-red-500' : 'border-slate-200 focus-within:border-[#370D95] focus-within:ring-1 focus-within:ring-[#370D95]/20'}`}>
+                                                    {/* Country Code (+91) */}
+                                                    <div className="flex items-center px-3 h-full bg-slate-50 border-r border-slate-200 text-slate-800 font-bold text-xs shrink-0 select-none">
+                                                        <span className="font-extrabold text-slate-900">+91</span>
+                                                    </div>
+
+                                                    {/* Input */}
+                                                    <input
+                                                        type="tel"
+                                                        maxLength={10}
+                                                        placeholder="9876543210"
+                                                        value={form.phone}
+                                                        onChange={(e) => {
+                                                            const val = e.target.value.replace(/\D/g, '').slice(0, 10);
+                                                            handleFormChange('phone', val);
+                                                            if (val.length < 10) {
+                                                                setIsPhoneVerified(false);
+                                                                setShowOtpRow(false);
+                                                            }
+                                                        }}
+                                                        className="w-full px-3 text-xs sm:text-sm text-slate-800 placeholder:text-slate-400 font-medium focus:outline-none bg-transparent tracking-wide min-w-0"
+                                                    />
+
+                                                    {/* Verify Link (INSIDE input box on right side) */}
+                                                    {isPhoneVerified ? (
+                                                        <div className="pr-3 shrink-0 flex items-center gap-1 text-emerald-600 font-bold text-xs">
+                                                            <CheckCircle2 size={15} />
+                                                            <span>Verified</span>
+                                                        </div>
+                                                    ) : (
+                                                        <button
+                                                            type="button"
+                                                            onClick={handleSendOtp}
+                                                            disabled={form.phone.length < 10 || isSendingOtp}
+                                                            className={`pr-3 pl-2 h-full flex items-center shrink-0 font-bold text-xs select-none transition-all ${form.phone.length === 10 && !isSendingOtp
+                                                                ? "cursor-pointer text-[#370D95] hover:text-purple-900 underline"
+                                                                : "cursor-not-allowed text-slate-400 opacity-60"
+                                                                }`}
+                                                        >
+                                                            {isSendingOtp ? "Sending..." : "Verify"}
+                                                        </button>
+                                                    )}
+                                                </div>
                                             </div>
 
-                                            {/* Below OTP box: resend otp (30) Countdown Format */}
-                                            <div className="text-xs text-slate-500 font-medium px-1">
-                                                {resendTimer > 0 ? (
-                                                    <span>resend otp ({resendTimer})</span>
-                                                ) : (
+                                            {formErrors.phone && <span className="text-[11px] text-red-500 mt-1 block">{formErrors.phone}</span>}
+                                        </div>
+
+                                        {/* OTP Input Box (Now its own grid column) */}
+                                        {showOtpRow && !isPhoneVerified && (
+                                            <div className="flex flex-col gap-1 w-full animate-fadeIn shrink-0">
+                                                <label className="text-sm font-medium text-gray-700 mb-1 flex items-center gap-2 whitespace-nowrap opacity-0 select-none hidden sm:block">
+                                                    OTP
+                                                </label>
+                                                {/* OTP Input Container with Confirm Button INSIDE */}
+                                                <div className="relative flex items-center h-11 w-full rounded-xl border border-gray-200 bg-white overflow-hidden transition-all focus-within:border-[#370D95] focus-within:ring-2 focus-within:ring-[#370D95]/20 shadow-2xs">
+                                                    <input
+                                                        type="text"
+                                                        inputMode="numeric"
+                                                        maxLength={6}
+                                                        placeholder="Enter 6-digit OTP"
+                                                        value={otpInput}
+                                                        onChange={(e) => {
+                                                            const val = e.target.value.replace(/\D/g, "").slice(0, 6);
+                                                            setOtpInput(val);
+                                                        }}
+                                                        className="w-full px-3 text-xs sm:text-sm font-bold text-slate-800 placeholder:text-slate-400 placeholder:font-normal focus:outline-none bg-transparent tracking-widest min-w-0"
+                                                    />
+
+                                                    {/* Confirm Button INSIDE right side of OTP Box */}
                                                     <button
                                                         type="button"
-                                                        onClick={handleSendOtp}
-                                                        disabled={isSendingOtp}
-                                                        className="text-[#370D95] font-bold underline hover:text-purple-900 cursor-pointer disabled:opacity-50"
+                                                        disabled={otpInput.length < 6 || isVerifyingOtp}
+                                                        onClick={handleVerifyOtp}
+                                                        className={`px-3.5 h-full flex items-center justify-center shrink-0 font-bold text-xs select-none transition-all ${otpInput.length === 6 && !isVerifyingOtp
+                                                            ? "cursor-pointer bg-[#370D95] hover:bg-purple-900 text-white"
+                                                            : "cursor-not-allowed bg-slate-100 text-slate-400 border-l border-slate-200"
+                                                            }`}
                                                     >
-                                                        {isSendingOtp ? "sending..." : "resend otp"}
+                                                        {isVerifyingOtp ? "Verifying..." : "Confirm"}
                                                     </button>
-                                                )}
-                                            </div>
-                                        </div>
-                                    )}
-                                </div>
+                                                </div>
 
-                                {/* Company Address */}
-                                <div>
-                                    <label className="text-sm font-medium text-gray-700 mb-2 block">
-                                        Company Address <span className="text-red-500">*</span>
-                                    </label>
-                                    <div className="relative flex items-center">
-                                        <div className="absolute left-3.5 text-slate-400">
-                                            <MapPin size={16} />
-                                        </div>
-                                        <input
-                                            type="text"
-                                            placeholder="Enter Company Address"
-                                            value={form.address}
-                                            onChange={e => handleFormChange('address', e.target.value)}
-                                            className={`w-full pl-10 pr-4 py-2.5 rounded-xl border bg-white text-xs sm:text-sm text-slate-800 placeholder:text-slate-300 focus:outline-none transition-all ${formErrors.address ? 'border-red-500' : 'border-slate-200 focus:border-[#370D95]'}`}
-                                        />
+                                                {/* Below OTP box: resend otp (30) Countdown Format */}
+                                                <div className="text-xs text-slate-500 font-medium px-1">
+                                                    {resendTimer > 0 ? (
+                                                        <span>resend otp ({resendTimer})</span>
+                                                    ) : (
+                                                        <button
+                                                            type="button"
+                                                            onClick={handleSendOtp}
+                                                            disabled={isSendingOtp}
+                                                            className="text-[#370D95] font-bold underline hover:text-purple-900 cursor-pointer disabled:opacity-50"
+                                                        >
+                                                            {isSendingOtp ? "sending..." : "resend otp"}
+                                                        </button>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        )}
                                     </div>
-                                    {formErrors.address && <span className="text-[11px] text-red-500 mt-1 block">{formErrors.address}</span>}
-                                </div>
-                            </form>
-                        </div>
+
+                                    {/* Company Address */}
+                                    <div>
+                                        <label className="text-sm font-medium text-gray-700 mb-2 block">
+                                            Company Address <span className="text-red-500">*</span>
+                                        </label>
+                                        <div className="relative flex items-center">
+                                            <div className="absolute left-3.5 text-slate-400">
+                                                <MapPin size={16} />
+                                            </div>
+                                            <input
+                                                type="text"
+                                                placeholder="Enter Company Address"
+                                                value={form.address}
+                                                onChange={e => handleFormChange('address', e.target.value)}
+                                                className={`w-full pl-10 pr-4 py-2.5 rounded-xl border bg-white text-xs sm:text-sm text-slate-800 placeholder:text-slate-300 focus:outline-none transition-all ${formErrors.address ? 'border-red-500' : 'border-slate-200 focus:border-[#370D95]'}`}
+                                            />
+                                        </div>
+                                        {formErrors.address && <span className="text-[11px] text-red-500 mt-1 block">{formErrors.address}</span>}
+                                    </div>
+                                </form>
+                            </div>
+                        )}
 
                     </div>
 
@@ -1124,10 +1239,10 @@ const PaymentPage = () => {
                             <button
                                 type="button"
                                 onClick={handleSubmit}
-                                disabled={!isPhoneVerified || loading}
-                                className={`w-full py-3.5 rounded-xl bg-[#370D95] hover:bg-[#280970] text-white font-bold text-sm shadow-md transition-all flex items-center justify-center gap-2 ${!isPhoneVerified || loading
-                                        ? "opacity-50 cursor-not-allowed"
-                                        : "cursor-pointer"
+                                disabled={(!isRenew && !isPhoneVerified) || loading}
+                                className={`w-full py-3.5 rounded-xl bg-[#370D95] hover:bg-[#280970] text-white font-bold text-sm shadow-md transition-all flex items-center justify-center gap-2 ${(!isRenew && !isPhoneVerified) || loading
+                                    ? "opacity-50 cursor-not-allowed"
+                                    : "cursor-pointer"
                                     }`}
                             >
                                 <Lock size={16} />
@@ -1144,47 +1259,49 @@ const PaymentPage = () => {
                 </div>
 
                 {/* ── Bottom Full-Width Trust Banner (Extends across FULL LEFT & RIGHT width) ── */}
-                <div className="bg-white rounded-2xl border border-slate-200/90 shadow-2xs p-4 grid grid-cols-2 sm:grid-cols-4 gap-4 divide-y sm:divide-y-0 sm:divide-x divide-slate-100">
-                    <div className="flex items-center gap-3 sm:pl-2">
-                        <div className="w-8 h-8 rounded-full bg-purple-100 text-[#370D95] flex items-center justify-center flex-shrink-0">
-                            <ShieldCheck size={16} />
+                {!isRenew && (
+                    <div className="bg-white rounded-2xl border border-slate-200/90 shadow-2xs p-4 grid grid-cols-2 sm:grid-cols-4 gap-4 divide-y sm:divide-y-0 sm:divide-x divide-slate-100">
+                        <div className="flex items-center gap-3 sm:pl-2">
+                            <div className="w-8 h-8 rounded-full bg-purple-100 text-[#370D95] flex items-center justify-center flex-shrink-0">
+                                <ShieldCheck size={16} />
+                            </div>
+                            <div>
+                                <h4 className="text-md font-bold text-slate-900">Secure & Encrypted</h4>
+                                <p className="text-[13px] text-slate-500">Your data is 100% secure</p>
+                            </div>
                         </div>
-                        <div>
-                            <h4 className="text-md font-bold text-slate-900">Secure & Encrypted</h4>
-                            <p className="text-[13px] text-slate-500">Your data is 100% secure</p>
-                        </div>
-                    </div>
 
-                    <div className="flex items-center gap-3 sm:pl-4 pt-3 sm:pt-0">
-                        <div className="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center flex-shrink-0">
-                            <Zap size={16} />
+                        <div className="flex items-center gap-3 sm:pl-4 pt-3 sm:pt-0">
+                            <div className="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center flex-shrink-0">
+                                <Zap size={16} />
+                            </div>
+                            <div>
+                                <h4 className="text-md font-bold text-slate-900">Instant Activation</h4>
+                                <p className="text-[13px] text-slate-500">Get started immediately</p>
+                            </div>
                         </div>
-                        <div>
-                            <h4 className="text-md font-bold text-slate-900">Instant Activation</h4>
-                            <p className="text-[13px] text-slate-500">Get started immediately</p>
-                        </div>
-                    </div>
 
-                    <div className="flex items-center gap-3 sm:pl-4 pt-3 sm:pt-0">
-                        <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center flex-shrink-0">
-                            <Headphones size={16} />
+                        <div className="flex items-center gap-3 sm:pl-4 pt-3 sm:pt-0">
+                            <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center flex-shrink-0">
+                                <Headphones size={16} />
+                            </div>
+                            <div>
+                                <h4 className="text-md font-bold text-slate-900">24/7 Support</h4>
+                                <p className="text-[13px] text-slate-500">We're here to help</p>
+                            </div>
                         </div>
-                        <div>
-                            <h4 className="text-md font-bold text-slate-900">24/7 Support</h4>
-                            <p className="text-[13px] text-slate-500">We're here to help</p>
-                        </div>
-                    </div>
 
-                    <div className="flex items-center gap-3 sm:pl-4 pt-3 sm:pt-0">
-                        <div className="w-8 h-8 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center flex-shrink-0">
-                            <RotateCcw size={16} />
-                        </div>
-                        <div>
-                            <h4 className="text-md font-bold text-slate-900">Money Back Guarantee</h4>
-                            <p className="text-[13px] text-slate-500">7-day money back guarantee</p>
+                        <div className="flex items-center gap-3 sm:pl-4 pt-3 sm:pt-0">
+                            <div className="w-8 h-8 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center flex-shrink-0">
+                                <RotateCcw size={16} />
+                            </div>
+                            <div>
+                                <h4 className="text-md font-bold text-slate-900">Money Back Guarantee</h4>
+                                <p className="text-[13px] text-slate-500">7-day money back guarantee</p>
+                            </div>
                         </div>
                     </div>
-                </div>
+                )}
 
             </div>
 

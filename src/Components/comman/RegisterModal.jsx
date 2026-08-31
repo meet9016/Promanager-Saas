@@ -411,7 +411,7 @@ const RegisterModal = ({ isOpen, onClose }) => {
 
                                                 <span className="inline-flex items-center gap-1 text-xs text-purple-700 font-medium select-none whitespace-nowrap">
                                                     <Info size={14} className="text-[#370D95] shrink-0" />
-                                                    <span>Verify Your Mobile Number Through WhatsApp</span>
+                                                    <span>Verify Your Mobile Number Through SMS</span>
                                                 </span>
                                             </label>
 

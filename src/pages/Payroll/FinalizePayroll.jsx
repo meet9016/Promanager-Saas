@@ -538,9 +538,9 @@ export default function FinalizePayroll() {
         </div> */}
 
         {/* Main Content */}
-        <div className="bg-[var(--color-bg-secondary)] h-[87vh] rounded-lg border border-[var(--color-primary-dark)] overflow-hidden shadow-sm">
+        <div className="bg-[var(--color-bg-secondary)] h-[87vh] rounded-lg border border-[var(--color-primary-dark)] overflow-hidden shadow-sm flex flex-col">
           {/* Header section */}
-          <div className="px-6 py-4 border-b border-[var(--color-primary-light)] bg-[var(--color-primary-lighter)]">
+          <div className="px-6 py-4 border-b border-[var(--color-primary-light)] bg-[var(--color-primary-lighter)] shrink-0">
             <div className="flex justify-between items-center">
               <div className="flex items-center">
                 <IndianRupee className="h-6 w-6 text-[var(--color-primary-darker)] mr-2" />
@@ -575,8 +575,7 @@ export default function FinalizePayroll() {
                       value: option.value,
                       label: option.label,
                     }))}
-                    searchable={false}
-                    className="!h-[40px] [&_button]:!h-[40px] [&_button]:!min-h-[40px] [&_button]:!py-0 [&_button]:!rounded-xl [&_button]:!text-xs sm:[&_button]:!text-sm"
+                    className="!w-24 sm:!w-28 [&_button]:!h-[40px] [&_button]:!py-0 [&_button]:!rounded-xl [&_button]:!text-xs sm:[&_button]:!text-sm"
                   />
                 </div>
 
@@ -586,17 +585,15 @@ export default function FinalizePayroll() {
                     name="selectedYear"
                     value={selectedYear}
                     onChange={(e) => setSelectedYear(e.target.value)}
-                    options={yearOptions.map((option) => ({
-                      value: option.value,
-                      label: option.label,
+                    options={yearOptions.map((year) => ({
+                      value: year.toString(),
+                      label: year.toString(),
                     }))}
-                    searchable={false}
-                    className="!h-[40px] [&_button]:!h-[40px] [&_button]:!min-h-[40px] [&_button]:!py-0 [&_button]:!rounded-xl [&_button]:!text-xs sm:[&_button]:!text-sm"
+                    className="!w-24 sm:!w-28 [&_button]:!h-[40px] [&_button]:!py-0 [&_button]:!rounded-xl [&_button]:!text-xs sm:[&_button]:!text-sm"
                   />
                 </div>
 
-                {/* Monthly Payroll Button */}
-                {(permissions?.salary_view || permissions?.salary_create) && (
+                {permissions?.salary_process && (
                   <button
                     onClick={() => navigate('/monthly-payroll')}
                     className="flex items-center justify-center gap-2 bg-[var(--color-bg-secondary)] hover:bg-[var(--color-primary-lightest)] text-[var(--color-primary-dark)] border border-[var(--color-border-secondary)] px-4 h-[40px] py-0 rounded-xl text-xs sm:text-sm font-medium transition-colors shadow-sm whitespace-nowrap shrink-0"
@@ -611,11 +608,11 @@ export default function FinalizePayroll() {
 
           {/* Content section */}
           {loading ? (
-            <div className="">
+            <div className="flex-1 flex items-center justify-center min-h-0">
               <LoadingSpinner />
             </div>
           ) : error ? (
-            <div className="px-6 py-12 text-center">
+            <div className="flex-1 flex items-center justify-center min-h-0 px-6 py-12 text-center">
               <div className="bg-[var(--color-bg-primary)] border border-[var(--color-border-primary)] rounded-lg p-8">
                 <div className="w-16 h-16 bg-[var(--color-bg-gray-light)] rounded-full flex items-center justify-center mx-auto mb-4">
                   <AlertCircle className="w-8 h-8 text-[var(--color-text-muted)]" />
@@ -629,7 +626,7 @@ export default function FinalizePayroll() {
               </div>
             </div>
           ) : salaryRecords.length === 0 ? (
-            <div className="flex items-center justify-center h-full bg-[#FBF9FD]">
+            <div className="flex-1 flex flex-col items-center justify-center min-h-0 bg-[#FBF9FD]">
               <NoDataFound
                 title="No Salary Records Found"
                 subtitle={searchQuery ? 'No records match your search criteria.' : 'No salary records have been generated yet.'}

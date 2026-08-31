@@ -46,6 +46,391 @@ const DayStatusLegend = () => {
     );
 };
 
+// Employee Modal Component (Defined outside ShiftManagement to prevent re-creation lag on state updates)
+const EmployeeModal = ({ isOpen, onClose, employees, loading, shiftName }) => {
+    if (!isOpen) return null;
+
+    return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 animate-fadeIn">
+            <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-2xl border border-[var(--color-border-secondary)] max-w-lg w-full overflow-hidden flex flex-col max-h-[85vh] transition-all duration-200">
+                {/* Header */}
+                <div className="px-6 py-4 bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] text-white flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                        <div className="p-2 bg-white/10 rounded-xl">
+                            <Users className="w-5 h-5 text-white" />
+                        </div>
+                        <div>
+                            <h3 className="text-base sm:text-lg font-bold text-white leading-tight">
+                                Assigned Employees
+                            </h3>
+                            <p className="text-xs text-white/80 font-medium">
+                                Shift: {shiftName}
+                            </p>
+                        </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <span className="bg-white/20 text-white text-xs font-semibold px-2.5 py-1 rounded-full">
+                            {loading ? '...' : `${employees.length} Total`}
+                        </span>
+                        <button
+                            onClick={onClose}
+                            className="p-1.5 rounded-lg text-white/80 hover:text-white hover:bg-white/20 transition-colors cursor-pointer"
+                            aria-label="Close"
+                        >
+                            <X className="w-5 h-5" />
+                        </button>
+                    </div>
+                </div>
+
+                {/* Content */}
+                <div className="p-6 flex-1 overflow-y-auto custom-scrollbar">
+                    {loading ? (
+                        <div className="flex flex-col items-center justify-center py-12 gap-3">
+                            <div className="animate-spin rounded-full h-8 w-8 border-2 border-[var(--color-primary-dark)] border-t-transparent"></div>
+                            <span className="text-xs sm:text-sm text-[var(--color-text-secondary)] font-medium">
+                                Loading assigned employees...
+                            </span>
+                        </div>
+                    ) : employees.length > 0 ? (
+                        <div className="space-y-3">
+                            {employees.map((employee, index) => (
+                                <div
+                                    key={employee.id || employee.employee_id || index}
+                                    className="flex items-center justify-between p-3.5 bg-[var(--color-bg-primary)] hover:bg-[var(--color-bg-hover,#f9fafb)] border border-[var(--color-border-secondary)] rounded-xl transition-colors duration-150 shadow-xs"
+                                >
+                                    <div className="flex items-center gap-3 min-w-0">
+                                        <div className="w-10 h-10 bg-gradient-to-br from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] rounded-xl flex items-center justify-center text-white font-bold text-sm shadow-xs shrink-0">
+                                            {(employee.full_name || employee.name)?.charAt(0)?.toUpperCase() || 'E'}
+                                        </div>
+                                        <div className="min-w-0">
+                                            <p className="font-semibold text-sm text-[var(--color-text-primary)] truncate">
+                                                {employee.full_name || employee.name || 'Unknown Employee'}
+                                            </p>
+                                            {employee.employee_code && (
+                                                <p className="text-xs text-[var(--color-text-muted)] font-mono">
+                                                    {employee.employee_code}
+                                                </p>
+                                            )}
+                                        </div>
+                                    </div>
+                                    {employee.cdate && (
+                                        <div className="text-right shrink-0">
+                                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] text-[11px] font-medium text-[var(--color-text-secondary)]">
+                                                <Calendar className="w-3 h-3 text-[var(--color-primary-dark)]" />
+                                                {employee.cdate}
+                                            </span>
+                                        </div>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="text-center py-12 px-4">
+                            <div className="w-16 h-16 bg-[var(--color-primary-lightest,#f3e8ff)] rounded-2xl flex items-center justify-center mx-auto mb-3">
+                                <Users className="w-8 h-8 text-[var(--color-primary-dark)]" />
+                            </div>
+                            <h4 className="text-base font-semibold text-[var(--color-text-primary)] mb-1">
+                                No Employees Assigned
+                            </h4>
+                            <p className="text-xs sm:text-sm text-[var(--color-text-secondary)] max-w-xs mx-auto">
+                                There are currently no employees assigned to this shift configuration.
+                            </p>
+                        </div>
+                    )}
+                </div>
+
+                {/* Footer */}
+                <div className="px-6 py-3 bg-[var(--color-bg-primary)] border-t border-[var(--color-border-secondary)] flex justify-end">
+                    <button
+                        onClick={onClose}
+                        className="px-4 py-2 bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] text-[var(--color-text-primary)] hover:bg-[var(--color-bg-hover)] text-xs sm:text-sm font-medium rounded-xl transition-colors cursor-pointer"
+                    >
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+// Custom Styled Month Picker Component
+const CustomMonthPicker = ({ value, onChange }) => {
+    const [isOpen, setIsOpen] = useState(false);
+    const containerRef = useRef(null);
+
+    // Parse YYYY-MM
+    const [year, monthNum] = (value || '').split('-').map(Number);
+    const currentYear = year || new Date().getFullYear();
+    const currentMonthIdx = (monthNum ? monthNum - 1 : new Date().getMonth());
+
+    const [viewYear, setViewYear] = useState(currentYear);
+
+    useEffect(() => {
+        if (year) setViewYear(year);
+    }, [year]);
+
+    // Close on click outside
+    useEffect(() => {
+        const handleClickOutside = (e) => {
+            if (containerRef.current && !containerRef.current.contains(e.target)) {
+                setIsOpen(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+
+    const MONTH_NAMES = [
+        'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+    ];
+
+    const FULL_MONTH_NAMES = [
+        'January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December'
+    ];
+
+    const handleSelectMonth = (mIdx) => {
+        const formattedMonth = String(mIdx + 1).padStart(2, '0');
+        const newValue = `${viewYear}-${formattedMonth}`;
+        onChange(newValue);
+        setIsOpen(false);
+    };
+
+    const handleThisMonth = () => {
+        const now = new Date();
+        const y = now.getFullYear();
+        const m = String(now.getMonth() + 1).padStart(2, '0');
+        setViewYear(y);
+        onChange(`${y}-${m}`);
+        setIsOpen(false);
+    };
+
+    const displayString = `${FULL_MONTH_NAMES[currentMonthIdx] || 'Select Month'}, ${currentYear}`;
+
+    return (
+        <div className="relative" ref={containerRef}>
+            <button
+                type="button"
+                onClick={() => setIsOpen(!isOpen)}
+                className="flex items-center gap-2 bg-white/15 hover:bg-white/25 text-white text-xs font-semibold px-3 py-1.5 rounded-xl backdrop-blur-md border border-white/25 transition-all cursor-pointer shadow-xs"
+            >
+                <Calendar className="w-3.5 h-3.5 text-white/90" />
+                <span>{displayString}</span>
+                <ChevronDown className={`w-3.5 h-3.5 text-white/80 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
+            </button>
+
+            {isOpen && (
+                <div className="absolute right-0 top-full mt-2 z-50 w-64 bg-white rounded-2xl shadow-2xl border border-slate-200 p-4 animate-fadeIn text-slate-800">
+                    {/* Year Navigation Header */}
+                    <div className="flex items-center justify-between pb-2.5 border-b border-slate-100 mb-3">
+                        <button
+                            type="button"
+                            onClick={() => setViewYear(prev => prev - 1)}
+                            className="p-1 rounded-lg hover:bg-slate-100 text-slate-600 transition-colors cursor-pointer"
+                            title="Previous Year"
+                        >
+                            <ChevronLeft className="w-4 h-4" />
+                        </button>
+                        <span className="font-bold text-sm text-[#340C8E] font-mono">
+                            {viewYear}
+                        </span>
+                        <button
+                            type="button"
+                            onClick={() => setViewYear(prev => prev + 1)}
+                            className="p-1 rounded-lg hover:bg-slate-100 text-slate-600 transition-colors cursor-pointer"
+                            title="Next Year"
+                        >
+                            <ChevronRight className="w-4 h-4" />
+                        </button>
+                    </div>
+
+                    {/* 12 Months Grid */}
+                    <div className="grid grid-cols-4 gap-1.5 mb-3">
+                        {MONTH_NAMES.map((mName, idx) => {
+                            const isSelected = viewYear === currentYear && idx === currentMonthIdx;
+                            return (
+                                <button
+                                    key={mName}
+                                    type="button"
+                                    onClick={() => handleSelectMonth(idx)}
+                                    className={`py-2 text-xs font-bold rounded-xl transition-all cursor-pointer ${isSelected
+                                            ? 'bg-[#340C8E] text-white shadow-md scale-105'
+                                            : 'text-slate-700 hover:bg-purple-50 hover:text-[#340C8E]'
+                                        }`}
+                                >
+                                    {mName}
+                                </button>
+                            );
+                        })}
+                    </div>
+
+                    {/* Footer Quick Actions */}
+                    <div className="pt-2 border-t border-slate-100 flex justify-end">
+                        <button
+                            type="button"
+                            onClick={handleThisMonth}
+                            className="text-[11px] font-bold text-[#340C8E] hover:underline cursor-pointer"
+                        >
+                            This month
+                        </button>
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+};
+
+// Helper to format time directly as returned from API response
+const formatShiftTime = (fromTime, toTime) => {
+    if (!fromTime && !toTime) return '-';
+    if (fromTime && toTime) return `${fromTime} - ${toTime}`;
+    return fromTime || toTime || '-';
+};
+
+// Helper for status text fallback
+const getDayStatusTextFallback = (shiftType) => {
+    switch (String(shiftType)) {
+        case "1":
+            return 'Working Day';
+        case "2":
+            return 'Week Off';
+        case "3":
+            return 'Occasional Working';
+        default:
+            return 'Week Off';
+    }
+};
+
+// Shift Day Date Modal Component (Defined outside ShiftManagement to prevent re-creation lag/stutter on state updates)
+const ShiftDayDateModal = ({ isOpen, onClose, shiftName, shiftId, selectedMonth, datesList, totalRecords, loading, onMonthChange }) => {
+    if (!isOpen) return null;
+
+    return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 animate-fadeIn">
+            <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-2xl border border-[var(--color-border-secondary)] max-w-3xl w-full overflow-hidden flex flex-col max-h-[85vh] transition-all duration-200">
+                {/* Header */}
+                <div className="px-6 py-4 bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] text-white flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                        <div className="p-2 bg-white/10 rounded-xl">
+                            <Calendar className="w-5 h-5 text-white" />
+                        </div>
+                        <div>
+                            <h3 className="text-base sm:text-lg font-bold text-white leading-tight">
+                                Shift Days & Dates List
+                            </h3>
+                            <p className="text-xs text-white/80 font-medium truncate max-w-xs">
+                                Shift: {shiftName}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div className="flex items-center gap-3">
+                        {/* Styled Custom Month Picker */}
+                        <CustomMonthPicker
+                            value={selectedMonth}
+                            onChange={(newMonth) => onMonthChange(shiftId, shiftName, newMonth)}
+                        />
+
+                        {/* Total Count Badge */}
+                        <span className="bg-white/20 text-white text-xs font-bold px-3 py-1.5 rounded-xl backdrop-blur-md border border-white/20 whitespace-nowrap">
+                            {loading ? '...' : `Total: ${totalRecords}`}
+                        </span>
+
+                        <button
+                            onClick={onClose}
+                            className="p-1.5 rounded-lg text-white/80 hover:text-white hover:bg-white/20 transition-colors cursor-pointer"
+                            aria-label="Close"
+                        >
+                            <X className="w-5 h-5" />
+                        </button>
+                    </div>
+                </div>
+
+                {/* Content Table / List */}
+                <div className="p-6 flex-1 overflow-y-auto custom-scrollbar-slim">
+                    {loading ? (
+                        <div className="flex flex-col items-center justify-center py-12 gap-3">
+                            <div className="animate-spin rounded-full h-8 w-8 border-2 border-[var(--color-primary-dark)] border-t-transparent"></div>
+                            <span className="text-xs sm:text-sm text-[var(--color-text-secondary)] font-medium">
+                                Loading shift dates for {selectedMonth}...
+                            </span>
+                        </div>
+                    ) : datesList && datesList.length > 0 ? (
+                        <div className="border border-[var(--color-border-secondary)] rounded-xl overflow-hidden">
+                            <Table wrapperClassName="custom-scrollbar-slim max-h-[55vh]" className="min-w-full divide-y divide-[var(--color-border-divider)]">
+                                <TableHeader className="bg-[var(--color-primary-dark)]">
+                                    <TableHeaderRow>
+                                        <Th className="px-4 py-3 text-left text-xs font-semibold text-white">Date</Th>
+                                        <Th className="px-4 py-3 text-left text-xs font-semibold text-white">Day Name</Th>
+                                        <Th className="px-4 py-3 text-left text-xs font-semibold text-white">Shift Timing (From - To)</Th>
+                                        <Th className="px-4 py-3 text-left text-xs font-semibold text-white">Shift Type / Status</Th>
+                                    </TableHeaderRow>
+                                </TableHeader>
+                                <TableBody className="bg-[var(--color-bg-secondary)] divide-y divide-[var(--color-border-divider)]">
+                                    {datesList.map((item, index) => {
+                                        const dateVal = item.date || item.shift_date || item.cdate || item.day_date || '-';
+                                        const dayName = item.day_name || item.day || item.sort_name || '-';
+                                        const shiftType = String(item.shift_type || item.type || item.status_id || '');
+                                        const statusLabel = item.status_label || item.status || item.shift_type_name || item.day_status || getDayStatusTextFallback(shiftType);
+                                        const timeDisplay = formatShiftTime(item.from_time, item.to_time);
+
+                                        return (
+                                            <TableRow key={item.id || index} className="hover:bg-[var(--color-bg-primary)] transition-colors">
+                                                <Td className="px-4 py-3 text-xs sm:text-sm font-mono font-semibold text-[var(--color-text-primary)]">
+                                                    {dateVal}
+                                                </Td>
+                                                <Td className="px-4 py-3 text-xs sm:text-sm text-[var(--color-text-secondary)]">
+                                                    {dayName}
+                                                </Td>
+                                                <Td className="px-4 py-3 text-xs sm:text-sm font-mono text-[var(--color-text-secondary)] whitespace-nowrap">
+                                                    {timeDisplay}
+                                                </Td>
+                                                <Td className="px-4 py-3 text-xs sm:text-sm">
+                                                    <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold ${shiftType === '1' || statusLabel.toLowerCase().includes('working')
+                                                        ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                                                        : shiftType === '2' || statusLabel.toLowerCase().includes('off')
+                                                            ? 'bg-slate-100 text-slate-700 border border-slate-200'
+                                                            : 'bg-purple-50 text-purple-700 border border-purple-200'
+                                                        }`}>
+                                                        {statusLabel}
+                                                    </span>
+                                                </Td>
+                                            </TableRow>
+                                        );
+                                    })}
+                                </TableBody>
+                            </Table>
+                        </div>
+                    ) : (
+                        <div className="text-center py-12 px-4">
+                            <div className="w-16 h-16 bg-purple-50 rounded-2xl flex items-center justify-center mx-auto mb-3">
+                                <Calendar className="w-8 h-8 text-[var(--color-primary-dark)]" />
+                            </div>
+                            <h4 className="text-base font-semibold text-[var(--color-text-primary)] mb-1">
+                                No Date Records Found
+                            </h4>
+                            <p className="text-xs sm:text-sm text-[var(--color-text-secondary)] max-w-xs mx-auto">
+                                No shift date records found for month {selectedMonth}.
+                            </p>
+                        </div>
+                    )}
+                </div>
+
+                {/* Footer */}
+                <div className="px-6 py-3 bg-[var(--color-bg-primary)] border-t border-[var(--color-border-secondary)] flex justify-end">
+                    <button
+                        onClick={onClose}
+                        className="px-4 py-2 bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] text-[var(--color-text-primary)] hover:bg-[var(--color-bg-hover)] text-xs sm:text-sm font-medium rounded-xl transition-colors cursor-pointer"
+                    >
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+};
+
 const ShiftManagement = () => {
     const { user } = useAuth();
     const [shifts, setShifts] = useState([]);
@@ -172,377 +557,6 @@ const ShiftManagement = () => {
             showToast('Failed to load assigned employees. Please try again.', 'error');
             setEmployeeModal({ isOpen: false, employees: [], loading: false, shiftName: '' });
         }
-    };
-
-    // Employee Modal Component
-    const EmployeeModal = ({ isOpen, onClose, employees, loading, shiftName }) => {
-        if (!isOpen) return null;
-
-        return (
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fadeIn">
-                <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-2xl border border-[var(--color-border-secondary)] max-w-lg w-full overflow-hidden flex flex-col max-h-[85vh] transition-all">
-                    {/* Header */}
-                    <div className="px-6 py-4 bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] text-white flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                            <div className="p-2 bg-white/10 rounded-xl backdrop-blur-md">
-                                <Users className="w-5 h-5 text-white" />
-                            </div>
-                            <div>
-                                <h3 className="text-base sm:text-lg font-bold text-white leading-tight">
-                                    Assigned Employees
-                                </h3>
-                                <p className="text-xs text-white/80 font-medium">
-                                    Shift: {shiftName}
-                                </p>
-                            </div>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            <span className="bg-white/20 text-white text-xs font-semibold px-2.5 py-1 rounded-full backdrop-blur-md">
-                                {loading ? '...' : `${employees.length} Total`}
-                            </span>
-                            <button
-                                onClick={onClose}
-                                className="p-1.5 rounded-lg text-white/80 hover:text-white hover:bg-white/20 transition-colors"
-                                aria-label="Close"
-                            >
-                                <X className="w-5 h-5" />
-                            </button>
-                        </div>
-                    </div>
-
-                    {/* Content */}
-                    <div className="p-6 flex-1 overflow-y-auto custom-scrollbar">
-                        {loading ? (
-                            <div className="flex flex-col items-center justify-center py-12 gap-3">
-                                <div className="animate-spin rounded-full h-8 w-8 border-2 border-[var(--color-primary-dark)] border-t-transparent"></div>
-                                <span className="text-xs sm:text-sm text-[var(--color-text-secondary)] font-medium">
-                                    Loading assigned employees...
-                                </span>
-                            </div>
-                        ) : employees.length > 0 ? (
-                            <div className="space-y-3">
-                                {employees.map((employee, index) => (
-                                    <div
-                                        key={employee.id || employee.employee_id || index}
-                                        className="flex items-center justify-between p-3.5 bg-[var(--color-bg-primary)] hover:bg-[var(--color-bg-hover,#f9fafb)] border border-[var(--color-border-secondary)] rounded-xl transition-all duration-200 shadow-sm"
-                                    >
-                                        <div className="flex items-center gap-3 min-w-0">
-                                            <div className="w-10 h-10 bg-gradient-to-br from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] rounded-xl flex items-center justify-center text-white font-bold text-sm shadow-sm shrink-0">
-                                                {(employee.full_name || employee.name)?.charAt(0)?.toUpperCase() || 'E'}
-                                            </div>
-                                            <div className="min-w-0">
-                                                <p className="font-semibold text-sm text-[var(--color-text-primary)] truncate">
-                                                    {employee.full_name || employee.name || 'Unknown Employee'}
-                                                </p>
-                                                {employee.employee_code && (
-                                                    <p className="text-xs text-[var(--color-text-muted)] font-mono">
-                                                        {employee.employee_code}
-                                                    </p>
-                                                )}
-                                            </div>
-                                        </div>
-                                        {employee.cdate && (
-                                            <div className="text-right shrink-0">
-                                                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] text-[11px] font-medium text-[var(--color-text-secondary)]">
-                                                    <Calendar className="w-3 h-3 text-[var(--color-primary-dark)]" />
-                                                    {employee.cdate}
-                                                </span>
-                                            </div>
-                                        )}
-                                    </div>
-                                ))}
-                            </div>
-                        ) : (
-                            <div className="text-center py-12 px-4">
-                                <div className="w-16 h-16 bg-[var(--color-primary-lightest,#f3e8ff)] rounded-2xl flex items-center justify-center mx-auto mb-3">
-                                    <Users className="w-8 h-8 text-[var(--color-primary-dark)]" />
-                                </div>
-                                <h4 className="text-base font-semibold text-[var(--color-text-primary)] mb-1">
-                                    No Employees Assigned
-                                </h4>
-                                <p className="text-xs sm:text-sm text-[var(--color-text-secondary)] max-w-xs mx-auto">
-                                    There are currently no employees assigned to this shift configuration.
-                                </p>
-                            </div>
-                        )}
-                    </div>
-
-                    {/* Footer */}
-                    <div className="px-6 py-3 bg-[var(--color-bg-primary)] border-t border-[var(--color-border-secondary)] flex justify-end">
-                        <button
-                            onClick={onClose}
-                            className="px-4 py-2 bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] text-[var(--color-text-primary)] hover:bg-[var(--color-bg-hover)] text-xs sm:text-sm font-medium rounded-xl transition-colors"
-                        >
-                            Close
-                        </button>
-                    </div>
-                </div>
-            </div>
-        );
-    };
-
-    // Custom Styled Month Picker Component
-    const CustomMonthPicker = ({ value, onChange }) => {
-        const [isOpen, setIsOpen] = useState(false);
-        const containerRef = useRef(null);
-
-        // Parse YYYY-MM
-        const [year, monthNum] = (value || '').split('-').map(Number);
-        const currentYear = year || new Date().getFullYear();
-        const currentMonthIdx = (monthNum ? monthNum - 1 : new Date().getMonth());
-
-        const [viewYear, setViewYear] = useState(currentYear);
-
-        useEffect(() => {
-            if (year) setViewYear(year);
-        }, [year]);
-
-        // Close on click outside
-        useEffect(() => {
-            const handleClickOutside = (e) => {
-                if (containerRef.current && !containerRef.current.contains(e.target)) {
-                    setIsOpen(false);
-                }
-            };
-            document.addEventListener('mousedown', handleClickOutside);
-            return () => document.removeEventListener('mousedown', handleClickOutside);
-        }, []);
-
-        const MONTH_NAMES = [
-            'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-            'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
-        ];
-
-        const FULL_MONTH_NAMES = [
-            'January', 'February', 'March', 'April', 'May', 'June',
-            'July', 'August', 'September', 'October', 'November', 'December'
-        ];
-
-        const handleSelectMonth = (mIdx) => {
-            const formattedMonth = String(mIdx + 1).padStart(2, '0');
-            const newValue = `${viewYear}-${formattedMonth}`;
-            onChange(newValue);
-            setIsOpen(false);
-        };
-
-        const handleThisMonth = () => {
-            const now = new Date();
-            const y = now.getFullYear();
-            const m = String(now.getMonth() + 1).padStart(2, '0');
-            setViewYear(y);
-            onChange(`${y}-${m}`);
-            setIsOpen(false);
-        };
-
-        const displayString = `${FULL_MONTH_NAMES[currentMonthIdx] || 'Select Month'}, ${currentYear}`;
-
-        return (
-            <div className="relative" ref={containerRef}>
-                <button
-                    type="button"
-                    onClick={() => setIsOpen(!isOpen)}
-                    className="flex items-center gap-2 bg-white/15 hover:bg-white/25 text-white text-xs font-semibold px-3 py-1.5 rounded-xl backdrop-blur-md border border-white/25 transition-all cursor-pointer shadow-xs"
-                >
-                    <Calendar className="w-3.5 h-3.5 text-white/90" />
-                    <span>{displayString}</span>
-                    <ChevronDown className={`w-3.5 h-3.5 text-white/80 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
-                </button>
-
-                {isOpen && (
-                    <div className="absolute right-0 top-full mt-2 z-50 w-64 bg-white rounded-2xl shadow-2xl border border-slate-200 p-4 animate-fadeIn text-slate-800">
-                        {/* Year Navigation Header */}
-                        <div className="flex items-center justify-between pb-2.5 border-b border-slate-100 mb-3">
-                            <button
-                                type="button"
-                                onClick={() => setViewYear(prev => prev - 1)}
-                                className="p-1 rounded-lg hover:bg-slate-100 text-slate-600 transition-colors cursor-pointer"
-                                title="Previous Year"
-                            >
-                                <ChevronLeft className="w-4 h-4" />
-                            </button>
-                            <span className="font-bold text-sm text-[#340C8E] font-mono">
-                                {viewYear}
-                            </span>
-                            <button
-                                type="button"
-                                onClick={() => setViewYear(prev => prev + 1)}
-                                className="p-1 rounded-lg hover:bg-slate-100 text-slate-600 transition-colors cursor-pointer"
-                                title="Next Year"
-                            >
-                                <ChevronRight className="w-4 h-4" />
-                            </button>
-                        </div>
-
-                        {/* 12 Months Grid */}
-                        <div className="grid grid-cols-4 gap-1.5 mb-3">
-                            {MONTH_NAMES.map((mName, idx) => {
-                                const isSelected = viewYear === currentYear && idx === currentMonthIdx;
-                                return (
-                                    <button
-                                        key={mName}
-                                        type="button"
-                                        onClick={() => handleSelectMonth(idx)}
-                                        className={`py-2 text-xs font-bold rounded-xl transition-all cursor-pointer ${isSelected
-                                                ? 'bg-[#340C8E] text-white shadow-md scale-105'
-                                                : 'text-slate-700 hover:bg-purple-50 hover:text-[#340C8E]'
-                                            }`}
-                                    >
-                                        {mName}
-                                    </button>
-                                );
-                            })}
-                        </div>
-
-                        {/* Footer Quick Actions */}
-                        <div className="pt-2 border-t border-slate-100 flex justify-end">
-                            <button
-                                type="button"
-                                onClick={handleThisMonth}
-                                className="text-[11px] font-bold text-[#340C8E] hover:underline cursor-pointer"
-                            >
-                                This month
-                            </button>
-                        </div>
-                    </div>
-                )}
-            </div>
-        );
-    };
-
-    // Helper to format time directly as returned from API response
-    const formatShiftTime = (fromTime, toTime) => {
-        if (!fromTime && !toTime) return '-';
-        if (fromTime && toTime) return `${fromTime} - ${toTime}`;
-        return fromTime || toTime || '-';
-    };
-
-    // Shift Day Date Modal Component
-    const ShiftDayDateModal = ({ isOpen, onClose, shiftName, shiftId, selectedMonth, datesList, totalRecords, loading, onMonthChange }) => {
-        if (!isOpen) return null;
-
-        return (
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fadeIn">
-                <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-2xl border border-[var(--color-border-secondary)] max-w-3xl w-full overflow-hidden flex flex-col max-h-[85vh] transition-all">
-                    {/* Header */}
-                    <div className="px-6 py-4 bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] text-white flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                            <div className="p-2 bg-white/10 rounded-xl backdrop-blur-md">
-                                <Calendar className="w-5 h-5 text-white" />
-                            </div>
-                            <div>
-                                <h3 className="text-base sm:text-lg font-bold text-white leading-tight">
-                                    Shift Days & Dates List
-                                </h3>
-                                <p className="text-xs text-white/80 font-medium truncate max-w-xs">
-                                    Shift: {shiftName}
-                                </p>
-                            </div>
-                        </div>
-
-                        <div className="flex items-center gap-3">
-                            {/* Styled Custom Month Picker */}
-                            <CustomMonthPicker
-                                value={selectedMonth}
-                                onChange={(newMonth) => onMonthChange(shiftId, shiftName, newMonth)}
-                            />
-
-                            {/* Total Count Badge */}
-                            <span className="bg-white/20 text-white text-xs font-bold px-3 py-1.5 rounded-xl backdrop-blur-md border border-white/20 whitespace-nowrap">
-                                {loading ? '...' : `Total: ${totalRecords}`}
-                            </span>
-
-                            <button
-                                onClick={onClose}
-                                className="p-1.5 rounded-lg text-white/80 hover:text-white hover:bg-white/20 transition-colors cursor-pointer"
-                                aria-label="Close"
-                            >
-                                <X className="w-5 h-5" />
-                            </button>
-                        </div>
-                    </div>
-
-                    {/* Content Table / List */}
-                    <div className="p-6 flex-1 overflow-y-auto custom-scrollbar-slim">
-                        {loading ? (
-                            <div className="flex flex-col items-center justify-center py-12 gap-3">
-                                <div className="animate-spin rounded-full h-8 w-8 border-2 border-[var(--color-primary-dark)] border-t-transparent"></div>
-                                <span className="text-xs sm:text-sm text-[var(--color-text-secondary)] font-medium">
-                                    Loading shift dates for {selectedMonth}...
-                                </span>
-                            </div>
-                        ) : datesList && datesList.length > 0 ? (
-                            <div className="border border-[var(--color-border-secondary)] rounded-xl overflow-hidden">
-                                <Table wrapperClassName="custom-scrollbar-slim max-h-[55vh]" className="min-w-full divide-y divide-[var(--color-border-divider)]">
-                                    <TableHeader className="bg-[var(--color-primary-dark)]">
-                                        <TableHeaderRow>
-                                            <Th className="px-4 py-3 text-left text-xs font-semibold text-white">Date</Th>
-                                            <Th className="px-4 py-3 text-left text-xs font-semibold text-white">Day Name</Th>
-                                            <Th className="px-4 py-3 text-left text-xs font-semibold text-white">Shift Timing (From - To)</Th>
-                                            <Th className="px-4 py-3 text-left text-xs font-semibold text-white">Shift Type / Status</Th>
-                                        </TableHeaderRow>
-                                    </TableHeader>
-                                    <TableBody className="bg-[var(--color-bg-secondary)] divide-y divide-[var(--color-border-divider)]">
-                                        {datesList.map((item, index) => {
-                                            const dateVal = item.date || item.shift_date || item.cdate || item.day_date || '-';
-                                            const dayName = item.day_name || item.day || item.sort_name || '-';
-                                            const shiftType = String(item.shift_type || item.type || item.status_id || '');
-                                            const statusLabel = item.status_label || item.status || item.shift_type_name || item.day_status || getDayStatusText(shiftType);
-                                            const timeDisplay = formatShiftTime(item.from_time, item.to_time);
-
-                                            return (
-                                                <TableRow key={item.id || index} className="hover:bg-[var(--color-bg-primary)] transition-colors">
-                                                    <Td className="px-4 py-3 text-xs sm:text-sm font-mono font-semibold text-[var(--color-text-primary)]">
-                                                        {dateVal}
-                                                    </Td>
-                                                    <Td className="px-4 py-3 text-xs sm:text-sm text-[var(--color-text-secondary)]">
-                                                        {dayName}
-                                                    </Td>
-                                                    <Td className="px-4 py-3 text-xs sm:text-sm font-mono text-[var(--color-text-secondary)] whitespace-nowrap">
-                                                        {timeDisplay}
-                                                    </Td>
-                                                    <Td className="px-4 py-3 text-xs sm:text-sm">
-                                                        <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold ${shiftType === '1' || statusLabel.toLowerCase().includes('working')
-                                                            ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                                                            : shiftType === '2' || statusLabel.toLowerCase().includes('off')
-                                                                ? 'bg-slate-100 text-slate-700 border border-slate-200'
-                                                                : 'bg-purple-50 text-purple-700 border border-purple-200'
-                                                            }`}>
-                                                            {statusLabel}
-                                                        </span>
-                                                    </Td>
-                                                </TableRow>
-                                            );
-                                        })}
-                                    </TableBody>
-                                </Table>
-                            </div>
-                        ) : (
-                            <div className="text-center py-12 px-4">
-                                <div className="w-16 h-16 bg-purple-50 rounded-2xl flex items-center justify-center mx-auto mb-3">
-                                    <Calendar className="w-8 h-8 text-[var(--color-primary-dark)]" />
-                                </div>
-                                <h4 className="text-base font-semibold text-[var(--color-text-primary)] mb-1">
-                                    No Date Records Found
-                                </h4>
-                                <p className="text-xs sm:text-sm text-[var(--color-text-secondary)] max-w-xs mx-auto">
-                                    No shift date records found for month {selectedMonth}.
-                                </p>
-                            </div>
-                        )}
-                    </div>
-
-                    {/* Footer */}
-                    <div className="px-6 py-3 bg-[var(--color-bg-primary)] border-t border-[var(--color-border-secondary)] flex justify-end">
-                        <button
-                            onClick={onClose}
-                            className="px-4 py-2 bg-[var(--color-bg-secondary)] border border-[var(--color-border-secondary)] text-[var(--color-text-primary)] hover:bg-[var(--color-bg-hover)] text-xs sm:text-sm font-medium rounded-xl transition-colors cursor-pointer"
-                        >
-                            Close
-                        </button>
-                    </div>
-                </div>
-            </div>
-        );
     };
 
     // Show toast notification
