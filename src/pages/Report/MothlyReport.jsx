@@ -476,22 +476,27 @@ const MonthlyReport = () => {
             const filtersForExport = { ...filters, ...filterNames };
 
             if (type === 'excel') {
-                const [year, month] = filters.month_year.split('-');
-                const startDate = new Date(parseInt(year), parseInt(month) - 1, 1);
-                const endDate = new Date(parseInt(year), parseInt(month), 0);
+                const monthYearStr = filters?.month_year || new Date().toISOString().slice(0, 7);
+                const [yearStr, monthStr] = monthYearStr.split('-');
+                const parsedY = parseInt(yearStr, 10) || new Date().getFullYear();
+                const parsedM = parseInt(monthStr, 10) || (new Date().getMonth() + 1);
+
+                const startDate = new Date(parsedY, parsedM - 1, 1);
+                const endDate = new Date(parsedY, parsedM, 0);
 
                 await exportToExcel(
                     reportData,
                     startDate,
                     endDate,
-                    'monthly_attendance_report',
+                    `monthly_attendance_${monthYearStr}`,
                     {
                         showTitle: true,
                         showSummary: true,
                         showEmployeeDetails: true,
                         reportTitle: 'Monthly Attendance Report',
                         companyName: user?.company_name || user?.company || user?.full_name || 'Your Company Name'
-                    }
+                    },
+                    monthYearStr
                 );
                 showToast('Excel exported successfully!', 'success');
             } else {

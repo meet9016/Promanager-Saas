@@ -72,7 +72,12 @@ const AttendancePDFDocument = ({ data, selectedDate, companyName = 'Your Company
                                         <View style={[styles.tableCol, { width: '4%' }]}><Text style={styles.tdCenter}>{(pageIndex * 30) + index + 1}</Text></View>
                                         <View style={[styles.tableCol, { width: '18%' }]}><Text style={styles.empNameText}>{employee.employee_name || '--'}</Text></View>
                                         <View style={[styles.tableCol, { width: '10%' }]}><Text style={styles.tdCenter}>{employee.employee_code || '--'}</Text></View>
-                                        <View style={[styles.tableCol, { width: '12%' }]}><Text style={styles.tdCenter}>{employee.shift_name || '--'}</Text></View>
+                                        <View style={[styles.tableCol, { width: '12%' }]}>
+                                            <Text style={styles.tdCenter}>{employee.shift_name || '--'}</Text>
+                                            {!!employee.shift_from_time && !!employee.shift_to_time && (
+                                                <Text style={styles.contactInfo}>{employee.shift_from_time} - {employee.shift_to_time}</Text>
+                                            )}
+                                        </View>
                                         <View style={[styles.tableCol, { width: '8%' }]}><Text style={styles.tdCenter}>{formatTime(employee.attandance_first_clock_in)}</Text></View>
                                         <View style={[styles.tableCol, { width: '8%' }]}><Text style={styles.tdCenter}>{formatTime(employee.attandance_last_clock_out)}</Text></View>
                                         <View style={[styles.tableCol, { width: '7%' }]}><Text style={styles.tdCenter}>{employee.shift_working_hours || '--'}</Text></View>

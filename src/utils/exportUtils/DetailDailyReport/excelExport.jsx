@@ -40,45 +40,100 @@ export const exportDetailRangeToExcel = async (
         return str;
     };
 
-    const buildPunchRecords = (history) => {
-        if (!Array.isArray(history) || history.length === 0) return "--";
-        const segs = [];
-        history.forEach((record, index) => {
-            const dateTime = (record.clock_date_time || "").trim();
-            if (!dateTime) return;
-            const parts = dateTime.split(" ");
-            if (parts.length < 3) return;
-            const time = parts[parts.length - 2];
-            const period = parts[parts.length - 1];
-            const timePart = `${time} ${period}`;
-            const type = index % 2 === 0 ? "in" : "out";
-            segs.push(`${timePart}:${type}`);
-        });
-        return segs.length > 0 ? segs.join(", ") : "--";
+    const fmtTime = (t) => {
+        if (!t || t === '00:00:00' || t === '--') return '--';
+        if (t.includes('AM') || t.includes('PM')) return t;
+        const [hh, mm] = t.split(':');
+        const H = parseInt(hh, 10);
+        if (isNaN(H)) return t;
+        const h12 = H % 12 || 12;
+        const ap = H < 12 ? 'AM' : 'PM';
+        return `${h12}:${mm} ${ap}`;
     };
 
-    const formattedRows = flatData.map((row, idx) => ({
-        'S.No.': row.sno ?? row["S.No."] ?? (idx + 1),
-        'E. Code': s(row.employee_code || row["Employee Code"] || row["E. Code"], "--"),
-        'Employee Name': s(row.employee_name || row["Employee"] || row["Employee Name"], "--"),
-        'Shift': s(row.shift_name || row["Shift"], "--"),
-        'Shift In': s(row.shift_from_time || row["Shift Time"]?.split?.(" - ")?.[0], "--"),
-        'Shift Out': s(row.shift_to_time || row["Shift Time"]?.split?.(" - ")?.[1], "--"),
-        'Clock In': s(row.attandance_first_clock_in || row["Clock In (First)"], "--"),
-        'Clock Out': s(row.attandance_last_clock_out || row["Clock Out (Last)"], "--"),
-        'Shift Hours': hourish(row.shift_working_hours || row["Working Hours"]),
-        'Total Hours': hourish(row.attandance_hours || row["Attendance Hours"]),
-        'Remaining Hours': hourish(row.late_hours || row["Remaining Hours"]),
-        'Overtime Hours': hourish(row.overtime_hours || row["Overtime Hours"]),
-        'Early Going': hourish(row.early_going_by || row["EarlyGoingBy"]),
-        'Status': s(row.status || row["Status"], "N/A"),
-        'Punch Records': buildPunchRecords(row.attendance_history),
-    }));
+    const fmtShort = (t) => {
+        if (!t || t === '00:00:00') return '';
+        if (t.includes('AM') || t.includes('PM')) {
+            const parts = t.split(' ');
+            if (parts.length === 2) {
+                const [time] = parts;
+                const [hh, mm] = time.split(':');
+                return `${hh}:${mm}`;
+            }
+        }
+        if (t.includes(':')) {
+            const [hh, mm] = t.split(':');
+            const H = parseInt(hh, 10);
+            const h12 = H % 12 || 12;
+            return `${h12}:${mm}`;
+        }
+        return t;
+    };
+
+    const buildPunchChips = (history) => {
+        if (!Array.isArray(history) || history.length === 0) return "--";
+        const list = history;
+        const chips = [];
+        for (let i = 0; i < list.length; i += 2) {
+            const inRecord = list[i];
+            const outRecord = list[i + 1];
+            if (!inRecord) continue;
+
+            const extractTime = (dateTimeStr) => {
+                if (!dateTimeStr) return '';
+                const parts = dateTimeStr.split(' ');
+                if (parts.length < 3) return '';
+                return `${parts[parts.length - 2]} ${parts[parts.length - 1]}`;
+            };
+
+            const inTime = fmtShort(extractTime(inRecord.clock_date_time));
+            const outTime = outRecord ? fmtShort(extractTime(outRecord.clock_date_time)) : '';
+
+            if (inTime && outTime) {
+                chips.push(`${inTime}–${outTime}`);
+            } else if (inTime) {
+                chips.push(`${inTime}→`);
+            }
+        }
+        return chips.length > 0 ? chips.join(', ') : '--';
+    };
+
+    const statusSuffix = (emp) => {
+        const arr = Array.isArray(emp.attendance_history) ? emp.attendance_history : [];
+        if (!arr.length) return '';
+        const hasOpenPunch = arr.length % 2 !== 0;
+        return hasOpenPunch ? ' (No OutPunch)' : '';
+    };
+
+    const formattedRows = flatData.map((row, idx) => {
+        const shiftFrom = row.shift_from_time || row["Shift In"];
+        const shiftTo = row.shift_to_time || row["Shift Out"];
+        const shiftTimeStr = shiftFrom && shiftTo ? `${shiftFrom} - ${shiftTo}` : (row["Shift Time"] || '--');
+        const statusVal = s(row.status || row["Status"], "N/A");
+        const statusWithNote = `${statusVal}${statusSuffix(row)}`;
+
+        return {
+            'S.No.': row.sno ?? row["S.No."] ?? (idx + 1),
+            'Employee Name': s(row.employee_name || row["Employee"] || row["Employee Name"], "--"),
+            'Employee Code': s(row.employee_code || row["Employee Code"] || row["E. Code"], "--"),
+            'Shift': s(row.shift_name || row["Shift"], "--"),
+            'Shift Time': shiftTimeStr,
+            'Clock In': fmtTime(row.attandance_first_clock_in || row["Clock In"]),
+            'Clock Out': fmtTime(row.attandance_last_clock_out || row["Clock Out"]),
+            'Work Duration': hourish(row.shift_working_hours || row["Working Hours"]),
+            'Total Duration': hourish(row.attandance_hours || row["Attendance Hours"]),
+            'Remaining Hours': hourish(row.late_hours || row["Remaining Hours"]),
+            'Overtime Hours': hourish(row.overtime_hours || row["Overtime Hours"]),
+            'Early Going': hourish(row.early_going_by || row["EarlyGoingBy"]),
+            'Status': statusWithNote,
+            'Punch Records': buildPunchChips(row.attendance_history),
+        };
+    });
 
     const totalEmployees = formattedRows.length;
-    const presentCount = formattedRows.filter(r => (r.Status || '').toLowerCase() === 'present').length;
-    const absentCount = formattedRows.filter(r => (r.Status || '').toLowerCase() === 'absent').length;
-    const weekOffCount = formattedRows.filter(r => (r.Status || '').toLowerCase() === 'week off').length;
+    const presentCount = formattedRows.filter(r => (r.Status || '').toLowerCase().includes('present')).length;
+    const absentCount = formattedRows.filter(r => (r.Status || '').toLowerCase().includes('absent')).length;
+    const weekOffCount = formattedRows.filter(r => (r.Status || '').toLowerCase().includes('week off') || (r.Status || '').toLowerCase().includes('weekoff')).length;
     const lateCount = formattedRows.filter(r => r['Remaining Hours'] !== '--' && parseFloat(r['Remaining Hours']) > 0).length;
     const overtimeCount = formattedRows.filter(r => r['Overtime Hours'] !== '--' && parseFloat(r['Overtime Hours']) > 0).length;
 

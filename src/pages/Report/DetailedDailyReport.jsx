@@ -873,7 +873,8 @@ const DetailedDailyReport = () => {
             }));
 
             const fileName = `detailed_daily_attendance_${formatDate(selectedDate)}`;
-            await exportDetailRangeToExcel(dataWithSno, formatDate(selectedDate), formatDate(selectedDate), fileName);
+            const companyName = user?.company_name || user?.company || user?.full_name || 'Your Company Name';
+            await exportDetailRangeToExcel(dataWithSno, formatDate(selectedDate), formatDate(selectedDate), fileName, { companyName });
 
             showToast('Excel exported successfully!', 'success');
             setExportDropdown(false);

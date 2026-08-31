@@ -29,17 +29,16 @@ export const exportSalaryStatusToExcel = async (
     ];
 
     const headers = [
-        { key: 'sr_no', label: 'S.No' },
+        { key: 'sr_no', label: '#' },
         { key: 'employee_name', label: 'Employee Name' },
-        { key: 'employee_code', label: 'Employee Code' },
+        { key: 'employee_code', label: 'Code' },
         { key: 'monthly_salary', label: 'Monthly Salary' },
         { key: 'final_salary', label: 'Final Salary' },
         { key: 'net_payable', label: 'Net Payable' },
         { key: 'total_paid', label: 'Total Paid' },
         { key: 'balance_due', label: 'Balance Due' },
-        { key: 'generated_at', label: 'Generated At' },
-        { key: 'generation_status', label: 'Generation Status' },
-        { key: 'payment_status', label: 'Payment Status' },
+        { key: 'generation_status', label: 'Gen. Status' },
+        { key: 'payment_status', label: 'Pay Status' },
     ];
 
     const formattedRows = data.map((emp, i) => {
@@ -55,7 +54,6 @@ export const exportSalaryStatusToExcel = async (
             net_payable: isGen ? `₹${getVal(emp.net_payable).toFixed(2)}` : '--',
             total_paid: getVal(emp.total_paid) > 0 ? `₹${getVal(emp.total_paid).toFixed(2)}` : '--',
             balance_due: isGen ? `₹${getVal(emp.balance_due).toFixed(2)}` : '--',
-            generated_at: emp.generated_at ? new Date(emp.generated_at).toLocaleDateString('en-IN') : '--',
             generation_status: genStatus,
             payment_status: emp.payment_status_label || 'Not Generated',
         };

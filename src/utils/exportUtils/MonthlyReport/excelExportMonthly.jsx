@@ -52,17 +52,22 @@ const formatDate = (dateInput) => {
 export const ensureGroupedEmployees = (attendanceData) => {
     if (!attendanceData || attendanceData.length === 0) return [];
 
-    if (attendanceData[0].dailyAttendance) {
-        return attendanceData;
+    if (attendanceData[0]?.dailyAttendance) {
+        return attendanceData.map((emp) => ({
+            ...emp,
+            employee_code: emp.employee_code || emp.empCode || 'N/A',
+            employee_name: emp.employee_name || emp.empName || 'N/A',
+        }));
     }
 
     const map = {};
     attendanceData.forEach((rec) => {
-        const empCode = rec.employee_code || 'N/A';
+        if (!rec) return;
+        const empCode = rec.employee_code || rec.empCode || rec.employee_id || 'N/A';
         if (!map[empCode]) {
             map[empCode] = {
                 employee_code: empCode,
-                employee_name: rec.employee_name || 'N/A',
+                employee_name: rec.employee_name || rec.empName || 'N/A',
                 dailyAttendance: {},
             };
         }
@@ -73,14 +78,16 @@ export const ensureGroupedEmployees = (attendanceData) => {
         } else if (typeof rec.date === 'string') {
             const d = new Date(rec.date);
             if (!isNaN(d.getTime())) dayNum = d.getDate();
+        } else if (typeof rec.day === 'number') {
+            dayNum = rec.day;
         }
 
         if (dayNum) {
             map[empCode].dailyAttendance[dayNum] = {
                 status: rec.status,
-                inTime: rec.attandance_first_clock_in,
-                outTime: rec.attandance_last_clock_out,
-                totalHours: rec.attandance_hours,
+                inTime: rec.attandance_first_clock_in || rec.inTime,
+                outTime: rec.attandance_last_clock_out || rec.outTime,
+                totalHours: rec.attandance_hours || rec.totalHours,
             };
         }
     });
@@ -95,14 +102,14 @@ export const convertGroupedDataToFlat = (groupedData, monthYear) => {
         ? monthYear.split("-")
         : [String(new Date().getFullYear()), String(new Date().getMonth() + 1)];
 
-    const year = parseInt(yearStr, 10);
-    const month = parseInt(monthStr, 10);
+    const year = parseInt(yearStr, 10) || new Date().getFullYear();
+    const month = parseInt(monthStr, 10) || (new Date().getMonth() + 1);
 
     groupedData.forEach(({ employee_code, employee_name, dailyAttendance }) => {
         Object.entries(dailyAttendance || {}).forEach(([day, record]) => {
             flatData.push({
-                employee_code,
-                employee_name,
+                employee_code: employee_code || '--',
+                employee_name: employee_name || '--',
                 date: new Date(year, month - 1, parseInt(day, 10)),
                 status: normalizeStatus(record.status || record.fullStatus) || "--",
                 attandance_first_clock_in: record.inTime || "--",
@@ -147,14 +154,18 @@ export const exportToExcel = async (
         throw new Error("No data available to export");
     }
 
-    let year = startDate ? startDate.getFullYear() : new Date().getFullYear();
-    let month = startDate ? startDate.getMonth() + 1 : new Date().getMonth() + 1;
+    let year = startDate && !isNaN(startDate.getTime()) ? startDate.getFullYear() : new Date().getFullYear();
+    let month = startDate && !isNaN(startDate.getTime()) ? startDate.getMonth() + 1 : new Date().getMonth() + 1;
 
     if (monthYear && typeof monthYear === 'string') {
         const parts = monthYear.split('-');
         if (parts.length === 2) {
-            year = parseInt(parts[0], 10);
-            month = parseInt(parts[1], 10);
+            const py = parseInt(parts[0], 10);
+            const pm = parseInt(parts[1], 10);
+            if (!isNaN(py) && !isNaN(pm)) {
+                year = py;
+                month = pm;
+            }
         }
     }
 
@@ -166,6 +177,7 @@ export const exportToExcel = async (
     const headers = [
         { key: 'emp_code', label: 'Emp Code' },
         { key: 'emp_name', label: 'Employee Name' },
+        { key: 'row_type', label: 'Record Type' },
     ];
 
     for (let d = 1; d <= daysInMonth; d++) {
@@ -186,12 +198,9 @@ export const exportToExcel = async (
     let grandHalfDay = 0;
     let grandHours = 0;
 
-    const formattedRows = groupedEmployees.map((emp) => {
-        const rowObj = {
-            emp_code: emp.employee_code || '--',
-            emp_name: emp.employee_name || '--',
-        };
+    const formattedRows = [];
 
+    groupedEmployees.forEach((emp) => {
         let pCount = 0;
         let aCount = 0;
         let woCount = 0;
@@ -203,8 +212,6 @@ export const exportToExcel = async (
         for (let d = 1; d <= daysInMonth; d++) {
             const record = dailyAttendance[d];
             const statusKey = record ? normalizeStatus(record.status || record.fullStatus) || '--' : '--';
-
-            rowObj[`day_${d}`] = statusKey;
 
             if (statusKey === 'P' || statusKey === 'P/INC') pCount++;
             else if (statusKey === 'A') aCount++;
@@ -222,13 +229,42 @@ export const exportToExcel = async (
         grandHalfDay += halfCount;
         grandHours += empHours;
 
-        rowObj.total_p = pCount;
-        rowObj.total_a = aCount;
-        rowObj.total_half = halfCount;
-        rowObj.total_wo = woCount;
-        rowObj.total_hours = empHours > 0 ? `${empHours.toFixed(1)} hrs` : '0.0 hrs';
+        const rowIn = {
+            emp_code: emp.employee_code || '--',
+            emp_name: emp.employee_name || '--',
+            row_type: 'InTime',
+        };
+        const rowOut = {
+            emp_code: emp.employee_code || '--',
+            emp_name: emp.employee_name || '--',
+            row_type: 'OutTime',
+        };
+        const rowTot = {
+            emp_code: emp.employee_code || '--',
+            emp_name: emp.employee_name || '--',
+            row_type: 'Total Hrs',
+        };
+        const rowSt = {
+            emp_code: emp.employee_code || '--',
+            emp_name: emp.employee_name || '--',
+            row_type: 'Status',
+        };
 
-        return rowObj;
+        for (let d = 1; d <= daysInMonth; d++) {
+            const rec = dailyAttendance[d];
+            rowIn[`day_${d}`] = rec?.inTime || '--';
+            rowOut[`day_${d}`] = rec?.outTime || '--';
+            rowTot[`day_${d}`] = rec?.totalHours || '--';
+            rowSt[`day_${d}`] = rec ? normalizeStatus(rec.status || rec.fullStatus) || '--' : '--';
+        }
+
+        rowIn.total_p = pCount;
+        rowIn.total_a = aCount;
+        rowIn.total_half = halfCount;
+        rowIn.total_wo = woCount;
+        rowIn.total_hours = empHours > 0 ? `${empHours.toFixed(1)} hrs` : '0.0 hrs';
+
+        formattedRows.push(rowIn, rowOut, rowTot, rowSt);
     });
 
     const summaryCards = [

@@ -21,88 +21,54 @@ export const exportExceptionToExcel = async (data, reportDate, tabKey, tabLabel,
 
     const columnSchemas = {
         all_employees: [
-            { header: 'S.No.', get: (e, i) => i + 1 },
-            { header: 'Employee Name', get: (e) => e.employee_name || '--' },
-            { header: 'Employee Code', get: (e) => e.employee_code || '--' },
-            { header: 'Shift', get: (e) => e.shift_name || '--' },
-            { header: 'Shift Time', get: (e) => `${e.shift_from_time || '--'} - ${e.shift_to_time || '--'}` },
-            { header: 'Clock In', get: (e) => e.attandance_first_clock_in || '--' },
-            { header: 'Clock Out', get: (e) => e.attandance_last_clock_out || '--' },
-            { header: 'Working Hrs', get: (e) => e.shift_working_hours || '--' },
-            { header: 'Attendance Hrs', get: (e) => e.attandance_hours || '--' },
-            { header: 'Status', get: (e) => e.status || '--' },
-            { header: 'Late By', get: (e) => (e.exception_types || []).includes('late_coming') ? (e.late_coming_time || '--') : '--' },
-            { header: 'Early By', get: (e) => (e.exception_types || []).includes('early_going') ? (e.early_going_time || '--') : '--' },
-            {
-                header: 'Short By', get: (e) => {
-                    if (!(e.exception_types || []).includes('short_hours')) return '--';
-                    const a = parseHoursToMinutes(e.attandance_hours);
-                    const s = parseHoursToMinutes(e.shift_working_hours);
-                    const d = s - a;
-                    return d > 0 ? `${Math.floor(d / 60)}h ${d % 60}m` : '--';
-                }
-            },
+            { header: '#', get: (e, i) => i + 1 },
+            { header: 'Employee', get: (e) => e.employee_name || '--' },
+            { header: 'Code', get: (e) => e.employee_code || '--' },
+            { header: 'Work Days', get: (e) => e.totalDays ? `${e.totalDays} Days` : (e.shift_name || '--') },
+            { header: 'Clock In', get: (e) => e.attandance_first_clock_in || (e.lateDays !== undefined ? `Late: ${e.lateDays}d` : '--') },
+            { header: 'Clock Out', get: (e) => e.attandance_last_clock_out || (e.earlyDays !== undefined ? `Early: ${e.earlyDays}d` : '--') },
+            { header: 'Work Hrs', get: (e) => e.shift_working_hours || (e.shortHoursDays !== undefined ? `Short: ${e.shortHoursDays}d` : '--') },
+            { header: 'Att Hrs', get: (e) => e.attandance_hours || (e.missedPunchDays !== undefined ? `Missed: ${e.missedPunchDays}d` : '--') },
+            { header: 'Late By', get: (e) => (e.exception_types || []).includes('late_coming') ? (e.late_coming_time || (e.totalLateTime ? `${e.lateDays}d (${e.totalLateTime})` : '--')) : '--' },
+            { header: 'Early By', get: (e) => (e.exception_types || []).includes('early_going') ? (e.early_going_time || (e.totalEarlyTime ? `${e.earlyDays}d (${e.totalEarlyTime})` : '--')) : '--' },
             {
                 header: 'Exceptions', get: (e) => {
-                    const types = e.exception_types || [];
-                    if (types.length === 0) return e.attandance_first_clock_in ? 'On Time' : 'No Punch';
-                    return types.map((t) => ({ late_coming: 'Late Coming', early_going: 'Early Going', short_hours: 'Short Hours', missed_punch: 'Missed Punch' }[t] || t)).join(', ');
+                    const t = e.exception_types || [];
+                    if (t.length === 0) return 'On Time';
+                    return t.map(x => ({ late_coming: 'Late', early_going: 'Early Going', short_hours: 'Short Hrs', missed_punch: 'Missed Punch' }[x] || x)).join(' | ');
                 }
             },
         ],
         late_coming: [
-            { header: 'S.No.', get: (e, i) => i + 1 },
-            { header: 'Employee Name', get: (e) => e.employee_name || '--' },
-            { header: 'Employee Code', get: (e) => e.employee_code || '--' },
-            { header: 'Shift', get: (e) => e.shift_name || '--' },
-            { header: 'Shift Start', get: (e) => e.shift_from_time || '--' },
-            { header: 'Clock In', get: (e) => e.attandance_first_clock_in || '--' },
-            { header: 'Late By', get: (e) => e.late_coming_time || '--' },
-            { header: 'Late Minutes', get: (e) => e.late_coming_minutes || '0' },
-            { header: 'Status', get: (e) => e.status || '--' },
+            { header: '#', get: (e, i) => i + 1 },
+            { header: 'Employee', get: (e) => e.employee_name || '--' },
+            { header: 'Code', get: (e) => e.employee_code || '--' },
+            { header: 'Total Days', get: (e) => e.totalDays ? `${e.totalDays} Days` : (e.shift_name || '--') },
+            { header: 'Late Days', get: (e) => e.lateDays !== undefined ? `${e.lateDays} Days` : (e.shift_from_time || '--') },
+            { header: 'Total Late Time', get: (e) => e.totalLateTime || e.late_coming_time || '--' },
         ],
         early_going: [
-            { header: 'S.No.', get: (e, i) => i + 1 },
-            { header: 'Employee Name', get: (e) => e.employee_name || '--' },
-            { header: 'Employee Code', get: (e) => e.employee_code || '--' },
-            { header: 'Shift', get: (e) => e.shift_name || '--' },
-            { header: 'Shift End', get: (e) => e.shift_to_time || '--' },
-            { header: 'Clock Out', get: (e) => e.attandance_last_clock_out || '--' },
-            { header: 'Left Early By', get: (e) => e.early_going_time || '--' },
-            { header: 'Early Minutes', get: (e) => e.early_going_minutes || '0' },
-            { header: 'Status', get: (e) => e.status || '--' },
+            { header: '#', get: (e, i) => i + 1 },
+            { header: 'Employee', get: (e) => e.employee_name || '--' },
+            { header: 'Code', get: (e) => e.employee_code || '--' },
+            { header: 'Total Days', get: (e) => e.totalDays ? `${e.totalDays} Days` : (e.shift_name || '--') },
+            { header: 'Early Days', get: (e) => e.earlyDays !== undefined ? `${e.earlyDays} Days` : (e.shift_to_time || '--') },
+            { header: 'Total Early Time', get: (e) => e.totalEarlyTime || e.early_going_time || '--' },
         ],
         short_hours: [
-            { header: 'S.No.', get: (e, i) => i + 1 },
-            { header: 'Employee Name', get: (e) => e.employee_name || '--' },
-            { header: 'Employee Code', get: (e) => e.employee_code || '--' },
-            { header: 'Shift', get: (e) => e.shift_name || '--' },
-            { header: 'Required Hours', get: (e) => e.shift_working_hours || '--' },
-            { header: 'Worked Hours', get: (e) => e.attandance_hours || '--' },
-            {
-                header: 'Short By', get: (e) => {
-                    const attMins = parseHoursToMinutes(e.attandance_hours);
-                    const shiftMins = parseHoursToMinutes(e.shift_working_hours);
-                    const diff = shiftMins - attMins;
-                    if (diff <= 0) return '--';
-                    return `${Math.floor(diff / 60)}h ${diff % 60}m`;
-                }
-            },
-            { header: 'Clock In', get: (e) => e.attandance_first_clock_in || '--' },
-            { header: 'Clock Out', get: (e) => e.attandance_last_clock_out || '--' },
-            { header: 'Status', get: (e) => e.status || '--' },
+            { header: '#', get: (e, i) => i + 1 },
+            { header: 'Employee', get: (e) => e.employee_name || '--' },
+            { header: 'Code', get: (e) => e.employee_code || '--' },
+            { header: 'Total Days', get: (e) => e.totalDays ? `${e.totalDays} Days` : (e.shift_name || '--') },
+            { header: 'Short Days', get: (e) => e.shortHoursDays !== undefined ? `${e.shortHoursDays} Days` : (e.shift_working_hours || '--') },
+            { header: 'Total Short Time', get: (e) => e.totalShortTime || '--' },
         ],
         missed_punch: [
-            { header: 'S.No.', get: (e, i) => i + 1 },
-            { header: 'Employee Name', get: (e) => e.employee_name || '--' },
-            { header: 'Employee Code', get: (e) => e.employee_code || '--' },
-            { header: 'Shift', get: (e) => e.shift_name || '--' },
-            { header: 'Shift Time', get: (e) => `${e.shift_from_time || '--'} - ${e.shift_to_time || '--'}` },
-            { header: 'Clock In', get: (e) => e.attandance_first_clock_in || '--' },
-            { header: 'Clock Out', get: (e) => e.attandance_last_clock_out || '--' },
-            { header: 'Punch Count', get: (e) => (e.attendance_history || []).length },
-            { header: 'Punch Records', get: (e) => (e.attendance_history || []).map(h => h.clock_date_time).join(', ') || '--' },
-            { header: 'Status', get: (e) => e.status || '--' },
+            { header: '#', get: (e, i) => i + 1 },
+            { header: 'Employee', get: (e) => e.employee_name || '--' },
+            { header: 'Code', get: (e) => e.employee_code || '--' },
+            { header: 'Total Days', get: (e) => e.totalDays ? `${e.totalDays} Days` : (e.shift_name || '--') },
+            { header: 'Missed Punch Days', get: (e) => e.missedPunchDays !== undefined ? `${e.missedPunchDays} Days` : String((e.attendance_history || []).length) },
         ],
     };
 
@@ -187,56 +153,54 @@ export const exportMonthlyExceptionToExcel = async (
 
     const columnSchemas = {
         all_employees: [
-            { header: 'S.No.', get: (e, i) => i + 1 },
-            { header: 'Employee Name', get: (e) => e.employee_name || '--' },
-            { header: 'Employee Code', get: (e) => e.employee_code || '--' },
-            { header: 'Working Days', get: (e) => e.totalDays ?? e.total_days ?? '--' },
-            { header: 'Late Days', get: (e) => e.lateDays ?? e.late_days ?? 0 },
-            { header: 'Early Days', get: (e) => e.earlyDays ?? e.early_days ?? 0 },
-            { header: 'Short Hours Days', get: (e) => e.shortHoursDays ?? e.short_days ?? 0 },
-            { header: 'Missed Punch Days', get: (e) => e.missedPunchDays ?? e.missed_days ?? 0 },
+            { header: '#', get: (e, i) => i + 1 },
+            { header: 'Employee', get: (e) => e.employee_name || '--' },
+            { header: 'Code', get: (e) => e.employee_code || '--' },
+            { header: 'Work Days', get: (e) => e.totalDays ? `${e.totalDays} Days` : (e.shift_name || '--') },
+            { header: 'Clock In', get: (e) => e.attandance_first_clock_in || (e.lateDays !== undefined ? `Late: ${e.lateDays}d` : '--') },
+            { header: 'Clock Out', get: (e) => e.attandance_last_clock_out || (e.earlyDays !== undefined ? `Early: ${e.earlyDays}d` : '--') },
+            { header: 'Work Hrs', get: (e) => e.shift_working_hours || (e.shortHoursDays !== undefined ? `Short: ${e.shortHoursDays}d` : '--') },
+            { header: 'Att Hrs', get: (e) => e.attandance_hours || (e.missedPunchDays !== undefined ? `Missed: ${e.missedPunchDays}d` : '--') },
+            { header: 'Late By', get: (e) => (e.exception_types || []).includes('late_coming') ? (e.late_coming_time || (e.totalLateTime ? `${e.lateDays}d (${e.totalLateTime})` : '--')) : '--' },
+            { header: 'Early By', get: (e) => (e.exception_types || []).includes('early_going') ? (e.early_going_time || (e.totalEarlyTime ? `${e.earlyDays}d (${e.totalEarlyTime})` : '--')) : '--' },
             {
-                header: 'Exception Details', get: (e) => {
-                    const exTypes = e.exception_types || [];
-                    const details = [];
-                    if (exTypes.includes('late_coming')) details.push(`Late: ${e.lateDays || 0}d (${e.totalLateTime || '0m'})`);
-                    if (exTypes.includes('early_going')) details.push(`Early: ${e.earlyDays || 0}d (${e.totalEarlyTime || '0m'})`);
-                    if (exTypes.includes('short_hours')) details.push(`Short: ${e.shortHoursDays || 0}d (${e.totalShortTime || '0m'})`);
-                    if (exTypes.includes('missed_punch')) details.push(`Missed: ${e.missedPunchDays || 0}d`);
-                    return details.length > 0 ? details.join(', ') : 'Clean Record';
+                header: 'Exceptions', get: (e) => {
+                    const t = e.exception_types || [];
+                    if (t.length === 0) return 'On Time';
+                    return t.map(x => ({ late_coming: 'Late', early_going: 'Early Going', short_hours: 'Short Hrs', missed_punch: 'Missed Punch' }[x] || x)).join(' | ');
                 }
             },
         ],
         late_coming: [
-            { header: 'S.No.', get: (e, i) => i + 1 },
-            { header: 'Employee Name', get: (e) => e.employee_name || '--' },
-            { header: 'Employee Code', get: (e) => e.employee_code || '--' },
-            { header: 'Working Days', get: (e) => e.totalDays ?? e.total_days ?? '--' },
-            { header: 'Late Days', get: (e) => e.lateDays ?? e.late_days ?? 0 },
-            { header: 'Total Late Time', get: (e) => e.totalLateTime || e.total_late || '--' },
+            { header: '#', get: (e, i) => i + 1 },
+            { header: 'Employee', get: (e) => e.employee_name || '--' },
+            { header: 'Code', get: (e) => e.employee_code || '--' },
+            { header: 'Total Days', get: (e) => e.totalDays ? `${e.totalDays} Days` : (e.shift_name || '--') },
+            { header: 'Late Days', get: (e) => e.lateDays !== undefined ? `${e.lateDays} Days` : (e.shift_from_time || '--') },
+            { header: 'Total Late Time', get: (e) => e.totalLateTime || e.late_coming_time || '--' },
         ],
         early_going: [
-            { header: 'S.No.', get: (e, i) => i + 1 },
-            { header: 'Employee Name', get: (e) => e.employee_name || '--' },
-            { header: 'Employee Code', get: (e) => e.employee_code || '--' },
-            { header: 'Working Days', get: (e) => e.totalDays ?? e.total_days ?? '--' },
-            { header: 'Early Days', get: (e) => e.earlyDays ?? e.early_days ?? 0 },
-            { header: 'Total Early Time', get: (e) => e.totalEarlyTime || e.total_early || '--' },
+            { header: '#', get: (e, i) => i + 1 },
+            { header: 'Employee', get: (e) => e.employee_name || '--' },
+            { header: 'Code', get: (e) => e.employee_code || '--' },
+            { header: 'Total Days', get: (e) => e.totalDays ? `${e.totalDays} Days` : (e.shift_name || '--') },
+            { header: 'Early Days', get: (e) => e.earlyDays !== undefined ? `${e.earlyDays} Days` : (e.shift_to_time || '--') },
+            { header: 'Total Early Time', get: (e) => e.totalEarlyTime || e.early_going_time || '--' },
         ],
         short_hours: [
-            { header: 'S.No.', get: (e, i) => i + 1 },
-            { header: 'Employee Name', get: (e) => e.employee_name || '--' },
-            { header: 'Employee Code', get: (e) => e.employee_code || '--' },
-            { header: 'Working Days', get: (e) => e.totalDays ?? e.total_days ?? '--' },
-            { header: 'Short Hours Days', get: (e) => e.shortHoursDays ?? e.short_days ?? 0 },
-            { header: 'Total Short Time', get: (e) => e.totalShortTime || e.total_short || '--' },
+            { header: '#', get: (e, i) => i + 1 },
+            { header: 'Employee', get: (e) => e.employee_name || '--' },
+            { header: 'Code', get: (e) => e.employee_code || '--' },
+            { header: 'Total Days', get: (e) => e.totalDays ? `${e.totalDays} Days` : (e.shift_name || '--') },
+            { header: 'Short Days', get: (e) => e.shortHoursDays !== undefined ? `${e.shortHoursDays} Days` : (e.shift_working_hours || '--') },
+            { header: 'Total Short Time', get: (e) => e.totalShortTime || '--' },
         ],
         missed_punch: [
-            { header: 'S.No.', get: (e, i) => i + 1 },
-            { header: 'Employee Name', get: (e) => e.employee_name || '--' },
-            { header: 'Employee Code', get: (e) => e.employee_code || '--' },
-            { header: 'Working Days', get: (e) => e.totalDays ?? e.total_days ?? '--' },
-            { header: 'Missed Punch Days', get: (e) => e.missedPunchDays ?? e.missed_days ?? 0 },
+            { header: '#', get: (e, i) => i + 1 },
+            { header: 'Employee', get: (e) => e.employee_name || '--' },
+            { header: 'Code', get: (e) => e.employee_code || '--' },
+            { header: 'Total Days', get: (e) => e.totalDays ? `${e.totalDays} Days` : (e.shift_name || '--') },
+            { header: 'Missed Punch Days', get: (e) => e.missedPunchDays !== undefined ? `${e.missedPunchDays} Days` : String((e.attendance_history || []).length) },
         ],
     };
 

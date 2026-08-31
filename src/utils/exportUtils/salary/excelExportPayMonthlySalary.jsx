@@ -43,20 +43,18 @@ export const exportPaySalaryToExcel = async (
   ];
 
   const headers = [
-    { key: 'sr_no', label: 'S.No' },
-    { key: 'employee_name', label: 'Employee Name' },
-    { key: 'employee_code', label: 'Employee Code' },
+    { key: 'sr_no', label: '#' },
+    { key: 'employee_name', label: 'Employee' },
+    { key: 'employee_code', label: 'Code' },
     { key: 'monthly_salary', label: 'Monthly Salary' },
-    { key: 'attendance_salary', label: 'Attendance Salary' },
-    { key: 'allowance', label: '+ Allowances' },
-    { key: 'deduction', label: '- Deductions' },
-    { key: 'loan', label: '- Loan' },
-    { key: 'advance', label: '- Advance' },
-    { key: 'holiday', label: '+ Holiday' },
+    { key: 'attendance_salary', label: 'Att. Salary' },
+    { key: 'allowance', label: '+Allowance' },
+    { key: 'deduction', label: '-Deduction' },
+    { key: 'loan', label: '-Loan' },
+    { key: 'advance', label: '-Advance' },
     { key: 'net_payable', label: 'Net Payable' },
     { key: 'total_paid', label: 'Total Paid' },
-    { key: 'payment_status', label: 'Payment Status' },
-    { key: 'remark', label: 'Remark' },
+    { key: 'payment_status', label: 'Pay Status' },
   ];
 
   const formattedRows = data.map((emp, i) => ({
@@ -65,15 +63,13 @@ export const exportPaySalaryToExcel = async (
     employee_code: emp.employee_code || '--',
     monthly_salary: `₹${fmtRaw(emp.monthly_salary).toFixed(2)}`,
     attendance_salary: `₹${fmtRaw(emp.total_salary).toFixed(2)}`,
-    allowance: fmtRaw(emp.total_allowance_amount) > 0 ? `₹${fmtRaw(emp.total_allowance_amount).toFixed(2)}` : '--',
-    deduction: fmtRaw(emp.total_deduction_amount) > 0 ? `₹${fmtRaw(emp.total_deduction_amount).toFixed(2)}` : '--',
-    loan: fmtRaw(emp.total_loan_amount) > 0 ? `₹${fmtRaw(emp.total_loan_amount).toFixed(2)}` : '--',
-    advance: fmtRaw(emp.total_advance_amount) > 0 ? `₹${fmtRaw(emp.total_advance_amount).toFixed(2)}` : '--',
-    holiday: fmtRaw(emp.total_holiday_amount) > 0 ? `₹${fmtRaw(emp.total_holiday_amount).toFixed(2)}` : '--',
+    allowance: fmtRaw(emp.total_allowance_amount) > 0 ? `+₹${fmtRaw(emp.total_allowance_amount).toFixed(2)}` : '--',
+    deduction: fmtRaw(emp.total_deduction_amount) > 0 ? `-₹${fmtRaw(emp.total_deduction_amount).toFixed(2)}` : '--',
+    loan: fmtRaw(emp.total_loan_amount) > 0 ? `-₹${fmtRaw(emp.total_loan_amount).toFixed(2)}` : '--',
+    advance: fmtRaw(emp.total_advance_amount) > 0 ? `-₹${fmtRaw(emp.total_advance_amount).toFixed(2)}` : '--',
     net_payable: `₹${fmtRaw(emp.net_payable).toFixed(2)}`,
     total_paid: fmtRaw(emp.total_paid) > 0 ? `₹${fmtRaw(emp.total_paid).toFixed(2)}` : '--',
     payment_status: emp.payment_status_label || 'Unpaid',
-    remark: emp.remark || '--',
   }));
 
   formattedRows.push({
@@ -82,15 +78,13 @@ export const exportPaySalaryToExcel = async (
     employee_code: `${data.length} Employees`,
     monthly_salary: `₹${GT.monthly.toFixed(2)}`,
     attendance_salary: `₹${GT.attSalary.toFixed(2)}`,
-    allowance: GT.allowance > 0 ? `₹${GT.allowance.toFixed(2)}` : '--',
-    deduction: GT.deduction > 0 ? `₹${GT.deduction.toFixed(2)}` : '--',
-    loan: GT.loan > 0 ? `₹${GT.loan.toFixed(2)}` : '--',
-    advance: GT.advance > 0 ? `₹${GT.advance.toFixed(2)}` : '--',
-    holiday: GT.holiday > 0 ? `₹${GT.holiday.toFixed(2)}` : '--',
+    allowance: GT.allowance > 0 ? `+₹${GT.allowance.toFixed(2)}` : '--',
+    deduction: GT.deduction > 0 ? `-₹${GT.deduction.toFixed(2)}` : '--',
+    loan: GT.loan > 0 ? `-₹${GT.loan.toFixed(2)}` : '--',
+    advance: GT.advance > 0 ? `-₹${GT.advance.toFixed(2)}` : '--',
     net_payable: `₹${GT.netPayable.toFixed(2)}`,
     total_paid: GT.totalPaid > 0 ? `₹${GT.totalPaid.toFixed(2)}` : '--',
     payment_status: '',
-    remark: '',
   });
 
   const safeMonth = (filters?.month_year || 'report').replace('-', '_');

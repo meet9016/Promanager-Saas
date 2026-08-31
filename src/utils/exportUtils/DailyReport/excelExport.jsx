@@ -16,9 +16,9 @@ export const exportToExcel = async (data, reportDate, filename, options = {}) =>
 
     // Calculate summary statistics
     const totalEmployees = data.length;
-    const presentCount = data.filter(emp => emp.Status === 'Present').length;
-    const absentCount = data.filter(emp => emp.Status === 'Absent').length;
-    const weekOffCount = data.filter(emp => emp.Status === 'Week Off').length;
+    const presentCount = data.filter(emp => emp.Status === 'Present' || emp.Status === 'P').length;
+    const absentCount = data.filter(emp => emp.Status === 'Absent' || emp.Status === 'A').length;
+    const weekOffCount = data.filter(emp => emp.Status === 'Week Off' || emp.Status === 'WO').length;
     const lateCount = data.filter(emp => emp['Remaining Hours'] !== '--' && emp['Remaining Hours'] !== undefined && parseFloat(emp['Remaining Hours']) > 0).length;
     const overtimeCount = data.filter(emp => emp['Overtime Hours'] !== '--' && emp['Overtime Hours'] !== undefined && parseFloat(emp['Overtime Hours']) > 0).length;
 

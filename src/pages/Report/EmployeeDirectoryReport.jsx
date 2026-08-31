@@ -310,33 +310,48 @@ const EmployeeDirectoryReport = () => {
                 return;
             }
 
-            const exportData = reportData.map((employee, index) => ({
-                'S.No': index + 1,
-                'Employee Name': employee.full_name || '',
-                'Employee Code': employee.employee_code || '',
-                'Department': employee.department_name || '',
-                'Designation': employee.designation_name || '',
-                'Branch': employee.branch_name || '',
-                'Email': employee.email || '',
-                'Phone': employee.mobile_number || '',
-                'Gender': employee.gender || '',
-                'Date of Joining': employee.date_of_joining
+            const exportData = reportData.map((employee, index) => {
+                const isInactive = employee.status === 2 || employee.status === '2';
+                const formattedJoinDate = employee.date_of_joining && employee.date_of_joining !== '0000-00-00'
                     ? new Date(employee.date_of_joining).toLocaleDateString('en-GB')
-                    : '',
-                'Employee Type': employee.employee_type || '',
-                'Salary Type': employee.salary_type || '',
-                'Status':
-                    employee.status === 1 || employee.status === '1'
-                        ? 'Active'
-                        : employee.status === 2 || employee.status === '2'
-                            ? 'Inactive'
-                            : 'Unknown'
-            }));
+                    : '--';
+                const formattedExitDate = isInactive && employee.last_working_date && employee.last_working_date !== '0000-00-00'
+                    ? new Date(employee.last_working_date).toLocaleDateString('en-GB')
+                    : '--';
+
+                return {
+                    'S.No': index + 1,
+                    'Employee Name': employee.full_name || '--',
+                    'Employee Code': employee.employee_code || '--',
+                    'Department': employee.department_name || '--',
+                    'Designation': employee.designation_name || '--',
+                    'Branch': employee.branch_name || '--',
+                    'Email': employee.email || '--',
+                    'Phone': employee.mobile_number || '--',
+                    'Gender': employee.gender || '--',
+                    'Date of Joining': formattedJoinDate,
+                    'Employee Type': employee.employee_type || '--',
+                    'Salary Type': employee.salary_type || '--',
+                    'Status': isInactive ? 'Inactive' : (employee.status === 1 || employee.status === '1' ? 'Active' : '--'),
+                    'Exit Date': formattedExitDate,
+                    'Exit Reason': isInactive && employee.deactivate_reason ? employee.deactivate_reason : '--'
+                };
+            });
+
+            const filterNames = {
+                branch_name: branches.find((b) => b.id == filters.branch_id)?.name || '',
+                department_name: departments.find((d) => d.id == filters.department_id)?.name || '',
+                designation_name: designations.find((d) => d.id == filters.designation_id)?.name || '',
+                employee_type_name: employeeTypes.find((et) => et.id == filters.employee_type_id)?.name || '',
+                salary_type_name: salaryTypes.find((st) => st.id == filters.salary_type_id)?.name || '',
+                gender_name: genders.find((g) => g.id == filters.gender_id)?.name || '',
+                status_name: status.find((s) => s.id == filters.status_id)?.name || ''
+            };
 
             const companyName = user?.company_name || user?.company || user?.full_name || 'Your Company Name';
             const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
             const fileName = `Employee_Directory_Report_${timestamp}`;
-            await exportToExcel(exportData, fileName, { companyName });
+            await exportToExcel(exportData, fileName, { companyName, filters: filterNames });
 
             showToast('Excel export completed successfully!', 'success');
             setExportDropdown(false);
@@ -344,7 +359,7 @@ const EmployeeDirectoryReport = () => {
             showToast('Failed to export Excel: ' + error.message, 'error');
             setExportDropdown(false);
         }
-    }, [reportData, user]);
+    }, [reportData, user, filters, branches, departments, designations, employeeTypes, salaryTypes, genders, status]);
 
     const resetFilters = () => {
         setFilters({
