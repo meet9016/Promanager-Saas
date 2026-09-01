@@ -16,7 +16,7 @@
 **Visuals:** Show the main `Employee` list page. Scroll through the table. Demonstrate searching for a specific employee by name or ID, and maybe applying some filters.
 **Voiceover (Script):**
 "Employees section par click karte hi aapko sabhi employees ki ek list dikhai degi. 
-- Yahan par aap har employee ka Name, ID, Department, aur unka Branch ek hi jagah dekh sakte hain.
+- Yahan par aap har employee ka Name, ID, Department, aur unka Branch ek hi jagah pe dekh sakte hain.
 - Upar diye gaye Search bar ka use karke aap kisi bhi employee ko unke naam ya ID se easily dhoondh sakte hain.
 - Sath hi, yahan Action buttons hain jinki madad se aap employee ki details dekh sakte hain ya unki profile ko edit aur deactive bhi kar sakte hain."
 

@@ -624,7 +624,7 @@ const GeolocationReport = () => {
             case 'holiday':
                 return 'bg-yellow-50 border-l-4 border-yellow-400';
             case 'absent':
-                return 'bg-[var(--color-cell-a-bg)] border-l-4 border-[var(--color-cell-a-border)]';
+                return 'bg-[var(--color-error-light)] border-l-4 border-[var(--color-error)]';
             case 'leave':
                 return 'bg-orange-50 border-l-4 border-orange-400';
             case 'half day':
@@ -1206,7 +1206,7 @@ const GeolocationReport = () => {
                                                                 : emp.status === 'Week Off'
                                                                     ? 'bg-[var(--color-bg-primary)] text-[var(--color-text-secondary)]'
                                                                     : emp.status === 'Absent'
-                                                                        ? 'bg-[var(--color-cell-a-bg)] text-[var(--color-error-dark)]'
+                                                                        ? 'bg-[var(--color-error-light)] text-[var(--color-error-dark)]'
                                                                         : emp.status === 'Leave'
                                                                             ? 'bg-[var(--color-warning-light)] text-[var(--color-warning-dark)]'
                                                                             : emp.status === 'Half Day'
