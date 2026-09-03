@@ -207,7 +207,7 @@ const CustomSelect = ({
                     {/* Options List */}
                     <div
                         ref={listRef}
-                        className="overflow-y-auto overflow-x-hidden custom-scrollbar rounded-t-[8px]"
+                        className="overflow-y-auto overflow-x-hidden custom-scrollbar rounded-t-[0px]"
                         style={{ maxHeight: searchable ? '210px' : '260px' }}
                         role="listbox"
                     >

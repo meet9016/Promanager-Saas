@@ -51,8 +51,8 @@ const EmployeeModal = ({ isOpen, onClose, employees, loading, shiftName }) => {
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 animate-fadeIn">
-            <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-2xl border border-[var(--color-border-secondary)] max-w-lg w-full overflow-hidden flex flex-col max-h-[85vh] transition-all duration-200">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-backdropFadeIn">
+            <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-2xl border border-[var(--color-border-secondary)] max-w-lg w-full overflow-hidden flex flex-col max-h-[85vh] animate-modalPop">
                 {/* Header */}
                 <div className="px-6 py-4 bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] text-white flex items-center justify-between">
                     <div className="flex items-center gap-3">
@@ -221,7 +221,7 @@ const CustomMonthPicker = ({ value, onChange }) => {
             </button>
 
             {isOpen && (
-                <div className="absolute right-0 top-full mt-2 z-50 w-64 bg-white rounded-2xl shadow-2xl border border-slate-200 p-4 animate-fadeIn text-slate-800">
+                <div className="absolute right-0 top-full mt-2 z-50 w-64 bg-white rounded-2xl shadow-2xl border border-slate-200 p-4 animate-modalPop text-slate-800">
                     {/* Year Navigation Header */}
                     <div className="flex items-center justify-between pb-2.5 border-b border-slate-100 mb-3">
                         <button
@@ -255,8 +255,8 @@ const CustomMonthPicker = ({ value, onChange }) => {
                                     type="button"
                                     onClick={() => handleSelectMonth(idx)}
                                     className={`py-2 text-xs font-bold rounded-xl transition-all cursor-pointer ${isSelected
-                                            ? 'bg-[#340C8E] text-white shadow-md scale-105'
-                                            : 'text-slate-700 hover:bg-purple-50 hover:text-[#340C8E]'
+                                        ? 'bg-[#340C8E] text-white shadow-md scale-105'
+                                        : 'text-slate-700 hover:bg-purple-50 hover:text-[#340C8E]'
                                         }`}
                                 >
                                     {mName}
@@ -307,8 +307,8 @@ const ShiftDayDateModal = ({ isOpen, onClose, shiftName, shiftId, selectedMonth,
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 animate-fadeIn">
-            <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-2xl border border-[var(--color-border-secondary)] max-w-3xl w-full overflow-hidden flex flex-col max-h-[85vh] transition-all duration-200">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-backdropFadeIn">
+            <div className="bg-[var(--color-bg-secondary)] rounded-2xl shadow-2xl border border-[var(--color-border-secondary)] max-w-3xl w-full overflow-hidden flex flex-col max-h-[85vh] animate-modalPop">
                 {/* Header */}
                 <div className="px-6 py-4 bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary-darker)] text-white flex items-center justify-between">
                     <div className="flex items-center gap-3">
@@ -778,7 +778,7 @@ const ShiftManagement = () => {
                 {/* Flex row: Available Shifts card + Day Status Legend */}
                 <div className="flex flex-col lg:flex-row items-start gap-8">
                     <div className="flex-1 w-full lg:w-auto order-1 overflow-x-auto">
-                        {/* Available Shifts card and rest of your main content */}
+                        {/*  card and rest of your main content */}
                         <div className="bg-[var(--color-bg-secondary)] h-[86vh] rounded-lg border border-[var(--color-primary-dark)] overflow-hidden shadow-sm">
                             {/* Header section */}
                             <div className="px-6 py-4 border-b border-[var(--color-primary-light)] bg-[var(--color-primary-lighter)] ">

@@ -571,10 +571,8 @@ export default function FinalizePayroll() {
                     name="selectedMonth"
                     value={selectedMonth}
                     onChange={(e) => setSelectedMonth(e.target.value)}
-                    options={monthOptions.map((option) => ({
-                      value: option.value,
-                      label: option.label,
-                    }))}
+                    options={monthOptions}
+                    searchable={false}
                     className="!w-24 sm:!w-28 [&_button]:!h-[40px] [&_button]:!py-0 [&_button]:!rounded-xl [&_button]:!text-xs sm:[&_button]:!text-sm"
                   />
                 </div>
@@ -585,15 +583,13 @@ export default function FinalizePayroll() {
                     name="selectedYear"
                     value={selectedYear}
                     onChange={(e) => setSelectedYear(e.target.value)}
-                    options={yearOptions.map((year) => ({
-                      value: year.toString(),
-                      label: year.toString(),
-                    }))}
+                    options={yearOptions}
+                    searchable={false}
                     className="!w-24 sm:!w-28 [&_button]:!h-[40px] [&_button]:!py-0 [&_button]:!rounded-xl [&_button]:!text-xs sm:[&_button]:!text-sm"
                   />
                 </div>
 
-                {permissions?.salary_process && (
+                {(permissions?.salary_view || permissions?.salary_create || permissions?.salary_process) && (
                   <button
                     onClick={() => navigate('/monthly-payroll')}
                     className="flex items-center justify-center gap-2 bg-[var(--color-bg-secondary)] hover:bg-[var(--color-primary-lightest)] text-[var(--color-primary-dark)] border border-[var(--color-border-secondary)] px-4 h-[40px] py-0 rounded-xl text-xs sm:text-sm font-medium transition-colors shadow-sm whitespace-nowrap shrink-0"

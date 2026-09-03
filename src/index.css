@@ -303,6 +303,19 @@ body.dark-theme *:not([class*="bg-"]):not([style*="background"]) {
     animation: fadeIn 0.3s ease-out;
 }
 
+@keyframes backdropFadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.animate-backdropFadeIn {
+    animation: backdropFadeIn 0.2s ease-out forwards;
+}
+
 @keyframes modalPop {
     from {
         opacity: 0;

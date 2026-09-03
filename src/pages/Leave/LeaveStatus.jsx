@@ -114,7 +114,9 @@ const LeaveManagement = () => {
     const [leaveRequests, setLeaveRequests] = useState([]);
     const [filteredRequests, setFilteredRequests] = useState([]);
     const [selectedStatus, setSelectedStatus] = useState('1');
-    const [loading, setLoading] = useState(true);
+    const [isInitialLoading, setIsInitialLoading] = useState(true);
+    const [tabLoading, setTabLoading] = useState(false);
+    const activeFetchIdRef = React.useRef(0);
     const [error, setError] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');
     const [sortConfig, setSortConfig] = useState({
@@ -204,44 +206,58 @@ const LeaveManagement = () => {
     }, []);
 
     // Fetch leave requests
-    const fetchLeaveRequests = useCallback(async (status = selectedStatus) => {
+    const fetchLeaveRequests = useCallback(async (statusToFetch = selectedStatus, isInitial = false) => {
         if (!user?.user_id) {
             setError('User ID not available');
-            setLoading(false);
+            setIsInitialLoading(false);
+            setTabLoading(false);
             return;
         }
 
+        const fetchId = ++activeFetchIdRef.current;
+
         try {
-            setLoading(true);
+            if (isInitial) {
+                setIsInitialLoading(true);
+            } else {
+                setTabLoading(true);
+            }
             setError(null);
 
             const formData = new FormData();
-            formData.append('status', status);
+            formData.append('status', statusToFetch);
 
             const response = await api.post('/leave_list', formData);
 
-            if (response.data.success) {
-                setLeaveRequests(response.data.data || []);
-            } else {
-                throw new Error(response.data.message || 'Failed to fetch leave requests');
+            if (fetchId === activeFetchIdRef.current) {
+                if (response.data.success) {
+                    setLeaveRequests(response.data.data || []);
+                } else {
+                    throw new Error(response.data.message || 'Failed to fetch leave requests');
+                }
             }
         } catch (error) {
-            console.error("Fetch leave requests error:", error);
-            const errorMessage = error.response?.data?.message || error.message || "An unexpected error occurred";
+            if (fetchId === activeFetchIdRef.current) {
+                console.error("Fetch leave requests error:", error);
+                const errorMessage = error.response?.data?.message || error.message || "An unexpected error occurred";
 
-            if (error.response?.status === 401) {
-                setError("Your session has expired. Please login again.");
-                setTimeout(() => logout?.(), 2000);
-            } else if (error.response?.status === 403) {
-                setError("You don't have permission to view leave requests.");
-            } else if (error.response?.status >= 500) {
-                setError("Server error. Please try again later.");
-            } else {
-                setError(errorMessage);
+                if (error.response?.status === 401) {
+                    setError("Your session has expired. Please login again.");
+                    setTimeout(() => logout?.(), 2000);
+                } else if (error.response?.status === 403) {
+                    setError("You don't have permission to view leave requests.");
+                } else if (error.response?.status >= 500) {
+                    setError("Server error. Please try again later.");
+                } else {
+                    setError(errorMessage);
+                }
+                showToast(errorMessage, 'error');
             }
-            showToast(errorMessage, 'error');
         } finally {
-            setLoading(false);
+            if (fetchId === activeFetchIdRef.current) {
+                setIsInitialLoading(false);
+                setTabLoading(false);
+            }
         }
     }, [user, selectedStatus, logout, showToast]);
 
@@ -548,9 +564,9 @@ const LeaveManagement = () => {
     // Initial data fetch
     useEffect(() => {
         if (isAuthenticated() && user?.user_id) {
-            fetchLeaveRequests();
+            fetchLeaveRequests(selectedStatus, true);
         }
-    }, [isAuthenticated, fetchLeaveRequests, user?.user_id, selectedStatus]);
+    }, [isAuthenticated, user?.user_id]);
 
     // Sorting functionality
     const requestSort = useCallback((key) => {
@@ -591,10 +607,12 @@ const LeaveManagement = () => {
 
     // Action handlers
     const handleTabChange = useCallback((status) => {
+        if (status === selectedStatus) return;
         setSelectedStatus(status);
         setSortConfig({ key: null, direction: SORT_DIRECTIONS.ASCENDING });
         setSearchQuery('');
-    }, []);
+        fetchLeaveRequests(status, false);
+    }, [selectedStatus, fetchLeaveRequests]);
 
     const handleView = useCallback((leave) => {
         setViewModal({
@@ -778,7 +796,7 @@ const LeaveManagement = () => {
                         </div>
                     </div>
                     {/* Content section */}
-                    {loading ? (
+                    {isInitialLoading ? (
                         <div className="flex-1 flex items-center justify-center min-h-0">
                             <LoadingSpinner />
                         </div>
@@ -789,7 +807,7 @@ const LeaveManagement = () => {
                                 <p className="text-[var(--color-error-dark)] text-lg font-semibold mb-2">Error Loading Leave Requests</p>
                                 <p className="text-[var(--color-error-dark)] mb-4">{error}</p>
                                 <button
-                                    onClick={() => fetchLeaveRequests()}
+                                    onClick={() => fetchLeaveRequests(selectedStatus, true)}
                                     className="inline-flex items-center space-x-2 bg-[var(--color-error)] text-[var(--color-text-white)] px-4 py-2 rounded-lg hover:bg-[var(--color-error-dark)] transition-colors"
                                 >
                                     <RefreshCw className="w-4 h-4" />
@@ -797,108 +815,112 @@ const LeaveManagement = () => {
                                 </button>
                             </div>
                         </div>
-                    ) : leaveRequests.length === 0 ? (
-                        <div className="bg-[#FBF9FD] flex-1 flex flex-col items-center justify-center min-h-0">
-                            <NoDataFound
-                                title={`No ${STATUS_CONFIG[selectedStatus]?.name} Leave Requests`}
-                                subtitle={`There are no leave requests with ${STATUS_CONFIG[selectedStatus]?.name.toLowerCase()} status.`}
-                            />
-                        </div>
                     ) : (
-                        <div className="flex-1 overflow-x-auto min-h-0">
-                            <Table className="min-w-full divide-y divide-[var(--color-border-divider)]">
-                                <TableHeader className="bg-[var(--color-primary-dark)]">
-                                    <TableHeaderRow>
-                                        {[
-                                            { key: COLUMN_KEYS.NAME, label: 'Employee Name' },
-                                            { key: COLUMN_KEYS.LEAVE_TYPE, label: 'Leave Type' },
-                                            { key: COLUMN_KEYS.START_DATE, label: 'Start Date' },
-                                            { key: COLUMN_KEYS.END_DATE, label: 'End Date' },
-                                            { key: COLUMN_KEYS.TOTAL_DAYS, label: 'Total Days' },
-                                            { key: COLUMN_KEYS.STATUS, label: 'Status' }
-                                        ].map(({ key, label }) => (
-                                            <Th key={`header-${key}`} className="px-6 py-3 text-left">
-                                                <button
-                                                    className="flex items-center font-semibold uppercase transition-colors"
-                                                    onClick={() => requestSort(key)}
-                                                >
-                                                    {label}
-                                                    {renderSortIcon(key)}
-                                                </button>
-                                            </Th>
-                                        ))}
-                                        <Th className="px-6 py-3 text-left font-semibold">
-                                            Actions
-                                        </Th>
-                                    </TableHeaderRow>
-                                </TableHeader>
-                                <TableBody className="bg-[var(--color-bg-secondary)] divide-y divide-[var(--color-border-divider)]">
-                                    {!sortedLeaveRequests || sortedLeaveRequests.length === 0 ? (
-                                        <TableRow>
-                                            <Td colSpan="8" className="py-4 text-center">
-                                                <NoDataFound
-                                                    title="No Leave Requests Found"
-                                                    subtitle="Try adjusting your search or filters."
-                                                />
-                                            </Td>
-                                        </TableRow>
-                                    ) : (
-                                        sortedLeaveRequests.map((leave, index) => {
-                                            const leaveId = leave.leave_id || `leave-${index}`;
-                                            return (
-                                                <TableRow
-                                                    key={`leave-${leaveId}`}
-                                                    className="hover:bg-[var(--color-bg-hover)] transition-colors"
-                                                >
-                                                    <Td className="px-6 py-4 text-left whitespace-nowrap text-[var(--color-text-primary)]">
-                                                        <div className="flex items-center space-x-3">
-                                                            <div className="w-8 h-8 bg-[var(--color-primary-lighter)] rounded-full flex items-center justify-center">
-                                                                <Users className="w-4 h-4 text-[var(--color-primary-dark)]" />
-                                                            </div>
-                                                            <span className="font-medium text-sm">{leave.full_name || 'Unknown Employee'}</span>
-                                                        </div>
-                                                    </Td>
-                                                    <Td className="px-6 py-4 text-left whitespace-nowrap text-sm text-[var(--color-text-secondary)]">
-                                                        <span className="px-2 py-1 bg-[var(--color-bg-primary)] rounded-md text-xs font-medium">
-                                                            {leave.leave_type || '--'}
-                                                        </span>
-                                                    </Td>
-                                                    <Td className="px-6 py-4 text-left whitespace-nowrap text-sm text-[var(--color-text-secondary)]">
-                                                        <div className="flex items-center">
-                                                            <Calendar className="w-4 h-4 mr-2 text-[var(--color-text-muted)]" />
-                                                            {formatDate(leave.start_date)}
-                                                        </div>
-                                                    </Td>
-                                                    <Td className="px-6 py-4 text-left whitespace-nowrap text-sm text-[var(--color-text-secondary)]">
-                                                        <div className="flex items-center">
-                                                            <Calendar className="w-4 h-4 mr-2 text-[var(--color-text-muted)]" />
-                                                            {formatDate(leave.end_date)}
-                                                        </div>
-                                                    </Td>
-                                                    <Td className="px-6 py-4 text-left whitespace-nowrap text-sm text-[var(--color-text-primary)]">
-                                                        <span className="font-semibold">{leave.total_days || 0}</span>
-                                                        <span className="text-[var(--color-text-muted)] ml-1 text-xs">days</span>
-                                                    </Td>
-                                                    <Td className="px-6 py-4 text-left whitespace-nowrap text-[var(--color-text-secondary)]">
-                                                        <StatusChip status={leave.status} />
-                                                    </Td>
-                                                    <Td className="px-6 py-4 text-left whitespace-nowrap font-medium">
-                                                        <div className="flex space-x-2">
-                                                            <button
-                                                                onClick={() => handleView(leave)}
-                                                                className="w-9 h-9 flex items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 hover:bg-emerald-100 hover:scale-110 hover:shadow-md transition-all duration-200"
-                                                                title="View Details"
-                                                            >
-                                                                <Eye className="w-4 h-4" strokeWidth={2.5} />
-                                                            </button>
-                                                        </div>
+                        <div className={`flex-1 flex flex-col min-h-0 relative transition-opacity duration-200 ${tabLoading ? 'opacity-40 pointer-events-none' : 'opacity-100'}`}>
+                            {leaveRequests.length === 0 ? (
+                                <div className="bg-[#FBF9FD] flex-1 flex flex-col items-center justify-center min-h-0">
+                                    <NoDataFound
+                                        title={`No ${STATUS_CONFIG[selectedStatus]?.name} Leave Requests`}
+                                        subtitle={`There are no leave requests with ${STATUS_CONFIG[selectedStatus]?.name.toLowerCase()} status.`}
+                                    />
+                                </div>
+                            ) : (
+                                <div className="flex-1 overflow-x-auto min-h-0">
+                                    <Table className="min-w-full divide-y divide-[var(--color-border-divider)]">
+                                        <TableHeader className="bg-[var(--color-primary-dark)]">
+                                            <TableHeaderRow>
+                                                {[
+                                                    { key: COLUMN_KEYS.NAME, label: 'Employee Name' },
+                                                    { key: COLUMN_KEYS.LEAVE_TYPE, label: 'Leave Type' },
+                                                    { key: COLUMN_KEYS.START_DATE, label: 'Start Date' },
+                                                    { key: COLUMN_KEYS.END_DATE, label: 'End Date' },
+                                                    { key: COLUMN_KEYS.TOTAL_DAYS, label: 'Total Days' },
+                                                    { key: COLUMN_KEYS.STATUS, label: 'Status' }
+                                                ].map(({ key, label }) => (
+                                                    <Th key={`header-${key}`} className="px-6 py-3 text-left">
+                                                        <button
+                                                            className="flex items-center font-semibold uppercase transition-colors"
+                                                            onClick={() => requestSort(key)}
+                                                        >
+                                                            {label}
+                                                            {renderSortIcon(key)}
+                                                        </button>
+                                                    </Th>
+                                                ))}
+                                                <Th className="px-6 py-3 text-left font-semibold">
+                                                    Actions
+                                                </Th>
+                                            </TableHeaderRow>
+                                        </TableHeader>
+                                        <TableBody className="bg-[var(--color-bg-secondary)] divide-y divide-[var(--color-border-divider)]">
+                                            {!sortedLeaveRequests || sortedLeaveRequests.length === 0 ? (
+                                                <TableRow>
+                                                    <Td colSpan="8" className="py-4 text-center">
+                                                        <NoDataFound
+                                                            title="No Leave Requests Found"
+                                                            subtitle="Try adjusting your search or filters."
+                                                        />
                                                     </Td>
                                                 </TableRow>
-                                            );
-                                        })
-                                    )}
-                                </TableBody>
-                            </Table>
+                                            ) : (
+                                                sortedLeaveRequests.map((leave, index) => {
+                                                    const leaveId = leave.leave_id || `leave-${index}`;
+                                                    return (
+                                                        <TableRow
+                                                            key={`leave-${leaveId}`}
+                                                            className="hover:bg-[var(--color-bg-hover)] transition-colors"
+                                                        >
+                                                            <Td className="px-6 py-4 text-left whitespace-nowrap text-[var(--color-text-primary)]">
+                                                                <div className="flex items-center space-x-3">
+                                                                    <div className="w-8 h-8 bg-[var(--color-primary-lighter)] rounded-full flex items-center justify-center">
+                                                                        <Users className="w-4 h-4 text-[var(--color-primary-dark)]" />
+                                                                    </div>
+                                                                    <span className="font-medium text-sm">{leave.full_name || 'Unknown Employee'}</span>
+                                                                </div>
+                                                            </Td>
+                                                            <Td className="px-6 py-4 text-left whitespace-nowrap text-sm text-[var(--color-text-secondary)]">
+                                                                <span className="px-2 py-1 bg-[var(--color-bg-primary)] rounded-md text-xs font-medium">
+                                                                    {leave.leave_type || '--'}
+                                                                </span>
+                                                            </Td>
+                                                            <Td className="px-6 py-4 text-left whitespace-nowrap text-sm text-[var(--color-text-secondary)]">
+                                                                <div className="flex items-center">
+                                                                    <Calendar className="w-4 h-4 mr-2 text-[var(--color-text-muted)]" />
+                                                                    {formatDate(leave.start_date)}
+                                                                </div>
+                                                            </Td>
+                                                            <Td className="px-6 py-4 text-left whitespace-nowrap text-sm text-[var(--color-text-secondary)]">
+                                                                <div className="flex items-center">
+                                                                    <Calendar className="w-4 h-4 mr-2 text-[var(--color-text-muted)]" />
+                                                                    {formatDate(leave.end_date)}
+                                                                </div>
+                                                            </Td>
+                                                            <Td className="px-6 py-4 text-left whitespace-nowrap text-sm text-[var(--color-text-primary)]">
+                                                                <span className="font-semibold">{leave.total_days || 0}</span>
+                                                                <span className="text-[var(--color-text-muted)] ml-1 text-xs">days</span>
+                                                            </Td>
+                                                            <Td className="px-6 py-4 text-left whitespace-nowrap text-[var(--color-text-secondary)]">
+                                                                <StatusChip status={leave.status} />
+                                                            </Td>
+                                                            <Td className="px-6 py-4 text-left whitespace-nowrap font-medium">
+                                                                <div className="flex space-x-2">
+                                                                    <button
+                                                                        onClick={() => handleView(leave)}
+                                                                        className="w-9 h-9 flex items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 hover:bg-emerald-100 hover:scale-110 hover:shadow-md transition-all duration-200"
+                                                                        title="View Details"
+                                                                    >
+                                                                        <Eye className="w-4 h-4" strokeWidth={2.5} />
+                                                                    </button>
+                                                                </div>
+                                                            </Td>
+                                                        </TableRow>
+                                                    );
+                                                })
+                                            )}
+                                        </TableBody>
+                                    </Table>
+                                </div>
+                            )}
                         </div>
                     )}
                 </div>
