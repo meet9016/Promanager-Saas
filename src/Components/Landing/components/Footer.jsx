@@ -1,6 +1,6 @@
 import React from "react";
 import { Instagram, Facebook, Linkedin, Youtube, Mail, Phone, MapPin } from "lucide-react";
-import Logo from "../../../assets/transparent-logo.png";
+import Logo from "../../comman/Logo";
 import { Link } from "react-router-dom";
 import { useSoftwareConfig } from "../../../context/SoftwareConfigContext";
 
@@ -68,8 +68,7 @@ const Footer = () => {
             {/* Col 1: Company Info & Address */}
             <div className="space-y-4 text-left">
               <Link to="/" className="inline-block mb-2">
-                <img
-                  src={Logo}
+                <Logo
                   alt="ProManager Logo"
                   className="h-14 w-auto object-contain hover:opacity-90 transition-opacity"
                 />

@@ -6,7 +6,7 @@ import { clearPermissions } from '../redux/permissionsSlice';
 import { ConfirmDialog } from './comman/ConfirmDialog';
 import { Link, useNavigate } from 'react-router-dom';
 import CustomSelect from './comman/CustomSelect';
-import Logo from '../assets/logo.png';
+import Logo from './comman/Logo';
 import api from '../api/axiosInstance';
 
 // Function to get past months (starting from previous month)
@@ -238,8 +238,7 @@ const Navbar = ({ isCollapsed, setIsCollapsed }) => {
                     {/* Logo/Brand */}
                     <div className="flex items-center">
                         <Link to="/dashboard" aria-label="Go to Home" className="inline-flex items-center">
-                            <img
-                                src={Logo}
+                            <Logo
                                 alt="promanager"
                                 className="h-10 md:h-12 w-auto cursor-pointer"
                                 draggable="false"

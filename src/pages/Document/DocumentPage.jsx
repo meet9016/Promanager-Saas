@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import Logo from '../../assets/logo.png';
+import Logo from '../../Components/comman/Logo';
 import {
   BookOpen, Users, Clock, Calendar, IndianRupee,
   Briefcase, BarChart2, Shield, Settings, LayoutDashboard, Languages,
@@ -1262,15 +1262,10 @@ const DocumentPage = () => {
       {/* Light Clean Executive Sidebar */}
       <div className="w-72 bg-white text-slate-800 flex flex-col shadow-sm z-20 shrink-0 border-r border-slate-200/80">
         {/* Brand Header with Logo Only */}
-        <div className="p-6 border-b border-slate-100 flex items-center justify-start">
-          <img
-            src={Logo}
+        <div className="p-4 border-b border-slate-100 flex items-center justify-start">
+          <Logo
             alt="Promanager Logo"
             className="h-10 w-auto object-contain max-w-[170px]"
-            onError={(e) => {
-              e.target.onerror = null;
-              e.target.src = "/logo.png";
-            }}
           />
         </div>
 

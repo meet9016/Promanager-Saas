@@ -6,7 +6,7 @@ import api from "../api/axiosInstance";
 import { useAuth } from "../context/AuthContext";
 import { useDispatch } from "react-redux";
 import { setPermissions } from "../redux/permissionsSlice";
-import Logo from "../assets/logo.png";
+import Logo from "./comman/Logo";
 import Cookies from "js-cookie";
 import CryptoJS from "crypto-js";
 import { Toast } from "./ui/Toast";
@@ -528,7 +528,7 @@ const Login = () => {
                 <div className="w-full max-w-md ">
                     {/* Logo */}
                     <div className="flex flex-col items-center justify-center gap-2 mb-16">
-                        <img src={Logo} alt="promanager Logo" className="w-60 h-30 object-contain" />
+                        <Logo alt="promanager Logo" className="w-60 h-30 object-contain" />
                         <span className="text-md  align-center" >Future-Ready Payroll
                             Management Platform</span>
                     </div>

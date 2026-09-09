@@ -3,7 +3,7 @@ import { Button } from "./ui/button";
 import { Menu, X, ChevronDown } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { useState } from "react";
-import Logo from "../../assets/logo.png";
+import Logo from "../comman/Logo";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "../../context/AuthContext";
 import API from "../../api/axiosInstance";
@@ -271,8 +271,7 @@ const LandingNavbar = () => {
                         {/* Logo */}
                         <div className="flex items-center space-x-2">
                             <NavLink to="/" onClick={scrollToTop}>
-                                <img
-                                    src={Logo}
+                                <Logo
                                     alt="ProManager Logo"
                                     className="h-12 w-auto object-contain max-w-[200px] cursor-pointer"
                                 />
