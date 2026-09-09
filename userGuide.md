@@ -146,4 +146,4 @@ Administrators have access to global system configurations:
 For any technical issues or feature requests, contact your internal IT Support or HR Department.
 
 ---
-*Powered by Promanager Attendance Systems.*
+*Powered by PagarPe Attendance Systems.*

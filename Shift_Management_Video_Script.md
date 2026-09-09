@@ -1,14 +1,14 @@
-# Promanager SaaS - Shift Management Video Script
+# PagarPe SaaS - Shift Management Video Script
 
-**Video Title:** Promanager SaaS me Shift Management Kaise Karein
-**Target Audience:** Admin, HR, and Managers using the Promanager SaaS Application.
+**Video Title:** PagarPe SaaS me Shift Management Kaise Karein
+**Target Audience:** Admin, HR, and Managers using the PagarPe SaaS Application.
 
 ---
 
 ## 1. Introduction (0:00 - 0:30)
 **Visuals:** Start on the main dashboard, then click on the 'Shift Management' module from the left sidebar navigation.
 **Voiceover (Script):**
-"Hello everyone! Aaj ke is video mein hum dekhenge ki Promanager SaaS application mein 'Shift Management' ko kaise use kiya jata hai. Agar aapki company mein alag-alag shifts (jaise morning, evening, night shift) mein kaam hota hai, toh yeh feature aapke liye bahut useful hai. Is module mein hum mainly teen cheezein karenge: Nayi Shift Create karna, Employees ko Shift Assign karna, aur zaroorat padne par Shift Reallocate karna. Chaliye shuru karte hain."
+"Hello everyone! Aaj ke is video mein hum dekhenge ki PagarPe SaaS application mein 'Shift Management' ko kaise use kiya jata hai. Agar aapki company mein alag-alag shifts (jaise morning, evening, night shift) mein kaam hota hai, toh yeh feature aapke liye bahut useful hai. Is module mein hum mainly teen cheezein karenge: Nayi Shift Create karna, Employees ko Shift Assign karna, aur zaroorat padne par Shift Reallocate karna. Chaliye shuru karte hain."
 
 ---
 
@@ -36,7 +36,7 @@
 ## 4. Shift Reallocation (2:00 - 2:45)
 **Visuals:** Go to the `Shift Reallocation` section. Demonstrate how to change an existing shift for a specific employee.
 **Voiceover (Script):**
-"Kabhi-kabhi kisi employee ki shift beech mahine mein change karni pad sakti hai. Iske liye Promanager SaaS mein 'Shift Reallocation' ka feature diya gaya hai.
+"Kabhi-kabhi kisi employee ki shift beech mahine mein change karni pad sakti hai. Iske liye PagarPe SaaS mein 'Shift Reallocation' ka feature diya gaya hai.
 - Is section mein aap us employee ko search karein jiski shift aapko badalni hai.
 - Unki purani shift aapko screen par dikh jayegi. Ab aap nayi shift dropdown se select karein aur applicable date choose karein.
 - Jaise hi aap isko update karenge, employee ka naya schedule automatically system mein apply ho jayega."
@@ -46,7 +46,7 @@
 ## 5. Conclusion / Outro (2:45 - 3:15)
 **Visuals:** Return to the Shift Management dashboard or main screen. Show support email/number on screen.
 **Voiceover (Script):**
-"Toh dosto, yeh tha Promanager SaaS mein Shift Management ka poora process. Is feature se aap easily multi-shift environment ko control aur track kar sakte hain.
+"Toh dosto, yeh tha PagarPe SaaS mein Shift Management ka poora process. Is feature se aap easily multi-shift environment ko control aur track kar sakte hain.
 Agar aapko koi query ho toh aap hamari support team se contact kar sakte hain. Video informative laga ho toh like karein aur channel ko subscribe zaroor karein! Milte hain next tutorial mein."
 
 --- 

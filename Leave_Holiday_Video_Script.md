@@ -1,14 +1,14 @@
-# Promanager SaaS - Leave and Holiday Management Video Script
+# PagarPe SaaS - Leave and Holiday Management Video Script
 
-**Video Title:** Promanager SaaS me Leaves aur Holidays Kaise Manage Karein
-**Target Audience:** Admin, HR, and Managers using the Promanager SaaS Application.
+**Video Title:** PagarPe SaaS me Leaves aur Holidays Kaise Manage Karein
+**Target Audience:** Admin, HR, and Managers using the PagarPe SaaS Application.
 
 ---
 
 ## 1. Introduction (0:00 - 0:30)
 **Visuals:** Start on the main dashboard, then click on the 'Leave' ya 'Leave Management' module from the left sidebar navigation.
 **Voiceover (Script):**
-"Hello everyone! Aaj hum dekhenge ki Promanager SaaS application mein 'Leave and Holiday Management' module ko kaise use kiya jata hai. Kisi bhi company mein holidays set karna aur employees ki chhuttiyan (leaves) track karna ek zaroori hissa hota hai. Is software ke through aap company holidays add kar sakte hain, aur employees easily leave apply kar sakte hain jisko HR turant approve ya reject kar sakte hain. Chaliye dekhte hain."
+"Hello everyone! Aaj hum dekhenge ki PagarPe SaaS application mein 'Leave and Holiday Management' module ko kaise use kiya jata hai. Kisi bhi company mein holidays set karna aur employees ki chhuttiyan (leaves) track karna ek zaroori hissa hota hai. Is software ke through aap company holidays add kar sakte hain, aur employees easily leave apply kar sakte hain jisko HR turant approve ya reject kar sakte hain. Chaliye dekhte hain."
 
 ---
 
@@ -45,7 +45,7 @@
 ## 5. Conclusion / Outro (2:45 - 3:15)
 **Visuals:** Return to the Dashboard. Display support email or contact number.
 **Voiceover (Script):**
-"Toh dosto, yeh tha Promanager SaaS mein Leaves aur Holidays ko manage karne ka asaan tarika. Is module ki madad se leave tracking completely transparent aur paperless ban jati hai.
+"Toh dosto, yeh tha PagarPe SaaS mein Leaves aur Holidays ko manage karne ka asaan tarika. Is module ki madad se leave tracking completely transparent aur paperless ban jati hai.
 Agar aapka koi sawaal ho toh comment karein ya support team se contact karein. Video dekhne ke liye shukriya, aur channel ko subscribe karna na bhoolein!"
 
 --- 

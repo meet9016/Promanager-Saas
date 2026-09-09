@@ -53,7 +53,7 @@ function TermsAndConditionsPage() {
 
                         {/* Welcome paragraph */}
                         <p className="text-gray-600">
-                            Welcome to Promanager (“Company”, “We”, “Our”, or “Us”). By accessing or using our Attendance & Payroll Software, Mobile App, or Website (collectively, “Services”), you agree to these Terms & Conditions. Please read them carefully.
+                            Welcome to PagarPe (“Company”, “We”, “Our”, or “Us”). By accessing or using our Attendance & Payroll Software, Mobile App, or Website (collectively, “Services”), you agree to these Terms & Conditions. Please read them carefully.
                         </p>
 
                         {/* Section 1: Acceptance of Terms */}
@@ -62,7 +62,7 @@ function TermsAndConditionsPage() {
                                 1. Acceptance of Terms
                             </h2>
                             <p className="text-gray-600">
-                                By using Promanager, you agree to comply with these Terms & Conditions, our Privacy Policy, and any applicable laws. If you do not agree, please discontinue using our services.
+                                By using PagarPe, you agree to comply with these Terms & Conditions, our Privacy Policy, and any applicable laws. If you do not agree, please discontinue using our services.
                             </p>
                         </div>
 
@@ -74,7 +74,7 @@ function TermsAndConditionsPage() {
                             <ul className="space-y-3">
                                 <li className="flex items-start gap-3">
                                     <Dot />
-                                    <span className="text-gray-600">You must be at least 18 years old to use Promanager.</span>
+                                    <span className="text-gray-600">You must be at least 18 years old to use PagarPe.</span>
                                 </li>
                                 <li className="flex items-start gap-3">
                                     <Dot />
@@ -92,7 +92,7 @@ function TermsAndConditionsPage() {
                             <h2 className="text-2xl md:text-3xl font-bold text-gray-900 pb-3">
                                 3. Services Provided
                             </h2>
-                            <p className="text-gray-600">Promanager offers:</p>
+                            <p className="text-gray-600">PagarPe offers:</p>
                             <ul className="space-y-3">
                                 <li className="flex items-start gap-3">
                                     <Dot />
@@ -149,7 +149,7 @@ function TermsAndConditionsPage() {
                             <ul className="space-y-3">
                                 <li className="flex items-start gap-3">
                                     <Dot />
-                                    <span className="text-gray-600">Promanager is offered on a subscription basis (yearly).</span>
+                                    <span className="text-gray-600">PagarPe is offered on a subscription basis (yearly).</span>
                                 </li>
                                 <li className="flex items-start gap-3">
                                     <Dot />
@@ -182,7 +182,7 @@ function TermsAndConditionsPage() {
                                 </li>
                                 <li className="flex items-start gap-3">
                                     <Dot />
-                                    <span className="text-gray-600">You grant Promanager permission to use data solely for providing services, compliance, and technical improvements.</span>
+                                    <span className="text-gray-600">You grant PagarPe permission to use data solely for providing services, compliance, and technical improvements.</span>
                                 </li>
                             </ul>
                         </div>
@@ -193,7 +193,7 @@ function TermsAndConditionsPage() {
                                 7. Third-Party Integrations
                             </h2>
                             <p className="text-gray-600">
-                                Promanager may integrate with third-party tools (biometric devices, payment gateways, accounting software, etc.). We are not responsible for their performance or data handling.
+                                PagarPe may integrate with third-party tools (biometric devices, payment gateways, accounting software, etc.). We are not responsible for their performance or data handling.
                             </p>
                         </div>
 
@@ -205,7 +205,7 @@ function TermsAndConditionsPage() {
                             <ul className="space-y-3">
                                 <li className="flex items-start gap-3">
                                     <Dot />
-                                    <span className="text-gray-600">Promanager strives to provide accurate and uninterrupted service but does not guarantee 100% uptime.</span>
+                                    <span className="text-gray-600">PagarPe strives to provide accurate and uninterrupted service but does not guarantee 100% uptime.</span>
                                 </li>
                                 <li className="flex items-start gap-3">
                                     <Dot />
@@ -246,7 +246,7 @@ function TermsAndConditionsPage() {
                                 10. Intellectual Property
                             </h2>
                             <p className="text-gray-600">
-                                All rights, logos, software designs, and trademarks of Promanager belong to us. You may not copy, modify, distribute, or resell our platform without written permission.
+                                All rights, logos, software designs, and trademarks of PagarPe belong to us. You may not copy, modify, distribute, or resell our platform without written permission.
                             </p>
                         </div>
 

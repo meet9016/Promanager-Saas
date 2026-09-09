@@ -1,14 +1,14 @@
-# Promanager SaaS - Salary / Payroll Management Video Script
+# PagarPe SaaS - Salary / Payroll Management Video Script
 
-**Video Title:** Promanager SaaS me Salary aur Payroll Kaise Manage Karein
-**Target Audience:** Admin, HR, and Managers using the Promanager SaaS Application.
+**Video Title:** PagarPe SaaS me Salary aur Payroll Kaise Manage Karein
+**Target Audience:** Admin, HR, and Managers using the PagarPe SaaS Application.
 
 ---
 
 ## 1. Introduction (0:00 - 0:30)
 **Visuals:** Start on the main dashboard, then click on the 'Payroll' ya 'Salary' module from the left sidebar navigation.
 **Voiceover (Script):**
-"Hello everyone! Aaj ke is video mein hum dekhenge ki Promanager SaaS application mein 'Salary' yaani 'Payroll' ko kaise process kiya jata hai. Month-end par har company ke liye salary calculate karna ek lamba process hota hai, lekin is software ki madad se aap automatically attendance ke basis par accurately salary generate aur finalize kar sakte hain. Chaliye dekhte hain kaise."
+"Hello everyone! Aaj ke is video mein hum dekhenge ki PagarPe SaaS application mein 'Salary' yaani 'Payroll' ko kaise process kiya jata hai. Month-end par har company ke liye salary calculate karna ek lamba process hota hai, lekin is software ki madad se aap automatically attendance ke basis par accurately salary generate aur finalize kar sakte hain. Chaliye dekhte hain kaise."
 
 ---
 
@@ -35,7 +35,7 @@
 ## 4. Conclusion / Outro (2:30 - 3:00)
 **Visuals:** Return to the Dashboard. Show support info or company logo.
 **Voiceover (Script):**
-"Toh dosto, yeh tha Promanager SaaS mein Monthly Salary aur Payroll manage karne ka aasan tarika. Is process ke through aapka kaafi time bachega aur calculations hamesha accurate rahengi.
+"Toh dosto, yeh tha PagarPe SaaS mein Monthly Salary aur Payroll manage karne ka aasan tarika. Is process ke through aapka kaafi time bachega aur calculations hamesha accurate rahengi.
 Agar aapke paas koi bhi sawal hain toh aap hamari support team se jud sakte hain. Video dekhne ke liye dhanyawad, aur channel ko subscribe zaroor karein!"
 
 --- 

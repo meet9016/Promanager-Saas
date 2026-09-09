@@ -46,7 +46,7 @@ function PrivacyPolicyPage() {
                 Information We Collect
               </h2>
               <p className="text-gray-600">
-                When you use Promanager, we may collect the following types of
+                When you use PagarPe, we may collect the following types of
                 information:
               </p>
               <ul className="space-y-3 list-none">
@@ -308,7 +308,7 @@ function PrivacyPolicyPage() {
                 <li className="flex items-start gap-3">
                   {Dot()}
                   <span className="text-gray-600">
-                    With trusted service providers who help us operate Promanager
+                    With trusted service providers who help us operate PagarPe
                     (under strict confidentiality agreements).
                   </span>
                 </li>
@@ -341,7 +341,7 @@ function PrivacyPolicyPage() {
                 Your Rights
               </h2>
               <p className="text-gray-600">
-                As a Promanager user, you have the right to:
+                As a PagarPe user, you have the right to:
               </p>
               <ul className="space-y-3">
                 <li className="flex items-start gap-3">
@@ -403,7 +403,7 @@ function PrivacyPolicyPage() {
                 Children's Privacy
               </h2>
               <p className="text-gray-600">
-                Promanager services are not designed for individuals under the
+                PagarPe services are not designed for individuals under the
                 age of 18. We do not knowingly collect personal data from
                 minors.
               </p>
@@ -427,7 +427,7 @@ function PrivacyPolicyPage() {
                 Account & Data Deletion
               </h2>
               <p className="text-gray-600">
-                Users have the right to request deletion of their Promanager
+                Users have the right to request deletion of their PagarPe
                 account and all associated personal data at any time.
               </p>
               <p className="text-gray-600">

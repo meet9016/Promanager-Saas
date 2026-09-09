@@ -565,7 +565,7 @@ const DocumentPage = () => {
                     icon: Shield,
                     title: t('User Management', 'उपयोगकर्ता प्रबंधन'),
                     desc: t(
-                      'Control who has access to the Promanager system and what they can do.',
+                      'Control who has access to the PagarPe system and what they can do.',
                       'नियंत्रित करें कि प्रोमैनेजर सिस्टम तक किसकी पहुंच है और वे क्या कर सकते हैं।'
                     ),
                     sectionId: 'users'
@@ -699,7 +699,7 @@ const DocumentPage = () => {
             <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900">{t('Employee Management', 'कर्मचारी प्रबंधन')}</h2>
             <p className="text-slate-700 text-base sm:text-lg mt-2.5 leading-relaxed font-normal">
               {t(
-                'The core of Promanager is its robust employee database. Here you can manage all aspects of your workforce\'s organizational structure.',
+                'The core of PagarPe is its robust employee database. Here you can manage all aspects of your workforce\'s organizational structure.',
                 'प्रोमैनेजर का मुख्य हिस्सा इसका मजबूत कर्मचारी डेटाबेस है। यहाँ आप अपने कार्यबल के संगठनात्मक ढांचे के सभी पहलुओं का प्रबंधन कर सकते हैं।'
               )}
             </p>
@@ -1197,7 +1197,7 @@ const DocumentPage = () => {
             <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900">{t('User Management & Security', 'उपयोगकर्ता प्रबंधन और सुरक्षा')}</h2>
             <p className="text-slate-700 text-base sm:text-lg mt-2.5 leading-relaxed font-normal">
               {t(
-                'Control who has access to the Promanager system and what they can do.',
+                'Control who has access to the PagarPe system and what they can do.',
                 'नियंत्रित करें कि प्रोमैनेजर सिस्टम तक किसकी पहुंच है और वे क्या कर सकते हैं।'
               )}
             </p>
@@ -1264,7 +1264,7 @@ const DocumentPage = () => {
         {/* Brand Header with Logo Only */}
         <div className="p-4 border-b border-slate-100 flex items-center justify-start">
           <Logo
-            alt="Promanager Logo"
+            alt="PagarPe Logo"
             className="h-10 w-auto object-contain max-w-[170px]"
           />
         </div>

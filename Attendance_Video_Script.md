@@ -1,14 +1,14 @@
-# Promanager SaaS - Attendance Module Video Script
+# PagarPe SaaS - Attendance Module Video Script
 
-**Video Title:** Promanager SaaS me Attendance Manage Kaise Karein (Daily & Monthly)
-**Target Audience:** Admin, Managers, and Employees using the Promanager SaaS Application.
+**Video Title:** PagarPe SaaS me Attendance Manage Kaise Karein (Daily & Monthly)
+**Target Audience:** Admin, Managers, and Employees using the PagarPe SaaS Application.
 
 ---
 
 ## 1. Introduction (0:00 - 0:30)
-**Visuals:** Show the main dashboard of Promanager SaaS, then navigate to the 'Attendance' section in the side menu.
+**Visuals:** Show the main dashboard of PagarPe SaaS, then navigate to the 'Attendance' section in the side menu.
 **Voiceover (Script):**
-"Hello everyone! Aaj ke is video mein hum dekhenge ki Promanager SaaS application mein Attendance module ko kaise use kiya jata hai. Is software mein attendance ko manage karna bahut hi simple aur effective banaya gaya hai. Hamare paas yahan do main sections hain: Daily Attendance aur Monthly Attendance. Toh chaliye start karte hain Daily Attendance se."
+"Hello everyone! Aaj ke is video mein hum dekhenge ki PagarPe SaaS application mein Attendance module ko kaise use kiya jata hai. Is software mein attendance ko manage karna bahut hi simple aur effective banaya gaya hai. Hamare paas yahan do main sections hain: Daily Attendance aur Monthly Attendance. Toh chaliye start karte hain Daily Attendance se."
 
 ---
 
@@ -37,7 +37,7 @@
 ## 4. Conclusion / Outro (3:00 - 3:30)
 **Visuals:** Go back to the Dashboard or show a generic summary view. Display contact/support email on the screen.
 **Voiceover (Script):**
-"Toh dosto, yeh tha Promanager SaaS ka Daily aur Monthly Attendance overview. Is feature ki madad se aap apni company ki attendance tracking ko 100% digital aur error-free bana sakte hain.
+"Toh dosto, yeh tha PagarPe SaaS ka Daily aur Monthly Attendance overview. Is feature ki madad se aap apni company ki attendance tracking ko 100% digital aur error-free bana sakte hain.
 Agar aapko koi query ho toh aap hamari support team se contact kar sakte hain. Video dekhne ke liye shukriya, channel ko subscribe zaroor karein!"
 
 --- 

@@ -1,14 +1,14 @@
-# Promanager SaaS - User & Role Management Video Script
+# PagarPe SaaS - User & Role Management Video Script
 
-**Video Title:** Promanager SaaS me Users aur Roles Kaise Manage Karein
-**Target Audience:** Super Admin and Admins using the Promanager SaaS Application.
+**Video Title:** PagarPe SaaS me Users aur Roles Kaise Manage Karein
+**Target Audience:** Super Admin and Admins using the PagarPe SaaS Application.
 
 ---
 
 ## 1. Introduction (0:00 - 0:30)
 **Visuals:** Start on the main dashboard, then click on the 'User Management' ya 'Users' module from the left sidebar navigation.
 **Voiceover (Script):**
-"Hello everyone! Aaj ke is video mein hum dekhenge ki Promanager SaaS application mein 'User Management' aur 'Role Management' ko kaise configure kiya jata hai. Ek company mein alag-alag log alag-alag roles play karte hain, jaise HR, Manager, ya Admin. Is software ki madad se aap specific roles banakar unhein limited ya full access (permissions) de sakte hain, taaki security aur privacy maintain rahe. Chaliye dekhte hain."
+"Hello everyone! Aaj ke is video mein hum dekhenge ki PagarPe SaaS application mein 'User Management' aur 'Role Management' ko kaise configure kiya jata hai. Ek company mein alag-alag log alag-alag roles play karte hain, jaise HR, Manager, ya Admin. Is software ki madad se aap specific roles banakar unhein limited ya full access (permissions) de sakte hain, taaki security aur privacy maintain rahe. Chaliye dekhte hain."
 
 ---
 
@@ -36,7 +36,7 @@
 ## 4. Conclusion / Outro (2:30 - 3:00)
 **Visuals:** Return to the User Management dashboard (list of users and their roles). Show support email/number.
 **Voiceover (Script):**
-"Toh dosto, yeh tha Promanager SaaS mein Users aur Roles ko manage karne ka asaan tarika. Is access control (permission) feature se aapka data puri tarah safe rehta hai aur wahi data show hota hai jo jiske liye allowed hai.
+"Toh dosto, yeh tha PagarPe SaaS mein Users aur Roles ko manage karne ka asaan tarika. Is access control (permission) feature se aapka data puri tarah safe rehta hai aur wahi data show hota hai jo jiske liye allowed hai.
 Agar aapko is feature ko lekar koi bhi query ho, toh comment karein ya support team se connect karein. Channel ko subscribe zaroor karein! Milte hain next video mein."
 
 --- 

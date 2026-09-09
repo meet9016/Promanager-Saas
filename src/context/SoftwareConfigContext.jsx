@@ -58,27 +58,27 @@ function rgbToStr({ r, g, b }, alpha) {
 function buildPrimaryScale(hex) {
     const base = hexToRgb(hex);
     return {
-        '--color-primary':            hex,
-        '--color-primary-dark':       rgbToHex(shiftColor(base, -0.15)),
-        '--color-primary-darker':     rgbToHex(shiftColor(base, -0.28)),
-        '--color-primary-darkest':    rgbToHex(shiftColor(base, -0.42)),
-        '--color-primary-light':      rgbToHex(shiftColor(base,  0.25)),
-        '--color-primary-lighter':    rgbToHex(shiftColor(base,  0.55)),
-        '--color-primary-lightest':   rgbToHex(shiftColor(base,  0.80)),
-        '--color-primary-alpha-10':   rgbToStr(base, 0.10),
-        '--color-primary-alpha-20':   rgbToStr(base, 0.20),
-        '--color-primary-alpha-30':   rgbToStr(base, 0.30),
+        '--color-primary': hex,
+        '--color-primary-dark': rgbToHex(shiftColor(base, -0.15)),
+        '--color-primary-darker': rgbToHex(shiftColor(base, -0.28)),
+        '--color-primary-darkest': rgbToHex(shiftColor(base, -0.42)),
+        '--color-primary-light': rgbToHex(shiftColor(base, 0.25)),
+        '--color-primary-lighter': rgbToHex(shiftColor(base, 0.55)),
+        '--color-primary-lightest': rgbToHex(shiftColor(base, 0.80)),
+        '--color-primary-alpha-10': rgbToStr(base, 0.10),
+        '--color-primary-alpha-20': rgbToStr(base, 0.20),
+        '--color-primary-alpha-30': rgbToStr(base, 0.30),
         // Border / icon helpers
-        '--color-border-primary':     rgbToHex(shiftColor(base,  0.70)),
-        '--color-border-secondary':   rgbToHex(shiftColor(base,  0.75)),
-        '--color-border-focus':       hex,
-        '--color-icon-primary-bg':    rgbToHex(shiftColor(base,  0.80)),
-        '--color-bg-hover':           rgbToHex(shiftColor(base,  0.85)),
-        '--color-bg-sidebar':         rgbToHex(shiftColor(base,  0.90)),
-        '--color-bg-sidebar-to':      rgbToHex(shiftColor(base,  0.88)),
+        '--color-border-primary': rgbToHex(shiftColor(base, 0.70)),
+        '--color-border-secondary': rgbToHex(shiftColor(base, 0.75)),
+        '--color-border-focus': hex,
+        '--color-icon-primary-bg': rgbToHex(shiftColor(base, 0.80)),
+        '--color-bg-hover': rgbToHex(shiftColor(base, 0.85)),
+        '--color-bg-sidebar': rgbToHex(shiftColor(base, 0.90)),
+        '--color-bg-sidebar-to': rgbToHex(shiftColor(base, 0.88)),
         // Scrollbar
-        '--color-scrollbar-track':    rgbToHex(shiftColor(base,  0.55)),
-        '--color-scrollbar-thumb':    `linear-gradient(45deg, ${hex}, ${rgbToHex(shiftColor(base, -0.15))})`,
+        '--color-scrollbar-track': rgbToHex(shiftColor(base, 0.55)),
+        '--color-scrollbar-thumb': `linear-gradient(45deg, ${hex}, ${rgbToHex(shiftColor(base, -0.15))})`,
         '--color-scrollbar-thumb-hover': `linear-gradient(45deg, ${rgbToHex(shiftColor(base, -0.08))}, ${rgbToHex(shiftColor(base, -0.28))})`,
     };
 }
@@ -111,7 +111,7 @@ export const SoftwareConfigProvider = ({ children }) => {
         gstNumber: '',
         mobile_number: '',
     });
-    
+
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
@@ -128,20 +128,20 @@ export const SoftwareConfigProvider = ({ children }) => {
             if (res.data?.success && res.data?.data) {
                 const d = res.data.data;
                 const parsed = {
-                    logo:                 d.logo                  || '',
-                    faviconIcon:          d.favicon_icon           || '',
-                    mainImageLoginPage:   d.main_image_login_page  || '',
-                    mobileNumber:         d.mobile_number          || '',
-                    whatsappNumber:       d.whatsapp_number        || '',
-                    email:                d.email                  || '',
-                    themeColor:           (d.theme_color           || '').trim(),
-                    themeColorSecond:     (d['theme_color_second '] || d.theme_color_second || '').trim(),
-                    bankDetails:          d.bank_detais || d.bank_details || d.bankDetails || d.bank_detail || d.bankdetails || null,
-                    address:              d.address || '',
-                    appstoreLink:         d.appstore_link || '',
-                    playstoreLink:        d.playstore_link || '',
-                    gstNumber:            d.gst_number || '',
-                    mobile_number:         d.mobile_number || '',
+                    logo: d.logo || '',
+                    faviconIcon: d.favicon_icon || '',
+                    mainImageLoginPage: d.main_image_login_page || '',
+                    mobileNumber: d.mobile_number || '',
+                    whatsappNumber: d.whatsapp_number || '',
+                    email: d.email || '',
+                    themeColor: (d.theme_color || '').trim(),
+                    themeColorSecond: (d['theme_color_second '] || d.theme_color_second || '').trim(),
+                    bankDetails: d.bank_detais || d.bank_details || d.bankDetails || d.bank_detail || d.bankdetails || null,
+                    address: d.address || '',
+                    appstoreLink: d.appstore_link || '',
+                    playstoreLink: d.playstore_link || '',
+                    gstNumber: d.gst_number || '',
+                    mobile_number: d.mobile_number || '',
                 };
 
                 setConfig(parsed);

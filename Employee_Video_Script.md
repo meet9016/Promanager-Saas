@@ -1,14 +1,14 @@
-# Promanager SaaS - Employee Management Video Script
+# PagarPe SaaS - Employee Management Video Script
 
-**Video Title:** Promanager SaaS me Employees ko Kaise Manage Karein
-**Target Audience:** Admin, HR, and Managers using the Promanager SaaS Application.
+**Video Title:** PagarPe SaaS me Employees ko Kaise Manage Karein
+**Target Audience:** Admin, HR, and Managers using the PagarPe SaaS Application.
 
 ---
 
 ## 1. Introduction & Setup Masters (0:00 - 0:45)
 **Visuals:** Start on the main dashboard, then click on the 'Employees' module from the left sidebar navigation. Show the dropdown/sidebar options for Branch, Department, Designation, Deductions, Allowances, Companies, Increment, and Paid Leave.
 **Voiceover (Script):**
-"Hello everyone! Aaj ke is video mein hum dekhenge ki Promanager SaaS application mein 'Employees' ko kaise manage kiya jata hai. Kaya apoko naya employe add karna he ? To Naya employee add karne se pehle, humein kuch zaroori masters set up karne hote hain. Sidebar menu mein aap dekh sakte hain: **Branch, Department, Designation, Deductions, Allowances, Companies, Increment,** aur **Paid Leave**. To In sabko ek baar set up karne ke baad, kisi bhi naye employee ko system mein add karna aur unka profile manage karna bahut hi aasan ho jata hai. Toh chaliye aage badhte hain."
+"Hello everyone! Aaj ke is video mein hum dekhenge ki PagarPe SaaS application mein 'Employees' ko kaise manage kiya jata hai. Kaya apoko naya employe add karna he ? To Naya employee add karne se pehle, humein kuch zaroori masters set up karne hote hain. Sidebar menu mein aap dekh sakte hain: **Branch, Department, Designation, Deductions, Allowances, Companies, Increment,** aur **Paid Leave**. To In sabko ek baar set up karne ke baad, kisi bhi naye employee ko system mein add karna aur unka profile manage karna bahut hi aasan ho jata hai. Toh chaliye aage badhte hain."
 
 ---
 
@@ -45,7 +45,7 @@
 ## 5. Conclusion / Outro (3:30 - 4:00)
 **Visuals:** Return to the Employee List or Dashboard. Show contact info on the screen.
 **Voiceover (Script):**
-"Toh dosto, yeh tha Promanager SaaS mein Employee Management ka poora process. Is module ki madad se aapka HR work aur employee onboarding bahut hi smooth aur paperless ban jata hai.
+"Toh dosto, yeh tha PagarPe SaaS mein Employee Management ka poora process. Is module ki madad se aapka HR work aur employee onboarding bahut hi smooth aur paperless ban jata hai.
 Koi bhi sawaal ho toh aap support team se contact kar sakte hain. Video ko like karein aur channel ko subscribe zaroor karein!"
 
 --- 
