@@ -47,7 +47,7 @@ const AboutSection = () => {
               transition={{ duration: 0.6 }}
             >
               <span className="text-2xl lg:text-3xl font-bold text-[var(--color-text-primary)]">
-                About ProManager
+                About PagarPe
               </span>
             </motion.div>
 
@@ -97,7 +97,7 @@ const AboutSection = () => {
                 <img
 
                   src={AboutProManager}
-                  alt="ProManager Dashboard"
+                  alt="PagarPe Dashboard"
                   loading="lazy"
                   className="w-full h-auto object-cover"
                 />
@@ -165,7 +165,7 @@ const AboutSection = () => {
               className="text-lg text-[var(--color-text-secondary)] leading-relaxed"
             >
               At our core, we believe that seamless payroll builds stronger teams.
-              That's why <span className="font-bold text-[var(--color-primary-darker)] px-1.5 py-0.5 rounded-md bg-[var(--color-primary-alpha-10)]">DIGITALKS TECHNO LLP</span> created <span className="font-bold text-[var(--color-primary-darker)] px-1.5 py-0.5 rounded-md bg-[var(--color-primary-alpha-10)]">ProManager</span> — an ultimate payroll software designed to simplify every aspect of workforce pay,
+              That's why <span className="font-bold text-[var(--color-primary-darker)] px-1.5 py-0.5 rounded-md bg-[var(--color-primary-alpha-10)]">DIGITALKS TECHNO LLP</span> created <span className="font-bold text-[var(--color-primary-darker)] px-1.5 py-0.5 rounded-md bg-[var(--color-primary-alpha-10)]">PagarPe</span> — an ultimate payroll software designed to simplify every aspect of workforce pay,
               from salary and compliance to attendance, leave, and employee benefits.
             </motion.p>
 

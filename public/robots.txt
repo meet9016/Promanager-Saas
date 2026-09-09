@@ -1,7 +1,7 @@
 User-agent: *
 Allow: /
-Sitemap: https://promanager.in/sitemap.xml
-Host: https://promanager.in
+Sitemap: https://pagarpe.in/sitemap.xml
+Host: https://pagarpe.in
 
 # Crawl-delay can be added if needed for server load management
 # Crawl-delay: 10

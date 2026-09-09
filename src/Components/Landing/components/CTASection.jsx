@@ -12,7 +12,7 @@ const benefits = [
 
 const CTASection = () => {
   return (
-   <section className="pt-0 pb-20 lg:pb-28 bg-white relative">
+    <section className="pt-0 pb-20 lg:pb-28 bg-white relative">
       {/* Decorative Background Elements */}
       <div className="absolute -top-20 z-10   -left-20 w-[400px] h-[500px] rounded-full
     bg-[#6c4cf1]
@@ -75,7 +75,7 @@ const CTASection = () => {
             transition={{ duration: 0.8, delay: 0.4 }}
             className="text-lg text-[var(--color-text-secondary)] max-w-2xl mx-auto mb-8 leading-relaxed"
           >
-            Join thousands of companies using ProManager to streamline workforce management.
+            Join thousands of companies using PagarPe to streamline workforce management.
             Start your free trial today.
           </motion.p>
 

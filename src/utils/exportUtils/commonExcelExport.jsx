@@ -16,7 +16,7 @@ export const EXCEL_COLORS = {
 };
 
 /**
- * Common Styled Excel Export Function for ProManager SaaS
+ * Common Styled Excel Export Function for PagarPe SaaS
  */
 export const exportToStyledExcel = async ({
     title = 'REPORT',

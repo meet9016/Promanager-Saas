@@ -239,7 +239,7 @@ const Navbar = ({ isCollapsed, setIsCollapsed }) => {
                     <div className="flex items-center">
                         <Link to="/dashboard" aria-label="Go to Home" className="inline-flex items-center">
                             <Logo
-                                alt="promanager"
+                                alt="pagarpe"
                                 className="h-10 md:h-12 w-auto cursor-pointer"
                                 draggable="false"
                             />

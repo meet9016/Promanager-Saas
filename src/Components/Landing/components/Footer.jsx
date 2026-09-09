@@ -9,8 +9,8 @@ const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   const socialLinks = [
-    { icon: Instagram, href: "https://www.instagram.com/promanager.payroll.software/", label: "Instagram" },
-    { icon: Facebook, href: "https://www.facebook.com/promanager.payroll.software/", label: "Facebook" },
+    { icon: Instagram, href: "https://www.instagram.com/pagarpe.payroll.software/", label: "Instagram" },
+    { icon: Facebook, href: "https://www.facebook.com/pagarpe.payroll.software/", label: "Facebook" },
     { icon: Linkedin, href: "https://linkedin.com", label: "LinkedIn" },
     { icon: Youtube, href: "https://www.youtube.com/@promanagerpayrollsoftware", label: "Youtube" },
   ];
@@ -69,7 +69,7 @@ const Footer = () => {
             <div className="space-y-4 text-left">
               <Link to="/" className="inline-block mb-2">
                 <Logo
-                  alt="ProManager Logo"
+                  alt="PagarPe Logo"
                   className="h-14 w-auto object-contain hover:opacity-90 transition-opacity"
                 />
               </Link>
@@ -159,7 +159,7 @@ const Footer = () => {
             {/* App Store Buttons - Left */}
             <div className="flex items-center gap-3">
               <a
-                href={config?.playstoreLink || "https://play.google.com/store/apps/details?id=com.shopno.promanager"}
+                href={config?.playstoreLink || "https://play.google.com/store/apps/details?id=com.shopno.pagarpe"}
                 className="transition-transform hover:scale-105 duration-200"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -171,7 +171,7 @@ const Footer = () => {
                 />
               </a>
               <a
-                href={config?.appstoreLink || "https://play.google.com/store/apps/details?id=com.shopno.promanager"}
+                href={config?.appstoreLink || "https://play.google.com/store/apps/details?id=com.shopno.pagarpe"}
                 className="transition-transform hover:scale-105 duration-200"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -208,7 +208,7 @@ const Footer = () => {
         <div className="max-w-7xl mx-auto text-center">
           <p className="text-xs sm:text-sm text-gray-800 font-medium tracking-wide">
             Copyright © {currentYear}{" "}
-            <strong className="text-[var(--color-primary-dark)] font-bold">ProManager</strong>. All rights reserved.{" "}
+            <strong className="text-[var(--color-primary-dark)] font-bold">PagarPe</strong>. All rights reserved.{" "}
             <span className="text-gray-400 mx-1">•</span>{" "}
             <a
               href="https://digitalkstechno.com/"

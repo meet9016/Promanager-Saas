@@ -69,7 +69,7 @@ const CoreFeaturesSection = () => {
               color: BRAND,
             }}
           >
-           
+
             Core Features
           </motion.div>
 
@@ -84,7 +84,7 @@ const CoreFeaturesSection = () => {
             <br />
             <span
               className="bg-clip-text text-transparent bg-[var(--color-primary-dark)]"
-           
+
             >
               Maximum Accuracy.
             </span>
@@ -97,7 +97,7 @@ const CoreFeaturesSection = () => {
             transition={{ duration: 0.7, delay: 0.25 }}
             className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-slate-600 md:text-lg"
           >
-            Explore the powerful features of ProManager designed to automate payroll,
+            Explore the powerful features of PagarPe designed to automate payroll,
             ensure compliance, and give employees a seamless experience.
           </motion.p>
         </div>

@@ -1,6 +1,6 @@
 {
-    "name": "promanager - Payroll & Attendance",
-    "short_name": "promanager",
+    "name": "pagarpe - Payroll & Attendance",
+    "short_name": "pagarpe",
     "description": "Payroll, Attendance & HR Management System",
     "start_url": "/",
     "display": "standalone",

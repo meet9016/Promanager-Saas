@@ -17,7 +17,7 @@ const HeroSection = () => {
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Left Content */}
           <div className="space-y-8">
-          
+
 
             {/* Main Heading */}
             <div className="space-y-4">
@@ -33,7 +33,7 @@ const HeroSection = () => {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.8, delay: 0.3 }}
                 >
-                  ProManager
+                  PagarPe
                 </motion.span>
                 <motion.span
                   className="block bg-[var(--color-primary-dark)] bg-clip-text text-transparent"
@@ -164,7 +164,7 @@ const HeroSection = () => {
               <img
                 src={heroImage}
                 loading="lazy"
-                alt="ProManager Dashboard"
+                alt="PagarPe Dashboard"
                 className="w-full h-auto object-cover"
               />
             </motion.div>

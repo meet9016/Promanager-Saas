@@ -7,12 +7,12 @@ const AboutPage = () => {
     return (
         <div className="min-h-screen bg-white">
             <Helmet>
-                <title>About ProManager | Payroll & Attendance Software</title>
+                <title>About PagarPe | Payroll & Attendance Software</title>
                 <meta
                     name="description"
-                    content="Learn about ProManager (official payroll & attendance software). Discover our mission, vision, and commitment to simplifying payroll for modern businesses worldwide."
+                    content="Learn about PagarPe (official payroll & attendance software). Discover our mission, vision, and commitment to simplifying payroll for modern businesses worldwide."
                 />
-                <link rel="canonical" href="https://promanager.in/about" />
+                <link rel="canonical" href="https://pagarpe.in/about" />
             </Helmet>
 
             {/* Hero Section */}
@@ -38,7 +38,7 @@ const AboutPage = () => {
                             transition={{ duration: 0.6 }}
                             className="text-xl lg:text-2xl font-bold"
                         >
-                            About ProManager
+                            About PagarPe
                         </motion.h3>
 
                         <motion.svg
@@ -187,13 +187,13 @@ const AboutPage = () => {
                             </h2>
 
                             <p className="text-[var(--color-text-secondary)] mb-8 leading-relaxed text-lg">
-                                At <span className="font-bold text-[#4B2EDB] px-1.5 py-0.5 rounded-md bg-[#6C4CF1]/10">DIGITALKS TECHNO LLP</span>, we believe that simplified payroll builds stronger businesses. Our flagship product, <span className="font-bold text-[#4B2EDB] px-1.5 py-0.5 rounded-md bg-[#6C4CF1]/10">ProManager</span>, is built with a mission to transform how organizations handle salary disbursement, compliance, and workforce payments — with speed, accuracy, and transparency.
+                                At <span className="font-bold text-[#4B2EDB] px-1.5 py-0.5 rounded-md bg-[#6C4CF1]/10">DIGITALKS TECHNO LLP</span>, we believe that simplified payroll builds stronger businesses. Our flagship product, <span className="font-bold text-[#4B2EDB] px-1.5 py-0.5 rounded-md bg-[#6C4CF1]/10">PagarPe</span>, is built with a mission to transform how organizations handle salary disbursement, compliance, and workforce payments — with speed, accuracy, and transparency.
                             </p>
 
                             {/* Feature Points */}
                             <div className="space-y-4">
                                 {[
-                                    { title: "Scalable for Any Business Size", desc: "From startups to enterprises, ProManager adapts seamlessly to your needs." },
+                                    { title: "Scalable for Any Business Size", desc: "From startups to enterprises, PagarPe adapts seamlessly to your needs." },
                                     { title: "Designed by Payroll Experts", desc: "Created by professionals who understand compliance and modern technology." }
                                 ].map((item, i) => (
                                     <motion.div
@@ -222,7 +222,7 @@ const AboutPage = () => {
             </section>
 
             {/* Vision Section */}
-           <section className="pt-0 pb-12 lg:pt-0 lg:pb-20 bg-white text-black relative overflow-hidden">
+            <section className="pt-0 pb-12 lg:pt-0 lg:pb-20 bg-white text-black relative overflow-hidden">
                 {/* Animated Background */}
 
                 <div className="container mx-auto  relative z-10">
@@ -239,7 +239,7 @@ const AboutPage = () => {
                                 Our Vision
                             </h2>
 
-                           
+
                             <motion.svg
                                 initial={{ pathLength: 0, opacity: 0 }}
                                 whileInView={{ pathLength: 1, opacity: 1 }}

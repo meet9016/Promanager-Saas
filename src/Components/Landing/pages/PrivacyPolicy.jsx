@@ -10,7 +10,7 @@ const PrivacyPolicy = () => {
             icon: Shield,
             content: [
                 { label: "Employer/Subscriber", desc: "Acts as the Data Controller." },
-                { label: "promanager", desc: "Functions as the Data Processor, processing data solely to provide the platform services." },
+                { label: "pagarpe", desc: "Functions as the Data Processor, processing data solely to provide the platform services." },
                 { label: "Note", desc: "Employers are responsible for obtaining necessary consent from employees before importing any personal or biometric data." }
             ]
         },
@@ -112,24 +112,24 @@ const PrivacyPolicy = () => {
                     >
                         <Shield className="w-10 h-10 text-[var(--color-text-white)]" />
                     </motion.div>
-                    
+
                     <h1 className="text-4xl lg:text-6xl font-bold text-[var(--color-text-primary)] mb-4">
                         🔒 <span className="bg-[var(--color-primary-darker)] bg-clip-text text-transparent">Privacy Policy</span>
                     </h1>
-                    
+
                     <p className="text-lg text-[var(--color-text-secondary)] mb-2">
                         Effective Date: December 2025
                     </p>
-                    
+
                     <motion.p
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ duration: 0.6, delay: 0.3 }}
                         className="text-base text-[var(--color-text-secondary)] max-w-3xl mx-auto leading-relaxed"
                     >
-                        promanager ("we", "our", "Company") is committed to protecting your personal and employee information. This Privacy Policy explains how we collect, process, store, and handle data through our website, mobile apps, and services.
+                        pagarpe ("we", "our", "Company") is committed to protecting your personal and employee information. This Privacy Policy explains how we collect, process, store, and handle data through our website, mobile apps, and services.
                     </motion.p>
-                    
+
                     <motion.div
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
@@ -137,7 +137,7 @@ const PrivacyPolicy = () => {
                         className="mt-6 inline-flex items-center px-6 py-3 bg-[var(--color-bg-secondary-30)] text-[var(--color-text-primary)] rounded-full text-sm font-medium border border-[var(--color-border-primary)] backdrop-blur-sm"
                     >
                         <AlertCircle className="w-4 h-4 mr-2" />
-                        By using promanager, you agree to the practices described below
+                        By using pagarpe, you agree to the practices described below
                     </motion.div>
                 </motion.div>
 
@@ -263,7 +263,7 @@ const PrivacyPolicy = () => {
                     {
                         num: 7,
                         title: "Children's Data",
-                        content: "promanager does not target or collect data from individuals under 18 years of age."
+                        content: "pagarpe does not target or collect data from individuals under 18 years of age."
                     },
                     {
                         num: 8,
@@ -309,7 +309,7 @@ const PrivacyPolicy = () => {
                     {
                         num: 11,
                         title: "Data Breach Notification",
-                        content: "In the event of a data breach, promanager will:",
+                        content: "In the event of a data breach, pagarpe will:",
                         items: [
                             "Immediately isolate affected systems",
                             "Assess impact",
@@ -357,11 +357,11 @@ const PrivacyPolicy = () => {
                                     </span>
                                 )}
                             </h2>
-                            
+
                             {section.content && (
                                 <p className="text-[var(--color-text-secondary)] mb-3">{section.content}</p>
                             )}
-                            
+
                             {section.items && (
                                 <ul className="space-y-2 mb-3">
                                     {section.items.map((item, itemIndex) => (
@@ -372,7 +372,7 @@ const PrivacyPolicy = () => {
                                     ))}
                                 </ul>
                             )}
-                            
+
                             {section.footer && (
                                 <p className="text-[var(--color-text-secondary)] mt-3">{section.footer}</p>
                             )}
@@ -405,7 +405,7 @@ const PrivacyPolicy = () => {
                                         Email: <a href="mailto:harshitkapadia563@gmail.com" className="underline hover:opacity-80 transition-opacity">harshitkapadia563@gmail.com</a>
                                     </p>
                                     <p className="opacity-90">
-                                        Attention: Privacy Officer – promanager
+                                        Attention: Privacy Officer – pagarpe
                                     </p>
                                 </div>
                             </div>
@@ -422,7 +422,7 @@ const PrivacyPolicy = () => {
                     className="text-center mt-12 text-sm text-[var(--color-text-secondary)]"
                 >
                     <p>Last updated: December 2025</p>
-                    <p className="mt-2">© 2025 promanager. All rights reserved.</p>
+                    <p className="mt-2">© 2025 pagarpe. All rights reserved.</p>
                 </motion.div>
             </div>
         </div>

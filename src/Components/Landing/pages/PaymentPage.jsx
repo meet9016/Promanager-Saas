@@ -676,7 +676,7 @@ const PaymentPage = ({ isRenew: isRenewProp }) => {
     return (
         <div className="min-h-screen bg-[#F8F7FD] text-slate-800 font-sans pb-20">
             <Helmet>
-                <title>Payment Checkout | ProManager</title>
+                <title>Payment Checkout | PagarPe</title>
                 <meta name="description" content="Select your plan and complete your payment securely." />
             </Helmet>
 
@@ -723,7 +723,7 @@ const PaymentPage = ({ isRenew: isRenewProp }) => {
                 </div>
 
                 <p className="text-base sm:text-lg text-slate-500 font-medium max-w-xl mx-auto">
-                    Fill in the required details and pay securely with ProManager.
+                    Fill in the required details and pay securely with PagarPe.
                 </p>
             </motion.div>
 

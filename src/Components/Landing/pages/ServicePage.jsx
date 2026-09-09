@@ -125,9 +125,9 @@ const ServicePage = () => {
     return (
         <div className="min-h-screen bg-white">
             <Helmet>
-                <title>Payroll & HR Services | ProManager Official Platform</title>
-                <meta name="description" content="Discover ProManager payroll and HR services. Automate salary, compliance, attendance, employee management, and insights with our secure SaaS platform." />
-                <link rel="canonical" href="https://promanager.in/services" />
+                <title>Payroll & HR Services | PagarPe Official Platform</title>
+                <meta name="description" content="Discover PagarPe payroll and HR services. Automate salary, compliance, attendance, employee management, and insights with our secure SaaS platform." />
+                <link rel="canonical" href="https://pagarpe.in/services" />
             </Helmet>
 
             {/* Hero Section */}
@@ -155,7 +155,7 @@ const ServicePage = () => {
                         >
                             Our Services
                         </motion.h3>
-                        
+
                         <motion.svg
                             initial={{ pathLength: 0, opacity: 0 }}
                             animate={{ pathLength: 1, opacity: 1 }}
@@ -227,7 +227,7 @@ const ServicePage = () => {
                             <h2 className="text-2xl lg:text-3xl font-bold text-[var(--color-text-primary)]">
                                 Platform Features
                             </h2>
-                            
+
                             <motion.svg
                                 initial={{ pathLength: 0, opacity: 0 }}
                                 whileInView={{ pathLength: 1, opacity: 1 }}

@@ -121,11 +121,11 @@ const VIDEO_TUTORIALS = [
   {
     id: 'v1',
     title: {
-      en: 'ProManager Quick Start & Dashboard Overview',
+      en: 'PagarPe Quick Start & Dashboard Overview',
       hi: 'प्रोमैनेजर क्विक स्टार्ट और डैशबोर्ड अवलोकन'
     },
     description: {
-      en: 'Get a complete tour of ProManager HR & Payroll platform. Learn how to navigate dashboard analytics, quick stats, and organization setup.',
+      en: 'Get a complete tour of PagarPe HR & Payroll platform. Learn how to navigate dashboard analytics, quick stats, and organization setup.',
       hi: 'प्रोमैनेजर एचआर और पेरोल प्लेटफॉर्म का पूरा दौरा प्राप्त करें। डैशबोर्ड एनालिटिक्स और संगठन सेटअप सीखें।'
     },
     category: 'Getting Started',
@@ -214,7 +214,7 @@ const VIDEO_TUTORIALS = [
   }
 ];
 
-// Interactive Video Tutorials Hub Component (Demo Video Coming Soon - ProManager Purple Theme)
+// Interactive Video Tutorials Hub Component (Demo Video Coming Soon - PagarPe Purple Theme)
 const VideoTutorialsSection = ({ language, t, onBackToDocs }) => {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [activeComingSoonVideo, setActiveComingSoonVideo] = useState(null);
@@ -240,7 +240,7 @@ const VideoTutorialsSection = ({ language, t, onBackToDocs }) => {
           <div className="space-y-1">
             <div className="flex items-center gap-2">
               <span className="bg-red-100 text-red-600 px-3 py-0.5 rounded-full text-sm font-semibold flex items-center gap-1.5 border border-red-200">
-                <Youtube size={14} /> ProManager Academy
+                <Youtube size={14} /> PagarPe Academy
               </span>
               <span className="bg-purple-100 text-[#340C8E] px-3 py-0.5 rounded-full text-sm font-semibold border border-purple-200">
                 Video Tutorials
@@ -359,7 +359,7 @@ const DocumentPage = () => {
             {/* Left Header Info */}
             <div className="lg:col-span-7 space-y-2.5">
               <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight leading-tight">
-                {t('Welcome to ProManager!', 'प्रोमैनेजर में आपका स्वागत है!')}
+                {t('Welcome to PagarPe!', 'प्रोमैनेजर में आपका स्वागत है!')}
               </h2>
 
               <p className="text-slate-700 text-base sm:text-lg font-semibold">
@@ -368,7 +368,7 @@ const DocumentPage = () => {
 
               <p className="text-slate-500 text-sm sm:text-base leading-relaxed max-w-2xl">
                 {t(
-                  'To help you get the most out of ProManager, please complete the following steps in order. Each step is important to ensure smooth HR & Payroll operations.',
+                  'To help you get the most out of PagarPe, please complete the following steps in order. Each step is important to ensure smooth HR & Payroll operations.',
                   'प्रोमैनेजर का अधिकतम लाभ उठाने में आपकी सहायता के लिए, कृपया निम्नलिखित चरणों को क्रम से पूरा करें। सुचारू एचआर और पेरोल संचालन सुनिश्चित करने के लिए प्रत्येक चरण महत्वपूर्ण है।'
                 )}
               </p>
@@ -454,12 +454,12 @@ const DocumentPage = () => {
                   <div className="flex items-center gap-2">
                     <span className="text-slate-700 font-bold">{t('Website:', 'वेबसाइट:')}</span>
                     <a
-                      href="http://promanager.in/"
+                      href="http://pagarpe.in/"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-[#340C8E] hover:underline font-semibold"
                     >
-                      http://promanager.in/
+                      http://pagarpe.in/
                     </a>
                   </div>
 
@@ -476,12 +476,12 @@ const DocumentPage = () => {
                   <div className="flex items-center gap-2">
                     <span className="text-slate-700 font-bold">{t('Inquiries:', 'पूछताछ:')}</span>
                     <a
-                      href="https://promanager.in/contact"
+                      href="https://pagarpe.in/contact"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-[#340C8E] hover:underline font-semibold"
                     >
-                      https://promanager.in/contact
+                      https://pagarpe.in/contact
                     </a>
                   </div>
                 </div>

@@ -20,8 +20,8 @@ const Popup = () => {
 
     if (sessionStorage.getItem(SESSION_KEY)) return;
     if (sessionStorage.getItem(AUTH)) return;
-    if (window.location.pathname !== "/") return; 
-     const timer = setTimeout(() => {
+    if (window.location.pathname !== "/") return;
+    const timer = setTimeout(() => {
       setIsVisible(true);
       sessionStorage.setItem(SESSION_KEY, "true");
     }, 5000);
@@ -41,7 +41,7 @@ const Popup = () => {
       alert("Please fill in all required fields");
       return;
     }
-    const message = `*New Appointment Request - ProManager*%0A%0A*Personal Details:*%0A👤 Full Name: ${formData.fullName}%0A📧 Email: ${formData.email}%0A📱 Mobile No: ${formData.mobileNo}%0A💼 Company: ${formData.companyName}%0A%0A*Message:*%0A${formData.message || "No message provided"}`;
+    const message = `*New Appointment Request - PagarPe*%0A%0A*Personal Details:*%0A👤 Full Name: ${formData.fullName}%0A📧 Email: ${formData.email}%0A📱 Mobile No: ${formData.mobileNo}%0A💼 Company: ${formData.companyName}%0A%0A*Message:*%0A${formData.message || "No message provided"}`;
     const phoneNumber = "918866779008";
     window.open(`https://wa.me/${phoneNumber}?text=${message}`, "_blank");
     handleClose();

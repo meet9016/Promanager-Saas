@@ -1,7 +1,7 @@
 import React from 'react';
 import logoImg from '../../assets/new_logo.png';
 
-const Logo = ({ alt = "ProManager Logo", className = "", onError, ...props }) => {
+const Logo = ({ alt = "PagarPe Logo", className = "", onError, ...props }) => {
     const handleError = (e) => {
         e.target.onerror = null;
         e.target.src = "/logo.png";

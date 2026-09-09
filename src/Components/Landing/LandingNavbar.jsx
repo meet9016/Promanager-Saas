@@ -272,7 +272,7 @@ const LandingNavbar = () => {
                         <div className="flex items-center space-x-2">
                             <NavLink to="/" onClick={scrollToTop}>
                                 <Logo
-                                    alt="ProManager Logo"
+                                    alt="PagarPe Logo"
                                     className="h-12 w-auto object-contain max-w-[200px] cursor-pointer"
                                 />
                             </NavLink>
@@ -532,7 +532,7 @@ const LandingNavbar = () => {
                             <div className="flex justify-between items-center p-6 border-b border-gray-200">
                                 <img
                                     src={Logo}
-                                    alt="ProManager Logo"
+                                    alt="PagarPe Logo"
                                     className="h-10 w-auto object-contain"
                                 />
                                 <Button
@@ -638,7 +638,7 @@ const LandingNavbar = () => {
 
                                     {/* Footer Info */}
                                     <div className="pt-6 text-center text-sm text-gray-500">
-                                        <p>© {new Date().getFullYear()} ProManager. All rights reserved.</p>
+                                        <p>© {new Date().getFullYear()} PagarPe. All rights reserved.</p>
                                     </div>
                                 </div>
                             </div>

@@ -528,7 +528,7 @@ const Login = () => {
                 <div className="w-full max-w-md ">
                     {/* Logo */}
                     <div className="flex flex-col items-center justify-center gap-2 mb-16">
-                        <Logo alt="promanager Logo" className="w-60 h-30 object-contain" />
+                        <Logo alt="pagarpe Logo" className="w-60 h-30 object-contain" />
                         <span className="text-md  align-center" >Future-Ready Payroll
                             Management Platform</span>
                     </div>

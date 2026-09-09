@@ -128,7 +128,7 @@ const PricingPage = () => {
   return (
     <div className="min-h-screen bg-white">
       <Helmet>
-        <title>Pricing | ProManager</title>
+        <title>Pricing | PagarPe</title>
         <meta name="description" content="Transparent pricing for payroll software." />
       </Helmet>
 

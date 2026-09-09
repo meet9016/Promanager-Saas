@@ -39,7 +39,7 @@ const ComingSoon = () => {
                             >
                                 <Rocket className="w-16 h-16 text-[var(--color-text-white)]" />
                             </motion.div>
-                            
+
                             {/* Orbiting particles */}
                             <motion.div
                                 animate={{ rotate: 360 }}
@@ -82,14 +82,14 @@ const ComingSoon = () => {
                             </span>{' '}
                             is On Its Way
                         </h1>
-                        
+
                         <motion.p
                             initial={{ opacity: 0, y: 30 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.8, delay: 0.5 }}
                             className="text-lg lg:text-xl text-[var(--color-text-secondary)] leading-relaxed max-w-2xl mx-auto"
                         >
-                            We're working hard to bring you something amazing. This feature will revolutionize your payroll experience with promanager.
+                            We're working hard to bring you something amazing. This feature will revolutionize your payroll experience with pagarpe.
                         </motion.p>
                     </motion.div>
 
@@ -119,7 +119,7 @@ const ComingSoon = () => {
                         <p className="text-[var(--color-text-secondary)] mb-6 text-sm">
                             Be the first to know when this feature goes live. We'll send you an update as soon as it's ready.
                         </p>
-                        
+
                         <div className="flex gap-3">
                             <input
                                 type="email"
