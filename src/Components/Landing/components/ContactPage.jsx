@@ -144,7 +144,7 @@ const ContactPage = () => {
     }
 
     // Format the message for WhatsApp
-    const message = `*New Contact Form Submission - pagarpe*%0A%0A
+    const message = `*New Contact Form Submission - PagarPe*%0A%0A
 *Personal Details:*%0A
 👤 Full Name: ${formData.fullName}%0A
 📧 Email: ${formData.email}%0A
@@ -165,51 +165,51 @@ const ContactPage = () => {
 
   const faqData = [
     {
-      question: "How quickly can we get set up on pagarpe?",
+      question: "How quickly can we get set up on PagarPe?",
       answer:
-        "Most organizations can get started within minutes. pagarpe offers a simple and guided setup process for payroll and attendance management.",
+        "Most organizations can get started within minutes. PagarPe offers a simple and guided setup process for payroll and attendance management.",
     },
     {
       question: "Do you provide customer support?",
       answer:
-        "Yes! pagarpe provides dedicated customer support via chat, email, and phone to assist you at every step.",
+        "Yes! PagarPe provides dedicated customer support via chat, email, and phone to assist you at every step.",
     },
     {
       question: "Is there a free trial available?",
       answer:
-        "Currently, pagarpe does not offer a free trial. However, our team is happy to provide a guided demo to help you understand the platform before getting started.",
+        "Currently, PagarPe does not offer a free trial. However, our team is happy to provide a guided demo to help you understand the platform before getting started.",
     },
     {
-      question: "Can pagarpe integrate with existing systems?",
+      question: "Can PagarPe integrate with existing systems?",
       answer:
-        "Yes, pagarpe supports seamless integration with various HR, attendance, and accounting systems to ensure smooth payroll operations.",
+        "Yes, PagarPe supports seamless integration with various HR, attendance, and accounting systems to ensure smooth payroll operations.",
     },
     {
-      question: "Can I access pagarpe from multiple devices?",
+      question: "Can I access PagarPe from multiple devices?",
       answer:
-        "Yes! pagarpe is a cloud-based platform, allowing authorized users to securely access payroll, attendance, and employee information from multiple devices.",
+        "Yes! PagarPe is a cloud-based platform, allowing authorized users to securely access payroll, attendance, and employee information from multiple devices.",
     },
     {
       question: "Is my employee and payroll data secure?",
       answer:
-        "Yes! pagarpe is designed with secure and encrypted data handling to help protect sensitive employee and payroll information.",
+        "Yes! PagarPe is designed with secure and encrypted data handling to help protect sensitive employee and payroll information.",
     },
     {
-      question: "Can pagarpe grow with my business?",
+      question: "Can PagarPe grow with my business?",
       answer:
-        "Absolutely! pagarpe is designed to support growing teams and streamline payroll and workforce operations as your organization expands.",
+        "Absolutely! PagarPe is designed to support growing teams and streamline payroll and workforce operations as your organization expands.",
     },
   ];
 
   return (
     <div className="min-h-screen bg-[var(--color-bg-primary)]">
       <Helmet>
-        <title>Contact pagarpe | Book a Demo & Support</title>
+        <title>Contact PagarPe | Book a Demo & Support</title>
         <meta
           name="description"
-          content="Get in touch with pagarpe payroll experts. Book a demo, schedule a call, or reach our support team for payroll, HR, and compliance assistance."
+          content="Get in touch with PagarPe payroll experts. Book a demo, schedule a call, or reach our support team for payroll, HR, and compliance assistance."
         />
-        <link rel="canonical" href="https://pagarpe.in/contact" />
+        <link rel="canonical" href="https://PagarPe.in/contact" />
       </Helmet>
 
 
@@ -260,7 +260,7 @@ const ContactPage = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 }}
               >
-                Book a personalized demo and discover how pagarpe can
+                Book a personalized demo and discover how PagarPe can
                 streamline your payroll, attendance, and workforce management.
               </motion.p>
             </motion.div>
@@ -278,7 +278,7 @@ const ContactPage = () => {
                   label: "Email",
                   value: config?.email || "-",
                   gradient: "from-indigo-500 to-purple-600",
-                  href: config?.email ? `mailto:${config.email}` : "mailto:contact@pagarpe.in",
+                  href: config?.email ? `mailto:${config.email}` : "mailto:contact@PagarPe.in",
                   isExternal: false,
                 },
                 {

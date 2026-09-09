@@ -454,12 +454,12 @@ const DocumentPage = () => {
                   <div className="flex items-center gap-2">
                     <span className="text-slate-700 font-bold">{t('Website:', 'वेबसाइट:')}</span>
                     <a
-                      href="http://pagarpe.in/"
+                      href="http://PagarPe.in/"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-[#340C8E] hover:underline font-semibold"
                     >
-                      http://pagarpe.in/
+                      http://PagarPe.in/
                     </a>
                   </div>
 
@@ -476,12 +476,12 @@ const DocumentPage = () => {
                   <div className="flex items-center gap-2">
                     <span className="text-slate-700 font-bold">{t('Inquiries:', 'पूछताछ:')}</span>
                     <a
-                      href="https://pagarpe.in/contact"
+                      href="https://PagarPe.in/contact"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-[#340C8E] hover:underline font-semibold"
                     >
-                      https://pagarpe.in/contact
+                      https://PagarPe.in/contact
                     </a>
                   </div>
                 </div>

@@ -12,7 +12,7 @@ const AboutPage = () => {
                     name="description"
                     content="Learn about PagarPe (official payroll & attendance software). Discover our mission, vision, and commitment to simplifying payroll for modern businesses worldwide."
                 />
-                <link rel="canonical" href="https://pagarpe.in/about" />
+                <link rel="canonical" href="https://PagarPe.in/about" />
             </Helmet>
 
             {/* Hero Section */}

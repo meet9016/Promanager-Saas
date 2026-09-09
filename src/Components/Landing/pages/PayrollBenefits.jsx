@@ -37,9 +37,9 @@ const PayrollBenefits = () => {
     return (
         <div className="min-h-screen bg-white">
             <Helmet>
-                <title>Payroll & Benefits Software | pagarpe</title>
-                <meta name="description" content="Discover pagarpe Payroll & Benefits Software – automate salary disbursement, compliance, tax, and employee perks. Build trust and boost retention." />
-                <link rel="canonical" href="https://pagarpe.in/payroll-benefits" />
+                <title>Payroll & Benefits Software | PagarPe</title>
+                <meta name="description" content="Discover PagarPe Payroll & Benefits Software – automate salary disbursement, compliance, tax, and employee perks. Build trust and boost retention." />
+                <link rel="canonical" href="https://PagarPe.in/payroll-benefits" />
             </Helmet>
 
             {/* Hero Section with Curved Design */}
@@ -321,7 +321,7 @@ const PayrollBenefits = () => {
                         >
                             <h3 className="text-3xl font-bold mb-6">Ready to Streamline Payroll?</h3>
                             <p className="text-white/90 text-lg mb-8 leading-relaxed">
-                                Join thousands of businesses that trust pagarpe for accurate, compliant, and efficient payroll management.
+                                Join thousands of businesses that trust PagarPe for accurate, compliant, and efficient payroll management.
                             </p>
                             <motion.button
                                 className="bg-white text-[var(--color-primary)] px-8 py-4 rounded-full font-semibold shadow-xl hover:shadow-2xl transition-all w-fit"

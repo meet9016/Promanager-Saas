@@ -1,6 +1,6 @@
 {
-    "name": "pagarpe - Payroll & Attendance",
-    "short_name": "pagarpe",
+    "name": "PagarPe - Payroll & Attendance",
+    "short_name": "PagarPe",
     "description": "Payroll, Attendance & HR Management System",
     "start_url": "/",
     "display": "standalone",

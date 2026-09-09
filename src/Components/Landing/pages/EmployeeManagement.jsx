@@ -37,9 +37,9 @@ const EmployeeManagement = () => {
     return (
         <div className="min-h-screen ">
             <Helmet>
-                <title>Employee Management Software | pagarpe Payroll & HR</title>
-                <meta name="description" content="pagarpe Employee Management Software helps businesses streamline HR, payroll, attendance, compliance, and workforce operations with ease and accuracy." />
-                <link rel="canonical" href="https://pagarpe.in/employee-management" />
+                <title>Employee Management Software | PagarPe Payroll & HR</title>
+                <meta name="description" content="PagarPe Employee Management Software helps businesses streamline HR, payroll, attendance, compliance, and workforce operations with ease and accuracy." />
+                <link rel="canonical" href="https://PagarPe.in/employee-management" />
             </Helmet>
 
             {/* Hero Section with Curved Design */}
@@ -171,7 +171,7 @@ const EmployeeManagement = () => {
                         >
                             <div className="inline-block relative">
                                 <span className="text-4xl md:text-5xl font-bold text-[var(--color-text-primary)]">
-                                    Why Choose <span className="text-[var(--color-primary)]">pagarpe</span>
+                                    Why Choose <span className="text-[var(--color-primary)]">PagarPe</span>
                                 </span>
                                 <motion.svg
                                     initial={{ pathLength: 0, opacity: 0 }}
@@ -319,7 +319,7 @@ const EmployeeManagement = () => {
                         >
                             <h3 className="text-3xl font-bold mb-6">Ready to Transform Your HR?</h3>
                             <p className="text-primary-100 text-lg mb-8 leading-relaxed">
-                                Join thousands of businesses that trust pagarpe for their workforce management needs.
+                                Join thousands of businesses that trust PagarPe for their workforce management needs.
                             </p>
                             <motion.button
                                 className="bg-white text-primary-600 px-8 py-4 rounded-full font-semibold shadow-xl hover:shadow-2xl transition-all w-fit"

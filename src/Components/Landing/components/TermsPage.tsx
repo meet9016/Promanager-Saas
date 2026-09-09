@@ -265,7 +265,7 @@ function TermsAndConditionsPage() {
                                 </p>
                                 <p className="text-gray-700 flex items-center gap-3">
                                     <span className="text-xl" role="img" aria-label="email">📧</span>
-                                    <span><strong>Email:</strong> {config?.email || "contact@pagarpe.in"}</span>
+                                    <span><strong>Email:</strong> {config?.email || "contact@PagarPe.in"}</span>
                                 </p>
                                 <p className="text-gray-600 mt-2">
                                     Our support team will assist you with onboarding, troubleshooting, and technical queries.

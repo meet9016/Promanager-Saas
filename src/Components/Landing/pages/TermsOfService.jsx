@@ -8,7 +8,7 @@ const TermsOfService = () => {
             num: 1,
             title: "ACCEPTANCE OF TERMS",
             icon: FileText,
-            content: "By accessing or using pagarpe (\"Service\"), you agree to be bound by these Terms of Service (\"Terms\"). If you do not agree, you must not use the Service."
+            content: "By accessing or using PagarPe (\"Service\"), you agree to be bound by these Terms of Service (\"Terms\"). If you do not agree, you must not use the Service."
         },
         {
             num: 2,
@@ -25,8 +25,8 @@ const TermsOfService = () => {
             title: "DEFINITIONS",
             icon: FileText,
             definitions: [
-                { term: "Service", desc: "pagarpe payroll, attendance, and HRMS features (web + mobile)." },
-                { term: "We, Us, Our", desc: "pagarpe and its owner/affiliates." },
+                { term: "Service", desc: "PagarPe payroll, attendance, and HRMS features (web + mobile)." },
+                { term: "We, Us, Our", desc: "PagarPe and its owner/affiliates." },
                 { term: "You, User, Client, Organization", desc: "The individual or entity using the Service." },
                 { term: "Third Parties", desc: "Vendors, APIs, payment gateways, hosting providers, SMS/email vendors, etc." }
             ]
@@ -35,7 +35,7 @@ const TermsOfService = () => {
             num: 4,
             title: "DESCRIPTION OF SERVICE",
             icon: Settings,
-            content: "pagarpe provides features including but not limited to:",
+            content: "PagarPe provides features including but not limited to:",
             items: [
                 "Employee management",
                 "Attendance tracking (bulk, daily, and biometric-compatible)",
@@ -57,7 +57,7 @@ const TermsOfService = () => {
                 "Provide accurate information.",
                 "Maintain confidentiality of login credentials.",
                 "Comply with applicable laws, including labour and data protection laws.",
-                "Use pagarpe only for lawful business purposes."
+                "Use PagarPe only for lawful business purposes."
             ]
         },
         {
@@ -149,7 +149,7 @@ const TermsOfService = () => {
         {
             num: 12,
             title: "THIRD-PARTY SERVICES",
-            content: "pagarpe may use:",
+            content: "PagarPe may use:",
             items: [
                 "Cloud hosting providers",
                 "Email APIs (e.g., SMTP services)",
@@ -232,15 +232,15 @@ const TermsOfService = () => {
                 "Logos",
                 "System workflows"
             ],
-            footer: "are owned exclusively by pagarpe. No license beyond service usage is granted."
+            footer: "are owned exclusively by PagarPe. No license beyond service usage is granted."
         },
         {
             num: 18,
             title: "LIMITATION OF LIABILITY",
             content: "To the maximum extent permitted by law:",
             items: [
-                "pagarpe is not responsible for business losses, revenue loss, reputation damage, or legal penalties caused by misuse, incorrect payroll, or user errors.",
-                "pagarpe is not liable for indirect, incidental, or consequential damages.",
+                "PagarPe is not responsible for business losses, revenue loss, reputation damage, or legal penalties caused by misuse, incorrect payroll, or user errors.",
+                "PagarPe is not liable for indirect, incidental, or consequential damages.",
                 "Our total liability will not exceed the amount you paid in the last 30 days."
             ],
             highlight: true
@@ -248,7 +248,7 @@ const TermsOfService = () => {
         {
             num: 19,
             title: "INDEMNIFICATION",
-            content: "You agree to indemnify and hold pagarpe harmless from claims, damages, or losses arising from:",
+            content: "You agree to indemnify and hold PagarPe harmless from claims, damages, or losses arising from:",
             items: [
                 "Your misuse of the Service",
                 "Violation of laws",
@@ -326,7 +326,7 @@ const TermsOfService = () => {
                         className="mt-6 space-y-2"
                     >
                         <p className="text-xl font-semibold text-[var(--color-text-primary)]">
-                            Product: pagarpe – An Ultimate Payroll Software
+                            Product: PagarPe – An Ultimate Payroll Software
                         </p>
                     </motion.div>
                 </motion.div>
@@ -501,7 +501,7 @@ const TermsOfService = () => {
                         Important Notice
                     </p>
                     <p className="text-sm text-[var(--color-text-secondary)]">
-                        By continuing to use pagarpe, you acknowledge that you have read, understood, and agree to be bound by these Terms of Service.
+                        By continuing to use PagarPe, you acknowledge that you have read, understood, and agree to be bound by these Terms of Service.
                     </p>
                 </motion.div>
 
@@ -514,7 +514,7 @@ const TermsOfService = () => {
                     className="text-center mt-12 text-sm text-[var(--color-text-secondary)]"
                 >
                     <p>Effective Date: December 2025</p>
-                    <p className="mt-2">© 2025 pagarpe. All rights reserved.</p>
+                    <p className="mt-2">© 2025 PagarPe. All rights reserved.</p>
                 </motion.div>
             </div>
         </div>

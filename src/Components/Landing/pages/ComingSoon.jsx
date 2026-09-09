@@ -89,7 +89,7 @@ const ComingSoon = () => {
                             transition={{ duration: 0.8, delay: 0.5 }}
                             className="text-lg lg:text-xl text-[var(--color-text-secondary)] leading-relaxed max-w-2xl mx-auto"
                         >
-                            We're working hard to bring you something amazing. This feature will revolutionize your payroll experience with pagarpe.
+                            We're working hard to bring you something amazing. This feature will revolutionize your payroll experience with PagarPe.
                         </motion.p>
                     </motion.div>
 

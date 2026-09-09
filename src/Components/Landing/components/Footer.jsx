@@ -9,8 +9,8 @@ const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   const socialLinks = [
-    { icon: Instagram, href: "https://www.instagram.com/pagarpe.payroll.software/", label: "Instagram" },
-    { icon: Facebook, href: "https://www.facebook.com/pagarpe.payroll.software/", label: "Facebook" },
+    { icon: Instagram, href: "https://www.instagram.com/PagarPe.payroll.software/", label: "Instagram" },
+    { icon: Facebook, href: "https://www.facebook.com/PagarPe.payroll.software/", label: "Facebook" },
     { icon: Linkedin, href: "https://linkedin.com", label: "LinkedIn" },
     { icon: Youtube, href: "https://www.youtube.com/@promanagerpayrollsoftware", label: "Youtube" },
   ];
@@ -159,7 +159,7 @@ const Footer = () => {
             {/* App Store Buttons - Left */}
             <div className="flex items-center gap-3">
               <a
-                href={config?.playstoreLink || "https://play.google.com/store/apps/details?id=com.shopno.pagarpe"}
+                href={config?.playstoreLink || "https://play.google.com/store/apps/details?id=com.shopno.PagarPe"}
                 className="transition-transform hover:scale-105 duration-200"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -171,7 +171,7 @@ const Footer = () => {
                 />
               </a>
               <a
-                href={config?.appstoreLink || "https://play.google.com/store/apps/details?id=com.shopno.pagarpe"}
+                href={config?.appstoreLink || "https://play.google.com/store/apps/details?id=com.shopno.PagarPe"}
                 className="transition-transform hover:scale-105 duration-200"
                 target="_blank"
                 rel="noopener noreferrer"

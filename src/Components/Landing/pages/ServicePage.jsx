@@ -127,7 +127,7 @@ const ServicePage = () => {
             <Helmet>
                 <title>Payroll & HR Services | PagarPe Official Platform</title>
                 <meta name="description" content="Discover PagarPe payroll and HR services. Automate salary, compliance, attendance, employee management, and insights with our secure SaaS platform." />
-                <link rel="canonical" href="https://pagarpe.in/services" />
+                <link rel="canonical" href="https://PagarPe.in/services" />
             </Helmet>
 
             {/* Hero Section */}

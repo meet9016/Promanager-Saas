@@ -88,14 +88,14 @@ const Accordion = ({ type = "single", className, defaultValue, children, ...prop
     );
 };
 
-// pagarpe Features
+// PagarPe Features
 const promanagerFeatures = [
     {
         id: 1,
         title: "Automated Payroll",
         image: payrollImg,
         description:
-            "Save time with automated salary calculations, tax deductions, and compliance checks. pagarpe ensures error-free payroll every month.",
+            "Save time with automated salary calculations, tax deductions, and compliance checks. PagarPe ensures error-free payroll every month.",
     },
     {
         id: 2,
@@ -123,7 +123,7 @@ const promanagerFeatures = [
         title: "Scalable & Secure",
         image: secureImg,
         description:
-            "pagarpe grows with your business. Our cloud-based system keeps your data safe with enterprise-grade security.",
+            "PagarPe grows with your business. Our cloud-based system keeps your data safe with enterprise-grade security.",
     },
 ];
 
@@ -137,10 +137,10 @@ const AccordionDemo = ({ features = promanagerFeatures }) => {
                 {/* Section Heading */}
                 <div className="text-center mb-16">
                     <h2 className="text-4xl font-bold text-[var(--color-text-primary)] mb-4">
-                        Why Choose<span className="bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-primary-dark)] bg-clip-text text-transparent"> pagarpe?</span>
+                        Why Choose<span className="bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-primary-dark)] bg-clip-text text-transparent"> PagarPe?</span>
                     </h2>
                     <p className="text-lg text-[var(--color-text-muted)] max-w-2xl mx-auto">
-                        Discover how pagarpe simplifies payroll and workforce management with powerful, easy-to-use features.
+                        Discover how PagarPe simplifies payroll and workforce management with powerful, easy-to-use features.
                     </p>
                 </div>
 

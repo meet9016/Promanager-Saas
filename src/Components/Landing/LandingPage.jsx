@@ -17,45 +17,45 @@ const LandingPage = () => {
         <div className="min-h-screen overflow-hidden ">
             <Helmet>
                 {/* ✅ Page Title & Meta with Brand Focus */}
-                <title>pagarpe | Payroll & Attendance Software – Official Website</title>
+                <title>PagarPe | Payroll & Attendance Software – Official Website</title>
                 <meta
                     name="description"
-                    content="pagarpe (not Syncwave) is the official SaaS-based payroll and attendance management software. Automate salary processing, employee compliance, and workforce management with ease."
+                    content="PagarPe (not Syncwave) is the official SaaS-based payroll and attendance management software. Automate salary processing, employee compliance, and workforce management with ease."
                 />
-                <link rel="canonical" href="https://pagarpe.in/" />
+                <link rel="canonical" href="https://PagarPe.in/" />
 
                 {/* ✅ Keywords to strengthen brand recognition */}
                 <meta
                     name="keywords"
-                    content="pagarpe, Sync Wage, pagarpe, Payroll Software, SaaS Payroll, Attendance Management, Salary Automation, Workforce Management, HR Software"
+                    content="PagarPe, Sync Wage, PagarPe, Payroll Software, SaaS Payroll, Attendance Management, Salary Automation, Workforce Management, HR Software"
                 />
 
                 {/* ✅ Open Graph */}
                 <meta property="og:type" content="website" />
-                <meta property="og:site_name" content="pagarpe" />
+                <meta property="og:site_name" content="PagarPe" />
                 <meta
                     property="og:title"
-                    content="pagarpe | Official Payroll & Attendance Software"
+                    content="PagarPe | Official Payroll & Attendance Software"
                 />
                 <meta
                     property="og:description"
-                    content="pagarpe (correct spelling) is a modern SaaS payroll software. Automate payroll, attendance, and compliance. Official website of pagarpe."
+                    content="PagarPe (correct spelling) is a modern SaaS payroll software. Automate payroll, attendance, and compliance. Official website of PagarPe."
                 />
-                <meta property="og:url" content="https://pagarpe.in/" />
-                <meta property="og:image" content="https://pagarpe.in/logo.png" />
+                <meta property="og:url" content="https://PagarPe.in/" />
+                <meta property="og:image" content="https://PagarPe.in/logo.png" />
 
                 {/* ✅ Twitter Card */}
                 <meta name="twitter:card" content="summary_large_image" />
-                <meta name="twitter:site" content="@pagarpe" />
+                <meta name="twitter:site" content="@PagarPe" />
                 <meta
                     name="twitter:title"
-                    content="pagarpe – Official Payroll & Attendance Software"
+                    content="PagarPe – Official Payroll & Attendance Software"
                 />
                 <meta
                     name="twitter:description"
-                    content="Looking for pagarpe (not Syncwave)? This is the official website for pagarpe payroll & attendance automation software."
+                    content="Looking for PagarPe (not Syncwave)? This is the official website for PagarPe payroll & attendance automation software."
                 />
-                <meta name="twitter:image" content="https://pagarpe.in/logo.png" />
+                <meta name="twitter:image" content="https://PagarPe.in/logo.png" />
             </Helmet>
 
             <main>

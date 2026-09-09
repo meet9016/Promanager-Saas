@@ -10,12 +10,12 @@ const SecurityPolicy = () => {
             icon: Shield,
             content: "This Security Policy applies to:",
             items: [
-                "pagarpe Web Application",
-                "pagarpe Mobile App (Android/iOS)",
+                "PagarPe Web Application",
+                "PagarPe Mobile App (Android/iOS)",
                 "Backend APIs, Database Systems, and VPS Infrastructure",
                 "All internal administrative panels and support tools"
             ],
-            footer: "This policy governs data protection, system security, network controls, and access management across all components of pagarpe."
+            footer: "This policy governs data protection, system security, network controls, and access management across all components of PagarPe."
         },
         {
             num: 2,
@@ -24,7 +24,7 @@ const SecurityPolicy = () => {
             subsections: [
                 {
                     subtitle: "2.1 Hosting Environment",
-                    content: "pagarpe operates on a secure cloud architecture consisting of:",
+                    content: "PagarPe operates on a secure cloud architecture consisting of:",
                     items: [
                         "VPS Server",
                         "SQL Database",
@@ -48,7 +48,7 @@ const SecurityPolicy = () => {
             subsections: [
                 {
                     subtitle: "3.1 Encryption In Transit",
-                    content: "All data transmitted between client devices and pagarpe servers is encrypted using:",
+                    content: "All data transmitted between client devices and PagarPe servers is encrypted using:",
                     items: ["TLS 1.2 / TLS 1.3"]
                 },
                 {
@@ -58,7 +58,7 @@ const SecurityPolicy = () => {
                 },
                 {
                     subtitle: "3.3 Sensitive Data Handling",
-                    content: "pagarpe stores only the data required for HRMS and payroll workflows, including:",
+                    content: "PagarPe stores only the data required for HRMS and payroll workflows, including:",
                     items: [
                         "Employee details",
                         "Attendance logs",
@@ -77,7 +77,7 @@ const SecurityPolicy = () => {
                 {
                     subtitle: "4.1 Restricted Production Access",
                     items: [
-                        "pagarpe enforces strict separation between development and production.",
+                        "PagarPe enforces strict separation between development and production.",
                         "Developers do not have direct access to the production database.",
                         "Access to SQL/MongoDB production systems is restricted to a small group of senior backend administrators.",
                         "Access is only permitted through a controlled, role-based gateway."
@@ -113,7 +113,7 @@ const SecurityPolicy = () => {
             subsections: [
                 {
                     subtitle: "5.1 Firewall & Network Protections",
-                    content: "pagarpe infrastructure includes:",
+                    content: "PagarPe infrastructure includes:",
                     items: [
                         "Web Application Firewall",
                         "Strict firewall rules",
@@ -125,7 +125,7 @@ const SecurityPolicy = () => {
                 },
                 {
                     subtitle: "5.2 Secure Software Development",
-                    content: "pagarpe follows:",
+                    content: "PagarPe follows:",
                     items: [
                         "OWASP security guidelines",
                         "Secure coding practices",
@@ -135,7 +135,7 @@ const SecurityPolicy = () => {
                 },
                 {
                     subtitle: "5.3 Third-Party Services",
-                    content: "pagarpe uses secure, industry-standard third-party services including:",
+                    content: "PagarPe uses secure, industry-standard third-party services including:",
                     items: [
                         "MSG91 (SMS delivery)",
                         "Razorpay (payments)",
@@ -154,7 +154,7 @@ const SecurityPolicy = () => {
             subsections: [
                 {
                     subtitle: "6.1 Uptime & Reliability",
-                    items: ["pagarpe maintains a 99.5% Uptime SLA."],
+                    items: ["PagarPe maintains a 99.5% Uptime SLA."],
                     highlight: true
                 },
                 {
@@ -181,7 +181,7 @@ const SecurityPolicy = () => {
             num: 7,
             title: "Incident Response & Reporting",
             icon: AlertTriangle,
-            content: "pagarpe maintains an internal Incident Response Plan that includes:",
+            content: "PagarPe maintains an internal Incident Response Plan that includes:",
             items: [
                 "Immediate containment of affected systems",
                 "Root cause assessment",
@@ -200,7 +200,7 @@ const SecurityPolicy = () => {
                 "Customer data is retained only for the duration of the subscription.",
                 "Upon termination, customer data is securely deleted from active systems.",
                 "Backups containing customer data automatically expire after 30 days.",
-                "pagarpe does not retain customer data beyond required operational timelines."
+                "PagarPe does not retain customer data beyond required operational timelines."
             ]
         },
         {
@@ -219,7 +219,7 @@ const SecurityPolicy = () => {
             num: 10,
             title: "Updates to This Security Policy",
             icon: RefreshCw,
-            content: "pagarpe may update this Security Policy to reflect:",
+            content: "PagarPe may update this Security Policy to reflect:",
             items: [
                 "Legal requirements",
                 "Infrastructure changes",
@@ -300,7 +300,7 @@ const SecurityPolicy = () => {
                         transition={{ duration: 0.6, delay: 0.3 }}
                         className="text-base text-[var(--color-text-secondary)] max-w-3xl mx-auto leading-relaxed"
                     >
-                        pagarpe is committed to ensuring the confidentiality, integrity, and availability of employee and payroll information entrusted to our platform. This Security Policy describes how pagarpe protects customer data through administrative, technical, and physical security controls.
+                        PagarPe is committed to ensuring the confidentiality, integrity, and availability of employee and payroll information entrusted to our platform. This Security Policy describes how PagarPe protects customer data through administrative, technical, and physical security controls.
                     </motion.p>
                 </motion.div>
 
@@ -431,7 +431,7 @@ const SecurityPolicy = () => {
                         <div>
                             <h3 className="text-2xl font-bold mb-3">Our Security Commitment</h3>
                             <p className="text-white text-opacity-90 leading-relaxed">
-                                At pagarpe, security is not an afterthought—it's built into every layer of our platform. We continuously monitor, update, and improve our security measures to protect your sensitive payroll and employee data. Your trust is our top priority, and we work tirelessly to maintain it through transparent security practices and proactive threat management.
+                                At PagarPe, security is not an afterthought—it's built into every layer of our platform. We continuously monitor, update, and improve our security measures to protect your sensitive payroll and employee data. Your trust is our top priority, and we work tirelessly to maintain it through transparent security practices and proactive threat management.
                             </p>
                         </div>
                     </div>
@@ -477,9 +477,9 @@ const SecurityPolicy = () => {
                     className="text-center mt-12 text-sm text-[var(--color-text-secondary)]"
                 >
                     <p>Last Updated: December 2025</p>
-                    <p className="mt-2">© 2025 pagarpe. All rights reserved.</p>
+                    <p className="mt-2">© 2025 PagarPe. All rights reserved.</p>
                     <p className="mt-4 max-w-2xl mx-auto">
-                        This Security Policy is subject to change. Continued use of pagarpe constitutes acceptance of any updates.
+                        This Security Policy is subject to change. Continued use of PagarPe constitutes acceptance of any updates.
                     </p>
                 </motion.div>
             </div>

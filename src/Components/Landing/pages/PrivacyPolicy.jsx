@@ -10,7 +10,7 @@ const PrivacyPolicy = () => {
             icon: Shield,
             content: [
                 { label: "Employer/Subscriber", desc: "Acts as the Data Controller." },
-                { label: "pagarpe", desc: "Functions as the Data Processor, processing data solely to provide the platform services." },
+                { label: "PagarPe", desc: "Functions as the Data Processor, processing data solely to provide the platform services." },
                 { label: "Note", desc: "Employers are responsible for obtaining necessary consent from employees before importing any personal or biometric data." }
             ]
         },
@@ -127,7 +127,7 @@ const PrivacyPolicy = () => {
                         transition={{ duration: 0.6, delay: 0.3 }}
                         className="text-base text-[var(--color-text-secondary)] max-w-3xl mx-auto leading-relaxed"
                     >
-                        pagarpe ("we", "our", "Company") is committed to protecting your personal and employee information. This Privacy Policy explains how we collect, process, store, and handle data through our website, mobile apps, and services.
+                        PagarPe ("we", "our", "Company") is committed to protecting your personal and employee information. This Privacy Policy explains how we collect, process, store, and handle data through our website, mobile apps, and services.
                     </motion.p>
 
                     <motion.div
@@ -137,7 +137,7 @@ const PrivacyPolicy = () => {
                         className="mt-6 inline-flex items-center px-6 py-3 bg-[var(--color-bg-secondary-30)] text-[var(--color-text-primary)] rounded-full text-sm font-medium border border-[var(--color-border-primary)] backdrop-blur-sm"
                     >
                         <AlertCircle className="w-4 h-4 mr-2" />
-                        By using pagarpe, you agree to the practices described below
+                        By using PagarPe, you agree to the practices described below
                     </motion.div>
                 </motion.div>
 
@@ -263,7 +263,7 @@ const PrivacyPolicy = () => {
                     {
                         num: 7,
                         title: "Children's Data",
-                        content: "pagarpe does not target or collect data from individuals under 18 years of age."
+                        content: "PagarPe does not target or collect data from individuals under 18 years of age."
                     },
                     {
                         num: 8,
@@ -309,7 +309,7 @@ const PrivacyPolicy = () => {
                     {
                         num: 11,
                         title: "Data Breach Notification",
-                        content: "In the event of a data breach, pagarpe will:",
+                        content: "In the event of a data breach, PagarPe will:",
                         items: [
                             "Immediately isolate affected systems",
                             "Assess impact",
@@ -405,7 +405,7 @@ const PrivacyPolicy = () => {
                                         Email: <a href="mailto:harshitkapadia563@gmail.com" className="underline hover:opacity-80 transition-opacity">harshitkapadia563@gmail.com</a>
                                     </p>
                                     <p className="opacity-90">
-                                        Attention: Privacy Officer – pagarpe
+                                        Attention: Privacy Officer – PagarPe
                                     </p>
                                 </div>
                             </div>
@@ -422,7 +422,7 @@ const PrivacyPolicy = () => {
                     className="text-center mt-12 text-sm text-[var(--color-text-secondary)]"
                 >
                     <p>Last updated: December 2025</p>
-                    <p className="mt-2">© 2025 pagarpe. All rights reserved.</p>
+                    <p className="mt-2">© 2025 PagarPe. All rights reserved.</p>
                 </motion.div>
             </div>
         </div>

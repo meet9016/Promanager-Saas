@@ -468,7 +468,7 @@ function PrivacyPolicyPage() {
               <div className="bg-gray-50 p-8 rounded-lg space-y-2">
                 <p className="text-gray-700">
                   <span className="font-semibold">Email:</span>{" "}
-                  {/* contact@pagarpe.in */}
+                  {/* contact@PagarPe.in */}
                   {config?.email}
                 </p>
                 <p className="text-gray-700">

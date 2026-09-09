@@ -108,12 +108,12 @@ const FeaturesSection = ({ noMoreFeatures = false, noBenefits = false }) => {
   return (
     <section className="py-12 lg:py-20 bg-white relative overflow-hidden">
       <Helmet>
-        <title>Payroll Software Features | pagarpe</title>
+        <title>Payroll Software Features | PagarPe</title>
         <meta
           name="description"
-          content="Explore pagarpe payroll software features: automated salary processing, compliance-ready payroll, real-time insights, employee self-service, and secure HR operations."
+          content="Explore PagarPe payroll software features: automated salary processing, compliance-ready payroll, real-time insights, employee self-service, and secure HR operations."
         />
-        <link rel="canonical" href="https://pagarpe.in/features" />
+        <link rel="canonical" href="https://PagarPe.in/features" />
       </Helmet>
 
       {/* Decorative Background */}

@@ -1,7 +1,7 @@
 User-agent: *
 Allow: /
-Sitemap: https://pagarpe.in/sitemap.xml
-Host: https://pagarpe.in
+Sitemap: https://PagarPe.in/sitemap.xml
+Host: https://PagarPe.in
 
 # Crawl-delay can be added if needed for server load management
 # Crawl-delay: 10
