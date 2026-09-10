@@ -736,7 +736,7 @@ const DocumentPage = () => {
               'Manage different branches of the company here. You can add a new branch and update the details of existing branches.',
               'यहाँ कंपनी की विभिन्न शाखाओं का प्रबंधन करें। आप एक नई शाखा जोड़ सकते हैं और मौजूदा शाखाओं का विवरण अपडेट कर सकते हैं।'
             )}
-            imageSrc="/document%20image/branch1.webp"
+            imageSrc="/document%20image/branch1.png"
             imageAlt="Branch"
             onPreview={setPreviewImage}
           />
@@ -760,7 +760,7 @@ const DocumentPage = () => {
               'Set salary deduction rules and categories here. These rules are automatically applied during payroll processing.',
               'यहाँ वेतन कटौती के नियम और श्रेणियाँ निर्धारित करें। ये नियम पेरोल प्रसंस्करण के दौरान स्वचालित रूप से लागू होते हैं।'
             )}
-            imageSrc="/document%20image/deduction1.webp"
+            imageSrc="/document%20image/deduction1.png"
             imageAlt="Deduction"
             onPreview={setPreviewImage}
           />
