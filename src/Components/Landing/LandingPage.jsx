@@ -66,7 +66,7 @@ const LandingPage = () => {
                 <ServicesSection />
                 <ResourceTemplatesSection />
                 <FeaturesSection noMoreFeatures={true} />
-                <CoreFeaturesSection />
+                {/* <CoreFeaturesSection /> */}
                 <TestimonialSection />
                 <CTASection />
                 <Popup />
