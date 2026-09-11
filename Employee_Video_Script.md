@@ -16,10 +16,10 @@
 **Visuals:** Show the main `Employee` list page. Scroll through the table. Demonstrate searching for a specific employee by name or ID, and maybe applying some filters.
 **Voiceover (Script):**
 "Employees section par click karte hi aapko sabhi employees ki ek list dikhai degi. 
-- Yahan par aap har employee ka Name, ID, Department, aur unka Branch ek hi jagah pe dekh sakte hain.
-- Upar diye gaye Search bar ka use karke aap kisi bhi employee ko unke naam ya ID se easily find sakte hain.
-- Sath hi, yahan Action buttons hain jinki madad se aap employee ki details dekh sakte hain ya unki profile ko edit aur deactive bhi kar sakte hain."
-
+- Yahan par aap har employee ka Name, ID, Department, aur unka Branch ek hi jagah dekh sakte hain.
+- Upar diye gaye Search bar ka use karke aap kisi bhi employee ko unke naam ya ID se easily find kar sakte hain.
+- Attendance Permission में Mobile और Biometric के options हैं। Employee को जो permission दी गई है, वह उसी से attendance mark कर सकता है।
+- Location Permission में Office और Personal के options हैं। Employee को दी गई permission के अनुसार ही location से attendance mark की जा सकती है।
 ---
 
 ## 3. Adding a New Employee (1:30 - 2:45)
@@ -30,23 +30,20 @@
 - Iske alawa 'Company Details' section mein aap unki Joining Date, Branch, Department aur Designation set kar sakte hain. 
 - Salary, allowances aur deductions ki details bhi aap yahin se configure kar sakte hain.
 - Saari information fill karne ke baad bas 'Save' par click karein, aur naya employee system mein add ho jayega."
-
 ---
 
 ## 4. Employee Details & Profile (2:45 - 3:30)
 **Visuals:** Go back to the employee list and click on the 'View' icon for a specific employee to open `EmployeeDetail` page. Scroll through the profile details.
 **Voiceover (Script):**
 "Agar aapko kisi existing employee ki poori profile dekhni hai, toh unke naam ke aage 'View' button par click karein. 
-- Ye unka Employee Detail page hai. Yahan aap unki personal information, contact details, aur job-related saari information ek sath dekh sakte hain.
-- Is profile section se unki payroll aur leave history ko bhi track karna kafi simple ho jata hai. Agar unhone koi document submit kiye hain toh wo bhi yahan maintain rehte hain."
+- Ye unka Employee Detail page hai. Yahan aap unki personal information, Salary information, document, contact details, aur ek sath dekh sakte hain.
 
 ---
 
 ## 5. Conclusion / Outro (3:30 - 4:00)
 **Visuals:** Return to the Employee List or Dashboard. Show contact info on the screen.
 **Voiceover (Script):**
-"Toh dosto, yeh tha PagarPe SaaS mein Employee Management ka poora process. Is module ki madad se aapka HR work aur employee onboarding bahut hi smooth aur paperless ban jata hai.
-Koi bhi sawaal ho toh aap support team se contact kar sakte hain. Video ko like karein aur channel ko subscribe zaroor karein!"
-
+"Toh dosto, yeh tha Promanager mein Employee Management ka poora process. Is module ki madad se aapka HR work aur employee onboarding bahut hi smooth aur paperless ban jata hai.
+Koi bhi Quations ho toh aap support team se contact kar sakte hain. Video ko like karein aur channel ko subscribe zaroor karein!"
 --- 
 **Note:** Aap is script ko apne software ki actual screen ke hisaab se thoda bahut adjust (customize) kar sakte hain.
