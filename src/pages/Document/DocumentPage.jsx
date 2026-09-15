@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Logo from '../../Components/comman/Logo';
 import {
   BookOpen, Users, Clock, Calendar, IndianRupee,
@@ -333,8 +334,12 @@ const VideoTutorialsSection = ({ language, t, onBackToDocs }) => {
 };
 
 const DocumentPage = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const isVideoRoute = location.pathname.includes('/video');
+  const viewMode = isVideoRoute ? 'videos' : 'doc';
   const [activeSection, setActiveSection] = useState('intro');
-  const [viewMode, setViewMode] = useState('doc'); // 'doc' | 'videos'
   const [language, setLanguage] = useState('en'); // Default language
   const [previewImage, setPreviewImage] = useState(null);
   const contentRef = useRef(null);
@@ -1321,7 +1326,7 @@ const DocumentPage = () => {
             <button
               onClick={(e) => {
                 e.stopPropagation();
-                setViewMode('videos');
+                navigate('/document/video');
                 if (contentRef.current) contentRef.current.scrollTop = 0;
               }}
               className="w-full mt-1 bg-white hover:bg-slate-100 text-[#340C8E] font-bold py-1.5 px-3 rounded-xl text-sm flex items-center justify-center gap-1.5 transition-colors shadow-xs cursor-pointer"
@@ -1340,7 +1345,11 @@ const DocumentPage = () => {
           {/* Learn with Videos Action Button (In-Tab Toggle) */}
           <button
             onClick={() => {
-              setViewMode('videos');
+              if (viewMode === 'videos') {
+                navigate('/document');
+              } else {
+                navigate('/document/video');
+              }
               if (contentRef.current) contentRef.current.scrollTop = 0;
             }}
             className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold transition-all border cursor-pointer group ${viewMode === 'videos'
@@ -1387,7 +1396,10 @@ const DocumentPage = () => {
             <VideoTutorialsSection
               language={language}
               t={t}
-              onBackToDocs={() => setViewMode('doc')}
+              onBackToDocs={() => {
+                navigate('/document');
+                if (contentRef.current) contentRef.current.scrollTop = 0;
+              }}
             />
           ) : (
             <div className="max-w-7xl mx-auto bg-white rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-200/90 p-5 sm:p-7 md:p-8 mb-12 mt-16">

@@ -7,10 +7,8 @@ import {
   BarChart3,
   Shield,
   Zap,
-  ArrowRight,
 } from "lucide-react";
 import { Helmet } from "@dr.pogodin/react-helmet";
-import { Link } from "react-router-dom";
 
 const benefits = [
   {
@@ -214,7 +212,6 @@ const FeaturesSection = ({ noMoreFeatures = false, noBenefits = false }) => {
                       className="group"
                     >
                       <div className="flex items-start gap-4">
-
                         <motion.div
                           whileHover={{ scale: 1.15, rotate: 10 }}
                           transition={{ duration: 0.3 }}
@@ -252,7 +249,6 @@ const FeaturesSection = ({ noMoreFeatures = false, noBenefits = false }) => {
                 className="flex justify-center"
               >
                 <div className="relative">
-
                   <motion.div
                     animate={{ scale: [1, 1.1, 1], opacity: [0.6, 0.8, 0.6] }}
                     transition={{
@@ -274,37 +270,17 @@ const FeaturesSection = ({ noMoreFeatures = false, noBenefits = false }) => {
                   />
 
                   <motion.div
-                    whileHover={{ scale: 1.02, rotateY: 5 }}
+                    whileHover={{ y: -6, scale: 1.02 }}
                     transition={{ duration: 0.4 }}
-                    className="relative h-96"
+                    className="relative rounded-2xl bg-white border border-[var(--color-border-primary)] shadow-2xl p-3 overflow-hidden flex items-center justify-center max-w-sm sm:max-w-md"
                   >
                     <img
                       src="/images/Smarter-Payroll1.png"
                       alt="Payroll Dashboard"
                       loading="lazy"
-                      className="w-full h-full object-contain"
+                      className="w-full h-72 sm:h-80 object-contain rounded-xl"
                     />
                   </motion.div>
-
-                  <motion.div
-                    animate={{ y: [-5, 5, -5], rotate: [0, 180, 360] }}
-                    transition={{
-                      duration: 4,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                    }}
-                    className="absolute top-12 -right-8 w-6 h-6 bg-[var(--color-primary-dark)] rounded opacity-70"
-                  />
-                  <motion.div
-                    animate={{ y: [5, -5, 5], x: [-2, 2, -2] }}
-                    transition={{
-                      duration: 3,
-                      delay: 0.5,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                    }}
-                    className="absolute bottom-20 -left-6 w-4 h-4 bg-[var(--color-primary-dark)] rounded opacity-70"
-                  />
                 </div>
               </motion.div>
 
@@ -354,9 +330,9 @@ const FeaturesSection = ({ noMoreFeatures = false, noBenefits = false }) => {
           </>
         )}
 
-        {/* Zig-Zag Features Section */}
+        {/* Powerful Features Bento Cards Grid */}
         {!noMoreFeatures && (
-          <div className="pay-features-section image-title-text ">
+          <div className="pay-features-section">
 
             <motion.div
               initial={{ opacity: 0, y: 30 }}
@@ -375,7 +351,6 @@ const FeaturesSection = ({ noMoreFeatures = false, noBenefits = false }) => {
                 >
                   Powerful Features
                 </motion.h3>
-
 
                 <motion.svg
                   initial={{ pathLength: 0, opacity: 0 }}
@@ -433,87 +408,57 @@ const FeaturesSection = ({ noMoreFeatures = false, noBenefits = false }) => {
               </motion.p>
             </motion.div>
 
-            <div className="pay-features-container max-w-6xl mx-auto space-y-20">
+            {/* 3-Column Bento Cards Grid with Mac Window Mockups */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
               {features.map((feature, index) => (
                 <motion.div
                   key={index}
-                  initial={{ opacity: 0, y: 50 }}
+                  initial={{ opacity: 0, y: 40 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  transition={{ duration: 0.8 }}
-                  className={`pay-feature-item flex flex-col ${index % 2 === 0
-                    ? "lg:flex-row"
-                    : "lg:flex-row-reverse"
-                    } items-center gap-8 lg:gap-16`}
+                  transition={{ duration: 0.6, delay: (index % 3) * 0.15 }}
+                  className="bg-white rounded-3xl border border-[var(--color-border-primary)] shadow-md hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-300 overflow-hidden flex flex-col justify-between p-5 sm:p-6 group relative"
                 >
+                  {/* Top Badge & Header */}
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-xs font-bold text-[var(--color-primary-darker)] bg-[var(--color-primary-alpha-10)] px-3.5 py-1 rounded-full border border-[var(--color-primary-alpha-20)]">
+                      Feature {String(index + 1).padStart(2, "0")}
+                    </span>
+                    <span className="text-xs font-bold text-slate-400">
+                      PagarPe
+                    </span>
+                  </div>
 
-                  <motion.div
-                    whileHover={{ scale: 1.05 }}
-                    transition={{ duration: 0.3 }}
-                    className="pay-feature-image flex-1 w-full"
-                  >
-                    <div className="relative">
+                  {/* Mac Browser Frame Mockup for Image */}
+                  <div className="relative rounded-2xl overflow-hidden border border-slate-200/80 shadow-sm bg-slate-50/50 mb-5 group-hover:border-[var(--color-primary-alpha-30)] transition-colors">
+                    <div className="flex items-center gap-1.5 px-3 py-2 bg-slate-100/90 border-b border-slate-200/80">
+                      <span className="w-2.5 h-2.5 rounded-full bg-rose-400" />
+                      <span className="w-2.5 h-2.5 rounded-full bg-amber-400" />
+                      <span className="w-2.5 h-2.5 rounded-full bg-emerald-400" />
+                      <span className="text-[10px] font-medium text-slate-400 ml-2 truncate">
+                        {feature.title}
+                      </span>
+                    </div>
 
-                      <div className="absolute inset-0 bg-gradient-to-br from-[#6C4CF1]/20 to-[#4B2EDB]/20 rounded-3xl blur-3xl transform scale-90" />
-
+                    <div className="p-2 sm:p-3 bg-white flex items-center justify-center min-h-[180px]">
                       <img
                         src={feature.image}
                         alt={feature.alt}
                         loading="lazy"
-                        className="w-full h-auto rounded-2xl shadow-2xl relative z-10"
-                      />
-
-                      <motion.div
-                        animate={{
-                          y: [-5, 5, -5],
-                          rotate: [0, 5, 0],
-                        }}
-                        transition={{
-                          duration: 4,
-                          repeat: Infinity,
-                          ease: "easeInOut",
-                        }}
-                        className={`absolute ${index % 2 === 0
-                          ? "-right-4 -bottom-4"
-                          : "-left-4 -bottom-4"
-                          } w-16 h-16 bg-gradient-to-br from-[#6C4CF1] to-[#4B2EDB] rounded-2xl opacity-20 blur-xl`}
+                        className="w-full h-[170px] sm:h-[190px] object-contain rounded-lg group-hover:scale-105 transition-transform duration-500"
                       />
                     </div>
-                  </motion.div>
+                  </div>
 
-                  <motion.div
-                    initial={{ opacity: 0, x: index % 2 === 0 ? 50 : -50 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.8, delay: 0.2 }}
-                    className="pay-feature-text flex-1 space-y-4"
-                  >
-                    <div className="inline-block">
-                      <span className="text-sm font-semibold text-[var(--color-primary-darker)] bg-[var(--color-primary-lighter)] px-4 py-2 rounded-full">
-                        Feature {String(index + 1).padStart(2, "0")}
-                      </span>
-                    </div>
-
-                    <h3 className="text-3xl lg:text-4xl font-bold text-[var(--color-text-primary)] leading-tight">
+                  {/* Title & Description */}
+                  <div className="space-y-2">
+                    <h3 className="text-xl font-bold text-[var(--color-text-primary)] group-hover:text-[var(--color-primary-darker)] transition-colors">
                       {feature.title}
                     </h3>
-
-                    <p className="text-lg text-[var(--color-text-secondary)] leading-relaxed">
+                    <p className="text-sm text-[var(--color-text-secondary)] leading-relaxed">
                       {feature.description}
                     </p>
-
-                    {/* <Link to="/login" className="inline-block">
-                      <motion.a
-                        href="/login"
-                        className="inline-flex items-center gap-2 text-[var(--color-primary-darker)] font-semibold group mt-4"
-                        whileHover={{ x: 5 }}
-                      >
-                        Learn More
-                        <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                      </motion.a>
-                    </Link> */}
-
-                  </motion.div>
+                  </div>
                 </motion.div>
               ))}
             </div>

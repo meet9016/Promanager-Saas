@@ -92,14 +92,13 @@ const AboutSection = () => {
               <motion.div
                 whileHover={{ scale: 1.02 }}
                 transition={{ duration: 0.3 }}
-                className="relative overflow-hidden"
+                className="relative overflow-hidden rounded-2xl border-2 border-[#6c4cf1]/20 shadow-2xl bg-white p-2.5 sm:p-3"
               >
                 <img
-
                   src={AboutProManager}
                   alt="PagarPe Dashboard"
                   loading="lazy"
-                  className="w-full h-auto object-cover"
+                  className="w-full h-[320px] sm:h-[370px] lg:h-[450px] object-cover object-top rounded-xl"
                 />
               </motion.div>
 

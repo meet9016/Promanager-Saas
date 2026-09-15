@@ -285,7 +285,7 @@ const LandingNavbar = () => {
                                 { to: "/about", label: "About Us" },
                                 { to: "/features", label: "Features" },
                                 { to: "/pricing", label: "Pricing" },
-
+                                { to: "/document", label: "Document" },
                             ].map((item) => (
                                 <NavLink
                                     key={item.to}
@@ -558,6 +558,7 @@ const LandingNavbar = () => {
                                             { to: "/about", label: "About Us" },
                                             { to: "/features", label: "Features" },
                                             { to: "/pricing", label: "Pricing" },
+                                            { to: "/document", label: "Document" },
                                             { to: "/contact", label: "Contact Us" },
                                         ].map((item) => (
                                             <NavLink
