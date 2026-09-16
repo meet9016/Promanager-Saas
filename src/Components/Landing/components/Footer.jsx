@@ -1,6 +1,6 @@
 import React from "react";
 import { Instagram, Facebook, Linkedin, Youtube, Mail, Phone, MapPin } from "lucide-react";
-import Logo from "../../comman/Logo";
+import newLogo1 from "../../../assets/new_logo1.png";
 import { Link } from "react-router-dom";
 import { useSoftwareConfig } from "../../../context/SoftwareConfigContext";
 
@@ -68,7 +68,8 @@ const Footer = () => {
             {/* Col 1: Company Info & Address */}
             <div className="space-y-4 text-left">
               <Link to="/" className="inline-block mb-2">
-                <Logo
+                <img
+                  src={newLogo1}
                   alt="PagarPe Logo"
                   className="h-14 w-auto object-contain hover:opacity-90 transition-opacity"
                 />

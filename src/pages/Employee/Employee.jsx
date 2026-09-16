@@ -20,8 +20,11 @@ import {
     UserCircle,
     CheckCircle,
     Home,
-    X
+    X,
+    Download
 } from 'lucide-react';
+import ExcelJS from 'exceljs';
+import { saveAs } from 'file-saver';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import api from '../../api/axiosInstance';
@@ -625,6 +628,312 @@ export default function Employee() {
         setSearchQuery('');
     }, []);
 
+    // ─── Download Import Template ────────────────────────────────────────────────
+    const [isDownloadingTemplate, setIsDownloadingTemplate] = useState(false);
+
+    const handleDownloadTemplate = useCallback(async () => {
+        try {
+            setIsDownloadingTemplate(true);
+
+            // ── Colors (project purple theme) ─────────────────────────────────────
+            const C = {
+                headerBg: 'FF5B21B6',   // deep purple
+                headerMid: 'FF7C3AED',   // medium purple  (sub-headers)
+                headerText: 'FFFFFFFF',   // white
+                infoBg: 'FFEDE9FE',   // lavender (instruction row)
+                infoText: 'FF3B0764',   // dark purple text
+                rowAlt: 'FFF5F3FF',   // very light purple (alternating)
+                rowWhite: 'FFFFFFFF',
+                border: 'FFD8B4FE',   // light purple border
+                required: 'FFFDE68A',   // light yellow highlight for required cols
+                reqText: 'FF92400E',   // amber text
+            };
+
+            const workbook = new ExcelJS.Workbook();
+            workbook.creator = 'Promanager';
+            workbook.created = new Date();
+
+            // ── LOOKUP sheet (hidden) — holds dropdown values for data validation ─
+            const lookupSheet = workbook.addWorksheet('Lookups');
+            lookupSheet.state = 'hidden';
+
+            // Write each dropdown list into a column on the Lookup sheet
+            const dropdownSets = [
+                { col: 1, header: 'Branch', list: branches },
+                { col: 2, header: 'Department', list: departments },
+                { col: 3, header: 'Designation', list: designations },
+                { col: 4, header: 'Company', list: companies },
+                { col: 5, header: 'Employment Type', list: employeeTypes },
+                { col: 6, header: 'Gender', list: genders },
+                { col: 7, header: 'Salary Type', list: salaryTypes },
+                { col: 8, header: 'Status', list: status },
+            ];
+
+            const lookupColRefs = {}; // stores {key: 'Lookups!$A$2:$A$10'} per key
+            dropdownSets.forEach(({ col, header, list }) => {
+                const colLetter = String.fromCharCode(64 + col); // A=1, B=2...
+                lookupSheet.getCell(`${colLetter}1`).value = header;
+                list.forEach((item, i) => {
+                    lookupSheet.getCell(`${colLetter}${i + 2}`).value = item.name;
+                });
+                if (list.length > 0) {
+                    lookupColRefs[header] = `Lookups!$${colLetter}$2:$${colLetter}$${list.length + 1}`;
+                }
+            });
+
+            // ── MAIN template sheet ───────────────────────────────────────────────
+            const sheet = workbook.addWorksheet('Employee Import', {
+                pageSetup: { fitToPage: true, orientation: 'landscape' },
+                properties: { tabColor: { argb: 'FF5B21B6' } },
+            });
+
+            // Column definitions — field, header, width, required, dropdownKey
+            // Order matches the image: Employee Code > Full Name > Email > Mobile No. > Password > Gender > Branch > Department > Designation > Company > Employment Type > Salary Type > Base Salary > Address > Date of Birth > Date of Joining > bank/emergency fields
+            const cols = [
+                { key: 'employee_code', header: 'Employee Code *', width: 16, required: true },
+                { key: 'full_name', header: 'Full Name *', width: 22, required: true },
+                { key: 'email', header: 'Email', width: 28 },
+                { key: 'mobile_number', header: 'Mobile Number *', width: 16, required: true },
+                { key: 'password', header: 'Password *', width: 18, required: true },
+                { key: 'gender', header: 'Gender', width: 14, dropdown: 'Gender' },
+                { key: 'branch', header: 'Branch *', width: 18, required: true, dropdown: 'Branch' },
+                { key: 'department', header: 'Department *', width: 18, required: true, dropdown: 'Department' },
+                { key: 'designation', header: 'Designation', width: 18, dropdown: 'Designation' },
+                { key: 'company', header: 'Company', width: 18, dropdown: 'Company' },
+                { key: 'employment_type', header: 'Employment Type', width: 18, dropdown: 'Employment Type' },
+                { key: 'salary_type', header: 'Salary Type', width: 16, dropdown: 'Salary Type' },
+                { key: 'salary', header: 'Base Salary (₹)', width: 16 },
+                { key: 'address', header: 'Address', width: 32 },
+                { key: 'date_of_birth', header: 'Date of Birth (YYYY-MM-DD)', width: 20 },
+                { key: 'date_of_joining', header: 'Date of Joining * (YYYY-MM-DD)', width: 22, required: true },
+                { key: 'bank_name', header: 'Bank Name', width: 20 },
+                { key: 'bank_branch', header: 'Bank Branch Name', width: 20 },
+                { key: 'bank_account_number', header: 'Account Number', width: 20 },
+                { key: 'bank_ifsc_code', header: 'IFSC Code', width: 16 },
+                { key: 'emergency_contact_name', header: 'Emergency Contact Name', width: 22 },
+                { key: 'emergency_contact_no', header: 'Emergency Contact No.', width: 20 },
+                { key: 'emergency_address', header: 'Emergency Address', width: 28 },
+            ];
+
+            // Set column widths
+            sheet.columns = cols.map(c => ({ key: c.key, width: c.width }));
+
+            const TOTAL_COLS = cols.length;
+            const DATA_START_ROW = 5; // row 1=title, 2=note, 3=legend, 4=header, 5+=data
+            const DATA_ROWS = 500;    // pre-format 500 rows for data entry
+
+            // ── Row 1: Title ──────────────────────────────────────────────────────
+            sheet.getRow(1).height = 38;
+            const titleCell = sheet.getCell('A1');
+            titleCell.value = 'Employee Import Template';
+            titleCell.font = { name: 'Calibri', size: 17, bold: true, color: { argb: C.headerText } };
+            titleCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: C.headerBg } };
+            titleCell.alignment = { vertical: 'middle', horizontal: 'center' };
+            sheet.mergeCells(1, 1, 1, TOTAL_COLS);
+
+            // ── Row 2: Instructions ───────────────────────────────────────────────
+            sheet.getRow(2).height = 22;
+            const noteCell = sheet.getCell('A2');
+            noteCell.value = '📋  Fill data from row 5 onwards. Columns marked * are mandatory. Use dropdowns where provided. Date format: YYYY-MM-DD';
+            noteCell.font = { name: 'Calibri', size: 10, italic: true, color: { argb: C.infoText } };
+            noteCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: C.infoBg } };
+            noteCell.alignment = { vertical: 'middle', horizontal: 'left' };
+            sheet.mergeCells(2, 1, 2, TOTAL_COLS);
+
+            // ── Row 3: Legend ─────────────────────────────────────────────────────
+            sheet.getRow(3).height = 18;
+            const legCell1 = sheet.getCell('A3');
+            legCell1.value = '🟡 Yellow = Required field';
+            legCell1.font = { name: 'Calibri', size: 9, bold: true, color: { argb: C.reqText } };
+            legCell1.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: C.infoBg } };
+            legCell1.alignment = { vertical: 'middle', horizontal: 'left' };
+            sheet.mergeCells(3, 1, 3, Math.ceil(TOTAL_COLS / 2));
+
+            const legCell2 = sheet.getCell(3, Math.ceil(TOTAL_COLS / 2) + 1);
+            legCell2.value = '🔽 Columns with dropdown — click cell to see options';
+            legCell2.font = { name: 'Calibri', size: 9, bold: true, color: { argb: C.infoText } };
+            legCell2.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: C.infoBg } };
+            legCell2.alignment = { vertical: 'middle', horizontal: 'left' };
+            sheet.mergeCells(3, Math.ceil(TOTAL_COLS / 2) + 1, 3, TOTAL_COLS);
+
+            // ── Row 4: Column Headers ─────────────────────────────────────────────
+            const headerRow = sheet.getRow(4);
+            headerRow.height = 30;
+            cols.forEach((col, ci) => {
+                const cell = headerRow.getCell(ci + 1);
+                cell.value = col.header;
+                cell.font = { name: 'Calibri', size: 10, bold: true, color: { argb: C.headerText } };
+                cell.fill = {
+                    type: 'pattern', pattern: 'solid',
+                    fgColor: { argb: col.required ? C.headerBg : C.headerMid },
+                };
+                cell.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
+                cell.border = {
+                    top: { style: 'thin', color: { argb: C.border } },
+                    bottom: { style: 'medium', color: { argb: C.headerBg } },
+                    left: { style: 'thin', color: { argb: C.border } },
+                    right: { style: 'thin', color: { argb: C.border } },
+                };
+            });
+
+            // ── Rows 5–504: Data area formatting + dropdown validation ────────────
+            for (let rowIdx = DATA_START_ROW; rowIdx < DATA_START_ROW + DATA_ROWS; rowIdx++) {
+                const row = sheet.getRow(rowIdx);
+                row.height = 18;
+                const isAlt = (rowIdx - DATA_START_ROW) % 2 === 1;
+
+                cols.forEach((col, ci) => {
+                    const cell = row.getCell(ci + 1);
+
+                    // Background
+                    const bgArgb = col.required ? C.required : (isAlt ? C.rowAlt : C.rowWhite);
+                    cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: bgArgb } };
+                    cell.font = { name: 'Calibri', size: 10 };
+                    cell.alignment = { vertical: 'middle', horizontal: 'left' };
+                    cell.border = {
+                        top: { style: 'hair', color: { argb: C.border } },
+                        bottom: { style: 'hair', color: { argb: C.border } },
+                        left: { style: 'hair', color: { argb: C.border } },
+                        right: { style: 'hair', color: { argb: C.border } },
+                    };
+
+                    // Dropdown data validation
+                    if (col.dropdown && lookupColRefs[col.dropdown]) {
+                        cell.dataValidation = {
+                            type: 'list',
+                            allowBlank: true,
+                            showErrorMessage: true,
+                            errorTitle: 'Invalid Value',
+                            error: `Please select a valid ${col.dropdown} from the dropdown.`,
+                            formulae: [lookupColRefs[col.dropdown]],
+                        };
+                    }
+                });
+            }
+
+            // ── Freeze panes: keep title/note/legend/header visible ───────────────
+            sheet.views = [{ state: 'frozen', xSplit: 0, ySplit: 4, activeCell: 'A5' }];
+
+            // ── Auto-filter on header row ─────────────────────────────────────────
+            sheet.autoFilter = {
+                from: { row: 4, column: 1 },
+                to: { row: 4, column: TOTAL_COLS },
+            };
+
+            // ── Sample row (row 5) — greyed out hint ──────────────────────────────
+            // Order MUST match cols array above exactly
+            const sampleValues = [
+                /* Employee Code    */ 'EMP001',
+                /* Full Name        */ 'John Doe',
+                /* Email            */ 'john@example.com',
+                /* Mobile Number    */ '9876543210',
+                /* Password         */ 'Pass@123',
+                /* Gender           */ genders[0]?.name || '',
+                /* Branch           */ branches[0]?.name || '',
+                /* Department       */ departments[0]?.name || '',
+                /* Designation      */ designations[0]?.name || '',
+                /* Company          */ companies[0]?.name || '',
+                /* Employment Type  */ employeeTypes[0]?.name || '',
+                /* Salary Type      */ salaryTypes[0]?.name || '',
+                /* Base Salary      */ '25000',
+                /* Address          */ '123 Main St, City',
+                /* Date of Birth    */ '1995-06-20',
+                /* Date of Joining  */ '2024-01-15',
+                /* Bank Name        */ 'State Bank of India',
+                /* Bank Branch Name */ 'Main Branch',
+                /* Account Number   */ '1234567890',
+                /* IFSC Code        */ 'SBIN0001234',
+                /* Emergency Name   */ 'Emergency Name',
+                /* Emergency No.    */ '9123456789',
+                /* Emergency Addr.  */ 'Emergency Address',
+            ];
+            const sampleRow = sheet.getRow(5);
+            sampleValues.forEach((val, ci) => {
+                const cell = sampleRow.getCell(ci + 1);
+                cell.value = val;
+                cell.font = { name: 'Calibri', size: 10, color: { argb: 'FF9CA3AF' }, italic: true };
+                // Keep existing fill & border from loop above
+            });
+
+            // ── Add a note on row 5 col 1 indicating it's a sample ───────────────
+            sheet.getCell('A5').note = {
+                texts: [{ font: { size: 9 }, text: '⚠ This is a SAMPLE row. Clear it before entering real data.' }],
+            };
+
+            // ── Generate & save ───────────────────────────────────────────────────
+            const buffer = await workbook.xlsx.writeBuffer();
+            const fileName = `Employee_Import_Template_${new Date().toISOString().split('T')[0]}.xlsx`;
+            saveAs(
+                new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }),
+                fileName
+            );
+
+            showToast('Template downloaded successfully!', 'success');
+        } catch (err) {
+            console.error('Template download error:', err);
+            showToast('Failed to generate template. Please try again.', 'error');
+        } finally {
+            setIsDownloadingTemplate(false);
+        }
+    }, [branches, departments, designations, companies, employeeTypes, genders, salaryTypes, status, showToast]);
+    // ─────────────────────────────────────────────────────────────────────────────
+
+    // ─── Bulk Upload ───────────────────────────────────────────────────────────
+    const [isBulkUploadOpen, setIsBulkUploadOpen] = useState(false);
+    const [bulkUploadFile, setBulkUploadFile] = useState(null);
+    const [isBulkUploading, setIsBulkUploading] = useState(false);
+    const [bulkUploadDragOver, setBulkUploadDragOver] = useState(false);
+    const bulkFileInputRef = useRef(null);
+
+    const handleBulkUploadClose = useCallback(() => {
+        setIsBulkUploadOpen(false);
+        setBulkUploadFile(null);
+        setBulkUploadDragOver(false);
+        if (bulkFileInputRef.current) bulkFileInputRef.current.value = '';
+    }, []);
+
+    const handleBulkFileDrop = useCallback((e) => {
+        e.preventDefault();
+        setBulkUploadDragOver(false);
+        const file = e.dataTransfer.files[0];
+        if (file && (file.name.endsWith('.xlsx') || file.name.endsWith('.xls'))) {
+            setBulkUploadFile(file);
+        } else {
+            showToast('Please upload a valid Excel file (.xlsx or .xls)', 'error');
+        }
+    }, [showToast]);
+
+    const handleBulkFileChange = useCallback((e) => {
+        const file = e.target.files[0];
+        if (file) setBulkUploadFile(file);
+    }, []);
+
+    const handleBulkUploadSave = useCallback(async () => {
+        if (!bulkUploadFile) {
+            showToast('Please select an Excel file to upload.', 'error');
+            return;
+        }
+        try {
+            setIsBulkUploading(true);
+            const formData = new FormData();
+            formData.append('file', bulkUploadFile);
+            const response = await api.post('bulk_upload_employee', formData);
+            if (response.data?.success) {
+                showToast(response.data?.message || 'Employees uploaded successfully!', 'success');
+                handleBulkUploadClose();
+                fetchEmployees(1, searchQuery);
+            } else {
+                showToast(response.data?.message || 'Upload failed. Please check the file and try again.', 'error');
+            }
+        } catch (err) {
+            console.error('Bulk upload error:', err);
+            showToast(err.response?.data?.message || 'Upload failed. Please try again.', 'error');
+        } finally {
+            setIsBulkUploading(false);
+        }
+    }, [bulkUploadFile, api, showToast, handleBulkUploadClose, fetchEmployees, searchQuery]);
+    // ─────────────────────────────────────────────────────────────────────────────
+
     // Render sort icon
     const renderSortIcon = useCallback((key) => {
         if (sortConfig.key !== key) {
@@ -863,31 +1172,188 @@ export default function Employee() {
     }
 
     return (
-        <div className="h-[calc(100vh-64px)] bg-[var(--color-bg-primary)] overflow-hidden">
-            {/* Toast component */}
-            {toast && (
-                <Toast
-                    message={toast.message}
-                    type={toast.type}
-                    onClose={hideToast}
-                />
-            )}
+        <>
+            {/* Bulk Upload Modal */}
+            {isBulkUploadOpen && createPortal(
+                <div
+                    className="fixed inset-0 z-[9999] flex items-center justify-center"
+                    style={{ background: '#4545457a', backdropFilter: 'blur(6px)' }}
+                    onClick={(e) => { if (e.target === e.currentTarget) handleBulkUploadClose(); }}
+                >
+                    <div
+                        className="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-4 overflow-hidden"
+                        style={{ border: '1.5px solid var(--color-primary-light)' }}
+                    >
+                        {/* Modal Header */}
+                        <div
+                            className="flex items-center justify-between px-6 py-4"
+                            style={{ background: 'var(--color-primary-dark)' }}
+                        >
+                            <div className="flex items-center gap-3">
+                                <div className="h-9 w-9 rounded-xl bg-white/20 flex items-center justify-center">
+                                    <Users className="h-5 w-5 text-white" />
+                                </div>
+                                <div>
+                                    <h2 className="text-base font-bold text-white leading-tight">Bulk Upload Employees</h2>
+                                    <p className="text-xs text-white/70 mt-0.5">Upload multiple employees at once via Excel</p>
+                                </div>
+                            </div>
+                            <button
+                                onClick={handleBulkUploadClose}
+                                className="h-8 w-8 rounded-lg bg-white/10 hover:bg-white/25 flex items-center justify-center transition-colors"
+                            >
+                                <X className="h-4 w-4 text-white" />
+                            </button>
+                        </div>
 
-            <div className="p-8 mx-auto ">
+                        {/* Modal Body */}
+                        <div className="px-6 py-5 space-y-5">
 
-                <div className="bg-[var(--color-bg-secondary)] rounded-lg border border-[var(--color-primary-dark)] overflow-hidden shadow-sm min-h-[87vh] flex flex-col">
-                    {/* Header section */}
-                    <div className="px-6 py-4 border-b border-[var(--color-primary-light)] bg-[var(--color-primary-lighter)] ">
-                        <div className="flex justify-between items-center flex-wrap gap-3">
-                            <div className="flex items-center">
-                                <Users className="h-6 w-6 text-[var(--color-primary-darker)] mr-2" />
-                                <h3 className="text-lg font-medium text-[var(--color-primary-darker)]">
-                                    All Employee List
-                                </h3>
+                            {/* Step 1: Download sample */}
+                            <div
+                                className="rounded-xl p-4 flex items-center justify-between gap-4"
+                                style={{ background: 'var(--color-bg-secondary)', border: '1px solid var(--color-primary-light)' }}
+                            >
+                                <div className="flex items-start gap-3">
+                                    <div
+                                        className="h-8 w-8 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold text-white"
+                                        style={{ background: 'var(--color-primary-dark)' }}
+                                    >
+                                        1
+                                    </div>
+                                    <div>
+                                        <p className="text-sm font-semibold" style={{ color: 'var(--color-text-primary)' }}>Download Sample Template</p>
+                                        <p className="text-xs mt-0.5" style={{ color: 'var(--color-text-secondary)' }}>Fill employee data in the template and upload it below</p>
+                                    </div>
+                                </div>
+                                <button
+                                    onClick={handleDownloadTemplate}
+                                    disabled={isDownloadingTemplate || dropdownLoading}
+                                    className="flex-shrink-0 flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-white transition-all hover:opacity-90 disabled:opacity-50"
+                                    style={{ background: 'var(--color-primary-dark)' }}
+                                >
+                                    {isDownloadingTemplate
+                                        ? <RefreshCw className="h-4 w-4 animate-spin" />
+                                        : <Download className="h-4 w-4" />
+                                    }
+                                    {isDownloadingTemplate ? 'Generating...' : 'Sample Excel'}
+                                </button>
                             </div>
 
-                            <div className="flex items-center gap-3 flex-wrap">
-                                {/* <div className="relative w-full sm:w-64">
+                            {/* Step 2: Upload */}
+                            <div>
+                                <div className="flex items-center gap-2 mb-3">
+                                    <div
+                                        className="h-8 w-8 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold text-white"
+                                        style={{ background: 'var(--color-primary-dark)' }}
+                                    >
+                                        2
+                                    </div>
+                                    <div>
+                                        <p className="text-sm font-semibold" style={{ color: 'var(--color-text-primary)' }}>Upload Filled Excel</p>
+                                        <p className="text-xs" style={{ color: 'var(--color-text-secondary)' }}>Only .xlsx or .xls files accepted</p>
+                                    </div>
+                                </div>
+
+                                {/* Drop zone */}
+                                <div
+                                    onClick={() => bulkFileInputRef.current?.click()}
+                                    onDragOver={(e) => { e.preventDefault(); setBulkUploadDragOver(true); }}
+                                    onDragLeave={() => setBulkUploadDragOver(false)}
+                                    onDrop={handleBulkFileDrop}
+                                    className="relative cursor-pointer rounded-xl border-2 border-dashed transition-all duration-200 flex flex-col items-center justify-center py-8 px-4 text-center"
+                                    style={{
+                                        borderColor: bulkUploadDragOver ? 'var(--color-primary-dark)' : 'var(--color-primary-light)',
+                                        background: bulkUploadDragOver ? 'var(--color-bg-secondary)' : (bulkUploadFile ? '#F0FDF4' : 'var(--color-bg-gray)'),
+                                    }}
+                                >
+                                    <input
+                                        ref={bulkFileInputRef}
+                                        type="file"
+                                        accept=".xlsx,.xls"
+                                        className="hidden"
+                                        onChange={handleBulkFileChange}
+                                    />
+                                    {bulkUploadFile ? (
+                                        <>
+                                            <div className="h-12 w-12 rounded-xl bg-green-100 flex items-center justify-center mb-3">
+                                                <CheckCircle className="h-6 w-6 text-green-600" />
+                                            </div>
+                                            <p className="text-sm font-semibold text-green-700 truncate max-w-[280px]">{bulkUploadFile.name}</p>
+                                            <p className="text-xs text-green-600 mt-1">{(bulkUploadFile.size / 1024).toFixed(1)} KB &nbsp;&middot;&nbsp; Click to change file</p>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <div
+                                                className="h-12 w-12 rounded-xl flex items-center justify-center mb-3"
+                                                style={{ background: 'var(--color-bg-secondary)' }}
+                                            >
+                                                <Download className="h-6 w-6" style={{ color: 'var(--color-primary-dark)', transform: 'rotate(180deg)' }} />
+                                            </div>
+                                            <p className="text-sm font-semibold" style={{ color: 'var(--color-text-primary)' }}>Drag &amp; drop your Excel file here</p>
+                                            <p className="text-xs mt-1" style={{ color: 'var(--color-text-secondary)' }}>or <span style={{ color: 'var(--color-primary-dark)' }} className="font-medium">click to browse</span></p>
+                                            <p className="text-xs mt-2 px-2 py-1 rounded-full" style={{ background: 'var(--color-bg-secondary)', color: 'var(--color-text-secondary)' }}>.xlsx &nbsp;&middot;&nbsp; .xls</p>
+                                        </>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Modal Footer */}
+                        <div
+                            className="flex items-center justify-end gap-3 px-6 py-4"
+                            style={{ borderTop: '1px solid var(--color-border-primary)', background: 'var(--color-bg-gray)' }}
+                        >
+                            <button
+                                onClick={handleBulkUploadClose}
+                                disabled={isBulkUploading}
+                                className="px-5 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
+                                style={{ background: 'var(--color-bg-gray-light)', color: 'var(--color-text-secondary)' }}
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={handleBulkUploadSave}
+                                disabled={isBulkUploading || !bulkUploadFile}
+                                className="flex items-center gap-2 px-6 py-2 rounded-lg text-sm font-semibold text-white transition-all hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
+                                style={{ background: 'var(--color-primary-dark)' }}
+                            >
+                                {isBulkUploading
+                                    ? <><RefreshCw className="h-4 w-4 animate-spin" /> Uploading...</>
+                                    : <><Users className="h-4 w-4" /> Save &amp; Upload</>
+                                }
+                            </button>
+                        </div>
+                    </div>
+                </div>,
+                document.body
+            )}
+
+            <div className="h-[calc(100vh-64px)] bg-[var(--color-bg-primary)] overflow-hidden">
+                {/* Toast component */}
+                {toast && (
+                    <Toast
+                        message={toast.message}
+                        type={toast.type}
+                        onClose={hideToast}
+                    />
+                )}
+
+                <div className="p-8 mx-auto ">
+
+                    <div className="bg-[var(--color-bg-secondary)] rounded-lg border border-[var(--color-primary-dark)] overflow-hidden shadow-sm min-h-[87vh] flex flex-col">
+                        {/* Header section */}
+                        <div className="px-6 py-4 border-b border-[var(--color-primary-light)] bg-[var(--color-primary-lighter)] ">
+                            <div className="flex justify-between items-center flex-wrap gap-3">
+                                <div className="flex items-center">
+                                    <Users className="h-6 w-6 text-[var(--color-primary-darker)] mr-2" />
+                                    <h3 className="text-lg font-medium text-[var(--color-primary-darker)]">
+                                        All Employee List
+                                    </h3>
+                                </div>
+
+                                <div className="flex items-center gap-3 flex-wrap">
+                                    {/* <div className="relative w-full sm:w-64">
                                     <input
                                         type="text"
                                         placeholder="Search employees..."
@@ -905,201 +1371,201 @@ export default function Employee() {
                                         </button>
                                     )}
                                 </div> */}
-                                <div className="relative w-full sm:w-64">
+                                    <div className="relative w-full sm:w-64">
 
-                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--color-text-muted)] z-10" />
+                                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--color-text-muted)] z-10" />
 
-                                    <CustomInput
-                                        type="text"
-                                        name="searchQuery"
-                                        value={searchQuery}
-                                        onChange={(e) => setSearchQuery(e.target.value)}
-                                        placeholder="Search employees..."
-                                        clearable={true}
-                                        className="!h-[37px] [&_input]:!h-[37px] [&_input]:!pl-10 [&_input]:!pr-10 [&_input]:!rounded-md"
-                                    />
+                                        <CustomInput
+                                            type="text"
+                                            name="searchQuery"
+                                            value={searchQuery}
+                                            onChange={(e) => setSearchQuery(e.target.value)}
+                                            placeholder="Search employees..."
+                                            clearable={true}
+                                            className="!h-[37px] [&_input]:!h-[37px] [&_input]:!pl-10 [&_input]:!pr-10 [&_input]:!rounded-md"
+                                        />
 
-                                </div>
+                                    </div>
 
-                                {/* Bulk Edit Toggle Button */}
-                                <div className="relative">
-                                    <button
-                                        ref={bulkEditBtnRef}
-                                        onClick={() => {
-                                            if (!bulkEditDropdown) {
-                                                setBulkEditDropdown(true);
-                                            } else {
-                                                setBulkEditDropdown(false);
-                                            }
-                                        }}
-                                        disabled={selectedEmployeeIds.length === 0}
-                                        className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors ${selectedEmployeeIds.length === 0
-                                            ? 'opacity-50 cursor-not-allowed bg-[var(--color-bg-secondary)] text-[var(--color-text-muted)] border border-[var(--color-border-secondary)]'
-                                            : bulkEditDropdown
-                                                ? 'bg-[var(--color-primary-dark)] text-white hover:bg-[var(--color-primary-darker)] shadow-sm'
-                                                : 'bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] border border-[var(--color-primary-light)] hover:bg-[var(--color-bg-primary)]'
-                                            }`}
-                                    >
-                                        <Edit className="h-4 w-4" />
-                                        Bulk Edit
-                                        {selectedEmployeeIds.length > 0 && (
-                                            <span className="bg-[var(--color-primary-dark)] text-white text-xs rounded-full px-2 py-0.5 ml-1">
-                                                {selectedEmployeeIds.length}
-                                            </span>
-                                        )}
-                                    </button>
+                                    {/* Bulk Edit Toggle Button */}
+                                    <div className="relative">
+                                        <button
+                                            ref={bulkEditBtnRef}
+                                            onClick={() => {
+                                                if (!bulkEditDropdown) {
+                                                    setBulkEditDropdown(true);
+                                                } else {
+                                                    setBulkEditDropdown(false);
+                                                }
+                                            }}
+                                            disabled={selectedEmployeeIds.length === 0}
+                                            className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors ${selectedEmployeeIds.length === 0
+                                                ? 'opacity-50 cursor-not-allowed bg-[var(--color-bg-secondary)] text-[var(--color-text-muted)] border border-[var(--color-border-secondary)]'
+                                                : bulkEditDropdown
+                                                    ? 'bg-[var(--color-primary-dark)] text-white hover:bg-[var(--color-primary-darker)] shadow-sm'
+                                                    : 'bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] border border-[var(--color-primary-light)] hover:bg-[var(--color-bg-primary)]'
+                                                }`}
+                                        >
+                                            <Edit className="h-4 w-4" />
+                                            Bulk Edit
+                                            {selectedEmployeeIds.length > 0 && (
+                                                <span className="bg-[var(--color-primary-dark)] text-white text-xs rounded-full px-2 py-0.5 ml-1">
+                                                    {selectedEmployeeIds.length}
+                                                </span>
+                                            )}
+                                        </button>
 
-                                    {bulkEditDropdown && createPortal(
-                                        <>
-                                            {/* Overlay backdrop */}
-                                            <div
-                                                className="fixed inset-0 z-[100] bg-black/40"
-                                                onClick={() => setBulkEditDropdown(false)}
-                                            />
-                                            {/* Desktop popup */}
-                                            <div
-                                                className="hidden sm:flex flex-col absolute z-[110] bg-[var(--color-bg-secondary)] rounded-lg shadow-2xl border border-[var(--color-border-secondary)] max-h-[80vh]"
-                                                style={{
-                                                    position: 'absolute',
-                                                    top: bulkEditPos.ready ? bulkEditPos.top : -9999,
-                                                    left: bulkEditPos.ready ? Math.max(12, bulkEditPos.left) : -9999,
-                                                    width: Math.max(520, bulkEditPos.width),
-                                                    minWidth: 520
-                                                }}
-                                            >
-                                                {/* Popup header */}
-                                                <div className="flex items-center justify-between p-4 border-b border-[var(--color-border-secondary)]">
-                                                    <div className="flex items-center gap-3">
-                                                        <div className="p-2 bg-[var(--color-primary-lightest)] rounded-lg">
-                                                            <Edit className="h-5 w-5 text-[var(--color-primary)]" />
-                                                        </div>
-                                                        <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">Bulk Edit Details</h2>
-                                                    </div>
-                                                    <button
-                                                        onClick={() => setBulkEditDropdown(false)}
-                                                        className="text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] p-1 rounded-lg hover:bg-[var(--color-bg-hover)]"
-                                                    >
-                                                        <X className="h-4 w-4" />
-                                                    </button>
-                                                </div>
-
-                                                {/* Popup body */}
-                                                <div className="flex-1 overflow-visible p-4">
-                                                    {selectedEmployeeIds.length === 0 ? (
-                                                        <div className="text-center py-6 text-sm text-[var(--color-text-muted)]">
-                                                            Please select one or more employees first to bulk edit.
-                                                        </div>
-                                                    ) : (
-                                                        <>
-
-                                                            <div className="grid grid-cols-2 gap-4">
-                                                                {/* Company */}
-                                                                <div>
-                                                                    <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
-                                                                        <Building className="inline h-4 w-4 mr-1" />
-                                                                        Company
-                                                                    </label>
-                                                                    <CustomSelect
-                                                                        name="bulk_company_id"
-                                                                        value={bulkFields.company_id}
-                                                                        onChange={(e) => setBulkFields(prev => ({ ...prev, company_id: e.target.value }))}
-                                                                        options={companies.map((c) => ({
-                                                                            value: c.id,
-                                                                            label: c.name,
-                                                                        }))}
-                                                                        placeholder="Keep Existing"
-                                                                        searchable={true}
-                                                                        disabled={bulkUpdating}
-                                                                    />
-                                                                </div>
-
-                                                                {/* Branch */}
-                                                                <div>
-                                                                    <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
-                                                                        <Building className="inline h-4 w-4 mr-1" />
-                                                                        Branch
-                                                                    </label>
-                                                                    <CustomSelect
-                                                                        name="bulk_branch_id"
-                                                                        value={bulkFields.branch_id}
-                                                                        onChange={(e) => setBulkFields(prev => ({ ...prev, branch_id: e.target.value }))}
-                                                                        options={branches.map((b) => ({
-                                                                            value: b.id,
-                                                                            label: b.name,
-                                                                        }))}
-                                                                        placeholder="Keep Existing"
-                                                                        searchable={true}
-                                                                        disabled={bulkUpdating}
-                                                                    />
-                                                                </div>
-
-                                                                {/* Department */}
-                                                                <div>
-                                                                    <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
-                                                                        <Users className="inline h-4 w-4 mr-1" />
-                                                                        Department
-                                                                    </label>
-                                                                    <CustomSelect
-                                                                        name="bulk_department_id"
-                                                                        value={bulkFields.department_id}
-                                                                        onChange={(e) => setBulkFields(prev => ({ ...prev, department_id: e.target.value }))}
-                                                                        options={departments.map((d) => ({
-                                                                            value: d.id,
-                                                                            label: d.name,
-                                                                        }))}
-                                                                        placeholder="Keep Existing"
-                                                                        searchable={true}
-                                                                        disabled={bulkUpdating}
-                                                                    />
-                                                                </div>
-
-                                                                {/* Designation */}
-                                                                <div>
-                                                                    <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
-                                                                        <Award className="inline h-4 w-4 mr-1" />
-                                                                        Designation
-                                                                    </label>
-                                                                    <CustomSelect
-                                                                        name="bulk_designation_id"
-                                                                        value={bulkFields.designation_id}
-                                                                        onChange={(e) => setBulkFields(prev => ({ ...prev, designation_id: e.target.value }))}
-                                                                        options={designations.map((d) => ({
-                                                                            value: d.id,
-                                                                            label: d.name,
-                                                                        }))}
-                                                                        placeholder="Keep Existing"
-                                                                        searchable={true}
-                                                                        disabled={bulkUpdating}
-                                                                    />
-                                                                </div>
+                                        {bulkEditDropdown && createPortal(
+                                            <>
+                                                {/* Overlay backdrop */}
+                                                <div
+                                                    className="fixed inset-0 z-[100] bg-black/40"
+                                                    onClick={() => setBulkEditDropdown(false)}
+                                                />
+                                                {/* Desktop popup */}
+                                                <div
+                                                    className="hidden sm:flex flex-col absolute z-[110] bg-[var(--color-bg-secondary)] rounded-lg shadow-2xl border border-[var(--color-border-secondary)] max-h-[80vh]"
+                                                    style={{
+                                                        position: 'absolute',
+                                                        top: bulkEditPos.ready ? bulkEditPos.top : -9999,
+                                                        left: bulkEditPos.ready ? Math.max(12, bulkEditPos.left) : -9999,
+                                                        width: Math.max(520, bulkEditPos.width),
+                                                        minWidth: 520
+                                                    }}
+                                                >
+                                                    {/* Popup header */}
+                                                    <div className="flex items-center justify-between p-4 border-b border-[var(--color-border-secondary)]">
+                                                        <div className="flex items-center gap-3">
+                                                            <div className="p-2 bg-[var(--color-primary-lightest)] rounded-lg">
+                                                                <Edit className="h-5 w-5 text-[var(--color-primary)]" />
                                                             </div>
-                                                        </>
-                                                    )}
-                                                </div>
+                                                            <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">Bulk Edit Details</h2>
+                                                        </div>
+                                                        <button
+                                                            onClick={() => setBulkEditDropdown(false)}
+                                                            className="text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] p-1 rounded-lg hover:bg-[var(--color-bg-hover)]"
+                                                        >
+                                                            <X className="h-4 w-4" />
+                                                        </button>
+                                                    </div>
 
-                                                {/* Popup footer */}
-                                                <div className="flex flex-col sm:flex-row justify-end gap-2 p-4 border-t border-[var(--color-border-secondary)] rounded-b-2xl">
-                                                    <button
-                                                        onClick={() => {
-                                                            setBulkFields({ branch_id: '', department_id: '', designation_id: '', company_id: '' });
-                                                        }}
-                                                        disabled={bulkUpdating}
-                                                        className="flex items-center justify-center gap-2 px-5 py-2
+                                                    {/* Popup body */}
+                                                    <div className="flex-1 overflow-visible p-4">
+                                                        {selectedEmployeeIds.length === 0 ? (
+                                                            <div className="text-center py-6 text-sm text-[var(--color-text-muted)]">
+                                                                Please select one or more employees first to bulk edit.
+                                                            </div>
+                                                        ) : (
+                                                            <>
+
+                                                                <div className="grid grid-cols-2 gap-4">
+                                                                    {/* Company */}
+                                                                    <div>
+                                                                        <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                                            <Building className="inline h-4 w-4 mr-1" />
+                                                                            Company
+                                                                        </label>
+                                                                        <CustomSelect
+                                                                            name="bulk_company_id"
+                                                                            value={bulkFields.company_id}
+                                                                            onChange={(e) => setBulkFields(prev => ({ ...prev, company_id: e.target.value }))}
+                                                                            options={companies.map((c) => ({
+                                                                                value: c.id,
+                                                                                label: c.name,
+                                                                            }))}
+                                                                            placeholder="Keep Existing"
+                                                                            searchable={true}
+                                                                            disabled={bulkUpdating}
+                                                                        />
+                                                                    </div>
+
+                                                                    {/* Branch */}
+                                                                    <div>
+                                                                        <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                                            <Building className="inline h-4 w-4 mr-1" />
+                                                                            Branch
+                                                                        </label>
+                                                                        <CustomSelect
+                                                                            name="bulk_branch_id"
+                                                                            value={bulkFields.branch_id}
+                                                                            onChange={(e) => setBulkFields(prev => ({ ...prev, branch_id: e.target.value }))}
+                                                                            options={branches.map((b) => ({
+                                                                                value: b.id,
+                                                                                label: b.name,
+                                                                            }))}
+                                                                            placeholder="Keep Existing"
+                                                                            searchable={true}
+                                                                            disabled={bulkUpdating}
+                                                                        />
+                                                                    </div>
+
+                                                                    {/* Department */}
+                                                                    <div>
+                                                                        <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                                            <Users className="inline h-4 w-4 mr-1" />
+                                                                            Department
+                                                                        </label>
+                                                                        <CustomSelect
+                                                                            name="bulk_department_id"
+                                                                            value={bulkFields.department_id}
+                                                                            onChange={(e) => setBulkFields(prev => ({ ...prev, department_id: e.target.value }))}
+                                                                            options={departments.map((d) => ({
+                                                                                value: d.id,
+                                                                                label: d.name,
+                                                                            }))}
+                                                                            placeholder="Keep Existing"
+                                                                            searchable={true}
+                                                                            disabled={bulkUpdating}
+                                                                        />
+                                                                    </div>
+
+                                                                    {/* Designation */}
+                                                                    <div>
+                                                                        <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                                            <Award className="inline h-4 w-4 mr-1" />
+                                                                            Designation
+                                                                        </label>
+                                                                        <CustomSelect
+                                                                            name="bulk_designation_id"
+                                                                            value={bulkFields.designation_id}
+                                                                            onChange={(e) => setBulkFields(prev => ({ ...prev, designation_id: e.target.value }))}
+                                                                            options={designations.map((d) => ({
+                                                                                value: d.id,
+                                                                                label: d.name,
+                                                                            }))}
+                                                                            placeholder="Keep Existing"
+                                                                            searchable={true}
+                                                                            disabled={bulkUpdating}
+                                                                        />
+                                                                    </div>
+                                                                </div>
+                                                            </>
+                                                        )}
+                                                    </div>
+
+                                                    {/* Popup footer */}
+                                                    <div className="flex flex-col sm:flex-row justify-end gap-2 p-4 border-t border-[var(--color-border-secondary)] rounded-b-2xl">
+                                                        <button
+                                                            onClick={() => {
+                                                                setBulkFields({ branch_id: '', department_id: '', designation_id: '', company_id: '' });
+                                                            }}
+                                                            disabled={bulkUpdating}
+                                                            className="flex items-center justify-center gap-2 px-5 py-2
                whitespace-nowrap flex-shrink-0
                bg-transparent text-[var(--color-primary)]
                border-2 hover:bg-[var(--color-primary-lightest)]
                border-[var(--color-primary)]
                rounded-lg transition-colors text-sm font-medium
                min-w-[140px]"
-                                                    >
-                                                        <RefreshCw size={14} />
-                                                        Reset
-                                                    </button>
+                                                        >
+                                                            <RefreshCw size={14} />
+                                                            Reset
+                                                        </button>
 
-                                                    <button
-                                                        onClick={handleBulkUpdate}
-                                                        disabled={bulkUpdating || selectedEmployeeIds.length === 0}
-                                                        className="flex items-center justify-center gap-2 px-5 py-2
+                                                        <button
+                                                            onClick={handleBulkUpdate}
+                                                            disabled={bulkUpdating || selectedEmployeeIds.length === 0}
+                                                            className="flex items-center justify-center gap-2 px-5 py-2
                whitespace-nowrap flex-shrink-0
                bg-[var(--color-primary-dark)]
                text-[var(--color-text-white)]
@@ -1107,360 +1573,360 @@ export default function Employee() {
                transition-colors disabled:opacity-50 disabled:cursor-not-allowed
                text-sm font-medium
                min-w-[170px]"
-                                                    >
-                                                        {bulkUpdating ? <RefreshCw size={14} className="animate-spin" /> : <Edit size={14} />}
-                                                        {bulkUpdating ? 'Updating...' : 'Update Selected'}
-                                                    </button>
-                                                </div>
-                                            </div>
-
-                                            {/* Mobile popup */}
-                                            <div className="sm:hidden fixed inset-0 z-[110] flex">
-                                                <div className="ml-auto h-full w-full bg-[var(--color-bg-secondary)] flex flex-col">
-                                                    <div className="flex items-center justify-between p-4 border-b border-[var(--color-border-secondary)]">
-                                                        <div className="flex items-center gap-3">
-                                                            <div className="p-2 bg-[var(--color-primary-lightest)] rounded-lg">
-                                                                <Edit className="h-5 w-5 text-[var(--color-primary)]" />
-                                                            </div>
-                                                            <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">Bulk Edit</h2>
-                                                        </div>
-                                                        <button
-                                                            onClick={() => setBulkEditDropdown(false)}
-                                                            className="text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] p-1 rounded-lg hover:bg-[var(--color-bg-hover)]"
-                                                        >
-                                                            <X className="h-5 w-5" />
-                                                        </button>
-                                                    </div>
-                                                    <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-4">
-                                                        {selectedEmployeeIds.length === 0 ? (
-                                                            <div className="text-center py-6 text-sm text-[var(--color-text-muted)]">
-                                                                Please select one or more employees first to bulk edit.
-                                                            </div>
-                                                        ) : (
-                                                            <>
-                                                                <div className="text-xs font-semibold text-[var(--color-primary-dark)]">
-                                                                    Selected: {selectedEmployeeIds.length} employee(s)
-                                                                </div>
-                                                                {/* Company */}
-                                                                <div>
-                                                                    <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
-                                                                        <Building className="inline h-4 w-4 mr-1" />
-                                                                        Company
-                                                                    </label>
-                                                                    <CustomSelect
-                                                                        name="bulk_company_id"
-                                                                        value={bulkFields.company_id}
-                                                                        onChange={(e) => setBulkFields(prev => ({ ...prev, company_id: e.target.value }))}
-                                                                        options={companies.map((c) => ({
-                                                                            value: c.id,
-                                                                            label: c.name,
-                                                                        }))}
-                                                                        placeholder="Keep Existing"
-                                                                        searchable={true}
-                                                                        disabled={bulkUpdating}
-                                                                    />
-                                                                </div>
-
-                                                                {/* Branch */}
-                                                                <div>
-                                                                    <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
-                                                                        <Building className="inline h-4 w-4 mr-1" />
-                                                                        Branch
-                                                                    </label>
-                                                                    <CustomSelect
-                                                                        name="bulk_branch_id"
-                                                                        value={bulkFields.branch_id}
-                                                                        onChange={(e) => setBulkFields(prev => ({ ...prev, branch_id: e.target.value }))}
-                                                                        options={branches.map((b) => ({
-                                                                            value: b.id,
-                                                                            label: b.name,
-                                                                        }))}
-                                                                        placeholder="Keep Existing"
-                                                                        searchable={true}
-                                                                        disabled={bulkUpdating}
-                                                                    />
-                                                                </div>
-
-                                                                {/* Department */}
-                                                                <div>
-                                                                    <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
-                                                                        <Users className="inline h-4 w-4 mr-1" />
-                                                                        Department
-                                                                    </label>
-                                                                    <CustomSelect
-                                                                        name="bulk_department_id"
-                                                                        value={bulkFields.department_id}
-                                                                        onChange={(e) => setBulkFields(prev => ({ ...prev, department_id: e.target.value }))}
-                                                                        options={departments.map((d) => ({
-                                                                            value: d.id,
-                                                                            label: d.name,
-                                                                        }))}
-                                                                        placeholder="Keep Existing"
-                                                                        searchable={true}
-                                                                        disabled={bulkUpdating}
-                                                                    />
-                                                                </div>
-
-                                                                {/* Designation */}
-                                                                <div>
-                                                                    <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
-                                                                        <Award className="inline h-4 w-4 mr-1" />
-                                                                        Designation
-                                                                    </label>
-                                                                    <CustomSelect
-                                                                        name="bulk_designation_id"
-                                                                        value={bulkFields.designation_id}
-                                                                        onChange={(e) => setBulkFields(prev => ({ ...prev, designation_id: e.target.value }))}
-                                                                        options={designations.map((d) => ({
-                                                                            value: d.id,
-                                                                            label: d.name,
-                                                                        }))}
-                                                                        placeholder="Keep Existing"
-                                                                        searchable={true}
-                                                                        disabled={bulkUpdating}
-                                                                    />
-                                                                </div>
-                                                            </>
-                                                        )}
-                                                    </div>
-                                                    <div className="p-4 border-t border-[var(--color-border-secondary)] flex flex-col gap-2">
-                                                        <button
-                                                            onClick={handleBulkUpdate}
-                                                            disabled={bulkUpdating || selectedEmployeeIds.length === 0}
-                                                            className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-[var(--color-primary-dark)] text-[var(--color-text-white)] rounded-lg hover:bg-[var(--color-primary-darker)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
                                                         >
                                                             {bulkUpdating ? <RefreshCw size={14} className="animate-spin" /> : <Edit size={14} />}
                                                             {bulkUpdating ? 'Updating...' : 'Update Selected'}
                                                         </button>
+                                                    </div>
+                                                </div>
+
+                                                {/* Mobile popup */}
+                                                <div className="sm:hidden fixed inset-0 z-[110] flex">
+                                                    <div className="ml-auto h-full w-full bg-[var(--color-bg-secondary)] flex flex-col">
+                                                        <div className="flex items-center justify-between p-4 border-b border-[var(--color-border-secondary)]">
+                                                            <div className="flex items-center gap-3">
+                                                                <div className="p-2 bg-[var(--color-primary-lightest)] rounded-lg">
+                                                                    <Edit className="h-5 w-5 text-[var(--color-primary)]" />
+                                                                </div>
+                                                                <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">Bulk Edit</h2>
+                                                            </div>
+                                                            <button
+                                                                onClick={() => setBulkEditDropdown(false)}
+                                                                className="text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] p-1 rounded-lg hover:bg-[var(--color-bg-hover)]"
+                                                            >
+                                                                <X className="h-5 w-5" />
+                                                            </button>
+                                                        </div>
+                                                        <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-4">
+                                                            {selectedEmployeeIds.length === 0 ? (
+                                                                <div className="text-center py-6 text-sm text-[var(--color-text-muted)]">
+                                                                    Please select one or more employees first to bulk edit.
+                                                                </div>
+                                                            ) : (
+                                                                <>
+                                                                    <div className="text-xs font-semibold text-[var(--color-primary-dark)]">
+                                                                        Selected: {selectedEmployeeIds.length} employee(s)
+                                                                    </div>
+                                                                    {/* Company */}
+                                                                    <div>
+                                                                        <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                                            <Building className="inline h-4 w-4 mr-1" />
+                                                                            Company
+                                                                        </label>
+                                                                        <CustomSelect
+                                                                            name="bulk_company_id"
+                                                                            value={bulkFields.company_id}
+                                                                            onChange={(e) => setBulkFields(prev => ({ ...prev, company_id: e.target.value }))}
+                                                                            options={companies.map((c) => ({
+                                                                                value: c.id,
+                                                                                label: c.name,
+                                                                            }))}
+                                                                            placeholder="Keep Existing"
+                                                                            searchable={true}
+                                                                            disabled={bulkUpdating}
+                                                                        />
+                                                                    </div>
+
+                                                                    {/* Branch */}
+                                                                    <div>
+                                                                        <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                                            <Building className="inline h-4 w-4 mr-1" />
+                                                                            Branch
+                                                                        </label>
+                                                                        <CustomSelect
+                                                                            name="bulk_branch_id"
+                                                                            value={bulkFields.branch_id}
+                                                                            onChange={(e) => setBulkFields(prev => ({ ...prev, branch_id: e.target.value }))}
+                                                                            options={branches.map((b) => ({
+                                                                                value: b.id,
+                                                                                label: b.name,
+                                                                            }))}
+                                                                            placeholder="Keep Existing"
+                                                                            searchable={true}
+                                                                            disabled={bulkUpdating}
+                                                                        />
+                                                                    </div>
+
+                                                                    {/* Department */}
+                                                                    <div>
+                                                                        <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                                            <Users className="inline h-4 w-4 mr-1" />
+                                                                            Department
+                                                                        </label>
+                                                                        <CustomSelect
+                                                                            name="bulk_department_id"
+                                                                            value={bulkFields.department_id}
+                                                                            onChange={(e) => setBulkFields(prev => ({ ...prev, department_id: e.target.value }))}
+                                                                            options={departments.map((d) => ({
+                                                                                value: d.id,
+                                                                                label: d.name,
+                                                                            }))}
+                                                                            placeholder="Keep Existing"
+                                                                            searchable={true}
+                                                                            disabled={bulkUpdating}
+                                                                        />
+                                                                    </div>
+
+                                                                    {/* Designation */}
+                                                                    <div>
+                                                                        <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                                            <Award className="inline h-4 w-4 mr-1" />
+                                                                            Designation
+                                                                        </label>
+                                                                        <CustomSelect
+                                                                            name="bulk_designation_id"
+                                                                            value={bulkFields.designation_id}
+                                                                            onChange={(e) => setBulkFields(prev => ({ ...prev, designation_id: e.target.value }))}
+                                                                            options={designations.map((d) => ({
+                                                                                value: d.id,
+                                                                                label: d.name,
+                                                                            }))}
+                                                                            placeholder="Keep Existing"
+                                                                            searchable={true}
+                                                                            disabled={bulkUpdating}
+                                                                        />
+                                                                    </div>
+                                                                </>
+                                                            )}
+                                                        </div>
+                                                        <div className="p-4 border-t border-[var(--color-border-secondary)] flex flex-col gap-2">
+                                                            <button
+                                                                onClick={handleBulkUpdate}
+                                                                disabled={bulkUpdating || selectedEmployeeIds.length === 0}
+                                                                className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-[var(--color-primary-dark)] text-[var(--color-text-white)] rounded-lg hover:bg-[var(--color-primary-darker)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
+                                                            >
+                                                                {bulkUpdating ? <RefreshCw size={14} className="animate-spin" /> : <Edit size={14} />}
+                                                                {bulkUpdating ? 'Updating...' : 'Update Selected'}
+                                                            </button>
+                                                            <button
+                                                                onClick={() => {
+                                                                    setBulkFields({ branch_id: '', department_id: '', designation_id: '', company_id: '' });
+                                                                    setBulkEditDropdown(false);
+                                                                }}
+                                                                disabled={bulkUpdating}
+                                                                className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-[var(--color-bg-gray-light)] text-[var(--color-text-secondary)] rounded-lg hover:bg-[var(--color-bg-hover)] transition-colors text-sm font-medium"
+                                                            >
+                                                                Cancel
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </>,
+                                            document.body
+                                        )}
+                                    </div>
+
+                                    {/* Filter button with popup */}
+                                    <div className="relative">
+                                        <button
+                                            ref={filterBtnRef}
+                                            onClick={() => {
+                                                if (!filterDropdown) {
+                                                    openFilterDropdown();
+                                                } else {
+                                                    setFilterDropdown(false);
+                                                }
+                                            }}
+                                            className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-md text-sm font-medium transition-colors"
+                                        >
+                                            <Filter className="h-4 w-4" />
+                                            Filters
+                                            {getActiveFiltersCount() > 0 && (
+                                                <span className="bg-[var(--color-primary-dark)] text-white text-xs rounded-full px-2 py-0.5">
+                                                    {getActiveFiltersCount()}
+                                                </span>
+                                            )}
+                                            <ChevronDown className="h-4 w-4" />
+                                        </button>
+
+                                        {filterDropdown && createPortal(
+                                            <>
+                                                {/* Overlay backdrop */}
+                                                <div
+                                                    className="fixed inset-0 z-[100] bg-black/40"
+                                                    onClick={() => setFilterDropdown(false)}
+                                                />
+                                                {/* Desktop popup */}
+                                                <div
+                                                    className="hidden sm:flex flex-col absolute z-[110] bg-[var(--color-bg-secondary)] rounded-lg shadow-2xl border border-[var(--color-border-secondary)] max-h-[80vh]"
+                                                    style={{
+                                                        position: 'absolute',
+                                                        top: filterPos.ready ? filterPos.top : -9999,
+                                                        left: filterPos.ready ? Math.max(12, filterPos.left) : -9999,
+                                                        width: Math.max(520, filterPos.width),
+                                                        minWidth: 520
+                                                    }}
+                                                >
+                                                    {/* Popup header */}
+                                                    <div className="flex items-center justify-between p-4 border-b border-[var(--color-border-secondary)]">
+                                                        <div className="flex items-center gap-3">
+                                                            <div className="p-2 bg-[var(--color-primary-lightest)] rounded-lg">
+                                                                <Filter className="h-5 w-5 text-[var(--color-primary)]" />
+                                                            </div>
+                                                            <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">Filters</h2>
+                                                        </div>
                                                         <button
-                                                            onClick={() => {
-                                                                setBulkFields({ branch_id: '', department_id: '', designation_id: '', company_id: '' });
-                                                                setBulkEditDropdown(false);
-                                                            }}
-                                                            disabled={bulkUpdating}
-                                                            className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-[var(--color-bg-gray-light)] text-[var(--color-text-secondary)] rounded-lg hover:bg-[var(--color-bg-hover)] transition-colors text-sm font-medium"
+                                                            onClick={() => setFilterDropdown(false)}
+                                                            className="text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] p-1 rounded-lg hover:bg-[var(--color-bg-hover)]"
                                                         >
-                                                            Cancel
+                                                            <X className="h-4 w-4" />
                                                         </button>
                                                     </div>
-                                                </div>
-                                            </div>
-                                        </>,
-                                        document.body
-                                    )}
-                                </div>
 
-                                {/* Filter button with popup */}
-                                <div className="relative">
-                                    <button
-                                        ref={filterBtnRef}
-                                        onClick={() => {
-                                            if (!filterDropdown) {
-                                                openFilterDropdown();
-                                            } else {
-                                                setFilterDropdown(false);
-                                            }
-                                        }}
-                                        className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-md text-sm font-medium transition-colors"
-                                    >
-                                        <Filter className="h-4 w-4" />
-                                        Filters
-                                        {getActiveFiltersCount() > 0 && (
-                                            <span className="bg-[var(--color-primary-dark)] text-white text-xs rounded-full px-2 py-0.5">
-                                                {getActiveFiltersCount()}
-                                            </span>
-                                        )}
-                                        <ChevronDown className="h-4 w-4" />
-                                    </button>
+                                                    {/* Popup body */}
+                                                    <div className="flex-1 overflow-visible p-4">
+                                                        {dropdownLoading && (
+                                                            <div className="flex items-center gap-2 mb-4 text-[var(--color-text-secondary)]">
+                                                                <RefreshCw className="h-4 w-4 animate-spin" />
+                                                                <span className="text-sm">Loading filter options...</span>
+                                                            </div>
+                                                        )}
 
-                                    {filterDropdown && createPortal(
-                                        <>
-                                            {/* Overlay backdrop */}
-                                            <div
-                                                className="fixed inset-0 z-[100] bg-black/40"
-                                                onClick={() => setFilterDropdown(false)}
-                                            />
-                                            {/* Desktop popup */}
-                                            <div
-                                                className="hidden sm:flex flex-col absolute z-[110] bg-[var(--color-bg-secondary)] rounded-lg shadow-2xl border border-[var(--color-border-secondary)] max-h-[80vh]"
-                                                style={{
-                                                    position: 'absolute',
-                                                    top: filterPos.ready ? filterPos.top : -9999,
-                                                    left: filterPos.ready ? Math.max(12, filterPos.left) : -9999,
-                                                    width: Math.max(520, filterPos.width),
-                                                    minWidth: 520
-                                                }}
-                                            >
-                                                {/* Popup header */}
-                                                <div className="flex items-center justify-between p-4 border-b border-[var(--color-border-secondary)]">
-                                                    <div className="flex items-center gap-3">
-                                                        <div className="p-2 bg-[var(--color-primary-lightest)] rounded-lg">
-                                                            <Filter className="h-5 w-5 text-[var(--color-primary)]" />
-                                                        </div>
-                                                        <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">Filters</h2>
-                                                    </div>
-                                                    <button
-                                                        onClick={() => setFilterDropdown(false)}
-                                                        className="text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] p-1 rounded-lg hover:bg-[var(--color-bg-hover)]"
-                                                    >
-                                                        <X className="h-4 w-4" />
-                                                    </button>
-                                                </div>
+                                                        <div className="grid grid-cols-2 gap-4">
+                                                            {/* Branch */}
+                                                            <div>
+                                                                <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                                    <Building className="inline h-4 w-4 mr-1" />
+                                                                    Branch
+                                                                </label>
+                                                                <CustomSelect
+                                                                    name="branch_id"
+                                                                    value={tempFilters.branch_id}
+                                                                    onChange={(e) => handleFilterChange('branch_id', e.target.value)}
+                                                                    options={branches.map((b) => ({
+                                                                        value: b.id,
+                                                                        label: b.name,
+                                                                    }))}
+                                                                    placeholder="All Branches"
+                                                                    searchable={true}
+                                                                    disabled={dropdownLoading}
+                                                                />
+                                                            </div>
 
-                                                {/* Popup body */}
-                                                <div className="flex-1 overflow-visible p-4">
-                                                    {dropdownLoading && (
-                                                        <div className="flex items-center gap-2 mb-4 text-[var(--color-text-secondary)]">
-                                                            <RefreshCw className="h-4 w-4 animate-spin" />
-                                                            <span className="text-sm">Loading filter options...</span>
-                                                        </div>
-                                                    )}
+                                                            {/* Department */}
+                                                            <div>
+                                                                <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                                    <Users className="inline h-4 w-4 mr-1" />
+                                                                    Department
+                                                                </label>
+                                                                <CustomSelect
+                                                                    name="department_id"
+                                                                    value={tempFilters.department_id}
+                                                                    onChange={(e) => handleFilterChange('department_id', e.target.value)}
+                                                                    options={departments.map((d) => ({
+                                                                        value: d.id,
+                                                                        label: d.name,
+                                                                    }))}
+                                                                    placeholder="All Departments"
+                                                                    searchable={true}
+                                                                    disabled={dropdownLoading}
+                                                                />
+                                                            </div>
 
-                                                    <div className="grid grid-cols-2 gap-4">
-                                                        {/* Branch */}
-                                                        <div>
-                                                            <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
-                                                                <Building className="inline h-4 w-4 mr-1" />
-                                                                Branch
-                                                            </label>
-                                                            <CustomSelect
-                                                                name="branch_id"
-                                                                value={tempFilters.branch_id}
-                                                                onChange={(e) => handleFilterChange('branch_id', e.target.value)}
-                                                                options={branches.map((b) => ({
-                                                                    value: b.id,
-                                                                    label: b.name,
-                                                                }))}
-                                                                placeholder="All Branches"
-                                                                searchable={true}
-                                                                disabled={dropdownLoading}
-                                                            />
-                                                        </div>
+                                                            {/* Designation */}
+                                                            <div>
+                                                                <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                                    <Award className="inline h-4 w-4 mr-1" />
+                                                                    Designation
+                                                                </label>
+                                                                <CustomSelect
+                                                                    name="designation_id"
+                                                                    value={tempFilters.designation_id}
+                                                                    onChange={(e) => handleFilterChange('designation_id', e.target.value)}
+                                                                    options={designations.map((d) => ({
+                                                                        value: d.id,
+                                                                        label: d.name,
+                                                                    }))}
+                                                                    placeholder="All Designations"
+                                                                    searchable={true}
+                                                                    disabled={dropdownLoading}
+                                                                />
+                                                            </div>
 
-                                                        {/* Department */}
-                                                        <div>
-                                                            <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
-                                                                <Users className="inline h-4 w-4 mr-1" />
-                                                                Department
-                                                            </label>
-                                                            <CustomSelect
-                                                                name="department_id"
-                                                                value={tempFilters.department_id}
-                                                                onChange={(e) => handleFilterChange('department_id', e.target.value)}
-                                                                options={departments.map((d) => ({
-                                                                    value: d.id,
-                                                                    label: d.name,
-                                                                }))}
-                                                                placeholder="All Departments"
-                                                                searchable={true}
-                                                                disabled={dropdownLoading}
-                                                            />
-                                                        </div>
+                                                            {/* Employee Type */}
+                                                            <div>
+                                                                <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                                    <UserCheck className="inline h-4 w-4 mr-1" />
+                                                                    Employee Type
+                                                                </label>
+                                                                <CustomSelect
+                                                                    name="employee_type_id"
+                                                                    value={tempFilters.employee_type_id}
+                                                                    onChange={(e) => handleFilterChange('employee_type_id', e.target.value)}
+                                                                    options={employeeTypes.map((et) => ({
+                                                                        value: et.id,
+                                                                        label: et.name,
+                                                                    }))}
+                                                                    placeholder="All Employee Types"
+                                                                    searchable={true}
+                                                                    disabled={dropdownLoading}
+                                                                />
+                                                            </div>
 
-                                                        {/* Designation */}
-                                                        <div>
-                                                            <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
-                                                                <Award className="inline h-4 w-4 mr-1" />
-                                                                Designation
-                                                            </label>
-                                                            <CustomSelect
-                                                                name="designation_id"
-                                                                value={tempFilters.designation_id}
-                                                                onChange={(e) => handleFilterChange('designation_id', e.target.value)}
-                                                                options={designations.map((d) => ({
-                                                                    value: d.id,
-                                                                    label: d.name,
-                                                                }))}
-                                                                placeholder="All Designations"
-                                                                searchable={true}
-                                                                disabled={dropdownLoading}
-                                                            />
-                                                        </div>
+                                                            {/* Salary Type */}
+                                                            <div>
+                                                                <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                                    <DollarSign className="inline h-4 w-4 mr-1" />
+                                                                    Salary Type
+                                                                </label>
+                                                                <CustomSelect
+                                                                    name="salary_type_id"
+                                                                    value={tempFilters.salary_type_id}
+                                                                    onChange={(e) => handleFilterChange('salary_type_id', e.target.value)}
+                                                                    options={salaryTypes.map((st) => ({
+                                                                        value: st.id,
+                                                                        label: st.name,
+                                                                    }))}
+                                                                    placeholder="All Salary Types"
+                                                                    searchable={true}
+                                                                    disabled={dropdownLoading}
+                                                                />
+                                                            </div>
 
-                                                        {/* Employee Type */}
-                                                        <div>
-                                                            <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
-                                                                <UserCheck className="inline h-4 w-4 mr-1" />
-                                                                Employee Type
-                                                            </label>
-                                                            <CustomSelect
-                                                                name="employee_type_id"
-                                                                value={tempFilters.employee_type_id}
-                                                                onChange={(e) => handleFilterChange('employee_type_id', e.target.value)}
-                                                                options={employeeTypes.map((et) => ({
-                                                                    value: et.id,
-                                                                    label: et.name,
-                                                                }))}
-                                                                placeholder="All Employee Types"
-                                                                searchable={true}
-                                                                disabled={dropdownLoading}
-                                                            />
-                                                        </div>
+                                                            {/* Gender */}
+                                                            <div>
+                                                                <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                                    <UserCircle className="inline h-4 w-4 mr-1" />
+                                                                    Gender
+                                                                </label>
+                                                                <CustomSelect
+                                                                    name="gender_id"
+                                                                    value={tempFilters.gender_id}
+                                                                    onChange={(e) => handleFilterChange('gender_id', e.target.value)}
+                                                                    options={genders.map((g) => ({
+                                                                        value: g.id,
+                                                                        label: g.name,
+                                                                    }))}
+                                                                    placeholder="All Genders"
+                                                                    searchable={true}
+                                                                    disabled={dropdownLoading}
+                                                                />
+                                                            </div>
 
-                                                        {/* Salary Type */}
-                                                        <div>
-                                                            <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
-                                                                <DollarSign className="inline h-4 w-4 mr-1" />
-                                                                Salary Type
-                                                            </label>
-                                                            <CustomSelect
-                                                                name="salary_type_id"
-                                                                value={tempFilters.salary_type_id}
-                                                                onChange={(e) => handleFilterChange('salary_type_id', e.target.value)}
-                                                                options={salaryTypes.map((st) => ({
-                                                                    value: st.id,
-                                                                    label: st.name,
-                                                                }))}
-                                                                placeholder="All Salary Types"
-                                                                searchable={true}
-                                                                disabled={dropdownLoading}
-                                                            />
-                                                        </div>
-
-                                                        {/* Gender */}
-                                                        <div>
-                                                            <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
-                                                                <UserCircle className="inline h-4 w-4 mr-1" />
-                                                                Gender
-                                                            </label>
-                                                            <CustomSelect
-                                                                name="gender_id"
-                                                                value={tempFilters.gender_id}
-                                                                onChange={(e) => handleFilterChange('gender_id', e.target.value)}
-                                                                options={genders.map((g) => ({
-                                                                    value: g.id,
-                                                                    label: g.name,
-                                                                }))}
-                                                                placeholder="All Genders"
-                                                                searchable={true}
-                                                                disabled={dropdownLoading}
-                                                            />
-                                                        </div>
-
-                                                        {/* Status */}
-                                                        <div className="col-span-2">
-                                                            <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
-                                                                <CheckCircle className="inline h-4 w-4 mr-1" />
-                                                                Status
-                                                            </label>
-                                                            <CustomSelect
-                                                                name="status_id"
-                                                                value={tempFilters.status_id}
-                                                                onChange={(e) => handleFilterChange('status_id', e.target.value)}
-                                                                options={status.map((s) => ({
-                                                                    value: s.id,
-                                                                    label: s.name,
-                                                                }))}
-                                                                placeholder="All Status"
-                                                                searchable={true}
-                                                                disabled={dropdownLoading}
-                                                            />
+                                                            {/* Status */}
+                                                            <div className="col-span-2">
+                                                                <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                                    <CheckCircle className="inline h-4 w-4 mr-1" />
+                                                                    Status
+                                                                </label>
+                                                                <CustomSelect
+                                                                    name="status_id"
+                                                                    value={tempFilters.status_id}
+                                                                    onChange={(e) => handleFilterChange('status_id', e.target.value)}
+                                                                    options={status.map((s) => ({
+                                                                        value: s.id,
+                                                                        label: s.name,
+                                                                    }))}
+                                                                    placeholder="All Status"
+                                                                    searchable={true}
+                                                                    disabled={dropdownLoading}
+                                                                />
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
 
-                                                {/* Popup footer */}
-                                                {/* <div className="flex gap-2 p-4 border-t border-[var(--color-border-secondary)]">
+                                                    {/* Popup footer */}
+                                                    {/* <div className="flex gap-2 p-4 border-t border-[var(--color-border-secondary)]">
                                                     <button
                                                         onClick={applyFilters}
                                                         className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-[var(--color-primary-dark)] text-[var(--color-text-white)] rounded-lg hover:bg-[var(--color-primary-darker)] transition-colors text-sm font-medium"
@@ -1474,530 +1940,545 @@ export default function Employee() {
                                                         <RefreshCw className="h-4 w-4" /> Reset
                                                     </button>
                                                 </div> */}
-                                                <div className="flex flex-col sm:flex-row justify-end gap-2 p-4 border-t border-[var(--color-border-secondary)] rounded-b-2xl">
-                                                    <button
-                                                        onClick={() => { resetFilters(); setFilterDropdown(false); }}
-                                                        className="flex items-center justify-center gap-2 px-4 py-2 bg-transparent text-[var(--color-primary)] border-2 hover:bg-[var(--color-primary-lightest)] border-[var(--color-primary)] rounded-lg hover:bg-[var(--color-bg-hover)] transition-colors text-sm font-medium min-w-[100px]"
-                                                    >
-                                                        <RefreshCw size={14} />
-                                                        Reset
-                                                    </button>
-
-                                                    <button
-                                                        onClick={applyFilters}
-                                                        disabled={loading}
-                                                        className="w-auto sm:w-[140px] flex items-center justify-center gap-2 px-4 py-2 bg-[var(--color-primary-dark)] text-[var(--color-text-white)] rounded-lg hover:bg-[var(--color-primary-darker)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
-                                                    >
-                                                        {loading ? <Loader2 size={14} className="animate-spin" /> : <Filter size={14} />}
-                                                        {loading ? 'Loading...' : 'Apply Filters'}
-                                                    </button>
-                                                </div>
-                                            </div>
-
-                                            {/* Mobile popup */}
-                                            <div className="sm:hidden fixed inset-0 z-[110] flex">
-                                                <div className="ml-auto h-full w-full bg-[var(--color-bg-secondary)] flex flex-col">
-                                                    <div className="flex items-center justify-between p-4 border-b border-[var(--color-border-secondary)]">
-                                                        <div className="flex items-center gap-3">
-                                                            <div className="p-2 bg-[var(--color-primary-lightest)] rounded-lg">
-                                                                <Filter className="h-5 w-5 text-[var(--color-primary)]" />
-                                                            </div>
-                                                            <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">Filters</h2>
-                                                        </div>
-                                                        <button
-                                                            onClick={() => setFilterDropdown(false)}
-                                                            className="text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] p-1 rounded-lg hover:bg-[var(--color-bg-hover)]"
-                                                        >
-                                                            <X className="h-5 w-5" />
-                                                        </button>
-                                                    </div>
-                                                    <div className="flex-1 overflow-y-auto p-4 grid grid-cols-1 gap-4">
-                                                        {/* Branch */}
-                                                        <div>
-                                                            <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
-                                                                <Building className="inline h-4 w-4 mr-1" />
-                                                                Branch
-                                                            </label>
-                                                            <CustomSelect
-                                                                name="branch_id"
-                                                                value={tempFilters.branch_id}
-                                                                onChange={(e) => handleFilterChange('branch_id', e.target.value)}
-                                                                options={branches.map((b) => ({
-                                                                    value: b.id,
-                                                                    label: b.name,
-                                                                }))}
-                                                                placeholder="All Branches"
-                                                                searchable={true}
-                                                                disabled={dropdownLoading}
-                                                            />
-                                                        </div>
-
-                                                        {/* Department */}
-                                                        <div>
-                                                            <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
-                                                                <Users className="inline h-4 w-4 mr-1" />
-                                                                Department
-                                                            </label>
-                                                            <CustomSelect
-                                                                name="department_id"
-                                                                value={tempFilters.department_id}
-                                                                onChange={(e) => handleFilterChange('department_id', e.target.value)}
-                                                                options={departments.map((d) => ({
-                                                                    value: d.id,
-                                                                    label: d.name,
-                                                                }))}
-                                                                placeholder="All Departments"
-                                                                searchable={true}
-                                                                disabled={dropdownLoading}
-                                                            />
-                                                        </div>
-
-                                                        {/* Designation */}
-                                                        <div>
-                                                            <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
-                                                                <Award className="inline h-4 w-4 mr-1" />
-                                                                Designation
-                                                            </label>
-                                                            <CustomSelect
-                                                                name="designation_id"
-                                                                value={tempFilters.designation_id}
-                                                                onChange={(e) => handleFilterChange('designation_id', e.target.value)}
-                                                                options={designations.map((d) => ({
-                                                                    value: d.id,
-                                                                    label: d.name,
-                                                                }))}
-                                                                placeholder="All Designations"
-                                                                searchable={true}
-                                                                disabled={dropdownLoading}
-                                                            />
-                                                        </div>
-
-                                                        {/* Employee Type */}
-                                                        <div>
-                                                            <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
-                                                                <UserCheck className="inline h-4 w-4 mr-1" />
-                                                                Employee Type
-                                                            </label>
-                                                            <CustomSelect
-                                                                name="employee_type_id"
-                                                                value={tempFilters.employee_type_id}
-                                                                onChange={(e) => handleFilterChange('employee_type_id', e.target.value)}
-                                                                options={employeeTypes.map((et) => ({
-                                                                    value: et.id,
-                                                                    label: et.name,
-                                                                }))}
-                                                                placeholder="All Employee Types"
-                                                                searchable={true}
-                                                                disabled={dropdownLoading}
-                                                            />
-                                                        </div>
-
-                                                        {/* Salary Type */}
-                                                        <div>
-                                                            <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
-                                                                <DollarSign className="inline h-4 w-4 mr-1" />
-                                                                Salary Type
-                                                            </label>
-                                                            <CustomSelect
-                                                                name="salary_type_id"
-                                                                value={tempFilters.salary_type_id}
-                                                                onChange={(e) => handleFilterChange('salary_type_id', e.target.value)}
-                                                                options={salaryTypes.map((st) => ({
-                                                                    value: st.id,
-                                                                    label: st.name,
-                                                                }))}
-                                                                placeholder="All Salary Types"
-                                                                searchable={true}
-                                                                disabled={dropdownLoading}
-                                                            />
-                                                        </div>
-
-                                                        {/* Gender */}
-                                                        <div>
-                                                            <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
-                                                                <UserCircle className="inline h-4 w-4 mr-1" />
-                                                                Gender
-                                                            </label>
-                                                            <CustomSelect
-                                                                name="gender_id"
-                                                                value={tempFilters.gender_id}
-                                                                onChange={(e) => handleFilterChange('gender_id', e.target.value)}
-                                                                options={genders.map((g) => ({
-                                                                    value: g.id,
-                                                                    label: g.name,
-                                                                }))}
-                                                                placeholder="All Genders"
-                                                                searchable={true}
-                                                                disabled={dropdownLoading}
-                                                            />
-                                                        </div>
-
-                                                        {/* Status */}
-                                                        <div>
-                                                            <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
-                                                                <CheckCircle className="inline h-4 w-4 mr-1" />
-                                                                Status
-                                                            </label>
-                                                            <CustomSelect
-                                                                name="status_id"
-                                                                value={tempFilters.status_id}
-                                                                onChange={(e) => handleFilterChange('status_id', e.target.value)}
-                                                                options={status.map((s) => ({
-                                                                    value: s.id,
-                                                                    label: s.name,
-                                                                }))}
-                                                                placeholder="All Status"
-                                                                searchable={true}
-                                                                disabled={dropdownLoading}
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                    <div className="p-4 border-t border-[var(--color-border-secondary)] grid grid-cols-1 gap-2">
-                                                        <button
-                                                            onClick={applyFilters}
-                                                            className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-[var(--color-primary-dark)] text-[var(--color-text-white)] rounded-lg hover:bg-[var(--color-primary-darker)] transition-colors text-sm font-medium"
-                                                        >
-                                                            <Filter className="h-4 w-4" /> Apply Filters
-                                                        </button>
+                                                    <div className="flex flex-col sm:flex-row justify-end gap-2 p-4 border-t border-[var(--color-border-secondary)] rounded-b-2xl">
                                                         <button
                                                             onClick={() => { resetFilters(); setFilterDropdown(false); }}
-                                                            className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-[var(--color-bg-gray-light)] text-[var(--color-text-secondary)] rounded-lg hover:bg-[var(--color-bg-hover)] transition-colors text-sm font-medium"
+                                                            className="flex items-center justify-center gap-2 px-4 py-2 bg-transparent text-[var(--color-primary)] border-2 hover:bg-[var(--color-primary-lightest)] border-[var(--color-primary)] rounded-lg hover:bg-[var(--color-bg-hover)] transition-colors text-sm font-medium min-w-[100px]"
                                                         >
+                                                            <RefreshCw size={14} />
                                                             Reset
+                                                        </button>
+
+                                                        <button
+                                                            onClick={applyFilters}
+                                                            disabled={loading}
+                                                            className="w-auto sm:w-[140px] flex items-center justify-center gap-2 px-4 py-2 bg-[var(--color-primary-dark)] text-[var(--color-text-white)] rounded-lg hover:bg-[var(--color-primary-darker)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
+                                                        >
+                                                            {loading ? <Loader2 size={14} className="animate-spin" /> : <Filter size={14} />}
+                                                            {loading ? 'Loading...' : 'Apply Filters'}
                                                         </button>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        </>,
-                                        document.body
-                                    )}
-                                </div>
 
-                                {permissions['employee_create'] && (
-                                    <button
-                                        onClick={() => navigate('/add-employee')}
-                                        className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-md text-sm font-medium transition-colors"
-                                    >
-                                        <Plus className="h-4 w-4" />
-                                        Add Employee
-                                    </button>
-                                )}
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Content section */}
-                    {loading ? (
-                        <div>
-                            <LoadingSpinner />
-                        </div>
-                    ) : error ? (
-                        <div className="px-6 py-12 text-center">
-                            <div className="bg-[var(--color-error-light)] border border-[var(--color-border-error)] rounded-lg p-8">
-                                <XCircle className="w-12 h-12 text-[var(--color-error)] mx-auto mb-4" />
-                                <p className="text-[var(--color-error-dark)] text-lg font-medium mb-2">Error Loading Employees</p>
-                                <button
-                                    onClick={() => fetchEmployees(currentPage, searchQuery)}
-                                    className="inline-flex items-center space-x-2 bg-[var(--color-error-light)] text-[var(--color-error-dark)] px-4 py-2 rounded-md hover:bg-[var(--color-error-lighter)] transition-colors"
-                                >
-                                    <RefreshCw className="w-4 h-4" />
-                                    <span>Try Again</span>
-                                </button>
-                            </div>
-                        </div>
-                    ) : employees.length === 0 ? (
-                        <div className="flex items-center justify-center h-[calc(100vh-220px)] bg-[#FBF9FD]">
-                            <div className="flex flex-col items-center justify-center text-center">
-                                <NoDataFound
-                                    title={searchQuery ? 'No Employees Found' : 'No Employees Found'}
-                                    subtitle={
-                                        searchQuery
-                                            ? `No employees match your search "${searchQuery}". Try different search terms.`
-                                            : currentPage > 1
-                                                ? 'No employees found on this page.'
-                                                : "You haven't added any employees yet."
-                                    }
-                                />
-                                <div className="flex gap-3 mt-2">
-                                    {searchQuery && (
-                                        <button
-                                            onClick={handleClearSearch}
-                                            className="inline-flex items-center space-x-2 bg-[var(--color-bg-gradient-start)] text-[var(--color-text-secondary)] px-4 py-2 rounded-md hover:bg-[var(--color-bg-gray-light)] transition-colors"
-                                        >
-                                            <XCircle className="w-4 h-4" />
-                                            <span>Clear Search</span>
-                                        </button>
-                                    )}
-                                    {permissions['employee_create'] && !searchQuery && currentPage === 1 && (
-                                        <button
-                                            onClick={() => navigate('/add-employee')}
-                                            className="inline-flex items-center space-x-2 bg-[var(--color-primary-dark)] text-[var(--color-text-white)] px-4 py-2 rounded-md hover:bg-[var(--color-primary-darker)] transition-colors"
-                                        >
-                                            <Plus className="w-4 h-4" />
-                                            <span>Create First Employee</span>
-                                        </button>
-                                    )}
-                                </div>
-                            </div>
-                        </div>
-                    ) : (
-                        <>
-                            {/* Table */}
-                            <div className="overflow-hidden ">
-                                <Table wrapperClassName="max-h-[70vh] overflow-y-auto custom-scrollbar">
-                                    <TableHeader>
-                                        <TableHeaderRow>
-                                            {/* Select All Checkbox Th */}
-                                            <Th className="w-[4%] text-center">
-                                                <input
-                                                    type="checkbox"
-                                                    checked={employees.length > 0 && employees.every(emp => selectedEmployeeIds.includes(emp.employee_id))}
-                                                    ref={input => {
-                                                        if (input) {
-                                                            const isAllPageSelected = employees.length > 0 && employees.every(emp => selectedEmployeeIds.includes(emp.employee_id));
-                                                            input.indeterminate = employees.length > 0 && employees.some(emp => selectedEmployeeIds.includes(emp.employee_id)) && !isAllPageSelected;
-                                                        }
-                                                    }}
-                                                    onChange={handleSelectAll}
-                                                    className="w-4 h-4 rounded border-gray-300 cursor-pointer"
-                                                    style={{ accentColor: 'var(--color-primary-dark)' }}
-                                                />
-                                            </Th>
-
-                                            {[
-                                                { key: COLUMN_KEYS.NAME, label: 'Full Name', width: 'w-[14%]' },
-                                                { key: COLUMN_KEYS.ID, label: 'Employee ID', width: 'w-[8%]' },
-                                                { key: COLUMN_KEYS.DEPARTMENT, label: 'Department', width: 'w-[9%]' },
-                                                { key: COLUMN_KEYS.branch_name, label: 'Branch Name', width: 'w-[9%]' },
-                                            ].map(({ key, label, width }) => (
-                                                <Th
-                                                    key={`header-${key}`}
-                                                    className={`${width} text-center`}
-                                                    onClick={() => requestSort(key)}
-                                                >
-                                                    <div className="flex items-center justify-center w-full">
-                                                        {label}
-                                                        {renderSortIcon(key)}
-                                                    </div>
-                                                </Th>
-                                            ))}
-
-                                            <Th className="w-[15%] text-center">
-                                                Email
-                                            </Th>
-
-                                            <Th className="w-[10%] text-center">
-                                                Mobile
-                                            </Th>
-
-                                            {permissions['attendance_type_change'] && (
-                                                <>
-                                                    <Th
-                                                        className="w-[15%] text-center"
-                                                        onClick={() => requestSort(COLUMN_KEYS.ATTENDANCE_TYPE)}
-                                                    >
-                                                        <div className="flex items-center justify-center w-full">
-                                                            Attendance Permission
-                                                            {renderSortIcon(COLUMN_KEYS.ATTENDANCE_TYPE)}
-                                                        </div>
-                                                    </Th>
-
-                                                    <Th className="w-[15%] text-center">
-                                                        Location Permission
-                                                    </Th>
-                                                </>
-                                            )}
-
-                                            {(permissions?.employee_edit || permissions?.employee_view) && (
-                                                <Th className="w-[5%] text-center">
-                                                    Actions
-                                                </Th>
-                                            )}
-                                        </TableHeaderRow>
-                                    </TableHeader>
-
-                                    <TableBody>
-                                        {sortedEmployees.map((employee, index) => {
-                                            const employeeId = employee.employee_id || `employee-${index}`;
-                                            const truncatedName = truncateText(employee.full_name, 15);
-                                            const truncatedDepartment = truncateText(employee.department_name, 10);
-                                            const truncatedDesignation = truncateText(employee.branch_name, 10);
-
-                                            return (
-                                                <TableRow
-                                                    key={`emp-${employeeId}`}
-                                                    className={`${(paginationLoading || searchLoading)
-                                                        ? 'opacity-50'
-                                                        : ''
-                                                        }`}
-                                                >
-                                                    {/* Row Checkbox Td */}
-                                                    <Td className="text-center">
-                                                        <input
-                                                            type="checkbox"
-                                                            checked={selectedEmployeeIds.includes(employee.employee_id)}
-                                                            onChange={() => handleSelectEmployee(employee.employee_id)}
-                                                            className="w-4 h-4 rounded border-gray-300 cursor-pointer"
-                                                            style={{ accentColor: 'var(--color-primary-dark)' }}
-                                                        />
-                                                    </Td>
-
-                                                    {/* Full Name */}
-                                                    <Td className="text-center">
-                                                        <div className="flex items-center justify-start gap-3">
-                                                            <div className="flex-shrink-0 h-10 w-10 relative">
-                                                                <div className="h-10 w-10 rounded-full bg-[var(--color-primary-dark)] flex items-center justify-center">
-                                                                    <span className="text-sm font-medium text-white">
-                                                                        {employee.full_name?.charAt(0) || 'N'}
-                                                                    </span>
+                                                {/* Mobile popup */}
+                                                <div className="sm:hidden fixed inset-0 z-[110] flex">
+                                                    <div className="ml-auto h-full w-full bg-[var(--color-bg-secondary)] flex flex-col">
+                                                        <div className="flex items-center justify-between p-4 border-b border-[var(--color-border-secondary)]">
+                                                            <div className="flex items-center gap-3">
+                                                                <div className="p-2 bg-[var(--color-primary-lightest)] rounded-lg">
+                                                                    <Filter className="h-5 w-5 text-[var(--color-primary)]" />
                                                                 </div>
-
-                                                                <div
-                                                                    className={`absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-white ${employee.status_id === 1 || employee.status_id === '1'
-                                                                        ? 'bg-green-500'
-                                                                        : employee.status === 2 || employee.status === '2'
-                                                                            ? 'bg-red-500'
-                                                                            : 'bg-green-400'
-                                                                        }`}
+                                                                <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">Filters</h2>
+                                                            </div>
+                                                            <button
+                                                                onClick={() => setFilterDropdown(false)}
+                                                                className="text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] p-1 rounded-lg hover:bg-[var(--color-bg-hover)]"
+                                                            >
+                                                                <X className="h-5 w-5" />
+                                                            </button>
+                                                        </div>
+                                                        <div className="flex-1 overflow-y-auto p-4 grid grid-cols-1 gap-4">
+                                                            {/* Branch */}
+                                                            <div>
+                                                                <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                                    <Building className="inline h-4 w-4 mr-1" />
+                                                                    Branch
+                                                                </label>
+                                                                <CustomSelect
+                                                                    name="branch_id"
+                                                                    value={tempFilters.branch_id}
+                                                                    onChange={(e) => handleFilterChange('branch_id', e.target.value)}
+                                                                    options={branches.map((b) => ({
+                                                                        value: b.id,
+                                                                        label: b.name,
+                                                                    }))}
+                                                                    placeholder="All Branches"
+                                                                    searchable={true}
+                                                                    disabled={dropdownLoading}
                                                                 />
                                                             </div>
 
-                                                            <div
-                                                                className="text-sm font-medium cursor-help truncate max-w-[120px]"
-                                                                title={employee.full_name}
-                                                            >
-                                                                {truncatedName || '--'}
+                                                            {/* Department */}
+                                                            <div>
+                                                                <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                                    <Users className="inline h-4 w-4 mr-1" />
+                                                                    Department
+                                                                </label>
+                                                                <CustomSelect
+                                                                    name="department_id"
+                                                                    value={tempFilters.department_id}
+                                                                    onChange={(e) => handleFilterChange('department_id', e.target.value)}
+                                                                    options={departments.map((d) => ({
+                                                                        value: d.id,
+                                                                        label: d.name,
+                                                                    }))}
+                                                                    placeholder="All Departments"
+                                                                    searchable={true}
+                                                                    disabled={dropdownLoading}
+                                                                />
+                                                            </div>
+
+                                                            {/* Designation */}
+                                                            <div>
+                                                                <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                                    <Award className="inline h-4 w-4 mr-1" />
+                                                                    Designation
+                                                                </label>
+                                                                <CustomSelect
+                                                                    name="designation_id"
+                                                                    value={tempFilters.designation_id}
+                                                                    onChange={(e) => handleFilterChange('designation_id', e.target.value)}
+                                                                    options={designations.map((d) => ({
+                                                                        value: d.id,
+                                                                        label: d.name,
+                                                                    }))}
+                                                                    placeholder="All Designations"
+                                                                    searchable={true}
+                                                                    disabled={dropdownLoading}
+                                                                />
+                                                            </div>
+
+                                                            {/* Employee Type */}
+                                                            <div>
+                                                                <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                                    <UserCheck className="inline h-4 w-4 mr-1" />
+                                                                    Employee Type
+                                                                </label>
+                                                                <CustomSelect
+                                                                    name="employee_type_id"
+                                                                    value={tempFilters.employee_type_id}
+                                                                    onChange={(e) => handleFilterChange('employee_type_id', e.target.value)}
+                                                                    options={employeeTypes.map((et) => ({
+                                                                        value: et.id,
+                                                                        label: et.name,
+                                                                    }))}
+                                                                    placeholder="All Employee Types"
+                                                                    searchable={true}
+                                                                    disabled={dropdownLoading}
+                                                                />
+                                                            </div>
+
+                                                            {/* Salary Type */}
+                                                            <div>
+                                                                <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                                    <DollarSign className="inline h-4 w-4 mr-1" />
+                                                                    Salary Type
+                                                                </label>
+                                                                <CustomSelect
+                                                                    name="salary_type_id"
+                                                                    value={tempFilters.salary_type_id}
+                                                                    onChange={(e) => handleFilterChange('salary_type_id', e.target.value)}
+                                                                    options={salaryTypes.map((st) => ({
+                                                                        value: st.id,
+                                                                        label: st.name,
+                                                                    }))}
+                                                                    placeholder="All Salary Types"
+                                                                    searchable={true}
+                                                                    disabled={dropdownLoading}
+                                                                />
+                                                            </div>
+
+                                                            {/* Gender */}
+                                                            <div>
+                                                                <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                                    <UserCircle className="inline h-4 w-4 mr-1" />
+                                                                    Gender
+                                                                </label>
+                                                                <CustomSelect
+                                                                    name="gender_id"
+                                                                    value={tempFilters.gender_id}
+                                                                    onChange={(e) => handleFilterChange('gender_id', e.target.value)}
+                                                                    options={genders.map((g) => ({
+                                                                        value: g.id,
+                                                                        label: g.name,
+                                                                    }))}
+                                                                    placeholder="All Genders"
+                                                                    searchable={true}
+                                                                    disabled={dropdownLoading}
+                                                                />
+                                                            </div>
+
+                                                            {/* Status */}
+                                                            <div>
+                                                                <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                                                                    <CheckCircle className="inline h-4 w-4 mr-1" />
+                                                                    Status
+                                                                </label>
+                                                                <CustomSelect
+                                                                    name="status_id"
+                                                                    value={tempFilters.status_id}
+                                                                    onChange={(e) => handleFilterChange('status_id', e.target.value)}
+                                                                    options={status.map((s) => ({
+                                                                        value: s.id,
+                                                                        label: s.name,
+                                                                    }))}
+                                                                    placeholder="All Status"
+                                                                    searchable={true}
+                                                                    disabled={dropdownLoading}
+                                                                />
                                                             </div>
                                                         </div>
-                                                    </Td>
+                                                        <div className="p-4 border-t border-[var(--color-border-secondary)] grid grid-cols-1 gap-2">
+                                                            <button
+                                                                onClick={applyFilters}
+                                                                className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-[var(--color-primary-dark)] text-[var(--color-text-white)] rounded-lg hover:bg-[var(--color-primary-darker)] transition-colors text-sm font-medium"
+                                                            >
+                                                                <Filter className="h-4 w-4" /> Apply Filters
+                                                            </button>
+                                                            <button
+                                                                onClick={() => { resetFilters(); setFilterDropdown(false); }}
+                                                                className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-[var(--color-bg-gray-light)] text-[var(--color-text-secondary)] rounded-lg hover:bg-[var(--color-bg-hover)] transition-colors text-sm font-medium"
+                                                            >
+                                                                Reset
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </>,
+                                            document.body
+                                        )}
+                                    </div>
 
-                                                    {/* Employee ID */}
-                                                    <Td className="text-center">
-                                                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium">
-                                                            {employee.employee_code || '-'}
-                                                        </span>
-                                                    </Td>
 
-                                                    {/* Department */}
-                                                    <Td className="text-center">
-                                                        <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium max-w-[90px] truncate">
-                                                            {truncatedDepartment}
-                                                        </span>
-                                                    </Td>
+                                    {/* Bulk Upload button */}
+                                    {permissions['employee_create'] && (
+                                        <button
+                                            onClick={() => setIsBulkUploadOpen(true)}
+                                            title="Bulk upload employees via Excel"
+                                            className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-md text-sm font-medium transition-colors border border-[var(--color-primary-light)]"
+                                        >
+                                            <Download className="h-4 w-4" />
+                                            Bulk Upload
+                                        </button>
+                                    )}
 
-                                                    {/* Designation */}
-                                                    <Td className="text-center">
-                                                        <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium max-w-[90px] truncate">
-                                                            {truncatedDesignation}
-                                                        </span>
-                                                    </Td>
+                                    {permissions['employee_create'] && (
+                                        <button
+                                            onClick={() => navigate('/add-employee')}
+                                            className="flex items-center gap-2 bg-[var(--color-bg-secondary)] text-[var(--color-primary-dark)] hover:bg-[var(--color-bg-primary)] px-4 py-2 rounded-md text-sm font-medium transition-colors"
+                                        >
+                                            <Plus className="h-4 w-4" />
+                                            Add Employee
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
 
-                                                    {/* Email */}
-                                                    <Td className="text-center">
-                                                        <div
-                                                            className="text-sm truncate max-w-[160px] mx-auto"
-                                                            title={employee.email}
+                        {/* Content section */}
+                        {loading ? (
+                            <div>
+                                <LoadingSpinner />
+                            </div>
+                        ) : error ? (
+                            <div className="px-6 py-12 text-center">
+                                <div className="bg-[var(--color-error-light)] border border-[var(--color-border-error)] rounded-lg p-8">
+                                    <XCircle className="w-12 h-12 text-[var(--color-error)] mx-auto mb-4" />
+                                    <p className="text-[var(--color-error-dark)] text-lg font-medium mb-2">Error Loading Employees</p>
+                                    <button
+                                        onClick={() => fetchEmployees(currentPage, searchQuery)}
+                                        className="inline-flex items-center space-x-2 bg-[var(--color-error-light)] text-[var(--color-error-dark)] px-4 py-2 rounded-md hover:bg-[var(--color-error-lighter)] transition-colors"
+                                    >
+                                        <RefreshCw className="w-4 h-4" />
+                                        <span>Try Again</span>
+                                    </button>
+                                </div>
+                            </div>
+                        ) : employees.length === 0 ? (
+                            <div className="flex items-center justify-center h-[calc(100vh-220px)] bg-[#FBF9FD]">
+                                <div className="flex flex-col items-center justify-center text-center">
+                                    <NoDataFound
+                                        title={searchQuery ? 'No Employees Found' : 'No Employees Found'}
+                                        subtitle={
+                                            searchQuery
+                                                ? `No employees match your search "${searchQuery}". Try different search terms.`
+                                                : currentPage > 1
+                                                    ? 'No employees found on this page.'
+                                                    : "You haven't added any employees yet."
+                                        }
+                                    />
+                                    <div className="flex gap-3 mt-2">
+                                        {searchQuery && (
+                                            <button
+                                                onClick={handleClearSearch}
+                                                className="inline-flex items-center space-x-2 bg-[var(--color-bg-gradient-start)] text-[var(--color-text-secondary)] px-4 py-2 rounded-md hover:bg-[var(--color-bg-gray-light)] transition-colors"
+                                            >
+                                                <XCircle className="w-4 h-4" />
+                                                <span>Clear Search</span>
+                                            </button>
+                                        )}
+                                        {permissions['employee_create'] && !searchQuery && currentPage === 1 && (
+                                            <button
+                                                onClick={() => navigate('/add-employee')}
+                                                className="inline-flex items-center space-x-2 bg-[var(--color-primary-dark)] text-[var(--color-text-white)] px-4 py-2 rounded-md hover:bg-[var(--color-primary-darker)] transition-colors"
+                                            >
+                                                <Plus className="w-4 h-4" />
+                                                <span>Create First Employee</span>
+                                            </button>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        ) : (
+                            <>
+                                {/* Table */}
+                                <div className="overflow-hidden ">
+                                    <Table wrapperClassName="max-h-[70vh] overflow-y-auto custom-scrollbar">
+                                        <TableHeader>
+                                            <TableHeaderRow>
+                                                {/* Select All Checkbox Th */}
+                                                <Th className="w-[4%] text-center">
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={employees.length > 0 && employees.every(emp => selectedEmployeeIds.includes(emp.employee_id))}
+                                                        ref={input => {
+                                                            if (input) {
+                                                                const isAllPageSelected = employees.length > 0 && employees.every(emp => selectedEmployeeIds.includes(emp.employee_id));
+                                                                input.indeterminate = employees.length > 0 && employees.some(emp => selectedEmployeeIds.includes(emp.employee_id)) && !isAllPageSelected;
+                                                            }
+                                                        }}
+                                                        onChange={handleSelectAll}
+                                                        className="w-4 h-4 rounded border-gray-300 cursor-pointer"
+                                                        style={{ accentColor: 'var(--color-primary-dark)' }}
+                                                    />
+                                                </Th>
+
+                                                {[
+                                                    { key: COLUMN_KEYS.NAME, label: 'Full Name', width: 'w-[14%]' },
+                                                    { key: COLUMN_KEYS.ID, label: 'Employee ID', width: 'w-[8%]' },
+                                                    { key: COLUMN_KEYS.DEPARTMENT, label: 'Department', width: 'w-[9%]' },
+                                                    { key: COLUMN_KEYS.branch_name, label: 'Branch Name', width: 'w-[9%]' },
+                                                ].map(({ key, label, width }) => (
+                                                    <Th
+                                                        key={`header-${key}`}
+                                                        className={`${width} text-center`}
+                                                        onClick={() => requestSort(key)}
+                                                    >
+                                                        <div className="flex items-center justify-center w-full">
+                                                            {label}
+                                                            {renderSortIcon(key)}
+                                                        </div>
+                                                    </Th>
+                                                ))}
+
+                                                <Th className="w-[15%] text-center">
+                                                    Email
+                                                </Th>
+
+                                                <Th className="w-[10%] text-center">
+                                                    Mobile
+                                                </Th>
+
+                                                {permissions['attendance_type_change'] && (
+                                                    <>
+                                                        <Th
+                                                            className="w-[15%] text-center"
+                                                            onClick={() => requestSort(COLUMN_KEYS.ATTENDANCE_TYPE)}
                                                         >
-                                                            {employee.email || '--'}
-                                                        </div>
-                                                    </Td>
+                                                            <div className="flex items-center justify-center w-full">
+                                                                Attendance Permission
+                                                                {renderSortIcon(COLUMN_KEYS.ATTENDANCE_TYPE)}
+                                                            </div>
+                                                        </Th>
 
-                                                    {/* Mobile */}
-                                                    <Td className="text-center">
-                                                        <div className="text-sm font-mono">
-                                                            {employee.mobile_number || '--'}
-                                                        </div>
-                                                    </Td>
+                                                        <Th className="w-[15%] text-center">
+                                                            Location Permission
+                                                        </Th>
+                                                    </>
+                                                )}
 
-                                                    {/* Attendance & Location */}
-                                                    {permissions['attendance_type_change'] && (
-                                                        <>
-                                                            <Td className="text-center">
-                                                                {renderAttendanceTypeDisplay(employee)}
-                                                            </Td>
+                                                {(permissions?.employee_edit || permissions?.employee_view) && (
+                                                    <Th className="w-[5%] text-center">
+                                                        Actions
+                                                    </Th>
+                                                )}
+                                            </TableHeaderRow>
+                                        </TableHeader>
 
-                                                            <Td className="text-center">
-                                                                {renderLocationPermissionDisplay(employee)}
-                                                            </Td>
-                                                        </>
-                                                    )}
+                                        <TableBody>
+                                            {sortedEmployees.map((employee, index) => {
+                                                const employeeId = employee.employee_id || `employee-${index}`;
+                                                const truncatedName = truncateText(employee.full_name, 15);
+                                                const truncatedDepartment = truncateText(employee.department_name, 10);
+                                                const truncatedDesignation = truncateText(employee.branch_name, 10);
 
-                                                    {/* Actions */}
-                                                    {(permissions?.employee_edit || permissions?.employee_view) && (
+                                                return (
+                                                    <TableRow
+                                                        key={`emp-${employeeId}`}
+                                                        className={`${(paginationLoading || searchLoading)
+                                                            ? 'opacity-50'
+                                                            : ''
+                                                            }`}
+                                                    >
+                                                        {/* Row Checkbox Td */}
                                                         <Td className="text-center">
-                                                            <div className="flex justify-center space-x-1">
+                                                            <input
+                                                                type="checkbox"
+                                                                checked={selectedEmployeeIds.includes(employee.employee_id)}
+                                                                onChange={() => handleSelectEmployee(employee.employee_id)}
+                                                                className="w-4 h-4 rounded border-gray-300 cursor-pointer"
+                                                                style={{ accentColor: 'var(--color-primary-dark)' }}
+                                                            />
+                                                        </Td>
 
-                                                                {permissions['employee_edit'] && (
-                                                                    <button
-                                                                        onClick={() => handleEditEmployee(employee.employee_id)}
-                                                                        disabled={paginationLoading || searchLoading}
-                                                                        className="w-9 h-9 flex items-center justify-center rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-100 hover:scale-110 hover:shadow-md transition-all duration-200 disabled:opacity-50"
-                                                                    >
-                                                                        <Edit className="w-4 h-4" strokeWidth={2.5} />
-                                                                    </button>
-                                                                )}
+                                                        {/* Full Name */}
+                                                        <Td className="text-center">
+                                                            <div className="flex items-center justify-start gap-3">
+                                                                <div className="flex-shrink-0 h-10 w-10 relative">
+                                                                    <div className="h-10 w-10 rounded-full bg-[var(--color-primary-dark)] flex items-center justify-center">
+                                                                        <span className="text-sm font-medium text-white">
+                                                                            {employee.full_name?.charAt(0) || 'N'}
+                                                                        </span>
+                                                                    </div>
 
-                                                                {permissions['employee_view'] && (
-                                                                    <button
-                                                                        onClick={() => handleViewDetails(employee.employee_id)}
-                                                                        disabled={paginationLoading || searchLoading}
-                                                                        className="w-9 h-9 flex items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 hover:bg-emerald-100 hover:scale-110 hover:shadow-md transition-all duration-200 disabled:opacity-50"
-                                                                    >
-                                                                        <Eye className="w-4 h-4" strokeWidth={2.5} />
-                                                                    </button>
-                                                                )}
+                                                                    <div
+                                                                        className={`absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-white ${employee.status_id === 1 || employee.status_id === '1'
+                                                                            ? 'bg-green-500'
+                                                                            : employee.status === 2 || employee.status === '2'
+                                                                                ? 'bg-red-500'
+                                                                                : 'bg-green-400'
+                                                                            }`}
+                                                                    />
+                                                                </div>
 
+                                                                <div
+                                                                    className="text-sm font-medium cursor-help truncate max-w-[120px]"
+                                                                    title={employee.full_name}
+                                                                >
+                                                                    {truncatedName || '--'}
+                                                                </div>
                                                             </div>
                                                         </Td>
-                                                    )}
 
-                                                </TableRow>
-                                            );
-                                        })}
+                                                        {/* Employee ID */}
+                                                        <Td className="text-center">
+                                                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium">
+                                                                {employee.employee_code || '-'}
+                                                            </span>
+                                                        </Td>
 
-                                    </TableBody>
-                                </Table>
-                            </div>
+                                                        {/* Department */}
+                                                        <Td className="text-center">
+                                                            <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium max-w-[90px] truncate">
+                                                                {truncatedDepartment}
+                                                            </span>
+                                                        </Td>
 
-                            {/* Pagination and Rows per page */}
-                            <div className="mt-auto flex flex-col sm:flex-row items-center justify-between px-6 py-4 border-t border-[var(--color-border-primary)] bg-[var(--color-bg-gray)] gap-4">
-                                <div className="flex items-center gap-2">
-                                    <span className="text-sm font-medium text-[var(--color-text-secondary)]">
-                                        Rows per page:
-                                    </span>
-                                    <select
-                                        value={itemsPerPage}
-                                        onChange={(e) => {
-                                            const val = parseInt(e.target.value);
-                                            setItemsPerPage(val);
-                                            setCurrentPage(1);
-                                            fetchEmployees(1, searchQuery, false, val);
-                                        }}
-                                        className="h-[35px] border border-[var(--color-border-secondary)] rounded-md text-sm text-[var(--color-text-secondary)] bg-white px-2 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] cursor-pointer"
-                                    >
-                                        <option value={10}>10</option>
-                                        <option value={20}>20</option>
-                                        <option value={50}>50</option>
-                                        <option value={100}>100</option>
-                                    </select>
+                                                        {/* Designation */}
+                                                        <Td className="text-center">
+                                                            <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium max-w-[90px] truncate">
+                                                                {truncatedDesignation}
+                                                            </span>
+                                                        </Td>
+
+                                                        {/* Email */}
+                                                        <Td className="text-center">
+                                                            <div
+                                                                className="text-sm truncate max-w-[160px] mx-auto"
+                                                                title={employee.email}
+                                                            >
+                                                                {employee.email || '--'}
+                                                            </div>
+                                                        </Td>
+
+                                                        {/* Mobile */}
+                                                        <Td className="text-center">
+                                                            <div className="text-sm font-mono">
+                                                                {employee.mobile_number || '--'}
+                                                            </div>
+                                                        </Td>
+
+                                                        {/* Attendance & Location */}
+                                                        {permissions['attendance_type_change'] && (
+                                                            <>
+                                                                <Td className="text-center">
+                                                                    {renderAttendanceTypeDisplay(employee)}
+                                                                </Td>
+
+                                                                <Td className="text-center">
+                                                                    {renderLocationPermissionDisplay(employee)}
+                                                                </Td>
+                                                            </>
+                                                        )}
+
+                                                        {/* Actions */}
+                                                        {(permissions?.employee_edit || permissions?.employee_view) && (
+                                                            <Td className="text-center">
+                                                                <div className="flex justify-center space-x-1">
+
+                                                                    {permissions['employee_edit'] && (
+                                                                        <button
+                                                                            onClick={() => handleEditEmployee(employee.employee_id)}
+                                                                            disabled={paginationLoading || searchLoading}
+                                                                            className="w-9 h-9 flex items-center justify-center rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-100 hover:scale-110 hover:shadow-md transition-all duration-200 disabled:opacity-50"
+                                                                        >
+                                                                            <Edit className="w-4 h-4" strokeWidth={2.5} />
+                                                                        </button>
+                                                                    )}
+
+                                                                    {permissions['employee_view'] && (
+                                                                        <button
+                                                                            onClick={() => handleViewDetails(employee.employee_id)}
+                                                                            disabled={paginationLoading || searchLoading}
+                                                                            className="w-9 h-9 flex items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 hover:bg-emerald-100 hover:scale-110 hover:shadow-md transition-all duration-200 disabled:opacity-50"
+                                                                        >
+                                                                            <Eye className="w-4 h-4" strokeWidth={2.5} />
+                                                                        </button>
+                                                                    )}
+
+                                                                </div>
+                                                            </Td>
+                                                        )}
+
+                                                    </TableRow>
+                                                );
+                                            })}
+
+                                        </TableBody>
+                                    </Table>
                                 </div>
-                                <div className="flex-1 flex justify-end">
-                                    <Pagination
-                                        currentPage={currentPage}
-                                        totalPages={totalPages}
-                                        totalItems={totalEmployees}
-                                        itemsPerPage={itemsPerPage}
-                                        onPageChange={handlePageChange}
-                                        loading={paginationLoading || searchLoading}
-                                        alwaysShow={true}
-                                        className="!border-t-0 !bg-transparent !p-0"
-                                    />
+
+                                {/* Pagination and Rows per page */}
+                                <div className="mt-auto flex flex-col sm:flex-row items-center justify-between px-6 py-4 border-t border-[var(--color-border-primary)] bg-[var(--color-bg-gray)] gap-4">
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-sm font-medium text-[var(--color-text-secondary)]">
+                                            Rows per page:
+                                        </span>
+                                        <select
+                                            value={itemsPerPage}
+                                            onChange={(e) => {
+                                                const val = parseInt(e.target.value);
+                                                setItemsPerPage(val);
+                                                setCurrentPage(1);
+                                                fetchEmployees(1, searchQuery, false, val);
+                                            }}
+                                            className="h-[35px] border border-[var(--color-border-secondary)] rounded-md text-sm text-[var(--color-text-secondary)] bg-white px-2 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)] cursor-pointer"
+                                        >
+                                            <option value={10}>10</option>
+                                            <option value={20}>20</option>
+                                            <option value={50}>50</option>
+                                            <option value={100}>100</option>
+                                        </select>
+                                    </div>
+                                    <div className="flex-1 flex justify-end">
+                                        <Pagination
+                                            currentPage={currentPage}
+                                            totalPages={totalPages}
+                                            totalItems={totalEmployees}
+                                            itemsPerPage={itemsPerPage}
+                                            onPageChange={handlePageChange}
+                                            loading={paginationLoading || searchLoading}
+                                            alwaysShow={true}
+                                            className="!border-t-0 !bg-transparent !p-0"
+                                        />
+                                    </div>
                                 </div>
-                            </div>
-                        </>
-                    )}
+                            </>
+                        )}
+                    </div>
                 </div>
             </div>
-        </div>
+        </>
     );
 }
+

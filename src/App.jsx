@@ -199,6 +199,7 @@ const App = () => {
     "/privacy-policy",
     "/coming-soon",
     "/document",
+    "/document/video",
   ].includes(location.pathname);
 
   const isLoginRoute = location.pathname === "/login";
@@ -286,7 +287,7 @@ const App = () => {
 
       <div className="min-h-screen bg-[var(--color-bg-primary)]">
         {/* Landing Page Navbar - Show on all landing routes */}
-        {isLandingRoute && location.pathname !== "/document" && <LandingNavbar />}
+        {isLandingRoute && !location.pathname.startsWith("/document") && <LandingNavbar />}
 
         {/* Application Navbar */}
         {!shouldHideNavigation && (
@@ -960,6 +961,10 @@ const App = () => {
                 path="/document"
                 element={<DocumentPage />}
               />
+              <Route
+                path="/document/video"
+                element={<DocumentPage />}
+              />
 
               {/* 404 Error Page - Catch all unmatched routes */}
               <Route path="/404" element={<Error404Page />} />
@@ -977,7 +982,7 @@ const App = () => {
         </main>
 
         {/* Footer for Landing Pages - Show only on landing routes */}
-        {isLandingRoute && location.pathname !== "/document" && <Footer />}
+        {isLandingRoute && !location.pathname.startsWith("/document") && <Footer />}
       </div>
 
     </ThemeProvider>

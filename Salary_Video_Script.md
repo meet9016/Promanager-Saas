@@ -21,7 +21,7 @@
 - Is list mein aap har employee ka Basic Salary, Allowances, aur Deductions ek hi screen par details mein dekh sakte hain. Isse calculation mein koi error nahi hoti."
 
 ---
-
+                                                
 ## 3. Finalize Payroll & Salary Slips (1:30 - 2:30)
 **Visuals:** Move to the `Finalize Payroll` section. Show how you can review the final amounts, click on finalize/approve, and optionally demonstrate a salary slip.
 **Voiceover (Script):**

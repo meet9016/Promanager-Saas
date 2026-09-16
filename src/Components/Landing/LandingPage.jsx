@@ -3,9 +3,12 @@ import { Helmet } from "@dr.pogodin/react-helmet";
 import HeroSection from "../Landing/components/HeroSection";
 import TrustedBy from "../Landing/components/TrustedBy";
 import FeaturesSection from "../Landing/components/FeaturesSection";
+import TrackRecordSection from "../Landing/components/TrackRecordSection";
+import BiometricGeoSection from "../Landing/components/BiometricGeoSection";
 import StatsSection from "../Landing/components/StatsSection";
 import AboutSection from "../Landing/components/AboutSection";
 import ServicesSection from "../Landing/components/ServicesSection";
+import PagarPeComparisonSection from "../Landing/components/PagarPeComparisonSection";
 import ResourceTemplatesSection from "../Landing/components/ResourceTemplatesSection";
 import CoreFeaturesSection from "../Landing/components/CoreFeaturesSection";
 import TestimonialSection from "../Landing/components/TestimonialSection";
@@ -63,9 +66,12 @@ const LandingPage = () => {
                 <TrustedBy />
                 {/* <StatsSection /> */}
                 <AboutSection />
-                <ServicesSection />
+                {/* <ServicesSection /> */}
+                <PagarPeComparisonSection />
                 <ResourceTemplatesSection />
                 <FeaturesSection noMoreFeatures={true} />
+                <TrackRecordSection />
+                <BiometricGeoSection />
                 {/* <CoreFeaturesSection /> */}
                 <TestimonialSection />
                 <CTASection />
