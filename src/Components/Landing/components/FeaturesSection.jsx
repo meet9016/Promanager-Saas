@@ -5,47 +5,47 @@ import {
   Calendar,
   DollarSign,
   BarChart3,
-  Shield,
-  Zap,
+  CalendarDays,
+  Clock,
 } from "lucide-react";
 import { Helmet } from "@dr.pogodin/react-helmet";
 
 const benefits = [
   {
-    icon: DollarSign,
-    title: "Accurate Payroll Processing",
+    icon: Users,
+    title: "Employee Management",
     description:
-      "Eliminate manual errors with automated salary calculations, tax deductions, and compliance-ready reports.",
+      "Manage complete employee records, profiles, team strength, and workforce data in a single centralized dashboard.",
   },
   {
     icon: Calendar,
-    title: "Leave & Attendance Integration",
+    title: "Attendance",
     description:
-      "Sync employee attendance and leave records directly into payroll for seamless payouts every cycle.",
+      "Track daily attendance, present percentage, biometric check-ins, and real-time logs with complete accuracy.",
+  },
+  {
+    icon: DollarSign,
+    title: "Payroll",
+    description:
+      "Automate monthly salary calculations, statutory deductions, tax reports, and instant payroll processing.",
+  },
+  {
+    icon: CalendarDays,
+    title: "Leave Tracking",
+    description:
+      "Simplify employee leave requests, active leave balances, holiday calendars, and approval workflows effortlessly.",
+  },
+  {
+    icon: Clock,
+    title: "Shift Management",
+    description:
+      "Easily create, assign, and manage flexible morning, evening, and night shifts with real-time slot tracking.",
   },
   {
     icon: BarChart3,
-    title: "Real-Time Insights & Analytics",
+    title: "Insights & Reports",
     description:
-      "Access dashboards and reports to track payroll expenses, employee costs, and financial trends instantly.",
-  },
-  {
-    icon: Shield,
-    title: "Compliance & Data Security",
-    description:
-      "Stay compliant with statutory regulations while ensuring sensitive employee payroll data remains secure.",
-  },
-  {
-    icon: Users,
-    title: "Employee Self-Service",
-    description:
-      "Enable employees to view payslips, tax documents, and payroll history anytime through a secure portal.",
-  },
-  {
-    icon: Zap,
-    title: "Faster & Scalable Operations",
-    description:
-      "Process payroll in minutes and scale effortlessly as your workforce grows, without added complexity.",
+      "Generate detailed HR & payroll analytics, financial growth trends, and instant downloadable workforce reports.",
   },
 ];
 
@@ -197,7 +197,7 @@ const FeaturesSection = ({ noMoreFeatures = false, noBenefits = false }) => {
               </motion.p>
             </motion.div>
 
-            <div className={`grid lg:grid-cols-3 gap-12 items-start mx-auto ${noMoreFeatures ? "mb-0" : "mb-24"}`}>
+            <div className={`grid lg:grid-cols-3 gap-12 items-center mx-auto ${noMoreFeatures ? "mb-0" : "mb-24"}`}>
 
               <div className="space-y-10">
                 {benefits.slice(0, 3).map((benefit, index) => {
@@ -246,9 +246,9 @@ const FeaturesSection = ({ noMoreFeatures = false, noBenefits = false }) => {
                 whileInView={{ opacity: 1, y: 0, scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ duration: 1, delay: 0.3 }}
-                className="flex justify-center"
+                className="flex justify-center items-center w-full"
               >
-                <div className="relative">
+                <div className="relative max-w-sm sm:max-w-md w-full">
                   <motion.div
                     animate={{ scale: [1, 1.1, 1], opacity: [0.6, 0.8, 0.6] }}
                     transition={{
@@ -272,13 +272,13 @@ const FeaturesSection = ({ noMoreFeatures = false, noBenefits = false }) => {
                   <motion.div
                     whileHover={{ y: -6, scale: 1.02 }}
                     transition={{ duration: 0.4 }}
-                    className="relative rounded-2xl bg-white border border-[var(--color-border-primary)] shadow-2xl p-3 overflow-hidden flex items-center justify-center max-w-sm sm:max-w-md"
+                    className="relative rounded-2xl bg-white border border-purple-100 shadow-xl p-2 sm:p-2.5 overflow-hidden flex items-center justify-center w-full"
                   >
                     <img
-                      src="/images/Smarter-Payroll1.png"
+                      src="/images/Smarter-Payroll3.jpg"
                       alt="Payroll Dashboard"
                       loading="lazy"
-                      className="w-full h-72 sm:h-80 object-contain rounded-xl"
+                      className="w-full h auto max-h-[380px] sm:max-h-[420px] object-contain rounded-xl"
                     />
                   </motion.div>
                 </div>

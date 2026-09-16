@@ -64,8 +64,8 @@ const ServicesSection = () => {
                 viewport={{ once: true }}
                 transition={{ duration: 0.6 }}
                 className="text-2xl lg:text-3xl font-bold text-[var(--color-text-primary)]"
-              >
-                Our Services
+              > 
+                Our Services 
               </motion.span>
 
               {/* Curved Line SVG */}

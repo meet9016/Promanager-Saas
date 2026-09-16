@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { CheckCircle2, TrendingUp, Shield, Zap } from "lucide-react";
-import AboutProManager from "/images/About-ProManager.png";
+import AboutProManager from "/images/About-ProManager1.png";
 
 const AboutSection = () => {
   const features = [
@@ -28,9 +28,9 @@ const AboutSection = () => {
   ];
 
   return (
-    <section className="pt-12 lg:pt-20 bg-white relative">
+    <section className="pt-12 lg:pt-20 bg-white relative mb-5">
 
-      <div className="absolute top-1/2 z-10   right-0 w-[400px] h-[500px] rounded-full
+      <div className="absolute top-1/2 z-10   right-0 w-[400px] h-[300px] rounded-full
     bg-[#6c4cf1]
     blur-[90px]
     opacity-20

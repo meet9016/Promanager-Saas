@@ -1,53 +1,63 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { Users, Clock, Calendar, IndianRupee, Briefcase, BarChart2, ShieldCheck, Settings } from "lucide-react";
+import {
+  Clock,
+  IndianRupee,
+  Smartphone,
+  Fingerprint,
+  RotateCw,
+  Calendar,
+  MessageSquare,
+  BarChart2
+} from "lucide-react";
 
+// Top 8 Main Core Features
 const resourceCategories = [
   {
-    icon: Calendar,
-    title: "Attendance Management",
-    description: "Track daily & monthly attendance, detailed logs, and geolocation-based workforce tracking.",
+    icon: Smartphone,
+    title: "Mobile App (Android & iOS)",
+    description: "Empower staff and admins with dedicated mobile apps for Android & iOS devices.",
   },
   {
-    icon: Users,
-    title: "Employee Management",
-    description: "Manage employee profiles, branches, departments, designations, allowances, and deductions.",
+    icon: Fingerprint,
+    title: "Biometric & Face Recognition",
+    description: "Integrate hardware biometric devices and AI facial recognition for touchless clock-ins.",
   },
   {
     icon: Clock,
-    title: "Shift Management",
-    description: "Schedule work shifts, manage shift reallocations, and track employee working hours efficiently.",
-  },
-  {
-    icon: Calendar,
-    title: "Leaves & Holidays",
-    description: "Process leave applications, track approval statuses, and maintain company holiday calendars.",
+    title: "Attendance Management",
+    description: "Track daily check-ins, working hours, selfie & location-based geofence tracking.",
   },
   {
     icon: IndianRupee,
-    title: "Payroll & Salary",
-    description: "Automate monthly payroll calculations, salary generation status, and payment disbursals.",
+    title: "Payroll & Salary Management",
+    description: "Automate salary calculations, PF/ESIC compliance, deductions, and bulk payouts.",
   },
   {
-    icon: Briefcase,
-    title: "Loans & Advances",
-    description: "Track employee loan requests, salary advance disbursements, and automated recovery deductions.",
+    icon: RotateCw,
+    title: "Shift & Roster Management",
+    description: "Schedule flexible work shifts, night rosters, overtime rules, and multi-branch tracking.",
+  },
+  {
+    icon: Calendar,
+    title: "Leave & Loan Management",
+    description: "Process digital leave approvals, salary advance requests, and EMI recovery deductions.",
+  },
+  {
+    icon: MessageSquare,
+    title: "Employee Management",
+    description: "Manage employee profiles, departments, designations, documents, and employee information in one centralized system.",
   },
   {
     icon: BarChart2,
-    title: "Reports & Analytics",
-    description: "Generate monthly muster reports, attendance exception summaries, and salary analytics.",
-  },
-  {
-    icon: ShieldCheck,
-    title: "User & Role Management",
-    description: "Configure custom user roles, assign granular permissions, and control administrative access.",
+    title: "Reports & Growth Analytics",
+    description: "Generate monthly muster reports, salary registers, attendance exception summaries & analytics.",
   }
 ];
 
 const ResourceTemplatesSection = () => {
   return (
-    <section className="py-10 lg:py-10 bg-white relative overflow-hidden">
+    <section className="py-12 lg:py-20 bg-white relative overflow-hidden">
       {/* Minimalist Monochrome Abstract SVG Background */}
       <div className="absolute inset-0 opacity-50">
         <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
@@ -69,8 +79,6 @@ const ResourceTemplatesSection = () => {
           <line x1="70%" y1="0" x2="70%" y2="100%" stroke="#4B2EDB" strokeWidth="1" opacity="0.03" />
         </svg>
       </div>
-
-
 
       <div className="container mx-auto px-4 relative z-10">
         {/* Header Section */}
@@ -145,7 +153,7 @@ const ResourceTemplatesSection = () => {
           </div>
         </motion.div>
 
-        {/* Resource Categories Grid - Unique Design */}
+        {/* Resource Categories Grid - 8 Curated Core Modules */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {resourceCategories.map((category, index) => {
             const Icon = category.icon;
@@ -160,7 +168,7 @@ const ResourceTemplatesSection = () => {
                 whileHover={{ y: -10 }}
                 className="group cursor-pointer"
               >
-                {/* Unique Layout - No traditional card */}
+                {/* Unique Layout - Retaining exact existing design */}
                 <div className="relative">
                   {/* Icon Circle with Gradient Border */}
                   <motion.div
@@ -169,7 +177,7 @@ const ResourceTemplatesSection = () => {
                     className="relative w-20 h-20 mb-4"
                   >
                     <div className="absolute inset-0 bg-[var(--color-primary-dark)] rounded-2xl opacity-10 group-hover:opacity-20 transition-opacity duration-300" />
-                    <div className="absolute inset-0.5 bg-white rounded-2xl flex items-center justify-center">
+                    <div className="absolute inset-0.5 bg-white rounded-2xl flex items-center justify-center border border-purple-100/60 shadow-sm">
                       <div className="w-16 h-16 bg-[var(--color-primary-dark)] rounded-xl flex items-center justify-center">
                         <Icon className="w-8 h-8 text-white" />
                       </div>
@@ -201,7 +209,7 @@ const ResourceTemplatesSection = () => {
                     initial={{ scale: 0, opacity: 0 }}
                     whileHover={{ scale: 1, opacity: 0.1 }}
                     transition={{ duration: 0.3 }}
-                    className="absolute -top-4 -right-4 w-24 h-24 bg-gradient-to-br from-[#6C4CF1] to-[#4B2EDB] rounded-full blur-2xl"
+                    className="absolute -top-4 -right-4 w-24 h-24 bg-gradient-to-br from-[#6C4CF1] to-[#4B2EDB] rounded-full blur-2xl pointer-events-none"
                   />
                 </div>
               </motion.div>
