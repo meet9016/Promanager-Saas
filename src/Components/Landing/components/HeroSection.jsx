@@ -25,7 +25,7 @@ const HeroSection = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.2 }}
                 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold leading-normal sm:leading-relaxed"
-               >
+              >
                 <motion.span
                   className="block text-[var(--color-text-primary)] mb-2 pb-1"
                   initial={{ opacity: 0, x: -50 }}
@@ -152,20 +152,25 @@ const HeroSection = () => {
             transition={{ duration: 1, delay: 0.3 }}
             className="relative max-w-md sm:max-w-lg lg:max-w-xl mx-auto w-full"
           >
+            {/* Background Glow Effect */}
+            <div className="absolute -inset-1 bg-gradient-to-r from-[var(--color-primary)] via-[#6c4cf1] to-[var(--color-primary-dark)] rounded-3xl opacity-20 blur-lg pointer-events-none" />
+
             {/* Main Image */}
             <motion.div
               whileHover={{ scale: 1.02, rotateY: 5 }}
               transition={{ duration: 0.3 }}
-              className="relative overflow-hidden rounded-2xl shadow-2xl border border-gray-100"
+              className="relative overflow-hidden rounded-2xl p-2 bg-white/90 backdrop-blur-sm border-2 border-[var(--color-primary)]/25 shadow-2xl shadow-[var(--color-primary)]/15 ring-1 ring-black/5"
               style={{ transformStyle: 'preserve-3d' }}
             >
-              <div className="absolute inset-0 bg-gradient-to-tr from-[var(--color-primary)]/10 to-transparent z-10 pointer-events-none" />
-              <img
-                src={heroImage}
-                loading="lazy"
-                alt="PagarPe Dashboard"
-                className="w-full h-auto object-contain rounded-2xl max-h-[420px]"
-              />
+              <div className="relative overflow-hidden rounded-xl border border-gray-200/80 bg-gray-50/50">
+                <div className="absolute inset-0 bg-gradient-to-tr from-[var(--color-primary)]/5 to-transparent z-10 pointer-events-none" />
+                <img
+                  src={heroImage}
+                  loading="lazy"
+                  alt="PagarPe Dashboard"
+                  className="w-full h-auto object-contain rounded-xl max-h-[420px]"
+                />
+              </div>
             </motion.div>
 
             {/* Floating Card 1 - Bottom Left */}

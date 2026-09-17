@@ -24,7 +24,7 @@
 ## 3. User Management & Adding Users (1:30 - 2:30)
 
 "Roles set karne ke baad, hum 'User Management' section mein jayenge jahan se naye users add kiye jate hain.
-- 'Add User' button par click karein. Yahan us person ka naam, email, password aur baaki login details fill karein.
+- 'Add User' button par click karein. Yahan us person ka naam, email, password aur baaki login details fill karein.                                             
 - Is role ko assign karne se, is user ko apne account mein utna hi access milega jitni permissions humne us role ko di thi.
 - Save karte hi naya user system mein add ho jayega aur apne credentials se login kar payega."
 
