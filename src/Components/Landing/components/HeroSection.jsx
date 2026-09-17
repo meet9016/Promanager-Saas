@@ -1,6 +1,6 @@
 import { Button } from "../ui/button";
 import { ArrowRight, Play, Sparkles, TrendingUp, Users, Shield } from "lucide-react";
-import heroImage from "/images/hero.png";
+import heroImage from "/images/hero1.png";
 import React from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
@@ -18,38 +18,37 @@ const HeroSection = () => {
           {/* Left Content */}
           <div className="space-y-8">
 
-
             {/* Main Heading */}
             <div className="space-y-4">
               <motion.h1
                 initial={{ opacity: 0, y: 50 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.2 }}
-                className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold leading-tight"
-              >
+                className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold leading-normal sm:leading-relaxed"
+               >
                 <motion.span
-                  className="block text-[var(--color-text-primary)] mb-2 "
+                  className="block text-[var(--color-text-primary)] mb-2 pb-1"
                   initial={{ opacity: 0, x: -50 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.8, delay: 0.3 }}
                 >
-                  PagarPe
+                  Payroll & HR Software
                 </motion.span>
                 <motion.span
-                  className="block bg-[var(--color-primary-dark)] bg-clip-text text-transparent"
+                  className="inline-block w-full bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary)] bg-clip-text text-transparent pb-2 pt-1"
                   initial={{ opacity: 0, x: 50 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.8, delay: 0.5 }}
                 >
-                  Ultimate Payroll
+                  for Easy Employee
                 </motion.span>
                 <motion.span
-                  className="block bg-[var(--color-primary-dark)] bg-clip-text text-transparent"
+                  className="inline-block w-full bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary)] bg-clip-text text-transparent pb-2 pt-1"
                   initial={{ opacity: 0, x: -50 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.8, delay: 0.7 }}
                 >
-                  Software
+                  Management
                 </motion.span>
               </motion.h1>
 
@@ -59,8 +58,8 @@ const HeroSection = () => {
                 transition={{ duration: 0.8, delay: 0.9 }}
                 className="text-lg sm:text-xl text-[var(--color-text-secondary)] leading-relaxed max-w-xl"
               >
-                Automate payroll, attendance, and compliance with our powerful cloud platform.
-                <span className="font-semibold text-[var(--color-primary-dark)]"> Built for modern businesses.</span>
+                Manage employee attendance, payroll, salary, leave, loans and more with powerful HR & payroll software
+                <span className="font-semibold text-[var(--color-primary-dark)]"> built for modern businesses.</span>
               </motion.p>
             </div>
 
@@ -122,7 +121,7 @@ const HeroSection = () => {
                 </div>
                 <div>
                   <p className="text-sm font-bold text-[var(--color-text-primary)]">100+</p>
-                  <p className="text-xs text-[var(--color-text-secondary)]">Companies</p>
+                  <p className="text-sm text-[var(--color-text-secondary)]">Businesses</p>
                 </div>
               </div>
               <div className="flex items-center gap-2">
@@ -131,7 +130,7 @@ const HeroSection = () => {
                 </div>
                 <div>
                   <p className="text-sm font-bold text-[var(--color-text-primary)]">99.9%</p>
-                  <p className="text-xs text-[var(--color-text-secondary)]">Uptime</p>
+                  <p className="text-sm text-[var(--color-text-secondary)]">Uptime</p>
                 </div>
               </div>
               <div className="flex items-center gap-2">
@@ -140,7 +139,7 @@ const HeroSection = () => {
                 </div>
                 <div>
                   <p className="text-sm font-bold text-[var(--color-text-primary)]">Secure</p>
-                  <p className="text-xs text-[var(--color-text-secondary)]">Encrypted</p>
+                  <p className="text-sm text-[var(--color-text-secondary)]">Reliable</p>
                 </div>
               </div>
             </motion.div>
@@ -151,26 +150,26 @@ const HeroSection = () => {
             initial={{ opacity: 0, x: 100 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 1, delay: 0.3 }}
-            className="relative"
+            className="relative max-w-md sm:max-w-lg lg:max-w-xl mx-auto w-full"
           >
             {/* Main Image */}
             <motion.div
               whileHover={{ scale: 1.02, rotateY: 5 }}
               transition={{ duration: 0.3 }}
-              className="relatives  overflow-hidden "
+              className="relative overflow-hidden rounded-2xl shadow-2xl border border-gray-100"
               style={{ transformStyle: 'preserve-3d' }}
             >
-              <div className="absolute inset-0 bg-gradient-to-tr from-[var(--color-primary)]/20 to-transparent z-10" />
+              <div className="absolute inset-0 bg-gradient-to-tr from-[var(--color-primary)]/10 to-transparent z-10 pointer-events-none" />
               <img
                 src={heroImage}
                 loading="lazy"
                 alt="PagarPe Dashboard"
-                className="w-full h-auto object-cover"
+                className="w-full h-auto object-contain rounded-2xl max-h-[420px]"
               />
             </motion.div>
 
             {/* Floating Card 1 - Bottom Left */}
-            <motion.div
+            {/* <motion.div
               initial={{ opacity: 0, y: 50, scale: 0.8 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{ duration: 0.8, delay: 1 }}
@@ -192,10 +191,10 @@ const HeroSection = () => {
                   <p className="text-sm text-[var(--color-text-secondary)]">Empowered</p>
                 </div>
               </div>
-            </motion.div>
+            </motion.div> */}
 
             {/* Floating Card 2 - Top Right */}
-            <motion.div
+            {/* <motion.div
               initial={{ opacity: 0, y: -50, scale: 0.8 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{ duration: 0.8, delay: 1.2 }}
@@ -211,10 +210,10 @@ const HeroSection = () => {
                   <p className="text-xs text-[var(--color-text-secondary)]">Time Saved</p>
                 </div>
               </div>
-            </motion.div>
+            </motion.div> */}
 
             {/* Decorative Elements */}
-            <motion.div
+            {/* <motion.div
               animate={{
                 rotate: 360,
                 scale: [1, 1.2, 1]
@@ -225,8 +224,8 @@ const HeroSection = () => {
                 ease: "linear"
               }}
               className="absolute top-1/4 -right-12 w-24 h-24 bg-gradient-to-br from-[var(--color-primary-light)] to-[var(--color-primary)] rounded-full blur-2xl opacity-40"
-            />
-            <motion.div
+            /> */}
+            {/* <motion.div
               animate={{
                 rotate: -360,
                 scale: [1, 1.3, 1]
@@ -237,7 +236,7 @@ const HeroSection = () => {
                 ease: "linear"
               }}
               className="absolute bottom-1/4 -left-12 w-32 h-32 bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-dark)] rounded-full blur-2xl opacity-30"
-            />
+            /> */}
           </motion.div>
         </div>
       </div>
