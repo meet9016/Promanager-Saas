@@ -14,6 +14,7 @@ import CoreFeaturesSection from "../Landing/components/CoreFeaturesSection";
 import TestimonialSection from "../Landing/components/TestimonialSection";
 import CTASection from "../Landing/components/CTASection";
 import Popup from "../Popup";
+import FloatingReelWidget from "../Landing/components/FloatingReelWidget";
 
 const LandingPage = () => {
     return (
@@ -76,7 +77,7 @@ const LandingPage = () => {
                 <TestimonialSection />
                 <CTASection />
                 <Popup />
-
+                <FloatingReelWidget />
             </main>
         </div>
     );

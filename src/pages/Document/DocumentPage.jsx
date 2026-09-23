@@ -131,27 +131,8 @@ const VIDEO_TUTORIALS = [
     },
     category: 'Getting Started',
     duration: '4:45 min',
-    youtubeId: 'dQw4w9WgXcQ',
-    embedUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1',
     views: '2.4k views',
     badge: 'Popular'
-  },
-  {
-    id: 'v2',
-    title: {
-      en: 'Employee Onboarding & Master Directory Setup',
-      hi: 'कर्मचारी प्रबंधन और शाखा सेटअप गाइड'
-    },
-    description: {
-      en: 'Learn how to add employees, configure departments, designations, branches, and assign role-based access control.',
-      hi: 'सीखें कि कर्मचारियों को कैसे जोड़ें, विभाग, पद, शाखाएं कॉन्फ़िगर करें और रोल-आधारित एक्सेस असाइन करें।'
-    },
-    category: 'Employee Setup',
-    duration: '6:12 min',
-    youtubeId: 'gQyX8KxZ_k4',
-    embedUrl: 'https://www.youtube.com/embed/gQyX8KxZ_k4?autoplay=1',
-    views: '1.8k views',
-    badge: 'Essential'
   },
   {
     id: 'v3',
@@ -165,10 +146,25 @@ const VIDEO_TUTORIALS = [
     },
     category: 'Attendance & Shifts',
     duration: '8:30 min',
-    youtubeId: '1v0Jg1Bskj4',
-    embedUrl: 'https://www.youtube.com/embed/1v0Jg1Bskj4?autoplay=1',
+    youtubeId: 'ms1ajCrdhRk',
+    embedUrl: 'https://www.youtube.com/embed/ms1ajCrdhRk?autoplay=1',
     views: '3.1k views',
     badge: 'Featured'
+  },
+  {
+    id: 'v2',
+    title: {
+      en: 'Employee Onboarding & Master Directory Setup',
+      hi: 'कर्मचारी प्रबंधन और शाखा सेटअप गाइड'
+    },
+    description: {
+      en: 'Learn how to add employees, configure departments, designations, branches, and assign role-based access control.',
+      hi: 'सीखें कि कर्मचारियों को कैसे जोड़ें, विभाग, पद, शाखाएं कॉन्फ़िगर करें और रोल-आधारित एक्सेस असाइन करें।'
+    },
+    category: 'Employee Setup',
+    duration: '6:12 min',
+    views: '1.8k views',
+    badge: 'Essential'
   },
   {
     id: 'v4',
@@ -182,8 +178,6 @@ const VIDEO_TUTORIALS = [
     },
     category: 'Payroll & Salary',
     duration: '9:15 min',
-    youtubeId: 'V-_O7nl0IiU',
-    embedUrl: 'https://www.youtube.com/embed/V-_O7nl0IiU?autoplay=1',
     views: '4.2k views',
     badge: 'Top Rated'
   },
@@ -218,7 +212,7 @@ const VIDEO_TUTORIALS = [
 // Interactive Video Tutorials Hub Component (Demo Video Coming Soon - PagarPe Purple Theme)
 const VideoTutorialsSection = ({ language, t, onBackToDocs }) => {
   const [selectedCategory, setSelectedCategory] = useState('All');
-  const [activeComingSoonVideo, setActiveComingSoonVideo] = useState(null);
+  const [playingVideoId, setPlayingVideoId] = useState(null);
 
   const categories = [
     'All',
@@ -240,7 +234,7 @@ const VideoTutorialsSection = ({ language, t, onBackToDocs }) => {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-100">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <span className="bg-red-100 text-red-600 px-3 py-0.5 rounded-full text-sm font-semibold flex items-center gap-1.5 border border-red-200">
+              <span className="bg-purple-100 text-[#340C8E] px-3 py-0.5 rounded-full text-sm font-semibold flex items-center gap-1.5 border border-purple-200">
                 <Youtube size={14} /> PagarPe Academy
               </span>
               <span className="bg-purple-100 text-[#340C8E] px-3 py-0.5 rounded-full text-sm font-semibold border border-purple-200">
@@ -281,7 +275,7 @@ const VideoTutorialsSection = ({ language, t, onBackToDocs }) => {
         </div>
       </div>
 
-      {/* Video Cards Grid (YouTube Tutorial Style Cards for Future Embeds) */}
+      {/* Video Cards Grid */}
       <div className="space-y-4 pt-2">
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
@@ -294,39 +288,89 @@ const VideoTutorialsSection = ({ language, t, onBackToDocs }) => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredVideos.map((video) => (
-            <div
-              key={video.id}
-              className="bg-white rounded-3xl border border-purple-100 shadow-sm hover:shadow-xl hover:border-[#340C8E]/40 hover:-translate-y-1.5 transition-all duration-300 overflow-hidden group flex flex-col justify-between"
-            >
-              <div className="p-3.5">
-                {/* Professional Video Thumbnail Box with #F3E8FF */}
-                <div className="relative aspect-video rounded-2xl bg-[#F3E8FF] overflow-hidden border border-purple-200/80 shadow-inner flex flex-col items-center justify-center p-4 group">
-                  {/* Decorative Subtle Glowing Orbs */}
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-purple-300/30 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-500 pointer-events-none" />
-                  <div className="absolute -left-8 -bottom-8 w-28 h-28 bg-[#340C8E]/10 rounded-full blur-xl pointer-events-none" />
+          {filteredVideos.map((video) => {
+            const hasVideo = !!video.youtubeId;
+            const isPlaying = playingVideoId === video.id;
 
-                  {/* Center Prominent Glowing Play Button */}
-                  <div className="relative z-10 w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[#340C8E] text-white shadow-xl flex items-center justify-center group-hover:scale-110 group-hover:bg-[#250968] transition-all duration-300 mb-3 ring-4 ring-white/60">
-                    <Play size={24} className="fill-current ml-1" />
+            return (
+              <div
+                key={video.id}
+                className="bg-white rounded-3xl border border-purple-100 shadow-sm hover:shadow-xl hover:border-[#340C8E]/40 hover:-translate-y-1.5 transition-all duration-300 overflow-hidden group flex flex-col justify-between"
+              >
+                <div className="p-3.5">
+                  {/* Professional Video Box */}
+                  <div className="relative aspect-video rounded-2xl bg-slate-900 overflow-hidden border border-purple-200/80 shadow-inner flex flex-col items-center justify-center group">
+                    {hasVideo ? (
+                      isPlaying ? (
+                        <div className="w-full h-full relative">
+                          <iframe
+                            src={`https://www.youtube.com/embed/${video.youtubeId}?autoplay=1`}
+                            title={video.title[language] || video.title.en}
+                            className="w-full h-full rounded-2xl border-0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen
+                          />
+                          <button
+                            onClick={() => setPlayingVideoId(null)}
+                            className="absolute top-2 right-2 bg-black/70 hover:bg-black text-white p-1.5 rounded-full z-20 transition-colors cursor-pointer"
+                            title="Close Video"
+                          >
+                            <X size={16} />
+                          </button>
+                        </div>
+                      ) : (
+                        <div
+                          onClick={() => setPlayingVideoId(video.id)}
+                          className="w-full h-full relative cursor-pointer group/thumb"
+                        >
+                          <img
+                            src={`https://img.youtube.com/vi/${video.youtubeId}/hqdefault.jpg`}
+                            alt={video.title[language] || video.title.en}
+                            className="w-full h-full object-cover rounded-2xl group-hover/thumb:scale-105 transition-transform duration-300"
+                          />
+                          <div className="absolute inset-0 bg-slate-900/30 group-hover/thumb:bg-slate-900/20 transition-colors flex items-center justify-center">
+                            <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[#340C8E] text-white shadow-2xl flex items-center justify-center group-hover/thumb:scale-110 group-hover/thumb:bg-[#250968] transition-all duration-300 ring-4 ring-white/70">
+                              <Play size={24} className="fill-current ml-1" />
+                            </div>
+                          </div>
+                          {/* Watch Video Badge */}
+                          <div className="absolute top-3 left-3 flex items-center gap-1.5 bg-[#340C8E] text-white text-xs font-bold px-3.5 py-1.5 rounded-full shadow-lg border border-purple-300/30">
+                            <Youtube size={14} />
+                            <span>{t('Watch Video', 'वीडियो देखें')}</span>
+                          </div>
+                        </div>
+                      )
+                    ) : (
+                      /* Coming Soon card */
+                      <div className="w-full h-full bg-[#F3E8FF] flex flex-col items-center justify-center p-4 relative">
+                        {/* Decorative Subtle Glowing Orbs */}
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-purple-300/30 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-500 pointer-events-none" />
+                        <div className="absolute -left-8 -bottom-8 w-28 h-28 bg-[#340C8E]/10 rounded-full blur-xl pointer-events-none" />
+
+                        {/* Center Prominent Glowing Play Button */}
+                        <div className="relative z-10 w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[#340C8E] text-white shadow-xl flex items-center justify-center group-hover:scale-110 group-hover:bg-[#250968] transition-all duration-300 mb-3 ring-4 ring-white/60">
+                          <Play size={24} className="fill-current ml-1" />
+                        </div>
+
+                        {/* Prominent Coming Soon Badge */}
+                        <div className="relative z-10 flex items-center gap-1.5 bg-white/90 backdrop-blur-md text-[#340C8E] text-xs sm:text-sm font-bold px-4 py-1.5 rounded-full border border-purple-200 shadow-xs">
+                          <span className="w-2 h-2 rounded-full bg-[#340C8E] animate-pulse" />
+                          <span>{t('Coming Soon', 'जल्द आ रहा है')}</span>
+                        </div>
+                      </div>
+                    )}
                   </div>
 
-                  {/* Prominent Coming Soon Badge (Title Case - No Uppercase) */}
-                  <div className="relative z-10 flex items-center gap-1.5 bg-white/90 backdrop-blur-md text-[#340C8E] text-xs sm:text-sm font-bold px-4 py-1.5 rounded-full border border-purple-200 shadow-xs">
-                    <span className="w-2 h-2 rounded-full bg-[#340C8E] animate-pulse" />
-                    <span>{t('Coming Soon', 'जल्द आ रहा है')}</span>
+                  {/* Details Section (Feature Title) */}
+                  <div className="p-3.5 pt-4 pb-1 space-y-1">
+                    <h3 className="font-bold text-slate-800 text-base sm:text-lg group-hover:text-[#340C8E] transition-colors leading-snug line-clamp-2">
+                      {video.title[language] || video.title.en}
+                    </h3>
                   </div>
-                </div>
-
-                {/* Details Section (Feature Title) */}
-                <div className="p-3.5 pt-4 pb-1 space-y-1">
-                  <h3 className="font-bold text-slate-800 text-base sm:text-lg group-hover:text-[#340C8E] transition-colors leading-snug line-clamp-2">
-                    {video.title[language] || video.title.en}
-                  </h3>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </div>
@@ -802,15 +846,27 @@ const DocumentPage = () => {
       icon: <Clock size={18} />,
       content: (
         <div className="space-y-6">
-          <div className="bg-white rounded-3xl border border-slate-200/90 p-7 sm:p-8 shadow-xs relative overflow-hidden">
+          <div className="bg-white rounded-3xl border border-slate-200/90 p-7 sm:p-8 shadow-xs relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div className="h-1.5 w-full bg-[#340C8E] absolute top-0 left-0 right-0" />
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900">{t('Attendance Management', 'उपस्थिति प्रबंधन')}</h2>
-            <p className="text-slate-700 text-base sm:text-lg mt-2.5 leading-relaxed font-normal">
-              {t(
-                'Track when and where your employees are working to ensure accurate payroll and productivity tracking.',
-                'सटीक पेरोल और उत्पादकता ट्रैकिंग सुनिश्चित करने के लिए ट्रैक करें कि आपके कर्मचारी कब और कहाँ काम कर रहे हैं।'
-              )}
-            </p>
+            <div className="space-y-2.5 max-w-2xl">
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900">{t('Attendance Management', 'उपस्थिति प्रबंधन')}</h2>
+              <p className="text-slate-700 text-base sm:text-lg leading-relaxed font-normal">
+                {t(
+                  'Track when and where your employees are working to ensure accurate payroll and productivity tracking.',
+                  'सटीक पेरोल और उत्पादकता ट्रैकिंग सुनिश्चित करने के लिए ट्रैक करें कि आपके कर्मचारी कब और कहाँ काम कर रहे हैं।'
+                )}
+              </p>
+            </div>
+            <button
+              onClick={() => {
+                navigate('/document/video');
+                if (contentRef.current) contentRef.current.scrollTop = 0;
+              }}
+              className="bg-purple-50 hover:bg-purple-100 text-[#340C8E] border border-purple-200 px-5 py-3 rounded-2xl font-bold text-sm flex items-center justify-center gap-2.5 shrink-0 transition-all cursor-pointer shadow-xs group"
+            >
+              <Youtube size={20} className="text-[#340C8E] group-hover:scale-110 transition-transform" />
+              <span>{t('Watch Attendance Video', 'उपस्थिति का वीडियो देखें')}</span>
+            </button>
           </div>
 
           <SubSectionCard
@@ -1310,10 +1366,10 @@ const DocumentPage = () => {
           className={`p-3.5 m-3 mt-auto bg-gradient-to-br from-purple-950 via-[#340C8E] to-indigo-950 rounded-2xl text-white shadow-md relative overflow-hidden group border border-purple-800/40 cursor-pointer transition-all duration-300 ${viewMode === 'videos' ? 'ring-2 ring-purple-400 scale-[1.02] shadow-xl' : 'hover:scale-[1.01]'
             }`}
         >
-          <div className="absolute -right-3 -bottom-3 w-16 h-16 bg-red-500/20 rounded-full blur-xl group-hover:scale-150 transition-transform" />
+          <div className="absolute -right-3 -bottom-3 w-16 h-16 bg-purple-500/20 rounded-full blur-xl group-hover:scale-150 transition-transform" />
           <div className="relative z-10 space-y-2">
             <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-lg bg-red-600 text-white flex items-center justify-center shrink-0 shadow-xs">
+              <div className="w-7 h-7 rounded-lg bg-white/20 text-white flex items-center justify-center shrink-0 shadow-xs">
                 <Youtube size={16} />
               </div>
               <span className="font-semibold text-md text-white truncate">
@@ -1354,14 +1410,14 @@ const DocumentPage = () => {
             }}
             className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold transition-all border cursor-pointer group ${viewMode === 'videos'
               ? 'bg-[#340C8E] text-white border-[#340C8E]'
-              : 'bg-red-50 hover:bg-red-100/90 text-red-600 border-red-200/80 hover:border-red-300'
+              : 'bg-purple-50 hover:bg-purple-100 text-[#340C8E] border-purple-200 hover:border-purple-300'
               }`}
           >
-            <div className="w-5 h-5 rounded-md bg-red-600 text-white flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+            <div className="w-5 h-5 rounded-md bg-[#340C8E] text-white flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
               <Youtube size={12} />
             </div>
             <span>{t('Learn with Videos', 'वीडियो ट्यूटोरियल')}</span>
-            <Tv size={12} className={`${viewMode === 'videos' ? 'text-white' : 'text-red-400'} transition-transform`} />
+            <Tv size={12} className={`${viewMode === 'videos' ? 'text-white' : 'text-[#340C8E]'} transition-transform`} />
           </button>
 
           <div className="h-4 w-[1px] bg-slate-200 my-auto" />
