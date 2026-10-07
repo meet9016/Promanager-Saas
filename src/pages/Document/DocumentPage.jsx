@@ -120,7 +120,7 @@ const SubSectionCard = ({ number, title, description, imageSrc, imageAlt, onPrev
 // Video Tutorials Dataset
 const VIDEO_TUTORIALS = [
   {
-    id: 'v1',
+    id: 'v-dashboard',
     title: {
       en: 'PagarPe Quick Start & Dashboard Overview',
       hi: 'प्रोमैनेजर क्विक स्टार्ट और डैशबोर्ड अवलोकन'
@@ -131,43 +131,27 @@ const VIDEO_TUTORIALS = [
     },
     category: 'Getting Started',
     duration: '4:45 min',
-    views: '2.4k views',
-    badge: 'Popular'
+    badge: 'Coming Soon'
   },
   {
-    id: 'v3',
+    id: 'v-role',
     title: {
-      en: 'Attendance Tracking & Shift Management Masterclass',
-      hi: 'उपस्थिति ट्रैकिंग और शिफ्ट प्रबंधन मास्टरक्लास'
+      en: 'Role & User Access Control Guide',
+      hi: 'रोल और यूजर एक्सेस कंट्रोल गाइड'
     },
     description: {
-      en: 'Step-by-step tutorial on shift creation, assigning shifts to staff, geolocation punch verification, and daily attendance logs.',
-      hi: 'शिफ्ट निर्माण, कर्मचारियों को शिफ्ट असाइन करने, जियोलोकेशन पंच सत्यापन और दैनिक उपस्थिति लॉग पर चरण-दर-चरण ट्यूटोरियल।'
+      en: 'Learn how to create custom roles, configure role permissions, add sub-admin users, and manage role-based access control.',
+      hi: 'सीखें कि कैसे कस्टम भूमिकाएं बनाएं, अनुमति असाइन करें, सब-एडमिन उपयोगकर्ता बनाएं और रोल-आधारित एक्सेस कंट्रोल सेट करें।'
     },
-    category: 'Attendance & Shifts',
-    duration: '8:30 min',
-    youtubeId: 'ms1ajCrdhRk',
-    embedUrl: 'https://www.youtube.com/embed/ms1ajCrdhRk?autoplay=1',
-    views: '3.1k views',
-    badge: 'Featured'
-  },
-  {
-    id: 'v2',
-    title: {
-      en: 'Employee Onboarding & Master Directory Setup',
-      hi: 'कर्मचारी प्रबंधन और शाखा सेटअप गाइड'
-    },
-    description: {
-      en: 'Learn how to add employees, configure departments, designations, branches, and assign role-based access control.',
-      hi: 'सीखें कि कर्मचारियों को कैसे जोड़ें, विभाग, पद, शाखाएं कॉन्फ़िगर करें और रोल-आधारित एक्सेस असाइन करें।'
-    },
-    category: 'Employee Setup',
-    duration: '6:12 min',
-    views: '1.8k views',
+    category: 'Role & User Management',
+    duration: '6:40 min',
+    youtubeId: '9MhRNqQBxb8',
+    embedUrl: 'https://www.youtube.com/embed/9MhRNqQBxb8?autoplay=1',
+    views: '1.9k views',
     badge: 'Essential'
   },
   {
-    id: 'v4',
+    id: 'v-payroll',
     title: {
       en: 'Payroll Processing & Salary Generation Walkthrough',
       hi: 'पेरोल प्रोसेसिंग और वेतन निर्माण वॉकथ्रू'
@@ -178,38 +162,82 @@ const VIDEO_TUTORIALS = [
     },
     category: 'Payroll & Salary',
     duration: '9:15 min',
+    youtubeId: '-RZztqq01Ks',
+    embedUrl: 'https://www.youtube.com/embed/-RZztqq01Ks?autoplay=1',
     views: '4.2k views',
     badge: 'Top Rated'
   },
   {
-    id: 'v5',
+    id: 'v-leave',
     title: {
       en: 'Leave Policies, Approvals & Holiday Calendar',
       hi: 'अवकाश नीतियां, अनुमोदन और अवकाश कैलेंडर'
     },
     description: {
-      en: 'Configure leave types (Paid, Unpaid, Medical), set approval workflows, and customize annual company holiday calendars.',
-      hi: 'अवकाश प्रकार (सवेतन, अवैतनिक, चिकित्सा) कॉन्फ़िगर करें, अनुमोदन कार्यप्रवाह सेट करें, और वार्षिक छुट्टियों के कैलेंडर को अनुकूलित करें।'
+      en: 'Configure leave types (Paid, Unpaid, Medical), set approval workflows, apply for leaves, and customize annual company holiday calendars.',
+      hi: 'अवकाश प्रकार (सवेतन, अवैतनिक, चिकित्सा) कॉन्फ़िगर करें, अनुमोदन कार्यप्रवाह सेट करें, और छुट्टियों का प्रबंधन करें।'
     },
-    category: 'Attendance & Shifts',
-    duration: '5:20 min'
+    category: 'Leaves & Holidays',
+    duration: '5:20 min',
+    youtubeId: 'qLmxacRMFWs',
+    embedUrl: 'https://www.youtube.com/embed/qLmxacRMFWs?autoplay=1',
+    views: '2.1k views',
+    badge: 'Guide'
   },
   {
-    id: 'v6',
+    id: 'v-shift',
     title: {
-      en: 'Exporting Excel & PDF Reports Guide',
-      hi: 'एक्सेल और पीडीएफ रिपोर्ट निर्यात गाइड'
+      en: 'Shift Management & Scheduling Masterclass',
+      hi: 'शिफ्ट प्रबंधन और शेड्यूलिंग मास्टरक्लास'
     },
     description: {
-      en: 'Learn how to generate and export attendance details, monthly muster matrix, salary status reports into styled Excel and PDF formats.',
-      hi: 'उपस्थिति विवरण, मासिक मस्टर मैट्रिक्स, वेतन स्थिति रिपोर्ट को स्टाइल किए गए एक्सेल और पीडीएफ प्रारूपों में जनरेट और निर्यात करना सीखें।'
+      en: 'Step-by-step tutorial on shift creation, assigning shifts to staff, shift reallocation history, and daily shift selection.',
+      hi: 'शिफ्ट निर्माण, कर्मचारियों को शिफ्ट असाइन करने, शिफ्ट पुनर्वितरण इतिहास और दैनिक शिफ्ट चयन पर चरण-दर-चरण ट्यूटोरियल।'
     },
-    category: 'Reports & Analytics',
-    duration: '7:05 min'
+    category: 'Attendance & Shifts',
+    duration: '8:30 min',
+    youtubeId: '4VDjTbi6ClM',
+    embedUrl: 'https://www.youtube.com/embed/4VDjTbi6ClM?autoplay=1',
+    views: '3.1k views',
+    badge: 'Featured'
+  },
+  {
+    id: 'v-employee',
+    title: {
+      en: 'Employee Onboarding & Master Directory Setup',
+      hi: 'कर्मचारी प्रबंधन और निर्देशिका सेटअप'
+    },
+    description: {
+      en: 'Learn how to add employees, configure departments, designations, branches, and manage full employee lifecycle.',
+      hi: 'सीखें कि कर्मचारियों को कैसे जोड़ें, विभाग, पद, शाखाएं कॉन्फ़िगर करें और कर्मचारी प्रोफ़ाइल प्रबंधित करें।'
+    },
+    category: 'Employee Setup',
+    duration: '6:12 min',
+    youtubeId: '18_23jMlGaA',
+    embedUrl: 'https://www.youtube.com/embed/18_23jMlGaA?autoplay=1',
+    views: '2.8k views',
+    badge: 'Popular'
+  },
+  {
+    id: 'v-attendance',
+    title: {
+      en: 'Attendance Tracking & Punch Log Guide',
+      hi: 'उपस्थिति ट्रैकिंग और पंच लॉग गाइड'
+    },
+    description: {
+      en: 'Complete guide on real-time attendance tracking, daily punch logs, monthly attendance matrix, and attendance exception handling.',
+      hi: 'वास्तविक समय की उपस्थिति ट्रैकिंग, दैनिक पंच लॉग, मासिक उपस्थिति मैट्रिक्स और उपस्थिति अपवाद प्रबंधन पर पूर्ण गाइड।'
+    },
+    category: 'Attendance & Shifts',
+    duration: '7:45 min',
+    youtubeId: '18_23jMlGaA',
+    embedUrl: 'https://www.youtube.com/embed/18_23jMlGaA?autoplay=1',
+    views: '3.5k views',
+    badge: 'Popular'
   }
 ];
 
-// Interactive Video Tutorials Hub Component (Demo Video Coming Soon - PagarPe Purple Theme)
+// Interactive Video Tutorials Hub Component (PagarPe Purple Theme)
 const VideoTutorialsSection = ({ language, t, onBackToDocs }) => {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [playingVideoId, setPlayingVideoId] = useState(null);
@@ -219,8 +247,9 @@ const VideoTutorialsSection = ({ language, t, onBackToDocs }) => {
     'Getting Started',
     'Employee Setup',
     'Attendance & Shifts',
+    'Leaves & Holidays',
     'Payroll & Salary',
-    'Reports & Analytics'
+    'Role & User Management'
   ];
 
   const filteredVideos = VIDEO_TUTORIALS.filter((video) => {
@@ -743,15 +772,27 @@ const DocumentPage = () => {
       icon: <Users size={18} />,
       content: (
         <div className="space-y-6">
-          <div className="bg-white rounded-3xl border border-slate-200/90 p-7 sm:p-8 shadow-xs relative overflow-hidden">
+          <div className="bg-white rounded-3xl border border-slate-200/90 p-7 sm:p-8 shadow-xs relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div className="h-1.5 w-full bg-[#340C8E] absolute top-0 left-0 right-0" />
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900">{t('Employee Management', 'कर्मचारी प्रबंधन')}</h2>
-            <p className="text-slate-700 text-base sm:text-lg mt-2.5 leading-relaxed font-normal">
-              {t(
-                'The core of PagarPe is its robust employee database. Here you can manage all aspects of your workforce\'s organizational structure.',
-                'प्रोमैनेजर का मुख्य हिस्सा इसका मजबूत कर्मचारी डेटाबेस है। यहाँ आप अपने कार्यबल के संगठनात्मक ढांचे के सभी पहलुओं का प्रबंधन कर सकते हैं।'
-              )}
-            </p>
+            <div className="space-y-2.5 max-w-2xl">
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900">{t('Employee Management', 'कर्मचारी प्रबंधन')}</h2>
+              <p className="text-slate-700 text-base sm:text-lg leading-relaxed font-normal">
+                {t(
+                  'The core of PagarPe is its robust employee database. Here you can manage all aspects of your workforce\'s organizational structure.',
+                  'प्रोमैनेजर का मुख्य हिस्सा इसका मजबूत कर्मचारी डेटाबेस है। यहाँ आप अपने कार्यबल के संगठनात्मक ढांचे के सभी पहलुओं का प्रबंधन कर सकते हैं।'
+                )}
+              </p>
+            </div>
+            <button
+              onClick={() => {
+                navigate('/document/video');
+                if (contentRef.current) contentRef.current.scrollTop = 0;
+              }}
+              className="bg-purple-50 hover:bg-purple-100 text-[#340C8E] border border-purple-200 px-5 py-3 rounded-2xl font-bold text-sm flex items-center justify-center gap-2.5 shrink-0 transition-all cursor-pointer shadow-xs group"
+            >
+              <Youtube size={20} className="text-[#340C8E] group-hover:scale-110 transition-transform" />
+              <span>{t('Watch Employee Video', 'कर्मचारी का वीडियो देखें')}</span>
+            </button>
           </div>
 
           <SubSectionCard
@@ -901,15 +942,27 @@ const DocumentPage = () => {
       icon: <Clock size={18} />,
       content: (
         <div className="space-y-6">
-          <div className="bg-white rounded-3xl border border-slate-200/90 p-7 sm:p-8 shadow-xs relative overflow-hidden">
+          <div className="bg-white rounded-3xl border border-slate-200/90 p-7 sm:p-8 shadow-xs relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div className="h-1.5 w-full bg-[#340C8E] absolute top-0 left-0 right-0" />
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900">{t('Shift Management', 'शिफ्ट प्रबंधन')}</h2>
-            <p className="text-slate-700 text-base sm:text-lg mt-2.5 leading-relaxed font-normal">
-              {t(
-                'Create custom shift timings, assign them to different employees or departments, and manage temporary shift reallocations.',
-                'कस्टम शिफ्ट समय बनाएं, उन्हें विभिन्न कर्मचारियों या विभागों को सौंपें, और अस्थायी शिफ्ट पुनर्वितरण का प्रबंधन करें।'
-              )}
-            </p>
+            <div className="space-y-2.5 max-w-2xl">
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900">{t('Shift Management', 'शिफ्ट प्रबंधन')}</h2>
+              <p className="text-slate-700 text-base sm:text-lg leading-relaxed font-normal">
+                {t(
+                  'Create custom shift timings, assign them to different employees or departments, and manage temporary shift reallocations.',
+                  'कस्टम शिफ्ट समय बनाएं, उन्हें विभिन्न कर्मचारियों या विभागों को सौंपें, और अस्थायी शिफ्ट पुनर्वितरण का प्रबंधन करें।'
+                )}
+              </p>
+            </div>
+            <button
+              onClick={() => {
+                navigate('/document/video');
+                if (contentRef.current) contentRef.current.scrollTop = 0;
+              }}
+              className="bg-purple-50 hover:bg-purple-100 text-[#340C8E] border border-purple-200 px-5 py-3 rounded-2xl font-bold text-sm flex items-center justify-center gap-2.5 shrink-0 transition-all cursor-pointer shadow-xs group"
+            >
+              <Youtube size={20} className="text-[#340C8E] group-hover:scale-110 transition-transform" />
+              <span>{t('Watch Shift Video', 'शिफ्ट का वीडियो देखें')}</span>
+            </button>
           </div>
 
           <SubSectionCard
@@ -980,15 +1033,27 @@ const DocumentPage = () => {
       icon: <Calendar size={18} />,
       content: (
         <div className="space-y-6">
-          <div className="bg-white rounded-3xl border border-slate-200/90 p-7 sm:p-8 shadow-xs relative overflow-hidden">
+          <div className="bg-white rounded-3xl border border-slate-200/90 p-7 sm:p-8 shadow-xs relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div className="h-1.5 w-full bg-[#340C8E] absolute top-0 left-0 right-0" />
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900">{t('Leaves & Holidays', 'छुट्टियाँ और अवकाश')}</h2>
-            <p className="text-slate-700 text-base sm:text-lg mt-2.5 leading-relaxed font-normal">
-              {t(
-                'Manage time off effectively with integrated leave policies and holiday calendars.',
-                'एकीकृत अवकाश नीतियों और हॉलिडे कैलेंडर के साथ समय का प्रभावी ढंग से प्रबंधन करें।'
-              )}
-            </p>
+            <div className="space-y-2.5 max-w-2xl">
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900">{t('Leaves & Holidays', 'छुट्टियाँ और अवकाश')}</h2>
+              <p className="text-slate-700 text-base sm:text-lg leading-relaxed font-normal">
+                {t(
+                  'Manage time off effectively with integrated leave policies and holiday calendars.',
+                  'एकीकृत अवकाश नीतियों और हॉलिडे कैलेंडर के साथ समय का प्रभावी ढंग से प्रबंधन करें।'
+                )}
+              </p>
+            </div>
+            <button
+              onClick={() => {
+                navigate('/document/video');
+                if (contentRef.current) contentRef.current.scrollTop = 0;
+              }}
+              className="bg-purple-50 hover:bg-purple-100 text-[#340C8E] border border-purple-200 px-5 py-3 rounded-2xl font-bold text-sm flex items-center justify-center gap-2.5 shrink-0 transition-all cursor-pointer shadow-xs group"
+            >
+              <Youtube size={20} className="text-[#340C8E] group-hover:scale-110 transition-transform" />
+              <span>{t('Watch Leave Video', 'छुट्टियों का वीडियो देखें')}</span>
+            </button>
           </div>
 
           <SubSectionCard
@@ -1047,15 +1112,27 @@ const DocumentPage = () => {
       icon: <IndianRupee size={18} />,
       content: (
         <div className="space-y-6">
-          <div className="bg-white rounded-3xl border border-slate-200/90 p-7 sm:p-8 shadow-xs relative overflow-hidden">
+          <div className="bg-white rounded-3xl border border-slate-200/90 p-7 sm:p-8 shadow-xs relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div className="h-1.5 w-full bg-[#340C8E] absolute top-0 left-0 right-0" />
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900">{t('Payroll Processing', 'पेरोल प्रोसेसिंग')}</h2>
-            <p className="text-slate-700 text-base sm:text-lg mt-2.5 leading-relaxed font-normal">
-              {t(
-                'Automate your salary calculations based on attendance, leaves, allowances, and deductions.',
-                'उपस्थिति, छुट्टियों, भत्तों और कटौतियों के आधार पर अपने वेतन गणना को स्वचालित करें।'
-              )}
-            </p>
+            <div className="space-y-2.5 max-w-2xl">
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900">{t('Payroll Processing', 'पेरोल प्रोसेसिंग')}</h2>
+              <p className="text-slate-700 text-base sm:text-lg leading-relaxed font-normal">
+                {t(
+                  'Automate your salary calculations based on attendance, leaves, allowances, and deductions.',
+                  'उपस्थिति, छुट्टियों, भत्तों और कटौतियों के आधार पर अपने वेतन गणना को स्वचालित करें।'
+                )}
+              </p>
+            </div>
+            <button
+              onClick={() => {
+                navigate('/document/video');
+                if (contentRef.current) contentRef.current.scrollTop = 0;
+              }}
+              className="bg-purple-50 hover:bg-purple-100 text-[#340C8E] border border-purple-200 px-5 py-3 rounded-2xl font-bold text-sm flex items-center justify-center gap-2.5 shrink-0 transition-all cursor-pointer shadow-xs group"
+            >
+              <Youtube size={20} className="text-[#340C8E] group-hover:scale-110 transition-transform" />
+              <span>{t('Watch Payroll Video', 'पेरोल का वीडियो देखें')}</span>
+            </button>
           </div>
 
           <SubSectionCard
@@ -1253,15 +1330,27 @@ const DocumentPage = () => {
       icon: <Shield size={18} />,
       content: (
         <div className="space-y-6">
-          <div className="bg-white rounded-3xl border border-slate-200/90 p-7 sm:p-8 shadow-xs relative overflow-hidden">
+          <div className="bg-white rounded-3xl border border-slate-200/90 p-7 sm:p-8 shadow-xs relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div className="h-1.5 w-full bg-[#340C8E] absolute top-0 left-0 right-0" />
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900">{t('User Management & Security', 'उपयोगकर्ता प्रबंधन और सुरक्षा')}</h2>
-            <p className="text-slate-700 text-base sm:text-lg mt-2.5 leading-relaxed font-normal">
-              {t(
-                'Control who has access to the PagarPe system and what they can do.',
-                'नियंत्रित करें कि प्रोमैनेजर सिस्टम तक किसकी पहुंच है और वे क्या कर सकते हैं।'
-              )}
-            </p>
+            <div className="space-y-2.5 max-w-2xl">
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900">{t('User Management & Security', 'उपयोगकर्ता प्रबंधन और सुरक्षा')}</h2>
+              <p className="text-slate-700 text-base sm:text-lg leading-relaxed font-normal">
+                {t(
+                  'Control who has access to the PagarPe system and what they can do.',
+                  'नियंत्रित करें कि प्रोमैनेजर सिस्टम तक किसकी पहुंच है और वे क्या कर सकते हैं।'
+                )}
+              </p>
+            </div>
+            <button
+              onClick={() => {
+                navigate('/document/video');
+                if (contentRef.current) contentRef.current.scrollTop = 0;
+              }}
+              className="bg-purple-50 hover:bg-purple-100 text-[#340C8E] border border-purple-200 px-5 py-3 rounded-2xl font-bold text-sm flex items-center justify-center gap-2.5 shrink-0 transition-all cursor-pointer shadow-xs group"
+            >
+              <Youtube size={20} className="text-[#340C8E] group-hover:scale-110 transition-transform" />
+              <span>{t('Watch Role Video', 'रोल का वीडियो देखें')}</span>
+            </button>
           </div>
 
           <SubSectionCard
