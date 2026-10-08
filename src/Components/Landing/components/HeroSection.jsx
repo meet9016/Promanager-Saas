@@ -168,7 +168,7 @@ const HeroSection = () => {
                   src={heroImage}
                   loading="lazy"
                   alt="PagarPe Dashboard"
-                  className="w-[125%] max-w-none h-[420px] object-fill rounded-xl -ml-[12.5%]"
+                  className="w-full h-auto object-contain rounded-xl"
                 />
               </div>
             </motion.div>
