@@ -56,7 +56,7 @@ const HeroSection = () => {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.9 }}
-                className="text-lg sm:text-xl text-[var(--color-text-secondary)] leading-relaxed max-w-xl"
+                className="text-lg sm:text-xl text-[var(--color-text-secondary)] leading-relaxed max-w-2xl"
               >
                 Manage employee attendance, payroll, salary, leave, loans and more with powerful HR & payroll software
                 <span className="font-semibold text-[var(--color-primary-dark)]"> built for modern businesses.</span>
