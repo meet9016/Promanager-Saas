@@ -1,6 +1,6 @@
 import { Button } from "../ui/button";
 import { ArrowRight, Play, Sparkles, TrendingUp, Users, Shield } from "lucide-react";
-import heroImage from "/images/hero1.png";
+import heroImage from "/images/hero0.png";
 import React from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
@@ -150,7 +150,7 @@ const HeroSection = () => {
             initial={{ opacity: 0, x: 100 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 1, delay: 0.3 }}
-            className="relative max-w-md sm:max-w-lg lg:max-w-xl mx-auto w-full"
+            className="relative max-w-md sm:max-w-lg lg:max-w-full mx-auto w-full"
           >
             {/* Background Glow Effect */}
             <div className="absolute -inset-1 bg-gradient-to-r from-[var(--color-primary)] via-[#6c4cf1] to-[var(--color-primary-dark)] rounded-3xl opacity-20 blur-lg pointer-events-none" />
@@ -168,7 +168,7 @@ const HeroSection = () => {
                   src={heroImage}
                   loading="lazy"
                   alt="PagarPe Dashboard"
-                  className="w-full h-auto object-contain rounded-xl max-h-[420px]"
+                  className="w-[125%] max-w-none h-[420px] object-fill rounded-xl -ml-[12.5%]"
                 />
               </div>
             </motion.div>
